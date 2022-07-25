@@ -1,0 +1,11 @@
+.idea
+.vscode
+package-lock.json
+
+.DS_Store
+
+node_modules
+
+docs
+
+.parcel-cache
