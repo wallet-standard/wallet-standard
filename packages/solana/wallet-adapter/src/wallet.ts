@@ -30,12 +30,12 @@ import {
 import { Cluster, clusterApiUrl, Connection, Transaction, TransactionSignature } from '@solana/web3.js';
 import { decode } from 'bs58';
 
-export type AdapterWalletChain = typeof CHAIN_SOLANA_MAINNET | typeof CHAIN_SOLANA_DEVNET | typeof CHAIN_SOLANA_TESTNET;
+export type SolanaWalletAdapterChain = typeof CHAIN_SOLANA_MAINNET | typeof CHAIN_SOLANA_DEVNET | typeof CHAIN_SOLANA_TESTNET;
 
-export class AdapterWalletAccount implements WalletAccount {
+export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     private _adapter: WalletAdapter | SignerWalletAdapter | MessageSignerWalletAdapter;
     private _publicKey: Bytes;
-    private _chain: AdapterWalletChain;
+    private _chain: SolanaWalletAdapterChain;
 
     get address() {
         return new Uint8Array(this._publicKey);
@@ -69,7 +69,7 @@ export class AdapterWalletAccount implements WalletAccount {
         return methods;
     }
 
-    constructor(adapter: WalletAdapter, publicKey: Bytes, chain: AdapterWalletChain) {
+    constructor(adapter: WalletAdapter, publicKey: Bytes, chain: SolanaWalletAdapterChain) {
         this._adapter = adapter;
         this._publicKey = publicKey;
         this._chain = chain;
@@ -138,9 +138,9 @@ export class AdapterWalletAccount implements WalletAccount {
     }
 }
 
-export class AdapterWallet implements Wallet<AdapterWalletAccount> {
+export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
     private _listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
-    private _account: AdapterWalletAccount | undefined;
+    private _account: SolanaWalletAdapterWalletAccount | undefined;
     private _adapter: WalletAdapter | SignerWalletAdapter | MessageSignerWalletAdapter;
 
     get version() {
@@ -159,12 +159,12 @@ export class AdapterWallet implements Wallet<AdapterWalletAccount> {
         return this._account ? [this._account] : [];
     }
 
-    get chains(): AdapterWalletChain[] {
+    get chains(): SolanaWalletAdapterChain[] {
         return ['solana:mainnet', 'solana:devnet', 'solana:testnet'];
     }
 
     get methods() {
-        const methods: WalletAccountMethodNames<AdapterWalletAccount>[] = ['signAndSendTransaction'];
+        const methods: WalletAccountMethodNames<SolanaWalletAdapterWalletAccount>[] = ['signAndSendTransaction'];
         if ('signTransaction' in this._adapter) {
             methods.push('signTransaction');
         }
@@ -184,15 +184,15 @@ export class AdapterWallet implements Wallet<AdapterWalletAccount> {
     }
 
     async connect<
-        Chain extends AdapterWalletAccount['chain'],
-        MethodNames extends WalletAccountMethodNames<AdapterWalletAccount>,
-        Input extends ConnectInput<AdapterWalletAccount, Chain, MethodNames>
+        Chain extends SolanaWalletAdapterWalletAccount['chain'],
+        MethodNames extends WalletAccountMethodNames<SolanaWalletAdapterWalletAccount>,
+        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, MethodNames>
     >({
         chains,
         addresses,
         methods,
         silent,
-    }: Input): Promise<ConnectOutput<AdapterWalletAccount, Chain, MethodNames, Input>> {
+    }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, MethodNames, Input>> {
         if (chains.length !== 1) throw new Error(); // FIXME
 
         const adapter = this._adapter;
@@ -207,7 +207,7 @@ export class AdapterWallet implements Wallet<AdapterWalletAccount> {
         const publicKey = adapter.publicKey;
         if (!publicKey) throw new Error(); // FIXME
 
-        this._account = new AdapterWalletAccount(adapter, publicKey.toBytes(), chains[0]); // FIXME
+        this._account = new SolanaWalletAdapterWalletAccount(adapter, publicKey.toBytes(), chains[0]); // FIXME
 
         return {
             accounts: [this._account as any], // FIXME
@@ -236,15 +236,15 @@ export class AdapterWallet implements Wallet<AdapterWalletAccount> {
     }
 }
 
-declare const window: WalletsWindow<AdapterWalletAccount>;
+declare const window: WalletsWindow<SolanaWalletAdapterWalletAccount>;
 
-export function registerAdapterWallet(adapter: WalletAdapter) {
+export function registerWalletAdapter(adapter: WalletAdapter) {
     function register(readyState: WalletReadyState) {
         if (readyState === WalletReadyState.Installed) {
             adapter.off('readyStateChange', register);
 
             window.wallets = window.wallets || [];
-            window.wallets.push({ method: 'register', wallets: [new AdapterWallet(adapter)] });
+            window.wallets.push({ method: 'register', wallets: [new SolanaWalletAdapterWallet(adapter)] });
         }
     }
 
