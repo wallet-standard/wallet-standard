@@ -1,15 +1,23 @@
-import { Wallet, WalletAccount, WalletsCommand, WalletsEventNames, WalletsEvents, WalletsWindow } from './types';
+import {
+    Wallet,
+    WalletAccount,
+    Wallets,
+    WalletsCommand,
+    WalletsEventNames,
+    WalletsEvents,
+    WalletsWindow,
+} from './types';
 
-declare const window: WalletsWindow<WalletAccount>;
+declare const window: WalletsWindow<any>;
 
-export function initialize(): void {
-    const commands = (window.wallets = window.wallets || []);
+export function initialize<Account extends WalletAccount>(): Wallets<Account> {
+    let commands: Wallets<Account> = (window.wallets = window.wallets || []);
 
     if (Array.isArray(commands)) {
-        const wallets: Wallet<WalletAccount>[] = [];
-        const listeners: { [E in WalletsEventNames<WalletAccount>]?: WalletsEvents<WalletAccount>[E][] } = {};
+        const wallets: Wallet<Account>[] = [];
+        const listeners: { [E in WalletsEventNames<Account>]?: WalletsEvents<Account>[E][] } = {};
 
-        function push(...commands: WalletsCommand<WalletAccount>[]): void {
+        function push(...commands: WalletsCommand<Account>[]): void {
             for (const command of commands) {
                 switch (command.method) {
                     case 'get':
@@ -38,7 +46,9 @@ export function initialize(): void {
             }
         }
 
-        window.wallets = { push };
         push(...commands);
+        commands = window.wallets = { push };
     }
+
+    return commands;
 }
