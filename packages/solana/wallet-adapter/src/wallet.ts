@@ -30,7 +30,10 @@ import {
 import { Cluster, clusterApiUrl, Connection, Transaction, TransactionSignature } from '@solana/web3.js';
 import { decode } from 'bs58';
 
-export type SolanaWalletAdapterChain = typeof CHAIN_SOLANA_MAINNET | typeof CHAIN_SOLANA_DEVNET | typeof CHAIN_SOLANA_TESTNET;
+export type SolanaWalletAdapterChain =
+    | typeof CHAIN_SOLANA_MAINNET
+    | typeof CHAIN_SOLANA_DEVNET
+    | typeof CHAIN_SOLANA_TESTNET;
 
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     private _adapter: WalletAdapter | SignerWalletAdapter | MessageSignerWalletAdapter;
