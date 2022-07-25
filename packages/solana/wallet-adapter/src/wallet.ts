@@ -1,9 +1,4 @@
-import {
-    MessageSignerWalletAdapter,
-    SignerWalletAdapter,
-    WalletAdapter,
-    WalletReadyState,
-} from '@solana/wallet-adapter-base';
+import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
 import {
     Bytes,
     CHAIN_SOLANA_DEVNET,
@@ -36,7 +31,7 @@ export type SolanaWalletAdapterChain =
     | typeof CHAIN_SOLANA_TESTNET;
 
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
-    private _adapter: WalletAdapter | SignerWalletAdapter | MessageSignerWalletAdapter;
+    private _adapter: Adapter;
     private _publicKey: Bytes;
     private _chain: SolanaWalletAdapterChain;
 
@@ -72,7 +67,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return methods;
     }
 
-    constructor(adapter: WalletAdapter, publicKey: Bytes, chain: SolanaWalletAdapterChain) {
+    constructor(adapter: Adapter, publicKey: Bytes, chain: SolanaWalletAdapterChain) {
         this._adapter = adapter;
         this._publicKey = publicKey;
         this._chain = chain;
@@ -144,7 +139,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
     private _listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
     private _account: SolanaWalletAdapterWalletAccount | undefined;
-    private _adapter: WalletAdapter | SignerWalletAdapter | MessageSignerWalletAdapter;
+    private _adapter: Adapter;
 
     get version() {
         return '1.0.0';
@@ -181,7 +176,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return [];
     }
 
-    constructor(adapter: WalletAdapter) {
+    constructor(adapter: Adapter) {
         this._adapter = adapter;
         adapter.on('disconnect', this._disconnect);
     }
@@ -241,7 +236,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 
 declare const window: WalletsWindow<SolanaWalletAdapterWalletAccount>;
 
-export function registerWalletAdapter(adapter: WalletAdapter) {
+export function registerWalletAdapter(adapter: Adapter) {
     function register(readyState: WalletReadyState) {
         if (readyState === WalletReadyState.Installed) {
             adapter.off('readyStateChange', register);
