@@ -1,0 +1,62 @@
+{
+    "private": true,
+    "name": "@solana/wallet-standard-example-react",
+    "version": "0.1.0",
+    "author": "Solana Maintainers <maintainers@solana.foundation>",
+    "repository": "https://github.com/solana-labs/wallet-adapter",
+    "license": "Apache-2.0",
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "src",
+        ".editorconfig",
+        ".eslintignore",
+        ".eslintrc.json",
+        ".gitignore",
+        ".prettierignore",
+        ".prettierrc",
+        "LICENSE",
+        "package.json",
+        "tsconfig.json"
+    ],
+    "scripts": {
+        "clean": "shx rm -rf dist .parcel-cache",
+        "build": "yarn clean && parcel build src/index.html",
+        "start": "yarn clean && parcel src/index.html",
+        "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
+        "lint": "eslint . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
+        "lint:fix": "eslint --fix . && yarn fmt",
+        "nuke": "shx rm -rf node_modules yarn.lock"
+    },
+    "dependencies": {
+        "@solana/wallet-adapter-base": "^0.9.9",
+        "@solana/wallet-adapter-react": "^0.15.8",
+        "@solana/wallet-adapter-react-ui": "^0.9.10",
+        "@solana/wallet-adapter-phantom": "^0.9.7",
+        "@solana/web3.js": "^1.44.3",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
+    },
+    "devDependencies": {
+        "@types/eslint": "^8.2.2",
+        "@types/eslint-plugin-prettier": "^3.1.0",
+        "@types/node": "^18.0.0",
+        "@types/prettier": "^2.4.3",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.14.0",
+        "@typescript-eslint/parser": "^5.14.0",
+        "eslint": "^8.11.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-react": "^7.29.3",
+        "eslint-plugin-react-hooks": "^4.3.0",
+        "parcel": "^2.3.2",
+        "prettier": "^2.5.1",
+        "process": "^0.11.10",
+        "shx": "^0.3.4",
+        "tslib": "^2.3.1",
+        "typescript": "^4.5.4"
+    }
+}
