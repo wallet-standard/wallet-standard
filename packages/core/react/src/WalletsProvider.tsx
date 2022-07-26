@@ -12,7 +12,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = <A extends WalletAccoun
     const [wallets, setWallets] = useState<Wallet<A>[]>([]);
 
     useEffect(() => {
-        let unsubscribe = () => {};
+        let teardown = () => {};
 
         const commands = initialize<A>();
 
@@ -27,12 +27,12 @@ export const WalletsProvider: FC<WalletsProviderProps> = <A extends WalletAccoun
             listener(...newWallets) {
                 setWallets((wallets) => [...wallets, ...newWallets]);
             },
-            callback(newUnsubscribe) {
-                unsubscribe = newUnsubscribe;
+            callback(off) {
+                teardown = off;
             },
         });
 
-        return () => unsubscribe();
+        return () => teardown();
     }, []);
 
     return <WalletContext.Provider value={{ wallets }}>{children}</WalletContext.Provider>;
