@@ -238,7 +238,7 @@ declare const window: WalletsWindow<SolanaWalletAdapterWalletAccount>;
 
 export function registerWalletAdapter(adapter: Adapter) {
     function register(readyState: WalletReadyState) {
-        if (readyState === WalletReadyState.Installed) {
+        if (readyState === WalletReadyState.Installed || readyState === WalletReadyState.Loadable) {
             adapter.off('readyStateChange', register);
 
             window.wallets = window.wallets || [];
