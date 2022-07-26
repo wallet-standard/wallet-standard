@@ -1,8 +1,8 @@
-import { createContext, useContext } from 'react';
 import { Wallet, WalletAccount } from '@solana/wallet-standard';
+import { createContext, useContext } from 'react';
 
-export interface WalletsContextState<A extends WalletAccount> {
-    wallets: Wallet<A>[];
+export interface WalletsContextState<Account extends WalletAccount> {
+    wallets: Wallet<Account>[];
 }
 
 const EMPTY_ARRAY: ReadonlyArray<never> = [] as const;
@@ -28,6 +28,6 @@ function constructMissingProviderErrorMessage(valueName: string) {
 
 export const WalletContext = createContext(DEFAULT_CONTEXT as WalletsContextState<WalletAccount>);
 
-export function useWallets<A extends WalletAccount>(): WalletsContextState<A> {
-    return useContext<WalletsContextState<A>>(WalletContext as any);
+export function useWallets<Account extends WalletAccount>(): WalletsContextState<Account> {
+    return useContext<WalletsContextState<Account>>(WalletContext as any);
 }
