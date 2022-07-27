@@ -30,7 +30,7 @@ export function initialize<Account extends WalletAccount>(): Wallets<Account> {
                     {
                         const { callback } = command;
                         // Return a copy so the registered wallets can't be referenced or mutated.
-                        callback([...registered]);
+                        callback(registered.slice());
                     }
                     break;
                 case 'register':

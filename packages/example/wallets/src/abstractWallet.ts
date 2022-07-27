@@ -26,7 +26,7 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
     abstract get icon(): string;
 
     get accounts() {
-        return [...this._accounts];
+        return this._accounts.slice();
     }
 
     get chains() {
