@@ -3430,25 +3430,17 @@
   dependencies:
     eventemitter3 "^4.0.0"
 
+"@solana/wallet-adapter-glow@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-glow/-/wallet-adapter-glow-0.1.5.tgz#a873b6cec44b00619371ce5058a57c7b2f7ccee6"
+  integrity sha512-0fkoiRPu98B+z8v2CqAkXYHHuutaQQGECOLijlUwUlgZVofYZaxw4SKaFig+92cMkMuse6gOJfNVmIv1O9tc1A==
+  dependencies:
+    "@solana/wallet-adapter-base" "^0.9.9"
+
 "@solana/wallet-adapter-phantom@^0.9.7":
   version "0.9.7"
   resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-phantom/-/wallet-adapter-phantom-0.9.7.tgz#a3d74c30f72a09323aa6f63dc7db5d56126f5261"
   integrity sha512-sLViwqgeThDgm2X1ko0iWT4YQbDfxWev+MUSB9JMDNjkdoWBcc6vPHM2+P6OAB4f9ugNPzrAtAJQZjVSdzwodw==
-  dependencies:
-    "@solana/wallet-adapter-base" "^0.9.9"
-
-"@solana/wallet-adapter-react-ui@^0.9.10":
-  version "0.9.10"
-  resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-react-ui/-/wallet-adapter-react-ui-0.9.10.tgz#75d030b6930b3bff236b4128d7661355859a7c75"
-  integrity sha512-KfAuITJCJTBDz/iay18D1wSx4fc+znI1NXw49wur5goU71g+SytYnPfF0LQsUfzDJ6w0ij1H8z38aQJIKe2quQ==
-  dependencies:
-    "@solana/wallet-adapter-base" "^0.9.9"
-    "@solana/wallet-adapter-react" "^0.15.8"
-
-"@solana/wallet-adapter-react@^0.15.8":
-  version "0.15.8"
-  resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-react/-/wallet-adapter-react-0.15.8.tgz#88b78446bbadbba50ea05b3f1e38d4ec5a5898dc"
-  integrity sha512-/0Kbnt/HqdlfGMaI7/BXpQYsfBmfTPPLkR6xBcVITcPa6WKytkap/d4gwmY3skum/naoCP8Bof9uXynZNO8/SA==
   dependencies:
     "@solana/wallet-adapter-base" "^0.9.9"
 
@@ -3565,9 +3557,9 @@
   integrity sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==
 
 "@types/express-serve-static-core@^4.17.9":
-  version "4.17.29"
-  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.29.tgz#2a1795ea8e9e9c91b4a4bbe475034b20c1ec711c"
-  integrity sha512-uMd++6dMKS32EOuw1Uli3e3BPgdLIXmezcfHv7N4c1s3gkhikBplORPpMq3fuWkxncZN1reb16d5n8yhQ80x7Q==
+  version "4.17.30"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.30.tgz#0f2f99617fa8f9696170c46152ccf7500b34ac04"
+  integrity sha512-gstzbTWro2/nFed1WXtf+TtrpwxH7Ggs4RLYTLbeVgIkUQOI3WG/JKjgeOU1zXDvezllupjrf8OPIdvTbIaVOQ==
   dependencies:
     "@types/node" "*"
     "@types/qs" "*"
@@ -3675,9 +3667,9 @@
   integrity sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==
 
 "@types/prettier@^2.1.5", "@types/prettier@^2.4.2", "@types/prettier@^2.4.3":
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.6.3.tgz#68ada76827b0010d0db071f739314fa429943d0a"
-  integrity sha512-ymZk3LEC/fsut+/Q5qejp6R9O1rMxz3XaRHDV6kX8MrGAhOSPqVARbDi+EZvInBpw+BnCX3TD240byVkOfQsHg==
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.6.4.tgz#ad899dad022bab6b5a9f0a0fe67c2f7a4a8950ed"
+  integrity sha512-fOwvpvQYStpb/zHMx0Cauwywu9yLDmzWiiQBC7gJyq5tYLUXFZvDG7VK1B7WBxxjBJNKFOZ0zLoOQn8vmATbhw==
 
 "@types/prop-types@*":
   version "15.7.5"
@@ -5253,9 +5245,9 @@ duplexer@^0.1.1:
   integrity sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==
 
 electron-to-chromium@^1.4.188:
-  version "1.4.200"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.200.tgz#6e4c5266106688965b4ea7caa11f0dd315586854"
-  integrity sha512-nPyI7oHc8T64oSqRXrAt99gNMpk0SAgPHw/o+hkNKyb5+bcdnFtZcSO9FUJES5cVkVZvo8u4qiZ1gQILl8UXsA==
+  version "1.4.202"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.202.tgz#0c2ed733f42b02ec49a955c5badfcc65888c390b"
+  integrity sha512-JYsK2ex9lmQD27kj19fhXYxzFJ/phLAkLKHv49A5UY6kMRV2xED3qMMLg/voW/+0AR6wMiI+VxlmK9NDtdxlPA==
 
 elliptic@6.5.4, elliptic@^6.5.4:
   version "6.5.4"
