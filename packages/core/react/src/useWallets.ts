@@ -21,7 +21,7 @@ function constructMissingProviderErrorMessage(valueName: string) {
         'You have tried to access `' +
         valueName +
         '` on a WalletContext without providing one. ' +
-        'Make sure to render a WalletProvider as an ancestor of the component that calls `useWallets`.'
+        'Make sure to render a WalletsProvider as an ancestor of the component that calls `useWallets`.'
     );
 }
 
