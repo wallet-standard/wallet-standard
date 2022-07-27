@@ -12,7 +12,7 @@ Wallet and dapp devs are encouraged to provide their feedback and have it integr
 
 ## Code
 
-- [Global `window.wallets` interface](src/types/window.ts)
+- [Global `window.navigator.wallets` interface](src/types/window.ts)
 - [Wallet interface](src/types/wallet.ts)
 - [Reference implementation for how wallets attach to the window](./src/implementation/window.ts)
 
@@ -52,7 +52,7 @@ A dapp should have no special logic for detecting any specific wallet.
 
 It should be impossible for conflicts between individual wallet browser extensions to prevent any wallet from being detected.
 
-### `window.wallets` is the namespace of the global interface
+### `window.navigator.wallets` is the namespace of the global interface
 
 `window.ethereum` has traditionally been used by injected wallets like Metamask. This convention causes multiple wallets to conflict for access to a global variable.
 
@@ -63,6 +63,8 @@ This makes it impossible for multiple wallets a user has to coexist, or be detec
 Wallet Adapter has been doing its part to discourage use of this for the last year by consistently not accepting new adapters that use `window.solana`.
 
 While wallets should continue to migrate away from using `window.solana`, this standard will not conflict with this, and will instead present a chain-agnostic interface.
+
+Because `window.wallets` may be in use by websites, and because wallets may be built into browsers themselves, we will extend the [Navigator](https://developer.mozilla.org/en-US/docs/Web/API/Navigator) interface instead.
 
 ### Present a chain-agnostic interface
 

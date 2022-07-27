@@ -2,13 +2,15 @@ import { Wallet, WalletAccount } from './wallet';
 
 declare const window: WalletsWindow<WalletAccount>;
 
-/** Browser window containing a global `wallets` object. */
+/** Browser window containing a global `navigator.wallets` object. */
 export interface WalletsWindow<Account extends WalletAccount> extends Window {
-    /** Global `wallets` object. */
-    wallets?: Wallets<Account> | WalletsCommand<Account>[];
+    /** Global `navigator.wallets` object. */
+    navigator: Navigator & {
+        wallets?: Wallets<Account> | WalletsCommand<Account>[];
+    };
 }
 
-/** Global `wallets` object API. */
+/** Global `navigator.wallets` object API. */
 export interface Wallets<Account extends WalletAccount> {
     /**
      * TODO: docs

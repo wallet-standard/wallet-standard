@@ -13,13 +13,13 @@ declare const window: WalletsWindow<any>;
 export function initialize<Account extends WalletAccount>(): Wallets<Account> {
     if (typeof window === 'undefined') return [];
 
-    const commands = (window.wallets = window.wallets || []);
-    // If it's already initialized, just return it
+    const commands = (window.navigator.wallets = window.navigator.wallets || []);
+    // If it's already initialized, just return it.
     if (!Array.isArray(commands)) return commands;
 
     const registered: Wallet<Account>[] = [];
     const listeners: { [E in WalletsEventNames<Account>]?: WalletsEvents<Account>[E][] } = {};
-    const wallets = (window.wallets = { push });
+    const wallets = (window.navigator.wallets = { push });
 
     push(...commands);
 
