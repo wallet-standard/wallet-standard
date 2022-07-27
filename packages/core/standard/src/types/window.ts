@@ -40,6 +40,9 @@ export interface WalletsCommandRegister<Account extends WalletAccount> {
 
     /** Wallets to register. */
     wallets: Wallet<Account>[];
+
+    /** Function that will be called with a function to unregister the wallets. */
+    callback: (unregister: () => void) => void;
 }
 
 /** Add an event listener to subscribe to events. */
@@ -68,6 +71,13 @@ export interface WalletsEvents<Account extends WalletAccount> {
      * @param wallets Wallets that were registered.
      */
     register(...wallets: Wallet<Account>[]): void;
+
+    /**
+     * Emitted when wallets are unregistered.
+     *
+     * @param wallets Wallets that were unregistered.
+     */
+    unregister(...wallets: Wallet<Account>[]): void;
 }
 
 /** TODO: docs */

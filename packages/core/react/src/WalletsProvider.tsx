@@ -25,7 +25,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = <Account extends Wallet
     });
 
     useEffect(() => {
-        let teardown = () => {};
+        const cleanups: (() => void)[] = [];
         const { push } = initialize<Account>();
 
         // Get and set the wallets that have been registered already, in case they changed since the state initializer.
@@ -38,15 +38,27 @@ export const WalletsProvider: FC<WalletsProviderProps> = <Account extends Wallet
         push({
             method: 'on',
             event: 'register',
-            listener(...newWallets) {
-                setWallets((wallets) => [...wallets, ...newWallets]);
+            listener(...registered) {
+                setWallets((wallets) => [...wallets, ...registered]);
             },
             callback(off) {
-                teardown = off;
+                cleanups.push(off);
             },
         });
 
-        return () => teardown();
+        // Add an event listener to remove any wallets that are unregistered after this point.
+        push({
+            method: 'on',
+            event: 'unregister',
+            listener(...unregistered) {
+                setWallets((wallets) => wallets.filter((wallet) => unregistered.includes(wallet)));
+            },
+            callback(off) {
+                cleanups.push(off);
+            },
+        });
+
+        return () => cleanups.forEach((cleanup) => cleanup());
     }, []);
 
     return <WalletContext.Provider value={{ wallets }}>{children}</WalletContext.Provider>;

@@ -29,21 +29,32 @@ export function initialize<Account extends WalletAccount>(): Wallets<Account> {
                 case 'get':
                     {
                         const { callback } = command;
-                        // Return a copy so the original can't be referenced or mutated.
+                        // Return a copy so the registered wallets can't be referenced or mutated.
                         callback([...registered]);
                     }
                     break;
                 case 'register':
                     {
-                        const { wallets } = command;
+                        const { wallets, callback } = command;
                         registered.push(...wallets);
                         listeners['register']?.forEach((listener) => listener(...wallets));
+                        // Return a function that unregisters the registered wallets.
+                        callback(function unregister(): void {
+                            wallets
+                                .map((wallet) => registered.indexOf(wallet))
+                                .filter((index) => index !== -1)
+                                .sort()
+                                .reverse()
+                                .forEach((index) => registered.splice(index, 1));
+                            listeners['unregister']?.forEach((listener) => listener(...wallets));
+                        });
                     }
                     break;
                 case 'on':
                     {
                         const { event, listener, callback } = command;
                         listeners[event]?.push(listener) || (listeners[event] = [listener]);
+                        // Return a function that removes the event listener.
                         callback(function off(): void {
                             listeners[event] = listeners[event]?.filter(
                                 (existingListener) => listener !== existingListener

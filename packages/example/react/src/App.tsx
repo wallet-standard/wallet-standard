@@ -14,8 +14,8 @@ export const App: FC = () => {
 
 const Context: FC<{ children: NonNullable<ReactNode> }> = ({ children }) => {
     useEffect(() => {
-        registerWalletAdapter(new PhantomWalletAdapter());
-        registerWalletAdapter(new GlowWalletAdapter());
+        registerWalletAdapter(new PhantomWalletAdapter(), () => {}); // FIXME: unregister if adapted wallet supports standard
+        registerWalletAdapter(new GlowWalletAdapter(), () => {}); // FIXME: unregister if adapted wallet supports standard
     }, []);
 
     return <WalletsProvider>{children}</WalletsProvider>;
