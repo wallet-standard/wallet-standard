@@ -39,7 +39,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = <Account extends Wallet
             method: 'on',
             event: 'register',
             listener(...registered) {
-                setWallets((wallets) => [...wallets, ...registered]);
+                setWallets((wallets) => wallets.concat(registered));
             },
             callback(off) {
                 cleanups.push(off);
