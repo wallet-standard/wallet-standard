@@ -6,7 +6,6 @@ export interface WalletsContextState<Account extends WalletAccount> {
 }
 
 const EMPTY_ARRAY: ReadonlyArray<never> = [] as const;
-
 const DEFAULT_CONTEXT: WalletsContextState<never> = {
     wallets: [],
 };
