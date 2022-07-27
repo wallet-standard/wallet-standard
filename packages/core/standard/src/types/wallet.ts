@@ -22,6 +22,11 @@ export interface WalletAccount {
 
     /** Methods supported by the account that are authorized to be called. */
     methods: {};
+
+    // TODO: think about custom methods
+
+    /** Optional user-friendly descriptive label or name of the account. */
+    label?: string;
 }
 
 /** Events emitted by wallets. */
