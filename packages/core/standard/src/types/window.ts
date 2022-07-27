@@ -57,7 +57,7 @@ export interface WalletsCommandOn<
     listener: WalletsEvents<Account>[E];
 
     /** Function that will be called with a function to remove the event listener and unsubscribe. */
-    callback: (unsubscribe: () => void) => void;
+    callback: (off: () => void) => void;
 }
 
 /** Events emitted by the global `wallets` object. */
