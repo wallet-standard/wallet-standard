@@ -9,19 +9,33 @@ export interface WalletsProviderProps {
 export const WalletsProvider: FC<WalletsProviderProps> = <Account extends WalletAccount>({
     children,
 }: WalletsProviderProps) => {
-    const [wallets, setWallets] = useState<Wallet<Account>[]>([]);
+    const [wallets, setWallets] = useState<Wallet<Account>[]>(() => {
+        let initialWallets: Wallet<Account>[] = [];
+        const { push } = initialize<Account>();
+
+        // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
+        push({
+            method: 'get',
+            callback(wallets) {
+                initialWallets = wallets;
+            },
+        });
+
+        return initialWallets;
+    });
 
     useEffect(() => {
         let teardown = () => {};
+        const { push } = initialize<Account>();
 
-        const commands = initialize<Account>();
-
-        commands.push({
+        // Get and set the wallets that have been registered already, in case they changed since the state initializer.
+        push({
             method: 'get',
             callback: setWallets,
         });
 
-        commands.push({
+        // Add an event listener to add any wallets that are registered after this point.
+        push({
             method: 'on',
             event: 'register',
             listener(...newWallets) {
