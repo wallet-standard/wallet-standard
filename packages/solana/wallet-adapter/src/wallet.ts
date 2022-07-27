@@ -6,6 +6,7 @@ import {
     CHAIN_SOLANA_TESTNET,
     ConnectInput,
     ConnectOutput,
+    initialize,
     SignAndSendTransactionInput,
     SignAndSendTransactionMethod,
     SignAndSendTransactionOutput,
@@ -20,7 +21,6 @@ import {
     WalletAccountMethodNames,
     WalletEventNames,
     WalletEvents,
-    WalletsWindow,
 } from '@solana/wallet-standard';
 import { Cluster, clusterApiUrl, Connection, Transaction, TransactionSignature } from '@solana/web3.js';
 import { decode } from 'bs58';
@@ -234,18 +234,24 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     }
 }
 
-declare const window: WalletsWindow<SolanaWalletAdapterWalletAccount>;
-
 export function registerWalletAdapter(adapter: Adapter) {
-    function register(readyState: WalletReadyState) {
-        if (readyState === WalletReadyState.Installed || readyState === WalletReadyState.Loadable) {
-            adapter.off('readyStateChange', register);
+    const { push } = initialize<SolanaWalletAdapterWalletAccount>();
 
-            window.wallets = window.wallets || [];
-            window.wallets.push({ method: 'register', wallets: [new SolanaWalletAdapterWallet(adapter)] });
+    function register(): boolean {
+        const ready =
+            adapter.readyState === WalletReadyState.Installed || adapter.readyState === WalletReadyState.Loadable;
+        if (ready) {
+            push({ method: 'register', wallets: [new SolanaWalletAdapterWallet(adapter)] });
         }
+        return ready;
     }
 
-    adapter.on('readyStateChange', register);
-    register(adapter.readyState);
+    if (!register()) {
+        function listener(): void {
+            if (register()) {
+                adapter.off('readyStateChange', listener);
+            }
+        }
+        adapter.on('readyStateChange', listener);
+    }
 }
