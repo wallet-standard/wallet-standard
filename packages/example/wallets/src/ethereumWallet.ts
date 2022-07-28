@@ -97,7 +97,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         this._secretKey = ethers.utils.arrayify(this._wallet.privateKey);
     }
 
-    private async _signTransaction(input: SignTransactionInput): Promise<SignTransactionOutput> {
+    private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
 
         const signedTransactions = await Promise.all(
@@ -117,7 +117,9 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return { signedTransactions };
     }
 
-    private async _signAndSendTransaction(input: SignAndSendTransactionInput): Promise<SignAndSendTransactionOutput> {
+    private async _signAndSendTransaction(
+        input: SignAndSendTransactionInput<this>
+    ): Promise<SignAndSendTransactionOutput<this>> {
         if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
 
         // homestead == Ethereum Mainnet
@@ -140,7 +142,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return { signatures };
     }
 
-    private async _signMessage(input: SignMessageInput): Promise<SignMessageOutput> {
+    private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
         if (!('signMessage' in this._methods)) throw new Error('unauthorized');
 
         const signatures = await Promise.all(
@@ -170,7 +172,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         });
     }
 
-    private async _decrypt(inputs: DecryptInput<this>[]): Promise<DecryptOutput[]> {
+    private async _decrypt(inputs: DecryptInput<this>[]): Promise<DecryptOutput<this>[]> {
         if (!('decrypt' in this._methods)) throw new Error('unauthorized');
 
         return inputs.map(({ publicKey, ciphertexts, nonces }) => {

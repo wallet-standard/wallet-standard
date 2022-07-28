@@ -3,9 +3,9 @@ import { Bytes, WalletAccount } from './wallet';
 
 /** TODO: docs */
 export type WalletAccountMethod<Account extends WalletAccount> =
-    | SignTransactionMethod
-    | SignAndSendTransactionMethod
-    | SignMessageMethod
+    | SignTransactionMethod<Account>
+    | SignAndSendTransactionMethod<Account>
+    | SignMessageMethod<Account>
     | EncryptMethod<Account>
     | DecryptMethod<Account>;
 
@@ -22,7 +22,7 @@ export type AllWalletAccountMethods<Account extends WalletAccount> = UnionToInte
 export type AllWalletAccountMethodNames<Account extends WalletAccount> = keyof AllWalletAccountMethods<Account>;
 
 /** TODO: docs */
-export interface SignTransactionMethod {
+export interface SignTransactionMethod<Account extends WalletAccount> {
     /**
      * Sign transactions using the account's secret key.
      * The transactions may already be partially signed, and may even have a "primary" signature.
@@ -32,17 +32,20 @@ export interface SignTransactionMethod {
      *
      * @return Output of signing transactions.
      */
-    signTransaction(input: SignTransactionInput): Promise<SignTransactionOutput>;
+    signTransaction(input: SignTransactionInput<Account>): Promise<SignTransactionOutput<Account>>;
 }
 
 /** Input for signing transactions. */
-export interface SignTransactionInput {
+export interface SignTransactionInput<Account extends WalletAccount> {
     /** Serialized transactions, as raw bytes. */
     transactions: Bytes[];
+
+    /** Optional accounts that should also sign the transactions. They must have the `signTransaction` method. */
+    extraSigners?: Account & { methods: SignTransactionMethod<Account> };
 }
 
 /** Result of signing transactions. */
-export interface SignTransactionOutput {
+export interface SignTransactionOutput<Account extends WalletAccount> {
     /**
      * Signed, serialized transactions, as raw bytes.
      * Return transactions rather than signatures allows multisig wallets, program wallets, and other wallets that use
@@ -52,7 +55,7 @@ export interface SignTransactionOutput {
 }
 
 /** TODO: docs */
-export interface SignAndSendTransactionMethod {
+export interface SignAndSendTransactionMethod<Account extends WalletAccount> {
     /**
      * Sign transactions using the account's secret key and send them to the network.
      * The transactions may already be partially signed, and may even have a "primary" signature.
@@ -62,24 +65,27 @@ export interface SignAndSendTransactionMethod {
      *
      * @return Output of signing and sending transactions.
      */
-    signAndSendTransaction(input: SignAndSendTransactionInput): Promise<SignAndSendTransactionOutput>;
+    signAndSendTransaction(input: SignAndSendTransactionInput<Account>): Promise<SignAndSendTransactionOutput<Account>>;
 }
 
 /** Input for signing and sending transactions. */
-export interface SignAndSendTransactionInput {
+export interface SignAndSendTransactionInput<Account extends WalletAccount> {
     /** Serialized transactions, as raw bytes. */
     transactions: Bytes[];
     // TODO: figure out if options for sending need to be supported
+
+    /** Optional accounts that should also sign the transactions. They must have the `signTransaction` method. */
+    extraSigners?: Account & { methods: SignTransactionMethod<Account> };
 }
 
 /** Output of signing and sending transactions. */
-export interface SignAndSendTransactionOutput {
+export interface SignAndSendTransactionOutput<Account extends WalletAccount> {
     /** "Primary" transaction signatures, as raw bytes. */
     signatures: Bytes[];
 }
 
 /** TODO: docs */
-export interface SignMessageMethod {
+export interface SignMessageMethod<Account extends WalletAccount> {
     /**
      * Sign messages (arbitrary bytes) using the account's secret key.
      *
@@ -87,17 +93,20 @@ export interface SignMessageMethod {
      *
      * @return Output of signing messages.
      */
-    signMessage(input: SignMessageInput): Promise<SignMessageOutput>;
+    signMessage(input: SignMessageInput<Account>): Promise<SignMessageOutput<Account>>;
 }
 
 /** Input for signing messages. */
-export interface SignMessageInput {
+export interface SignMessageInput<Account extends WalletAccount> {
     /** Messages to sign, as raw bytes. */
     messages: Bytes[];
+
+    /** Optional accounts that should also sign the messages. They must have the `signMessage` method. */
+    extraSigners?: Account & { methods: SignMessageMethod<Account> };
 }
 
 /** Output of signing one or messages. */
-export interface SignMessageOutput {
+export interface SignMessageOutput<Account extends WalletAccount> {
     /** Message signatures, as raw bytes. */
     signatures: Bytes[];
 }
@@ -147,7 +156,7 @@ export interface DecryptMethod<Account extends WalletAccount> {
      *
      * @return Result of decryption.
      */
-    decrypt(inputs: DecryptInput<Account>[]): Promise<DecryptOutput[]>;
+    decrypt(inputs: DecryptInput<Account>[]): Promise<DecryptOutput<Account>[]>;
 }
 
 /** Input for decryption. */
@@ -166,7 +175,7 @@ export interface DecryptInput<Account extends WalletAccount> {
 }
 
 /** Output of decryption. */
-export interface DecryptOutput {
+export interface DecryptOutput<Account extends WalletAccount> {
     /** Cleartexts that were decrypted, corresponding with the ciphertexts provided. */
     cleartexts: Bytes[];
 }

@@ -23,7 +23,7 @@ interface SolanaWalletAccount extends WalletAccount {
 // A Solana account on a Ledger device that can only sign transactions
 interface SolanaLedgerWalletAccount extends WalletAccount {
     chain: SolanaWalletChain;
-    methods: SignTransactionMethod | SignAndSendTransactionMethod;
+    methods: SignTransactionMethod<this> | SignAndSendTransactionMethod<this>;
     ciphers: never;
 }
 

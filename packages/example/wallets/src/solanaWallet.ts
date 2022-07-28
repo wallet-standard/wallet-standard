@@ -102,7 +102,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         this._publicKey = this._signer.publicKey.toBytes();
     }
 
-    private async _signTransaction(input: SignTransactionInput): Promise<SignTransactionOutput> {
+    private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
@@ -118,7 +118,9 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return { signedTransactions };
     }
 
-    private async _signAndSendTransaction(input: SignAndSendTransactionInput): Promise<SignAndSendTransactionOutput> {
+    private async _signAndSendTransaction(
+        input: SignAndSendTransactionInput<this>
+    ): Promise<SignAndSendTransactionOutput<this>> {
         if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
@@ -149,7 +151,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return { signatures };
     }
 
-    private async _signMessage(input: SignMessageInput): Promise<SignMessageOutput> {
+    private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
         if (!('signMessage' in this._methods)) throw new Error('unauthorized');
 
         const signatures = input.messages.map((message) => sign.detached(message, this._signer.secretKey));
@@ -174,7 +176,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         });
     }
 
-    private async _decrypt(inputs: DecryptInput<this>[]): Promise<DecryptOutput[]> {
+    private async _decrypt(inputs: DecryptInput<this>[]): Promise<DecryptOutput<this>[]> {
         if (!('decrypt' in this._methods)) throw new Error('unauthorized');
 
         return inputs.map(({ publicKey, ciphertexts, nonces }) => {
@@ -192,7 +194,9 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     }
 }
 
-type LedgerSolanaWalletAccountMethod = SignTransactionMethod | SignAndSendTransactionMethod;
+type LedgerSolanaWalletAccountMethod =
+    | SignTransactionMethod<LedgerSolanaWalletAccount>
+    | SignAndSendTransactionMethod<LedgerSolanaWalletAccount>;
 type LedgerSolanaWalletAccountMethods = UnionToIntersection<LedgerSolanaWalletAccountMethod>;
 type LedgerSolanaWalletAccountMethodNames = keyof LedgerSolanaWalletAccountMethods;
 
@@ -240,7 +244,9 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         this._publicKey = new Uint8Array(this._ledger.publicKey);
     }
 
-    private async _signTransaction(input: SignTransactionInput): Promise<SignTransactionOutput> {
+    private async _signTransaction(
+        input: SignTransactionInput<LedgerSolanaWalletAccount>
+    ): Promise<SignTransactionOutput<LedgerSolanaWalletAccount>> {
         if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
@@ -257,7 +263,9 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return { signedTransactions };
     }
 
-    private async _signAndSendTransaction(input: SignAndSendTransactionInput): Promise<SignAndSendTransactionOutput> {
+    private async _signAndSendTransaction(
+        input: SignAndSendTransactionInput<LedgerSolanaWalletAccount>
+    ): Promise<SignAndSendTransactionOutput<LedgerSolanaWalletAccount>> {
         if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));

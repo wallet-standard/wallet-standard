@@ -51,8 +51,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return [];
     }
 
-    get methods(): SignTransactionMethod | SignAndSendTransactionMethod | SignMessageMethod {
-        const methods: SignAndSendTransactionMethod & Partial<SignTransactionMethod & SignMessageMethod> = {
+    get methods(): SignTransactionMethod<this> | SignAndSendTransactionMethod<this> | SignMessageMethod<this> {
+        const methods: SignAndSendTransactionMethod<this> &
+            Partial<SignTransactionMethod<this> & SignMessageMethod<this>> = {
             signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
         };
 
@@ -73,7 +74,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         this._chain = chain;
     }
 
-    private async _signAndSendTransaction(input: SignAndSendTransactionInput): Promise<SignAndSendTransactionOutput> {
+    private async _signAndSendTransaction(
+        input: SignAndSendTransactionInput<this>
+    ): Promise<SignAndSendTransactionOutput<this>> {
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
         let signatures: TransactionSignature[];
@@ -99,7 +102,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return { signatures: signatures.map((signature) => decode(signature)) };
     }
 
-    private async _signTransaction(input: SignTransactionInput): Promise<SignTransactionOutput> {
+    private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._adapter)) throw new Error(); // FIXME
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
@@ -120,7 +123,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         };
     }
 
-    private async _signMessage(input: SignMessageInput): Promise<SignMessageOutput> {
+    private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
         if (!('signMessage' in this._adapter)) throw new Error(); // FIXME
 
         let signatures: Bytes[];
