@@ -40,8 +40,8 @@ export interface SignTransactionInput<Account extends WalletAccount> {
     /** Serialized transactions, as raw bytes. */
     transactions: Bytes[];
 
-    /** Optional accounts that should also sign the transactions. They must have the `signTransaction` method. */
-    extraSigners?: Account & { methods: SignTransactionMethod<Account> };
+    /** Optional accounts that must also sign the transactions. They must have the `signTransaction` method. */
+    extraSigners?: Array<Account & { methods: SignTransactionMethod<Account> }>;
 }
 
 /** Result of signing transactions. */
@@ -74,8 +74,8 @@ export interface SignAndSendTransactionInput<Account extends WalletAccount> {
     transactions: Bytes[];
     // TODO: figure out if options for sending need to be supported
 
-    /** Optional accounts that should also sign the transactions. They must have the `signTransaction` method. */
-    extraSigners?: Account & { methods: SignTransactionMethod<Account> };
+    /** Optional accounts that must also sign the transactions. They must have the `signTransaction` method. */
+    extraSigners?: Array<Account & { methods: SignTransactionMethod<Account> }>;
 }
 
 /** Output of signing and sending transactions. */
@@ -101,14 +101,14 @@ export interface SignMessageInput<Account extends WalletAccount> {
     /** Messages to sign, as raw bytes. */
     messages: Bytes[];
 
-    /** Optional accounts that should also sign the messages. They must have the `signMessage` method. */
-    extraSigners?: Account & { methods: SignMessageMethod<Account> };
+    /** Optional accounts that must also sign the messages. They must have the `signMessage` method. */
+    extraSigners?: Array<Account & { methods: SignMessageMethod<Account> }>;
 }
 
-/** Output of signing one or messages. */
+/** Output of signing messages. */
 export interface SignMessageOutput<Account extends WalletAccount> {
     /** Message signatures, as raw bytes. */
-    signatures: Bytes[];
+    signatures: Bytes[][];
 }
 
 /** TODO: docs */

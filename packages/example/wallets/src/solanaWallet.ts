@@ -104,6 +104,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
@@ -122,6 +123,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
         if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
@@ -153,8 +155,9 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
         if (!('signMessage' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signatures = input.messages.map((message) => sign.detached(message, this._signer.secretKey));
+        const signatures = [input.messages.map((message) => sign.detached(message, this._signer.secretKey))];
 
         return { signatures };
     }
@@ -248,6 +251,7 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         input: SignTransactionInput<LedgerSolanaWalletAccount>
     ): Promise<SignTransactionOutput<LedgerSolanaWalletAccount>> {
         if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
@@ -267,6 +271,7 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         input: SignAndSendTransactionInput<LedgerSolanaWalletAccount>
     ): Promise<SignAndSendTransactionOutput<LedgerSolanaWalletAccount>> {
         if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 

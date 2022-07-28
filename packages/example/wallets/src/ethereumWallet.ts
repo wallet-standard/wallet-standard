@@ -99,6 +99,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
 
     private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         const signedTransactions = await Promise.all(
             input.transactions.map(async (rawTransaction) => {
@@ -121,6 +122,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
         if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         // homestead == Ethereum Mainnet
         const wallet = this._wallet.connect(ethers.getDefaultProvider('homestead'));
@@ -144,13 +146,16 @@ export class SignerEthereumWalletAccount implements WalletAccount {
 
     private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
         if (!('signMessage' in this._methods)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signatures = await Promise.all(
-            input.messages.map(async (message) => {
-                const signature = await this._wallet.signMessage(message);
-                return ethers.utils.arrayify(signature);
-            })
-        );
+        const signatures = [
+            await Promise.all(
+                input.messages.map(async (message) => {
+                    const signature = await this._wallet.signMessage(message);
+                    return ethers.utils.arrayify(signature);
+                })
+            ),
+        ];
 
         return { signatures };
     }

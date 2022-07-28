@@ -78,6 +78,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         let signatures: TransactionSignature[];
         if (transactions.length === 1) {
@@ -104,6 +105,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
     private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._adapter)) throw new Error(); // FIXME
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
@@ -125,10 +127,11 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
     private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
         if (!('signMessage' in this._adapter)) throw new Error(); // FIXME
+        if (input.extraSigners?.length) throw new Error('unsupported');
 
-        let signatures: Bytes[];
+        let signatures: Bytes[][];
         if (input.messages.length === 1) {
-            signatures = [await this._adapter.signMessage(input.messages[0])]; // FIXME
+            signatures = [[await this._adapter.signMessage(input.messages[0])]]; // FIXME
         } else if (input.messages.length > 1) {
             throw new Error(); // FIXME
         } else {
