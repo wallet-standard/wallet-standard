@@ -18,22 +18,31 @@ export interface Wallets<Account extends WalletAccount> {
      * @param commands TODO: docs
      */
     push(...commands: WalletsCommand<Account>[]): void;
+
+    /**
+     * TODO: docs
+     */
+    register(wallets: Wallet<Account>[]): () => void;
+
+    /**
+     * TODO: docs
+     */
+    get(): Wallet<Account>[];
+
+    /**
+     * TODO: docs
+     */
+    on<E extends WalletsEventNames<Account> = WalletsEventNames<Account>>(
+        event: E,
+        listener: WalletsEvents<Account>[E]
+    ): () => void;
 }
 
 /** TODO: docs */
 export type WalletsCommand<Account extends WalletAccount> =
-    | WalletsCommandGet<Account>
     | WalletsCommandRegister<Account>
+    | WalletsCommandGet<Account>
     | WalletsCommandOn<Account>;
-
-/** Get the wallets that have been registered. */
-export interface WalletsCommandGet<Account extends WalletAccount> {
-    /** TODO: docs */
-    method: 'get';
-
-    /** Function that will be called with all wallets that have been registered. */
-    callback: (wallets: Wallet<Account>[]) => void;
-}
 
 /** Register wallets. This emits a `register` event. */
 export interface WalletsCommandRegister<Account extends WalletAccount> {
@@ -45,6 +54,15 @@ export interface WalletsCommandRegister<Account extends WalletAccount> {
 
     /** Function that will be called with a function to unregister the wallets. */
     callback: (unregister: () => void) => void;
+}
+
+/** Get the wallets that have been registered. */
+export interface WalletsCommandGet<Account extends WalletAccount> {
+    /** TODO: docs */
+    method: 'get';
+
+    /** Function that will be called with all wallets that have been registered. */
+    callback: (wallets: Wallet<Account>[]) => void;
 }
 
 /** Add an event listener to subscribe to events. */
@@ -72,14 +90,14 @@ export interface WalletsEvents<Account extends WalletAccount> {
      *
      * @param wallets Wallets that were registered.
      */
-    register(...wallets: Wallet<Account>[]): void;
+    register(wallets: Wallet<Account>[]): void;
 
     /**
      * Emitted when wallets are unregistered.
      *
      * @param wallets Wallets that were unregistered.
      */
-    unregister(...wallets: Wallet<Account>[]): void;
+    unregister(wallets: Wallet<Account>[]): void;
 }
 
 /** TODO: docs */

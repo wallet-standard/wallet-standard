@@ -24,7 +24,7 @@ declare const window: WalletsWindow<WalletAccount>;
     push({
         method: 'on',
         event: 'register',
-        listener(...wallets) {
+        listener(wallets) {
             // The dapp can add new wallets to its own state context as they are registered
         },
         callback(unsubscribe) {
@@ -35,7 +35,7 @@ declare const window: WalletsWindow<WalletAccount>;
     // The dapp gets all the wallets that have been registered so far
     push({
         method: 'get',
-        callback(...wallets) {
+        callback(wallets) {
             // The dapp will receive all the registered wallets when this runs, and can add them to its own state context
         },
     });

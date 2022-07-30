@@ -9,56 +9,27 @@ export interface WalletsProviderProps {
 export const WalletsProvider: FC<WalletsProviderProps> = <Account extends WalletAccount>({
     children,
 }: WalletsProviderProps) => {
-    const [wallets, setWallets] = useState<Wallet<Account>[]>(() => {
-        let initialWallets: Wallet<Account>[] = [];
-        const { push } = initialize<Account>();
-
-        // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
-        push({
-            method: 'get',
-            callback(wallets) {
-                initialWallets = wallets;
-            },
-        });
-
-        return initialWallets;
-    });
+    // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
+    const [wallets, setWallets] = useState<Wallet<Account>[]>(() => initialize<Account>().get());
 
     useEffect(() => {
-        const cleanups: (() => void)[] = [];
-        const { push } = initialize<Account>();
+        const removers: (() => void)[] = [];
+        const wallets = initialize<Account>();
 
         // Get and set the wallets that have been registered already, in case they changed since the state initializer.
-        push({
-            method: 'get',
-            callback: setWallets,
-        });
+        setWallets(wallets.get());
 
         // Add an event listener to add any wallets that are registered after this point.
-        push({
-            method: 'on',
-            event: 'register',
-            listener(...registered) {
-                setWallets((wallets) => wallets.concat(registered));
-            },
-            callback(off) {
-                cleanups.push(off);
-            },
-        });
+        removers.push(wallets.on('register', (registered) => setWallets((wallets) => wallets.concat(registered))));
 
         // Add an event listener to remove any wallets that are unregistered after this point.
-        push({
-            method: 'on',
-            event: 'unregister',
-            listener(...unregistered) {
-                setWallets((wallets) => wallets.filter((wallet) => unregistered.includes(wallet)));
-            },
-            callback(off) {
-                cleanups.push(off);
-            },
-        });
+        removers.push(
+            wallets.on('unregister', (unregistered) =>
+                setWallets((wallets) => wallets.filter((wallet) => unregistered.includes(wallet)))
+            )
+        );
 
-        return () => cleanups.forEach((cleanup) => cleanup());
+        return () => removers.forEach((remove) => remove());
     }, []);
 
     return <WalletContext.Provider value={{ wallets }}>{children}</WalletContext.Provider>;

@@ -246,13 +246,13 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 }
 
 export function registerWalletAdapter(adapter: Adapter, callback: (unregister: () => void) => void) {
-    const { push } = initialize<SolanaWalletAdapterWalletAccount>();
+    const wallets = initialize<SolanaWalletAdapterWalletAccount>();
 
     function register(): boolean {
         const ready =
             adapter.readyState === WalletReadyState.Installed || adapter.readyState === WalletReadyState.Loadable;
         if (ready) {
-            push({ method: 'register', wallets: [new SolanaWalletAdapterWallet(adapter)], callback });
+            callback(wallets.register([new SolanaWalletAdapterWallet(adapter)]));
         }
         return ready;
     }
