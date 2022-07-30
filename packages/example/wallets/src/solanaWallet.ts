@@ -6,6 +6,7 @@ import {
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
     CIPHER_DEFAULT,
+    concatBytes,
     DecryptInput,
     DecryptOutput,
     EncryptInput,
@@ -143,12 +144,11 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         }
 
         const connection = new Connection(endpoint);
-        const signatures = await Promise.all(
-            transactions.map(async (transaction) => {
-                const signature = await connection.sendRawTransaction(transaction.serialize());
-                return decode(signature);
-            })
-        );
+        const signatures: Bytes[] = [];
+        for (const transaction of transactions) {
+            const signature = await connection.sendRawTransaction(transaction.serialize());
+            signatures.push(decode(signature));
+        }
 
         return { signatures };
     }
@@ -157,15 +157,20 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         if (!('signMessage' in this._methods)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signatures = [input.messages.map((message) => sign.detached(message, this._signer.secretKey))];
+        const signedMessages: Bytes[] = [];
+        for (const message of input.messages) {
+            const signature = sign.detached(message, this._signer.secretKey);
+            signedMessages.push(concatBytes(message, signature));
+        }
 
-        return { signatures };
+        return { signedMessages };
     }
 
     private async _encrypt(inputs: EncryptInput<this>[]): Promise<EncryptOutput<this>[]> {
         if (!('encrypt' in this._methods)) throw new Error('unauthorized');
 
-        return inputs.map(({ publicKey, cleartexts }) => {
+        const outputs: EncryptOutput<this>[] = [];
+        for (const { publicKey, cleartexts } of inputs) {
             const sharedKey = box.before(publicKey, this._signer.secretKey);
 
             const nonces = [];
@@ -175,14 +180,17 @@ export class SignerSolanaWalletAccount implements WalletAccount {
                 ciphertexts[i] = box.after(cleartexts[i], nonces[i], sharedKey);
             }
 
-            return { ciphertexts, nonces, cipher: CIPHER_DEFAULT };
-        });
+            outputs.push({ ciphertexts, nonces, cipher: CIPHER_DEFAULT });
+        }
+
+        return outputs;
     }
 
     private async _decrypt(inputs: DecryptInput<this>[]): Promise<DecryptOutput<this>[]> {
         if (!('decrypt' in this._methods)) throw new Error('unauthorized');
 
-        return inputs.map(({ publicKey, ciphertexts, nonces }) => {
+        const outputs: DecryptOutput<this>[] = [];
+        for (const { publicKey, ciphertexts, nonces } of inputs) {
             const sharedKey = box.before(publicKey, this._signer.secretKey);
 
             const cleartexts = [];
@@ -192,8 +200,10 @@ export class SignerSolanaWalletAccount implements WalletAccount {
                 cleartexts[i] = cleartext;
             }
 
-            return { cleartexts, cipher: CIPHER_DEFAULT };
-        });
+            outputs.push({ cleartexts });
+        }
+
+        return outputs;
     }
 }
 

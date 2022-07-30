@@ -4,6 +4,7 @@ import {
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
+    concatBytes,
     ConnectInput,
     ConnectOutput,
     initialize,
@@ -93,7 +94,10 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
                 throw new Error(); // FIXME
             }
 
-            signatures = [await this._adapter.sendTransaction(transactions[0], new Connection(clusterApiUrl(cluster)))];
+            const connection = new Connection(clusterApiUrl(cluster));
+            const signature = await this._adapter.sendTransaction(transactions[0], connection);
+
+            signatures = [signature];
         } else if (transactions.length > 1) {
             throw new Error(); // FIXME
         } else {
@@ -129,16 +133,17 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         if (!('signMessage' in this._adapter)) throw new Error(); // FIXME
         if (input.extraSigners?.length) throw new Error('unsupported');
 
-        let signatures: Bytes[][];
+        let signedMessages: Bytes[];
         if (input.messages.length === 1) {
-            signatures = [[await this._adapter.signMessage(input.messages[0])]]; // FIXME
+            const signature = await this._adapter.signMessage(input.messages[0]);
+            signedMessages = [concatBytes(input.messages[0], signature)];
         } else if (input.messages.length > 1) {
             throw new Error(); // FIXME
         } else {
-            signatures = [];
+            signedMessages = [];
         }
 
-        return { signatures };
+        return { signedMessages };
     }
 }
 

@@ -4,6 +4,7 @@ import {
     Bytes,
     CHAIN_ETHEREUM,
     CIPHER_DEFAULT,
+    concatBytes,
     DecryptInput,
     DecryptOutput,
     EncryptInput,
@@ -101,20 +102,18 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signedTransactions = await Promise.all(
-            input.transactions.map(async (rawTransaction) => {
-                const transaction = ethers.utils.parseTransaction(rawTransaction);
+        const signedTransactions: Bytes[] = [];
+        for (const rawTransaction of input.transactions) {
+            const transaction = ethers.utils.parseTransaction(rawTransaction);
 
-                const signedTransaction = await this._wallet.signTransaction({
-                    ...transaction,
-                    // HACK: signTransaction expects a `number` or `undefined`, not `null`
-                    type: transaction.type ?? undefined,
-                });
+            const signedTransaction = await this._wallet.signTransaction({
+                ...transaction,
+                // HACK: signTransaction expects a `number` or `undefined`, not `null`
+                type: transaction.type ?? undefined,
+            });
 
-                return ethers.utils.arrayify(signedTransaction);
-            })
-        );
-
+            signedTransactions.push(ethers.utils.arrayify(signedTransaction));
+        }
         return { signedTransactions };
     }
 
@@ -127,19 +126,18 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         // homestead == Ethereum Mainnet
         const wallet = this._wallet.connect(ethers.getDefaultProvider('homestead'));
 
-        const signatures = await Promise.all(
-            input.transactions.map(async (rawTransaction) => {
-                const transaction = ethers.utils.parseTransaction(rawTransaction);
+        const signatures: Bytes[] = [];
+        for (const rawTransaction of input.transactions) {
+            const transaction = ethers.utils.parseTransaction(rawTransaction);
 
-                const { hash } = await wallet.sendTransaction({
-                    ...transaction,
-                    // HACK: signTransaction expects a `number` or `undefined`, not `null`
-                    type: transaction.type ?? undefined,
-                });
+            const { hash } = await wallet.sendTransaction({
+                ...transaction,
+                // HACK: signTransaction expects a `number` or `undefined`, not `null`
+                type: transaction.type ?? undefined,
+            });
 
-                return ethers.utils.arrayify(hash);
-            })
-        );
+            signatures.push(ethers.utils.arrayify(hash));
+        }
 
         return { signatures };
     }
@@ -148,22 +146,20 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         if (!('signMessage' in this._methods)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signatures = [
-            await Promise.all(
-                input.messages.map(async (message) => {
-                    const signature = await this._wallet.signMessage(message);
-                    return ethers.utils.arrayify(signature);
-                })
-            ),
-        ];
+        const signedMessages: Bytes[] = [];
+        for (const message of input.messages) {
+            const signature = await this._wallet.signMessage(message);
+            signedMessages.push(concatBytes(message, ethers.utils.arrayify(signature)));
+        }
 
-        return { signatures };
+        return { signedMessages };
     }
 
     private async _encrypt(inputs: EncryptInput<this>[]): Promise<EncryptOutput<this>[]> {
         if (!('encrypt' in this._methods)) throw new Error('unauthorized');
 
-        return inputs.map(({ publicKey, cleartexts }) => {
+        const outputs: EncryptOutput<this>[] = [];
+        for (const { publicKey, cleartexts } of inputs) {
             const sharedKey = box.before(publicKey, this._secretKey);
 
             const nonces = [];
@@ -173,14 +169,17 @@ export class SignerEthereumWalletAccount implements WalletAccount {
                 ciphertexts[i] = box.after(cleartexts[i], nonces[i], sharedKey);
             }
 
-            return { ciphertexts, nonces, cipher: CIPHER_DEFAULT };
-        });
+            outputs.push({ ciphertexts, nonces, cipher: CIPHER_DEFAULT });
+        }
+
+        return outputs;
     }
 
     private async _decrypt(inputs: DecryptInput<this>[]): Promise<DecryptOutput<this>[]> {
         if (!('decrypt' in this._methods)) throw new Error('unauthorized');
 
-        return inputs.map(({ publicKey, ciphertexts, nonces }) => {
+        const outputs: DecryptOutput<this>[] = [];
+        for (const { publicKey, ciphertexts, nonces } of inputs) {
             const sharedKey = box.before(publicKey, this._secretKey);
 
             const cleartexts = [];
@@ -190,7 +189,9 @@ export class SignerEthereumWalletAccount implements WalletAccount {
                 cleartexts[i] = cleartext;
             }
 
-            return { cleartexts, cipher: CIPHER_DEFAULT };
-        });
+            outputs.push({ cleartexts });
+        }
+
+        return outputs;
     }
 }
