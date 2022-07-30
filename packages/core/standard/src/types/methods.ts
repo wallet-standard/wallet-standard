@@ -107,8 +107,8 @@ export interface SignMessageInput<Account extends WalletAccount> {
 
 /** Output of signing messages. */
 export interface SignMessageOutput<Account extends WalletAccount> {
-    /** Message signatures, as raw bytes. */
-    signatures: Bytes[][];
+    /** Messages with concatenated signatures, as raw bytes. */
+    signedMessages: Bytes[];
 }
 
 /** TODO: docs */
