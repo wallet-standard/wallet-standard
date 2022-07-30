@@ -33,6 +33,7 @@
         "@solana/web3.js": "^1.44.3",
         "@types/bs58": "^4.0.1",
         "@types/node-fetch": "^2.6.2",
-        "bs58": "^4.0.1"
+        "bs58": "^4.0.1",
+        "typescript": "^4.6.2"
     }
 }
