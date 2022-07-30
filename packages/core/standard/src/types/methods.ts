@@ -48,8 +48,8 @@ export interface SignTransactionInput<Account extends WalletAccount> {
 export interface SignTransactionOutput<Account extends WalletAccount> {
     /**
      * Signed, serialized transactions, as raw bytes.
-     * Return transactions rather than signatures allows multisig wallets, program wallets, and other wallets that use
-     * meta-transactions to return a modified, signed transaction.
+     * Returning transactions rather than signatures allows multisig wallets, program wallets, and other wallets that
+     * use meta-transactions to return a modified, signed transaction.
      */
     signedTransactions: Bytes[];
 }
@@ -59,7 +59,8 @@ export interface SignAndSendTransactionMethod<Account extends WalletAccount> {
     /**
      * Sign transactions using the account's secret key and send them to the network.
      * The transactions may already be partially signed, and may even have a "primary" signature.
-     * This method covers existing `signAndSendTransaction` functionality, and also provides an `All` version of the same, matching the SMS Mobile Wallet Adapter SDK.
+     * This method covers existing `signAndSendTransaction` functionality, and also provides an `All` version of the
+     * same, matching the SMS Mobile Wallet Adapter SDK.
      *
      * @param input Input for signing and sending transactions.
      *
@@ -107,7 +108,11 @@ export interface SignMessageInput<Account extends WalletAccount> {
 
 /** Output of signing messages. */
 export interface SignMessageOutput<Account extends WalletAccount> {
-    /** Messages with concatenated signatures, as raw bytes. */
+    /**
+     * Messages with concatenated signatures, as raw bytes.
+     * Returning signed messages rather than signatures allows wallets to prefix messages before signing and return the
+     * modified, prefixed messages along with their signatures.
+     */
     signedMessages: Bytes[];
 }
 
