@@ -20,7 +20,7 @@ const Context: FC<{ children: NonNullable<ReactNode> }> = ({ children }) => {
 
         const adapters = [new PhantomWalletAdapter(), new GlowWalletAdapter()];
         for (const adapter of adapters) {
-            registerWalletAdapter(adapter, (unregister) => removers.push(unregister)); // FIXME: unregister if adapted wallet supports standard
+            registerWalletAdapter(adapter, (unregister) => removers.push(unregister));
         }
 
         return () => removers.forEach((remove) => remove());
