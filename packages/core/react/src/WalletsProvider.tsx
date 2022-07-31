@@ -13,23 +13,23 @@ export const WalletsProvider: FC<WalletsProviderProps> = <Account extends Wallet
     const [wallets, setWallets] = useState<Wallet<Account>[]>(() => initialize<Account>().get());
 
     useEffect(() => {
-        const removers: (() => void)[] = [];
+        const destructors: (() => void)[] = [];
         const wallets = initialize<Account>();
 
         // Get and set the wallets that have been registered already, in case they changed since the state initializer.
         setWallets(wallets.get());
 
         // Add an event listener to add any wallets that are registered after this point.
-        removers.push(wallets.on('register', (registered) => setWallets((wallets) => wallets.concat(registered))));
+        destructors.push(wallets.on('register', (registered) => setWallets((wallets) => wallets.concat(registered))));
 
         // Add an event listener to remove any wallets that are unregistered after this point.
-        removers.push(
+        destructors.push(
             wallets.on('unregister', (unregistered) =>
                 setWallets((wallets) => wallets.filter((wallet) => unregistered.includes(wallet)))
             )
         );
 
-        return () => removers.forEach((remove) => remove());
+        return () => destructors.forEach((destroy) => destroy());
     }, []);
 
     return <WalletContext.Provider value={{ wallets }}>{children}</WalletContext.Provider>;

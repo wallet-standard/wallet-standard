@@ -248,42 +248,41 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 /**
  * TODO: docs
  *
- * @param adapter  TODO: docs
- * @param callback TODO: docs
- * @param compare  TODO: docs
+ * @param adapter TODO: docs
+ * @param match   TODO: docs
  */
 export function registerWalletAdapter(
     adapter: Adapter,
-    callback: (unregister: () => void) => void,
-    compare: (wallet: Wallet<SolanaWalletAdapterWalletAccount>) => boolean = (wallet) => wallet.name === adapter.name
-): void {
+    match: (wallet: Wallet<SolanaWalletAdapterWalletAccount>) => boolean = (wallet) => wallet.name === adapter.name
+): () => void {
     const wallets = initialize<SolanaWalletAdapterWalletAccount>();
+    const destructors: (() => void)[] = [];
+
+    function teardown(): void {
+        destructors.forEach((destroy) => destroy());
+        destructors.length = 0;
+    }
 
     function setup(): boolean {
-        // If a standard wallet matches the adapter has already been registered, don't do anything.
-        if (wallets.get().some(compare)) return true;
+        // If the adapter is unsupported, or a standard wallet that matches it has already been registered, do nothing.
+        if (adapter.readyState === WalletReadyState.Unsupported || wallets.get().some(match)) return true;
 
         // If the adapter isn't ready, try again later.
         const ready =
             adapter.readyState === WalletReadyState.Installed || adapter.readyState === WalletReadyState.Loadable;
         if (ready) {
             // Register the adapter wrapped as a standard wallet, and receive a function to unregister the adapter.
-            const unregister = wallets.register([new SolanaWalletAdapterWallet(adapter)]);
+            destructors.push(wallets.register([new SolanaWalletAdapterWallet(adapter)]));
             // Whenever a standard wallet is registered ...
-            const off = wallets.on('register', (wallets) => {
-                // ... check if it matches the adapter.
-                if (wallets.some(compare)) {
-                    // If it does, remove the event listener and unregister the adapter.
-                    off();
-                    unregister();
-                }
-            });
-
-            // Call the callback with a function to remove the event listener and unregister the adapter.
-            callback(() => {
-                off();
-                unregister();
-            });
+            destructors.push(
+                wallets.on('register', (wallets) => {
+                    // ... check if it matches the adapter.
+                    if (wallets.some(match)) {
+                        // If it does, remove the event listener and unregister the adapter.
+                        teardown();
+                    }
+                })
+            );
         }
         return ready;
     }
@@ -296,4 +295,6 @@ export function registerWalletAdapter(
         }
         adapter.on('readyStateChange', listener);
     }
+
+    return teardown;
 }

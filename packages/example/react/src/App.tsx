@@ -1,6 +1,5 @@
 import { GlowWalletAdapter } from '@solana/wallet-adapter-glow';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
-import { initialize } from '@solana/wallet-standard';
 import { useWallets, WalletsProvider } from '@solana/wallet-standard-react';
 import { registerWalletAdapter } from '@solana/wallet-standard-solana-wallet-adapter';
 import React, { FC, ReactNode, useEffect } from 'react';
@@ -15,15 +14,9 @@ export const App: FC = () => {
 
 const Context: FC<{ children: NonNullable<ReactNode> }> = ({ children }) => {
     useEffect(() => {
-        const removers: (() => void)[] = [];
-        const wallets = initialize();
-
         const adapters = [new PhantomWalletAdapter(), new GlowWalletAdapter()];
-        for (const adapter of adapters) {
-            registerWalletAdapter(adapter, (unregister) => removers.push(unregister));
-        }
-
-        return () => removers.forEach((remove) => remove());
+        const destructors = adapters.map((adapter) => registerWalletAdapter(adapter));
+        return () => destructors.forEach((destroy) => destroy());
     }, []);
 
     return <WalletsProvider>{children}</WalletsProvider>;
