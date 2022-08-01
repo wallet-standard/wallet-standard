@@ -258,7 +258,7 @@ export function registerWalletAdapter(
     const wallets = initialize<SolanaWalletAdapterWalletAccount>();
     const destructors: (() => void)[] = [];
 
-    function teardown(): void {
+    function destroy(): void {
         destructors.forEach((destroy) => destroy());
         destructors.length = 0;
     }
@@ -279,7 +279,7 @@ export function registerWalletAdapter(
                     // ... check if it matches the adapter.
                     if (wallets.some(match)) {
                         // If it does, remove the event listener and unregister the adapter.
-                        teardown();
+                        destroy();
                     }
                 })
             );
@@ -294,7 +294,8 @@ export function registerWalletAdapter(
             }
         }
         adapter.on('readyStateChange', listener);
+        destructors.push(() => adapter.off('readyStateChange', listener));
     }
 
-    return teardown;
+    return destroy;
 }
