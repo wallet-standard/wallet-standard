@@ -1,9 +1,14 @@
 {
-    "extends": "../../../tsconfig.json",
-    "include": ["src"],
-    "compilerOptions": {
-        "outDir": "lib/esm",
-        "declarationDir": "lib/types",
-        "noEmit": false
-    }
+    "extends": "../../../tsconfig.base.json",
+    "references": [
+        {
+            "path": "../../core/standard"
+        },
+        {
+            "path": "./tsconfig.cjs.json"
+        },
+        {
+            "path": "./tsconfig.esm.json"
+        }
+    ]
 }

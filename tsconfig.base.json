@@ -1,0 +1,18 @@
+{
+    "include": [],
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "noEmitOnError": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "strict": true,
+        "stripInternal": true
+    }
+}

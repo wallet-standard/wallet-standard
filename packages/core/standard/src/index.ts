@@ -1,4 +1,4 @@
-export * from './types/index';
+export * from './types';
 
 export * from './constants';
 export * from './initialize';

@@ -3,52 +3,26 @@
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/wallet-standard",
     "license": "Apache-2.0",
-    "type": "module",
-    "workspaces": {
-        "packages": [
-            "packages/*/*"
-        ]
-    },
     "engines": {
-        "node": ">= 10"
-    },
-    "publishConfig": {
-        "access": "public"
+        "node": ">=16",
+        "pnpm": ">=7"
     },
     "scripts": {
-        "clean": "lerna run clean",
-        "build": "lerna run build",
-        "test": "lerna run test",
-        "publish": "lerna publish from-package",
-        "deploy": "yarn deploy:docs",
-        "deploy:docs": "yarn docs && gh-pages --dist docs --dotfiles",
-        "docs": "shx rm -rf docs && NODE_OPTIONS=--max_old_space_size=16000 typedoc && shx cp ./{.nojekyll} docs/",
-        "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json,vue}'",
-        "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json,vue}'",
-        "lint:fix": "eslint --fix --ext .ts . && yarn fmt",
-        "nuke": "shx rm -rf {.,packages/*/*}/{node_modules,yarn.lock}"
+        "clean": "pnpm --recursive run clean",
+        "build": "pnpm --recursive run prebuild && tsc --build && pnpm --recursive run build",
+        "watch": "pnpm --recursive run prebuild && tsc --build --watch",
+        "fmt": "prettier --write '{*,**/*}.{ts,tsx,js,jsx,json}'",
+        "lint": "prettier --check '{*,**/*}.{ts,tsx,js,jsx,json}' && eslint",
+        "lint:fix": "yarn fmt && eslint --fix",
+        "nuke": "shx rm -rf {.,packages/*/*}/{node_modules,yarn.lock}",
+        "reinstall": "pnpm nuke && pnpm install"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.16.5",
-        "@types/eslint": "^8.2.1",
-        "@types/eslint-plugin-prettier": "^3.1.0",
-        "@types/node": "^18.0.0",
-        "@types/prettier": "^2.4.2",
-        "@typescript-eslint/eslint-plugin": "^5.14.0",
-        "@typescript-eslint/parser": "^5.14.0",
-        "babel-eslint": "^10.1.0",
-        "eslint": "^8.11.0",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-config-react-app": "^7.0.0",
-        "eslint-plugin-prettier": "^4.0.0",
-        "gh-pages": "^4.0.0",
-        "lerna": "^5.1.6",
-        "prettier": "^2.5.1",
-        "shx": "^0.3.3",
-        "tsc-esm": "^1.0.4",
-        "tslib": "^2.3.0",
-        "typedoc": "^0.23.1",
-        "typescript": "^4.6.2",
-        "typescript-esm": "^2.0.0"
+        "eslint": "^8.20.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "pnpm": "^7.8.0",
+        "prettier": "^2.7.1",
+        "shx": "^0.3.4",
+        "typescript": "^4.7.4"
     }
 }

@@ -3,62 +3,32 @@
     "name": "@solana/wallet-standard-example-react",
     "version": "0.1.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
-    "repository": "https://github.com/solana-labs/wallet-adapter",
+    "repository": "https://github.com/solana-labs/wallet-standard",
     "license": "Apache-2.0",
-    "publishConfig": {
-        "access": "public"
-    },
-    "files": [
-        "src",
-        ".editorconfig",
-        ".eslintignore",
-        ".eslintrc.json",
-        ".gitignore",
-        ".prettierignore",
-        ".prettierrc",
-        "LICENSE",
-        "package.json",
-        "tsconfig.json"
-    ],
     "scripts": {
-        "clean": "shx rm -rf dist .parcel-cache",
-        "build": "yarn clean && parcel build src/index.html",
+        "clean": "shx mkdir -p {dist,.parcel-cache} && shx rm -rf dist .parcel-cache",
         "start": "yarn clean && parcel src/index.html",
-        "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
-        "lint": "eslint . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
-        "lint:fix": "eslint --fix . && yarn fmt",
-        "nuke": "shx rm -rf node_modules yarn.lock"
+        "build": "yarn clean && parcel build src/index.html",
+        "prebuild": "pnpm run clean"
     },
     "dependencies": {
         "@solana/wallet-adapter-base": "^0.9.9",
         "@solana/wallet-adapter-glow": "^0.1.5",
         "@solana/wallet-adapter-phantom": "^0.9.7",
-        "@solana/wallet-standard": "^0.1.0",
-        "@solana/wallet-standard-react": "^0.1.0",
-        "@solana/wallet-standard-solana-wallet-adapter": "^0.1.0",
+        "@solana/wallet-standard": "workspace:^",
+        "@solana/wallet-standard-react": "workspace:^",
+        "@solana/wallet-standard-solana-wallet-adapter": "workspace:^",
         "@solana/web3.js": "^1.44.3",
         "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "react-dom": "^18.0.0",
+        "web-vitals": "^2.1.4"
     },
     "devDependencies": {
-        "@types/eslint": "^8.2.2",
-        "@types/eslint-plugin-prettier": "^3.1.0",
-        "@types/node": "^18.0.0",
-        "@types/prettier": "^2.4.3",
         "@types/react": "^18.0.0",
-        "@types/react-dom": "^18.0.0",
-        "@typescript-eslint/eslint-plugin": "^5.14.0",
-        "@typescript-eslint/parser": "^5.14.0",
-        "eslint": "^8.11.0",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-plugin-prettier": "^4.0.0",
-        "eslint-plugin-react": "^7.29.3",
-        "eslint-plugin-react-hooks": "^4.3.0",
+        "@types/react-dom": "^18.00",
         "parcel": "^2.3.2",
-        "prettier": "^2.5.1",
         "process": "^0.11.10",
         "shx": "^0.3.4",
-        "tslib": "^2.3.1",
-        "typescript": "^4.5.4"
+        "typescript": "^4.7.4"
     }
 }

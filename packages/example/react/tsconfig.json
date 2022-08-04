@@ -1,16 +1,18 @@
 {
-    "include": ["src", "types"],
-    "exclude": ["node_modules"],
+    "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "noEmit": true,
-        "target": "esnext",
-        "module": "esnext",
-        "moduleResolution": "node",
-        "jsx": "react",
-        "strict": true,
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "typeRoots": ["node_modules/@types"]
-    }
+        "jsx": "react"
+    },
+    "references": [
+        {
+            "path": "../../core/standard"
+        },
+        {
+            "path": "../../core/react"
+        },
+        {
+            "path": "../../solana/wallet-adapter"
+        }
+    ]
 }

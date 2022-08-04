@@ -7,12 +7,11 @@
     "license": "Apache-2.0",
     "type": "module",
     "sideEffects": false,
-    "main": "lib/cjs/index.js",
-    "module": "lib/esm/index.mjs",
-    "types": "lib/types/index.d.ts",
+    "main": "./lib/cjs/src/index.js",
+    "module": "./lib/esm/src/index.js",
     "exports": {
-        "import": "./lib/esm/index.mjs",
-        "require": "./lib/cjs/index.js"
+        "import": "./lib/esm/src/index.js",
+        "require": "./lib/cjs/src/index.js"
     },
     "files": [
         "lib",
@@ -23,11 +22,12 @@
         "access": "public"
     },
     "scripts": {
-        "clean": "shx rm -rf lib/*",
-        "build": "yarn clean && tsc -p tsconfig.json && tsc-esm -p tsconfig.json && tsc -p tsconfig.cjs.json",
-        "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > lib/esm/package.json"
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx mkdir -p lib/{cjs,esm} && echo '{\"type\":\"commonjs\"}' | npx json > ./lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > ./lib/esm/package.json",
+        "prebuild": "pnpm run clean && pnpm run package"
     },
     "devDependencies": {
-        "typescript": "^4.6.2"
+        "shx": "^0.3.4",
+        "typescript": "^4.7.4"
     }
 }
