@@ -23,7 +23,7 @@
     },
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
-        "package": "shx mkdir -p lib/cjs && shx mkdir -p lib/esm && echo '{\"type\":\"commonjs\"}' | npx json > ./lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > ./lib/esm/package.json",
+        "package": "shx mkdir -p lib/cjs lib/esm && echo '{\"type\":\"commonjs\"}' | npx json > ./lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > ./lib/esm/package.json",
         "prebuild": "pnpm run clean && pnpm run package"
     },
     "devDependencies": {
