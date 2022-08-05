@@ -1,0 +1,8 @@
+.github
+.parcel-cache
+
+docs
+lib
+build
+dist
+out

@@ -12,13 +12,16 @@
         "build": "pnpm --recursive run prebuild && tsc --build && pnpm --recursive run build",
         "watch": "pnpm --recursive run prebuild && tsc --build --watch",
         "fmt": "prettier --write '{*,**/*}.{ts,tsx,js,jsx,json}'",
-        "lint": "prettier --check '{*,**/*}.{ts,tsx,js,jsx,json}' && eslint",
-        "lint:fix": "yarn fmt && eslint --fix",
+        "lint": "prettier --check '{*,**/*}.{ts,tsx,js,jsx,json}' && eslint .",
+        "lint:fix": "yarn fmt && eslint --fix .",
         "nuke": "shx rm -rf {.,packages/*/*}/{node_modules,yarn.lock}",
         "reinstall": "pnpm nuke && pnpm install"
     },
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.32.0",
+        "@typescript-eslint/parser": "^5.32.0",
         "eslint": "^8.20.0",
+        "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.2.1",
         "pnpm": "^7.8.0",
         "prettier": "^2.7.1",
