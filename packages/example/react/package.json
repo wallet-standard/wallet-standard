@@ -12,9 +12,9 @@
         "prebuild": "pnpm run clean"
     },
     "dependencies": {
-        "@solana/wallet-adapter-base": "^0.9.9",
-        "@solana/wallet-adapter-glow": "^0.1.5",
-        "@solana/wallet-adapter-phantom": "^0.9.7",
+        "@solana/wallet-adapter-base": "^0.9.10",
+        "@solana/wallet-adapter-glow": "^0.1.6",
+        "@solana/wallet-adapter-phantom": "^0.9.9",
         "@solana/wallet-standard": "workspace:^",
         "@solana/wallet-standard-react": "workspace:^",
         "@solana/wallet-standard-solana-wallet-adapter": "workspace:^",
@@ -25,7 +25,7 @@
     },
     "devDependencies": {
         "@types/react": "^18.0.0",
-        "@types/react-dom": "^18.00",
+        "@types/react-dom": "^18.0.0",
         "parcel": "^2.3.2",
         "process": "^0.11.10",
         "shx": "^0.3.4",
