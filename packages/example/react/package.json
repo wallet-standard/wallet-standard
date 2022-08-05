@@ -6,7 +6,7 @@
     "repository": "https://github.com/solana-labs/wallet-standard",
     "license": "Apache-2.0",
     "scripts": {
-        "clean": "shx mkdir -p {dist,.parcel-cache} && shx rm -rf dist .parcel-cache",
+        "clean": "shx mkdir -p dist .parcel-cache && shx rm -rf dist .parcel-cache",
         "start": "yarn clean && parcel src/index.html",
         "build": "yarn clean && parcel build src/index.html",
         "prebuild": "pnpm run clean"
