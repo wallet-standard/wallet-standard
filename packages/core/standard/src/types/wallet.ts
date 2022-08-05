@@ -24,7 +24,7 @@ export interface WalletAccount {
     // eslint-disable-next-line @typescript-eslint/ban-types
     methods: {};
 
-    // TODO: think about custom methods
+    // TODO: think about custom methods / namespacing
 
     /** Optional user-friendly descriptive label or name of the account. */
     label?: string;
