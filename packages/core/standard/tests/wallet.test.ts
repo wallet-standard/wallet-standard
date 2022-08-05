@@ -56,7 +56,7 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     const account = wallet.accounts[0];
 
     // Good -- this fails because while `signTransaction` is a method of the accounts, we don't know if we have access to it
-    // @ts-expect-error
+    // @ts-expect-error expected
     account.methods.signTransaction({ transactions: [] });
 
     if ('signTransaction' in account.methods) {
@@ -66,7 +66,7 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     await wallet.connect({
         // Good -- this fails because it isn't a known chain for any of the accounts
-        // @ts-expect-error
+        // @ts-expect-error expected
         chains: ['unknownChain', CHAIN_SOLANA_MAINNET],
         methods: ['signTransaction'],
     });
@@ -74,7 +74,7 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     await wallet.connect({
         chains: [CHAIN_SOLANA_MAINNET],
         // Good -- this fails because it isn't a known method for any of the accounts
-        // @ts-expect-error
+        // @ts-expect-error expected
         methods: ['unknownMethod', 'signTransaction'],
     });
 
@@ -86,7 +86,7 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     ).accounts[0];
 
     // Good -- this fails because we can't know that each account will actually have every method just because we asked for it
-    // @ts-expect-error
+    // @ts-expect-error expected
     accountWithAnyMethods.methods.signTransaction({ transactions: [] });
 
     if ('signTransaction' in accountWithAnyMethods.methods) {
@@ -103,12 +103,12 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     ).accounts[0];
 
     // Good -- this fails because the account has no methods
-    // @ts-expect-error
+    // @ts-expect-error expected
     accountWithNoMethods.methods.signTransaction({ transactions: [] });
 
     if ('signTransaction' in accountWithNoMethods.methods) {
         // Good -- this fails because the account has no methods, even though we know what its signature would be
-        // @ts-expect-error
+        // @ts-expect-error expected
         accountWithNoMethods.methods.signTransaction({ transactions: [] });
     }
 
@@ -123,12 +123,12 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     // Good -- this succeeds because the account includes the method
     accountWithOneMethod.methods.signTransaction({ transactions: [] });
     // Good -- this fails because the account excludes the method, even though the account type includes it
-    // @ts-expect-error
+    // @ts-expect-error expected
     accountWithOneMethod.methods.signMessage({ messages: [] });
 
     if ('signMessage' in accountWithOneMethod.methods) {
         // Good -- this fails because the account has no signature for `signMessage`
-        // @ts-expect-error
+        // @ts-expect-error expected
         accountWithOneMethod.methods.signMessage({ messages: [] });
     }
 
@@ -145,7 +145,7 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     accountWithMultipleMethods.methods.signMessage({ messages: [] });
 
     // Good -- this fails because the account doesn't include the method
-    // @ts-expect-error
+    // @ts-expect-error expected
     accountWithMultipleMethods.methods.signAndSendTransaction({ transactions: [] });
 
     // Good -- this succeeds because the chain and methods are known

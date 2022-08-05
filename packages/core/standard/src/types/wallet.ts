@@ -21,6 +21,7 @@ export interface WalletAccount {
     ciphers: string[];
 
     /** Methods supported by the account that are authorized to be called. */
+    // eslint-disable-next-line @typescript-eslint/ban-types
     methods: {};
 
     // TODO: think about custom methods
