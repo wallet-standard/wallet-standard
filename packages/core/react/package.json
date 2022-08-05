@@ -7,11 +7,13 @@
     "license": "Apache-2.0",
     "type": "module",
     "sideEffects": false,
-    "main": "./lib/cjs/src/index.js",
-    "module": "./lib/esm/src/index.js",
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
     "exports": {
-        "import": "./lib/esm/src/index.js",
-        "require": "./lib/cjs/src/index.js"
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
     },
     "files": [
         "lib",
@@ -23,8 +25,7 @@
     },
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
-        "package": "shx mkdir -p lib/cjs lib/esm && echo '{\"type\":\"commonjs\"}' | npx json > ./lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > ./lib/esm/package.json",
-        "prebuild": "pnpm run clean && pnpm run package"
+        "prebuild": "pnpm run clean"
     },
     "dependencies": {
         "@solana/wallet-standard": "workspace:^",
