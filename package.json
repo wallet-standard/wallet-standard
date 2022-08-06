@@ -14,10 +14,11 @@
         "fmt": "prettier --write '{*,**/*}.{ts,tsx,js,jsx,json}'",
         "lint": "prettier --check '{*,**/*}.{ts,tsx,js,jsx,json}' && eslint .",
         "lint:fix": "pnpm fmt && eslint --fix .",
-        "nuke": "shx rm -rf {.,packages/*/*}/{node_modules,pnpm-lock.yaml}",
+        "nuke": "shx rm -rf node_modules pnpm-lock.yaml packages/*/*/node_modules packages/*/*/pnpm-lock.yaml || true",
         "reinstall": "pnpm nuke && pnpm install"
     },
     "devDependencies": {
+        "@types/node": "^18.6.4",
         "@typescript-eslint/eslint-plugin": "^5.32.0",
         "@typescript-eslint/parser": "^5.32.0",
         "eslint": "^8.20.0",

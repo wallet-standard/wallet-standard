@@ -11,7 +11,7 @@
             "path": "../../solana/wallet-adapter"
         },
         {
-            "path": "./tsconfig.esm.json"
+            "path": "./tsconfig.base.json"
         }
     ]
 }

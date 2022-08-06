@@ -4,6 +4,7 @@ importers:
 
   .:
     specifiers:
+      '@types/node': ^18.6.4
       '@typescript-eslint/eslint-plugin': ^5.32.0
       '@typescript-eslint/parser': ^5.32.0
       eslint: ^8.20.0
@@ -14,6 +15,7 @@ importers:
       shx: ^0.3.4
       typescript: ^4.7.4
     devDependencies:
+      '@types/node': 18.6.4
       '@typescript-eslint/eslint-plugin': 5.32.0_iosr3hrei2tubxveewluhu5lhy
       '@typescript-eslint/parser': 5.32.0_qugx7qdu5zevzvxaiqyxfiwquq
       eslint: 8.21.0
@@ -68,7 +70,6 @@ importers:
       react-dom: ^18.0.0
       shx: ^0.3.4
       typescript: ^4.7.4
-      web-vitals: ^2.1.4
     dependencies:
       '@solana/wallet-adapter-base': 0.9.10_@solana+web3.js@1.50.1
       '@solana/wallet-adapter-glow': 0.1.6_@solana+web3.js@1.50.1
@@ -79,7 +80,6 @@ importers:
       '@solana/web3.js': 1.50.1_react-native@0.69.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      web-vitals: 2.1.4
     devDependencies:
       '@types/react': 18.0.15
       '@types/react-dom': 18.0.6
@@ -7612,10 +7612,6 @@ packages:
   /weak-lru-cache/1.2.2:
     resolution: {integrity: sha512-DEAoo25RfSYMuTGc9vPJzZcZullwIqRDSI9LOy+fkCJPi6hykCnfKaXTuPBDuXAUcqHXyOgFtHNp/kB2FjYHbw==}
     dev: true
-
-  /web-vitals/2.1.4:
-    resolution: {integrity: sha512-sVWcwhU5mX6crfI5Vd2dC4qchyTqxV8URinzt25XqVh+bHEPGH4C3NPrNionCP7Obx59wrYEbNlw4Z8sjALzZg==}
-    dev: false
 
   /webidl-conversions/3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
