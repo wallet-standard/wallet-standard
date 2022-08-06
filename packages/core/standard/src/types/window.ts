@@ -1,14 +1,21 @@
 import { Wallet, WalletAccount } from './wallet';
 
 declare const window: WalletsWindow<WalletAccount>;
+declare const navigator: WalletsNavigator<WalletAccount>;
 
 /** Browser window containing a global `navigator.wallets` object. */
 export interface WalletsWindow<Account extends WalletAccount> extends Window {
     /** Global `navigator.wallets` object. */
-    navigator: Navigator & {
-        wallets?: Wallets<Account> | WalletsCommand<Account>[];
-    };
+    navigator: WalletsNavigator<Account>;
 }
+
+/** TODO: docs */
+export interface WalletsNavigator<Account extends WalletAccount> extends Navigator {
+    wallets?: NavigatorWallets<Account>;
+}
+
+/** TODO: docs */
+export type NavigatorWallets<Account extends WalletAccount> = Wallets<Account> | WalletsCommand<Account>[];
 
 /** Global `navigator.wallets` object API. */
 export interface Wallets<Account extends WalletAccount> {
