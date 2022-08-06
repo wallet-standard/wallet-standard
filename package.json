@@ -13,8 +13,8 @@
         "watch": "pnpm --recursive run prebuild && tsc --build --watch",
         "fmt": "prettier --write '{*,**/*}.{ts,tsx,js,jsx,json}'",
         "lint": "prettier --check '{*,**/*}.{ts,tsx,js,jsx,json}' && eslint .",
-        "lint:fix": "yarn fmt && eslint --fix .",
-        "nuke": "shx rm -rf {.,packages/*/*}/{node_modules,yarn.lock}",
+        "lint:fix": "pnpm fmt && eslint --fix .",
+        "nuke": "shx rm -rf {.,packages/*/*}/{node_modules,pnpm-lock.yaml}",
         "reinstall": "pnpm nuke && pnpm install"
     },
     "devDependencies": {
