@@ -234,7 +234,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     }
 
     private _off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
-        this._listeners[event] = this._listeners[event]?.filter((l) => listener !== l);
+        this._listeners[event] = this._listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
     private _disconnect(): void {

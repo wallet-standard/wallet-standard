@@ -93,6 +93,6 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
     }
 
     protected _off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
-        this._listeners[event] = this._listeners[event]?.filter((l) => listener !== l);
+        this._listeners[event] = this._listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }
