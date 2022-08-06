@@ -13,6 +13,9 @@ export const CHAIN_SOLANA_DEVNET = 'solana:devnet';
 /** Solana Testnet, e.g. https://api.testnet.solana.com */
 export const CHAIN_SOLANA_TESTNET = 'solana:testnet';
 
+/** Solana Localnet, e.g. http://localhost:8899 */
+export const CHAIN_SOLANA_LOCALNET = 'solana:localnet';
+
 /** Ethereum (mainnet) */
 export const CHAIN_ETHEREUM = 'ethereum:1';
 
