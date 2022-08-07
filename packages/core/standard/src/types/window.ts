@@ -18,23 +18,23 @@ export interface WalletsNavigator<Account extends WalletAccount> extends Navigat
 export type NavigatorWallets<Account extends WalletAccount> = Wallets<Account> | WalletsCommand<Account>[];
 
 /** Global `navigator.wallets` object API. */
-export interface Wallets<Account extends WalletAccount> {
+export type Wallets<Account extends WalletAccount> = Readonly<{
     /**
      * TODO: docs
      *
      * @param commands TODO: docs
      */
-    push(...commands: WalletsCommand<Account>[]): void;
+    push(...commands: ReadonlyArray<WalletsCommand<Account>>): void;
 
     /**
      * TODO: docs
      */
-    register(wallets: Wallet<Account>[]): () => void;
+    register(wallets: ReadonlyArray<Wallet<Account>>): () => void;
 
     /**
      * TODO: docs
      */
-    get(): Wallet<Account>[];
+    get(): ReadonlyArray<Wallet<Account>>;
 
     /**
      * TODO: docs
@@ -43,7 +43,7 @@ export interface Wallets<Account extends WalletAccount> {
         event: E,
         listener: WalletsEvents<Account>[E]
     ): () => void;
-}
+}>;
 
 /** TODO: docs */
 export type WalletsCommand<Account extends WalletAccount> =
@@ -52,31 +52,31 @@ export type WalletsCommand<Account extends WalletAccount> =
     | WalletsCommandOn<Account>;
 
 /** Register wallets. This emits a `register` event. */
-export interface WalletsCommandRegister<Account extends WalletAccount> {
+export type WalletsCommandRegister<Account extends WalletAccount> = Readonly<{
     /** TODO: docs */
     method: 'register';
 
     /** Wallets to register. */
-    wallets: Wallet<Account>[];
+    wallets: ReadonlyArray<Wallet<Account>>;
 
     /** Function that will be called with a function to unregister the wallets. */
     callback: (unregister: () => void) => void;
-}
+}>;
 
 /** Get the wallets that have been registered. */
-export interface WalletsCommandGet<Account extends WalletAccount> {
+export type WalletsCommandGet<Account extends WalletAccount> = Readonly<{
     /** TODO: docs */
     method: 'get';
 
     /** Function that will be called with all wallets that have been registered. */
-    callback: (wallets: Wallet<Account>[]) => void;
-}
+    callback: (wallets: ReadonlyArray<Wallet<Account>>) => void;
+}>;
 
 /** Add an event listener to subscribe to events. */
-export interface WalletsCommandOn<
+export type WalletsCommandOn<
     Account extends WalletAccount,
     E extends WalletsEventNames<Account> = WalletsEventNames<Account>
-> {
+> = Readonly<{
     /** TODO: docs */
     method: 'on';
 
@@ -88,7 +88,7 @@ export interface WalletsCommandOn<
 
     /** Function that will be called with a function to remove the event listener and unsubscribe. */
     callback: (off: () => void) => void;
-}
+}>;
 
 /** Events emitted by the global `wallets` object. */
 export interface WalletsEvents<Account extends WalletAccount> {
@@ -97,14 +97,14 @@ export interface WalletsEvents<Account extends WalletAccount> {
      *
      * @param wallets Wallets that were registered.
      */
-    register(wallets: Wallet<Account>[]): void;
+    register(wallets: ReadonlyArray<Wallet<Account>>): void;
 
     /**
      * Emitted when wallets are unregistered.
      *
      * @param wallets Wallets that were unregistered.
      */
-    unregister(wallets: Wallet<Account>[]): void;
+    unregister(wallets: ReadonlyArray<Wallet<Account>>): void;
 }
 
 /** TODO: docs */

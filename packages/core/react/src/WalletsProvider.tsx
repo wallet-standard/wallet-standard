@@ -1,6 +1,6 @@
 import { initialize, Wallet, WalletAccount } from '@solana/wallet-standard';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
-import { WalletContext } from './useWallets';
+import { WalletsContext } from './useWallets';
 
 export interface WalletsProviderProps {
     children: NonNullable<ReactNode>;
@@ -10,7 +10,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = <Account extends Wallet
     children,
 }: WalletsProviderProps) => {
     // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
-    const [wallets, setWallets] = useState<Wallet<Account>[]>(() => initialize<Account>().get());
+    const [wallets, setWallets] = useState(() => initialize<Account>().get());
 
     useEffect(() => {
         const destructors: (() => void)[] = [];
@@ -32,5 +32,5 @@ export const WalletsProvider: FC<WalletsProviderProps> = <Account extends Wallet
         return () => destructors.forEach((destroy) => destroy());
     }, []);
 
-    return <WalletContext.Provider value={{ wallets }}>{children}</WalletContext.Provider>;
+    return <WalletsContext.Provider value={{ wallets }}>{children}</WalletsContext.Provider>;
 };

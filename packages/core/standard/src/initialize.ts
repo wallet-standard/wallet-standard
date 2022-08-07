@@ -27,7 +27,7 @@ function create<Account extends WalletAccount>(): Wallets<Account> {
     const registered: Wallet<Account>[] = [];
     const listeners: { [E in WalletsEventNames<Account>]?: WalletsEvents<Account>[E][] } = {};
 
-    function register(wallets: Wallet<Account>[]): () => void {
+    function register(wallets: ReadonlyArray<Wallet<Account>>): () => void {
         registered.push(...wallets);
         listeners['register']?.forEach((listener) => listener(wallets));
         // Return a function that unregisters the registered wallets.
@@ -42,7 +42,7 @@ function create<Account extends WalletAccount>(): Wallets<Account> {
         };
     }
 
-    function get(): Wallet<Account>[] {
+    function get(): ReadonlyArray<Wallet<Account>> {
         // Return a copy so the registered wallets can't be referenced or mutated.
         return registered.slice();
     }

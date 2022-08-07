@@ -11,7 +11,7 @@ export function bytesEqual(a: Bytes, b: Bytes): boolean {
 }
 
 /** TODO: docs */
-export function concatBytes(first: Bytes, ...others: Bytes[]): Bytes {
+export function concatBytes(first: Bytes, ...others: ReadonlyArray<Bytes>): Bytes {
     const length = others.reduce((length, bytes) => length + bytes.length, first.length);
     const bytes = new Uint8Array(length);
 

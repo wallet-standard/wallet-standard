@@ -36,23 +36,23 @@ export interface SignTransactionMethod<Account extends WalletAccount> {
 }
 
 /** Input for signing transactions. */
-export interface SignTransactionInput<Account extends WalletAccount> {
+export type SignTransactionInput<Account extends WalletAccount> = Readonly<{
     /** Serialized transactions, as raw bytes. */
-    transactions: Bytes[];
+    transactions: ReadonlyArray<Bytes>;
 
     /** Optional accounts that must also sign the transactions. They must have the `signTransaction` method. */
-    extraSigners?: Array<Account & { methods: SignTransactionMethod<Account> }>;
-}
+    extraSigners?: ReadonlyArray<Account & { methods: SignTransactionMethod<Account> }>;
+}>;
 
 /** Result of signing transactions. */
-export interface SignTransactionOutput<Account extends WalletAccount> {
+export type SignTransactionOutput<Account extends WalletAccount> = Readonly<{
     /**
      * Signed, serialized transactions, as raw bytes.
      * Returning transactions rather than signatures allows multisig wallets, program wallets, and other wallets that
      * use meta-transactions to return a modified, signed transaction.
      */
-    signedTransactions: Bytes[];
-}
+    signedTransactions: ReadonlyArray<Bytes>;
+}>;
 
 /** TODO: docs */
 export interface SignAndSendTransactionMethod<Account extends WalletAccount> {
@@ -70,20 +70,20 @@ export interface SignAndSendTransactionMethod<Account extends WalletAccount> {
 }
 
 /** Input for signing and sending transactions. */
-export interface SignAndSendTransactionInput<Account extends WalletAccount> {
+export type SignAndSendTransactionInput<Account extends WalletAccount> = Readonly<{
     /** Serialized transactions, as raw bytes. */
-    transactions: Bytes[];
+    transactions: ReadonlyArray<Bytes>;
     // TODO: figure out if options for sending need to be supported
 
     /** Optional accounts that must also sign the transactions. They must have the `signTransaction` method. */
-    extraSigners?: Array<Account & { methods: SignTransactionMethod<Account> }>;
-}
+    extraSigners?: ReadonlyArray<Account & { methods: SignTransactionMethod<Account> }>;
+}>;
 
 /** Output of signing and sending transactions. */
-export interface SignAndSendTransactionOutput<Account extends WalletAccount> {
+export type SignAndSendTransactionOutput<Account extends WalletAccount> = Readonly<{
     /** "Primary" transaction signatures, as raw bytes. */
-    signatures: Bytes[];
-}
+    signatures: ReadonlyArray<Bytes>;
+}>;
 
 /** TODO: docs */
 export interface SignMessageMethod<Account extends WalletAccount> {
@@ -98,23 +98,23 @@ export interface SignMessageMethod<Account extends WalletAccount> {
 }
 
 /** Input for signing messages. */
-export interface SignMessageInput<Account extends WalletAccount> {
+export type SignMessageInput<Account extends WalletAccount> = Readonly<{
     /** Messages to sign, as raw bytes. */
-    messages: Bytes[];
+    messages: ReadonlyArray<Bytes>;
 
     /** Optional accounts that must also sign the messages. They must have the `signMessage` method. */
-    extraSigners?: Array<Account & { methods: SignMessageMethod<Account> }>;
-}
+    extraSigners?: ReadonlyArray<Account & { methods: SignMessageMethod<Account> }>;
+}>;
 
 /** Output of signing messages. */
-export interface SignMessageOutput<Account extends WalletAccount> {
+export type SignMessageOutput<Account extends WalletAccount> = Readonly<{
     /**
      * Messages with concatenated signatures, as raw bytes.
      * Returning signed messages rather than signatures allows wallets to prefix messages before signing and return the
      * modified, prefixed messages along with their signatures.
      */
-    signedMessages: Bytes[];
-}
+    signedMessages: ReadonlyArray<Bytes>;
+}>;
 
 /** TODO: docs */
 export interface EncryptMethod<Account extends WalletAccount> {
@@ -125,32 +125,32 @@ export interface EncryptMethod<Account extends WalletAccount> {
      *
      * @return Result of encryption.
      */
-    encrypt(inputs: EncryptInput<Account>[]): Promise<EncryptOutput<Account>[]>;
+    encrypt(inputs: ReadonlyArray<EncryptInput<Account>>): Promise<ReadonlyArray<EncryptOutput<Account>>>;
 }
 
 /** Input for encryption. */
-export interface EncryptInput<Account extends WalletAccount> {
+export type EncryptInput<Account extends WalletAccount> = Readonly<{
     /** Public key to derive a shared key to encrypt the data using. */
     publicKey: Bytes;
 
     /** Cleartexts to decrypt. */
-    cleartexts: Bytes[];
+    cleartexts: ReadonlyArray<Bytes>;
 
     /** Optional cipher to use for encryption. Default to whatever the wallet wants. */
     cipher?: Account['ciphers'][number];
-}
+}>;
 
 /** Output of encryption. */
-export interface EncryptOutput<Account extends WalletAccount> {
+export type EncryptOutput<Account extends WalletAccount> = Readonly<{
     /** Ciphertexts that were encrypted, corresponding with the cleartexts provided. */
-    ciphertexts: Bytes[];
+    ciphertexts: ReadonlyArray<Bytes>;
 
     /** Nonces that were used for encryption, corresponding with each ciphertext. */
-    nonces: Bytes[];
+    nonces: ReadonlyArray<Bytes>;
 
     /** Cipher that was used for encryption. */
     cipher: Account['ciphers'][number];
-}
+}>;
 
 /** TODO: docs */
 export interface DecryptMethod<Account extends WalletAccount> {
@@ -161,26 +161,26 @@ export interface DecryptMethod<Account extends WalletAccount> {
      *
      * @return Result of decryption.
      */
-    decrypt(inputs: DecryptInput<Account>[]): Promise<DecryptOutput<Account>[]>;
+    decrypt(inputs: ReadonlyArray<DecryptInput<Account>>): Promise<ReadonlyArray<DecryptOutput<Account>>>;
 }
 
 /** Input for decryption. */
-export interface DecryptInput<Account extends WalletAccount> {
+export type DecryptInput<Account extends WalletAccount> = Readonly<{
     /** Public key to derive a shared key to decrypt the data using. */
     publicKey: Bytes;
 
     /** Ciphertexts to decrypt. */
-    ciphertexts: Bytes[];
+    ciphertexts: ReadonlyArray<Bytes>;
 
     /** Nonces to use for decryption, corresponding with each ciphertext. */
-    nonces: Bytes[];
+    nonces: ReadonlyArray<Bytes>;
 
     /** Cipher to use for decryption. */
     cipher: Account['ciphers'][number];
-}
+}>;
 
 /** Output of decryption. */
-export interface DecryptOutput<Account extends WalletAccount> {
+export type DecryptOutput<Account extends WalletAccount> = Readonly<{
     /** Cleartexts that were decrypted, corresponding with the ciphertexts provided. */
-    cleartexts: Bytes[];
-}
+    cleartexts: ReadonlyArray<Bytes>;
+}>;
