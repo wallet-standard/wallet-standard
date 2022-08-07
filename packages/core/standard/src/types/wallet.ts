@@ -117,8 +117,8 @@ export interface ConnectInput<
     Chain extends Account['chain'],
     MethodNames extends WalletAccountMethodNames<Account>
 > {
-    /** Chains to discover accounts using. */
-    chains: Chain[];
+    /** Optional chains to discover accounts using. */
+    chains?: Chain[];
 
     /** TODO: docs */
     methods?: MethodNames[];
@@ -170,7 +170,7 @@ export type ConnectedAccount<
     MethodNames extends WalletAccountMethodNames<Account>,
     Input extends ConnectInput<Account, Chain, MethodNames>
 > = Omit<Account, 'chain' | 'methods'> & {
-    chain: Chain;
+    chain: Input extends { chains: Chain[] } ? Chain : Account['chain'];
     methods: Input extends { methods: MethodNames[] }
         ? Pick<WalletAccountMethods<Account>, Input['methods'][number]>
         : Account['methods'];

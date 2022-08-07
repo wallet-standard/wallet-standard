@@ -55,8 +55,12 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         MethodNames extends WalletAccountMethodNames<Account>,
         Input extends ConnectInput<Account, Chain, MethodNames>
     >({ chains, addresses, methods, silent }: Input): Promise<ConnectOutput<Account, Chain, MethodNames, Input>> {
-        // Filter out accounts that don't have any of the chains requested
-        let accounts = this._accounts.filter((account) => chains.includes(account.chain as Chain));
+        let accounts = this.accounts;
+
+        if (chains) {
+            // Filter out accounts that don't have any of the chains requested
+            accounts = accounts.filter((account) => chains.includes(account.chain as Chain));
+        }
 
         if (addresses) {
             // Filter out accounts that don't have the addresses requested
