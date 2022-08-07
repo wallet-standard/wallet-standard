@@ -1,7 +1,9 @@
 import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
 import {
     Bytes,
+    bytesEqual,
     CHAIN_SOLANA_DEVNET,
+    CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
     concatBytes,
@@ -23,13 +25,14 @@ import {
     WalletEventNames,
     WalletEvents,
 } from '@solana/wallet-standard';
-import { Cluster, clusterApiUrl, Connection, Transaction, TransactionSignature } from '@solana/web3.js';
+import { clusterApiUrl, Connection, Transaction, TransactionSignature } from '@solana/web3.js';
 import { decode } from 'bs58';
 
 export type SolanaWalletAdapterChain =
     | typeof CHAIN_SOLANA_MAINNET
     | typeof CHAIN_SOLANA_DEVNET
-    | typeof CHAIN_SOLANA_TESTNET;
+    | typeof CHAIN_SOLANA_TESTNET
+    | typeof CHAIN_SOLANA_LOCALNET;
 
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     private _adapter: Adapter;
@@ -37,7 +40,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     private _chain: SolanaWalletAdapterChain;
 
     get address() {
-        return new Uint8Array(this._publicKey);
+        return this.publicKey;
     }
 
     get publicKey() {
@@ -78,28 +81,28 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     private async _signAndSendTransaction(
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
+        if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
-        if (input.extraSigners?.length) throw new Error('unsupported');
 
         let signatures: TransactionSignature[];
         if (transactions.length === 1) {
-            let cluster: Cluster;
+            let endpoint: string;
             if (this._chain === CHAIN_SOLANA_MAINNET) {
-                cluster = 'mainnet-beta';
+                endpoint = clusterApiUrl('mainnet-beta');
             } else if (this._chain === CHAIN_SOLANA_DEVNET) {
-                cluster = 'devnet';
+                endpoint = clusterApiUrl('devnet');
             } else if (this._chain === CHAIN_SOLANA_TESTNET) {
-                cluster = 'testnet';
+                endpoint = clusterApiUrl('testnet');
             } else {
-                throw new Error(); // FIXME
+                endpoint = 'http://localhost:8899';
             }
 
-            const connection = new Connection(clusterApiUrl(cluster));
+            const connection = new Connection(endpoint, 'confirmed');
             const signature = await this._adapter.sendTransaction(transactions[0], connection);
 
             signatures = [signature];
         } else if (transactions.length > 1) {
-            throw new Error(); // FIXME
+            throw new Error('signAndSendTransaction for multiple transactions not implemented');
         } else {
             signatures = [];
         }
@@ -108,8 +111,8 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     }
 
     private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
-        if (!('signTransaction' in this._adapter)) throw new Error(); // FIXME
-        if (input.extraSigners?.length) throw new Error('unsupported');
+        if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
+        if (!('signTransaction' in this._adapter)) throw new Error('signTransaction not implemented by adapter');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
@@ -130,15 +133,15 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     }
 
     private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
-        if (!('signMessage' in this._adapter)) throw new Error(); // FIXME
-        if (input.extraSigners?.length) throw new Error('unsupported');
+        if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
+        if (!('signMessage' in this._adapter)) throw new Error('signMessage not implemented by adapter');
 
         let signedMessages: Bytes[];
         if (input.messages.length === 1) {
             const signature = await this._adapter.signMessage(input.messages[0]);
             signedMessages = [concatBytes(input.messages[0], signature)];
         } else if (input.messages.length > 1) {
-            throw new Error(); // FIXME
+            throw new Error('signMessage for multiple messages not implemented');
         } else {
             signedMessages = [];
         }
@@ -149,8 +152,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
 export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
     private _listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
-    private _account: SolanaWalletAdapterWalletAccount | undefined;
     private _adapter: Adapter;
+    private _chain: SolanaWalletAdapterChain;
+    private _account: SolanaWalletAdapterWalletAccount | undefined;
 
     get version() {
         return '1.0.0';
@@ -168,8 +172,8 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return this._account ? [this._account] : [];
     }
 
-    get chains(): SolanaWalletAdapterChain[] {
-        return ['solana:mainnet', 'solana:devnet', 'solana:testnet'];
+    get chains() {
+        return [this._chain];
     }
 
     get methods() {
@@ -187,9 +191,19 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return [];
     }
 
-    constructor(adapter: Adapter) {
+    constructor(adapter: Adapter, chain: SolanaWalletAdapterChain) {
         this._adapter = adapter;
-        adapter.on('disconnect', this._disconnect);
+        this._chain = chain;
+
+        adapter.on('connect', this._connect, this);
+        adapter.on('disconnect', this._disconnect, this);
+
+        this._connect();
+    }
+
+    destroy(): void {
+        this._adapter.off('connect', this._connect, this);
+        this._adapter.off('disconnect', this._disconnect, this);
     }
 
     async connect<
@@ -202,24 +216,18 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         methods,
         silent,
     }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, MethodNames, Input>> {
-        if (chains.length !== 1) throw new Error(); // FIXME
-
-        const adapter = this._adapter;
-
-        if (this._account) {
-            this._account = undefined;
-            await adapter.disconnect();
+        if (!silent && !this._adapter.connected) {
+            await this._adapter.connect();
         }
 
-        await adapter.connect();
+        if (chains?.length) {
+            this._chain = chains[0];
+        }
 
-        const publicKey = adapter.publicKey;
-        if (!publicKey) throw new Error(); // FIXME
-
-        this._account = new SolanaWalletAdapterWalletAccount(adapter, publicKey.toBytes(), chains[0]); // FIXME
+        this._connect();
 
         return {
-            accounts: [this._account as any], // FIXME
+            accounts: this.accounts as any, // FIXME
             hasMoreAccounts: false,
         };
     }
@@ -237,10 +245,21 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         this._listeners[event] = this._listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
+    private _connect(): void {
+        const publicKey = this._adapter.publicKey?.toBytes();
+        if (publicKey) {
+            const account = this._account;
+            if (!account || account.chain !== this._chain || !bytesEqual(account.publicKey, publicKey)) {
+                this._account = new SolanaWalletAdapterWalletAccount(this._adapter, publicKey, this._chain);
+                this._emit('accountsChanged');
+            }
+        }
+    }
+
     private _disconnect(): void {
         if (this._account) {
             this._account = undefined;
-            this._emit('accountsChanged'); // FIXME
+            this._emit('accountsChanged');
         }
     }
 }
@@ -249,10 +268,12 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
  * TODO: docs
  *
  * @param adapter TODO: docs
+ * @param chain   TODO: docs
  * @param match   TODO: docs
  */
 export function registerWalletAdapter(
     adapter: Adapter,
+    chain: SolanaWalletAdapterChain,
     match: (wallet: Wallet<SolanaWalletAdapterWalletAccount>) => boolean = (wallet) => wallet.name === adapter.name
 ): () => void {
     const wallets = initialize<SolanaWalletAdapterWalletAccount>();
@@ -271,8 +292,10 @@ export function registerWalletAdapter(
         const ready =
             adapter.readyState === WalletReadyState.Installed || adapter.readyState === WalletReadyState.Loadable;
         if (ready) {
+            const wallet = new SolanaWalletAdapterWallet(adapter, chain);
+            destructors.push(() => wallet.destroy());
             // Register the adapter wrapped as a standard wallet, and receive a function to unregister the adapter.
-            destructors.push(wallets.register([new SolanaWalletAdapterWallet(adapter)]));
+            destructors.push(wallets.register([wallet]));
             // Whenever a standard wallet is registered ...
             destructors.push(
                 wallets.on('register', (wallets) => {
@@ -293,6 +316,7 @@ export function registerWalletAdapter(
                 adapter.off('readyStateChange', listener);
             }
         }
+
         adapter.on('readyStateChange', listener);
         destructors.push(() => adapter.off('readyStateChange', listener));
     }
