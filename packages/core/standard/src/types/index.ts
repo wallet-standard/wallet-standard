@@ -1,5 +1,5 @@
 export * from './errors';
-export * from './methods';
+export * from './features';
 export * from './util';
 export * from './wallet';
 export * from './window';

@@ -2,31 +2,33 @@ import { UnionToIntersection } from './util';
 import { Bytes, WalletAccount } from './wallet';
 
 /** TODO: docs */
-export type WalletAccountMethod<Account extends WalletAccount> =
-    | SignTransactionMethod<Account>
-    | SignAndSendTransactionMethod<Account>
-    | SignMessageMethod<Account>
-    | EncryptMethod<Account>
-    | DecryptMethod<Account>;
+export type WalletAccountFeature<Account extends WalletAccount> =
+    | SignTransactionFeature<Account>
+    | SignAndSendTransactionFeature<Account>
+    | SignMessageFeature<Account>
+    | EncryptFeature<Account>
+    | DecryptFeature<Account>;
 
 /** TODO: docs */
-export type WalletAccountMethods<Account extends WalletAccount> = UnionToIntersection<Account['methods']>;
+export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
 
 /** TODO: docs */
-export type WalletAccountMethodNames<Account extends WalletAccount> = keyof WalletAccountMethods<Account>;
+export type WalletAccountFeatureNames<Account extends WalletAccount> = keyof WalletAccountFeatures<Account>;
 
 /** TODO: docs */
-export type AllWalletAccountMethods<Account extends WalletAccount> = UnionToIntersection<WalletAccountMethod<Account>>;
+export type AllWalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<
+    WalletAccountFeature<Account>
+>;
 
 /** TODO: docs */
-export type AllWalletAccountMethodNames<Account extends WalletAccount> = keyof AllWalletAccountMethods<Account>;
+export type AllWalletAccountFeatureNames<Account extends WalletAccount> = keyof AllWalletAccountFeatures<Account>;
 
 /** TODO: docs */
-export interface SignTransactionMethod<Account extends WalletAccount> {
+export interface SignTransactionFeature<Account extends WalletAccount> {
     /**
      * Sign transactions using the account's secret key.
      * The transactions may already be partially signed, and may even have a "primary" signature.
-     * This method covers existing `signTransaction` and `signAllTransactions` functionality, matching the SMS Mobile Wallet Adapter SDK.
+     * This feature covers existing `signTransaction` and `signAllTransactions` functionality, matching the SMS Mobile Wallet Adapter SDK.
      *
      * @param input Input for signing transactions.
      *
@@ -40,8 +42,8 @@ export type SignTransactionInput<Account extends WalletAccount> = Readonly<{
     /** Serialized transactions, as raw bytes. */
     transactions: ReadonlyArray<Bytes>;
 
-    /** Optional accounts that must also sign the transactions. They must have the `signTransaction` method. */
-    extraSigners?: ReadonlyArray<Account & { methods: SignTransactionMethod<Account> }>;
+    /** Optional accounts that must also sign the transactions. They must have the `signTransaction` feature. */
+    extraSigners?: ReadonlyArray<Account & { features: SignTransactionFeature<Account> }>;
 }>;
 
 /** Result of signing transactions. */
@@ -55,11 +57,11 @@ export type SignTransactionOutput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** TODO: docs */
-export interface SignAndSendTransactionMethod<Account extends WalletAccount> {
+export interface SignAndSendTransactionFeature<Account extends WalletAccount> {
     /**
      * Sign transactions using the account's secret key and send them to the network.
      * The transactions may already be partially signed, and may even have a "primary" signature.
-     * This method covers existing `signAndSendTransaction` functionality, and also provides an `All` version of the
+     * This feature covers existing `signAndSendTransaction` functionality, and also provides an `All` version of the
      * same, matching the SMS Mobile Wallet Adapter SDK.
      *
      * @param input Input for signing and sending transactions.
@@ -75,8 +77,8 @@ export type SignAndSendTransactionInput<Account extends WalletAccount> = Readonl
     transactions: ReadonlyArray<Bytes>;
     // TODO: figure out if options for sending need to be supported
 
-    /** Optional accounts that must also sign the transactions. They must have the `signTransaction` method. */
-    extraSigners?: ReadonlyArray<Account & { methods: SignTransactionMethod<Account> }>;
+    /** Optional accounts that must also sign the transactions. They must have the `signTransaction` feature. */
+    extraSigners?: ReadonlyArray<Account & { features: SignTransactionFeature<Account> }>;
 }>;
 
 /** Output of signing and sending transactions. */
@@ -86,7 +88,7 @@ export type SignAndSendTransactionOutput<Account extends WalletAccount> = Readon
 }>;
 
 /** TODO: docs */
-export interface SignMessageMethod<Account extends WalletAccount> {
+export interface SignMessageFeature<Account extends WalletAccount> {
     /**
      * Sign messages (arbitrary bytes) using the account's secret key.
      *
@@ -102,8 +104,8 @@ export type SignMessageInput<Account extends WalletAccount> = Readonly<{
     /** Messages to sign, as raw bytes. */
     messages: ReadonlyArray<Bytes>;
 
-    /** Optional accounts that must also sign the messages. They must have the `signMessage` method. */
-    extraSigners?: ReadonlyArray<Account & { methods: SignMessageMethod<Account> }>;
+    /** Optional accounts that must also sign the messages. They must have the `signMessage` feature. */
+    extraSigners?: ReadonlyArray<Account & { features: SignMessageFeature<Account> }>;
 }>;
 
 /** Output of signing messages. */
@@ -117,7 +119,7 @@ export type SignMessageOutput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** TODO: docs */
-export interface EncryptMethod<Account extends WalletAccount> {
+export interface EncryptFeature<Account extends WalletAccount> {
     /**
      * Encrypt cleartexts using the account's secret key.
      *
@@ -153,7 +155,7 @@ export type EncryptOutput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** TODO: docs */
-export interface DecryptMethod<Account extends WalletAccount> {
+export interface DecryptFeature<Account extends WalletAccount> {
     /**
      * Decrypt ciphertexts using the account's secret key.
      *

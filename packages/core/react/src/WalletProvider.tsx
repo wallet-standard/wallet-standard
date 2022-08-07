@@ -2,7 +2,7 @@ import {
     initialize,
     Wallet,
     WalletAccount,
-    WalletAccountMethodNames,
+    WalletAccountFeatureNames,
     ConnectInput,
     ConnectOutput,
 } from '@solana/wallet-standard';

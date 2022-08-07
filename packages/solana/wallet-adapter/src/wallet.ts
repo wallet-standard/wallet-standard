@@ -11,17 +11,17 @@ import {
     ConnectOutput,
     initialize,
     SignAndSendTransactionInput,
-    SignAndSendTransactionMethod,
+    SignAndSendTransactionFeature,
     SignAndSendTransactionOutput,
     SignMessageInput,
-    SignMessageMethod,
+    SignMessageFeature,
     SignMessageOutput,
     SignTransactionInput,
-    SignTransactionMethod,
+    SignTransactionFeature,
     SignTransactionOutput,
     Wallet,
     WalletAccount,
-    WalletAccountMethodNames,
+    WalletAccountFeatureNames,
     WalletEventNames,
     WalletEvents,
 } from '@solana/wallet-standard';
@@ -55,21 +55,21 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return [];
     }
 
-    get methods(): SignTransactionMethod<this> | SignAndSendTransactionMethod<this> | SignMessageMethod<this> {
-        const methods: SignAndSendTransactionMethod<this> &
-            Partial<SignTransactionMethod<this> & SignMessageMethod<this>> = {
+    get features(): SignTransactionFeature<this> | SignAndSendTransactionFeature<this> | SignMessageFeature<this> {
+        const features: SignAndSendTransactionFeature<this> &
+            Partial<SignTransactionFeature<this> & SignMessageFeature<this>> = {
             signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
         };
 
         if ('signTransaction' in this._adapter) {
-            methods.signTransaction = (...args) => this._signTransaction(...args);
+            features.signTransaction = (...args) => this._signTransaction(...args);
         }
 
         if ('signMessage' in this._adapter) {
-            methods.signMessage = (...args) => this._signMessage(...args);
+            features.signMessage = (...args) => this._signMessage(...args);
         }
 
-        return methods;
+        return features;
     }
 
     constructor(adapter: Adapter, publicKey: Bytes, chain: SolanaWalletAdapterChain) {
@@ -176,15 +176,15 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return [this._chain];
     }
 
-    get methods() {
-        const methods: WalletAccountMethodNames<SolanaWalletAdapterWalletAccount>[] = ['signAndSendTransaction'];
+    get features() {
+        const features: WalletAccountFeatureNames<SolanaWalletAdapterWalletAccount>[] = ['signAndSendTransaction'];
         if ('signTransaction' in this._adapter) {
-            methods.push('signTransaction');
+            features.push('signTransaction');
         }
         if ('signMessage' in this._adapter) {
-            methods.push('signMessage');
+            features.push('signMessage');
         }
-        return methods;
+        return features;
     }
 
     get ciphers() {
@@ -208,14 +208,14 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 
     async connect<
         Chain extends SolanaWalletAdapterWalletAccount['chain'],
-        MethodNames extends WalletAccountMethodNames<SolanaWalletAdapterWalletAccount>,
-        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, MethodNames>
+        FeatureNames extends WalletAccountFeatureNames<SolanaWalletAdapterWalletAccount>,
+        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames>
     >({
         chains,
         addresses,
-        methods,
+        features,
         silent,
-    }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, MethodNames, Input>> {
+    }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames, Input>> {
         if (!silent && !this._adapter.connected) {
             await this._adapter.connect();
         }

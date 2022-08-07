@@ -1,6 +1,6 @@
 import {
-    AllWalletAccountMethodNames,
-    AllWalletAccountMethods,
+    AllWalletAccountFeatureNames,
+    AllWalletAccountFeatures,
     Bytes,
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_MAINNET,
@@ -13,17 +13,17 @@ import {
     EncryptOutput,
     pick,
     SignAndSendTransactionInput,
-    SignAndSendTransactionMethod,
+    SignAndSendTransactionFeature,
     SignAndSendTransactionOutput,
     SignMessageInput,
     SignMessageOutput,
     SignTransactionInput,
-    SignTransactionMethod,
+    SignTransactionFeature,
     SignTransactionOutput,
     UnionToIntersection,
     Wallet,
     WalletAccount,
-    WalletAccountMethod,
+    WalletAccountFeature,
 } from '@solana/wallet-standard';
 import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
 import { decode } from 'bs58';
@@ -57,7 +57,7 @@ export type SolanaWalletChain = typeof CHAIN_SOLANA_MAINNET | typeof CHAIN_SOLAN
 
 export class SignerSolanaWalletAccount implements WalletAccount {
     private _chain: SolanaWalletChain;
-    private _methods: WalletAccountMethod<this>;
+    private _features: WalletAccountFeature<this>;
     private _signer: Signer;
     private _publicKey: Bytes;
 
@@ -77,12 +77,12 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return [CIPHER_DEFAULT];
     }
 
-    get methods(): WalletAccountMethod<this> {
-        return { ...this._methods };
+    get features(): WalletAccountFeature<this> {
+        return { ...this._features };
     }
 
     // FIXME: can't rely on private properties for access control
-    private _allMethods: AllWalletAccountMethods<this> = {
+    private _allFeatures: AllWalletAccountFeatures<this> = {
         signTransaction: (...args) => this._signTransaction(...args),
         signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
         signMessage: (...args) => this._signMessage(...args),
@@ -92,19 +92,19 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     constructor({
         chain,
-        methods,
+        features,
     }: {
         chain: SolanaWalletChain;
-        methods?: AllWalletAccountMethodNames<SignerSolanaWalletAccount>[];
+        features?: AllWalletAccountFeatureNames<SignerSolanaWalletAccount>[];
     }) {
         this._chain = chain;
-        this._methods = methods ? pick(this._allMethods, ...methods) : this._allMethods;
+        this._features = features ? pick(this._allFeatures, ...features) : this._allFeatures;
         this._signer = Keypair.generate();
         this._publicKey = this._signer.publicKey.toBytes();
     }
 
     private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
-        if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
+        if (!('signTransaction' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
@@ -123,7 +123,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     private async _signAndSendTransaction(
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
-        if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
+        if (!('signAndSendTransaction' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
@@ -154,7 +154,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     }
 
     private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
-        if (!('signMessage' in this._methods)) throw new Error('unauthorized');
+        if (!('signMessage' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const signedMessages: Bytes[] = [];
@@ -166,8 +166,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return { signedMessages };
     }
 
-    private async _encrypt(inputs: EncryptInput<this>[]): Promise<EncryptOutput<this>[]> {
-        if (!('encrypt' in this._methods)) throw new Error('unauthorized');
+    private async _encrypt(inputs: ReadonlyArray<EncryptInput<this>>): Promise<ReadonlyArray<EncryptOutput<this>>> {
+        if (!('encrypt' in this._features)) throw new Error('unauthorized');
 
         const outputs: EncryptOutput<this>[] = [];
         for (const { publicKey, cleartexts } of inputs) {
@@ -186,8 +186,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return outputs;
     }
 
-    private async _decrypt(inputs: DecryptInput<this>[]): Promise<DecryptOutput<this>[]> {
-        if (!('decrypt' in this._methods)) throw new Error('unauthorized');
+    private async _decrypt(inputs: ReadonlyArray<DecryptInput<this>>): Promise<ReadonlyArray<DecryptOutput<this>>> {
+        if (!('decrypt' in this._features)) throw new Error('unauthorized');
 
         const outputs: DecryptOutput<this>[] = [];
         for (const { publicKey, ciphertexts, nonces } of inputs) {
@@ -207,11 +207,11 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     }
 }
 
-type LedgerSolanaWalletAccountMethod =
-    | SignTransactionMethod<LedgerSolanaWalletAccount>
-    | SignAndSendTransactionMethod<LedgerSolanaWalletAccount>;
-type LedgerSolanaWalletAccountMethods = UnionToIntersection<LedgerSolanaWalletAccountMethod>;
-type LedgerSolanaWalletAccountMethodNames = keyof LedgerSolanaWalletAccountMethods;
+type LedgerSolanaWalletAccountFeature =
+    | SignTransactionFeature<LedgerSolanaWalletAccount>
+    | SignAndSendTransactionFeature<LedgerSolanaWalletAccount>;
+type LedgerSolanaWalletAccountFeatures = UnionToIntersection<LedgerSolanaWalletAccountFeature>;
+type LedgerSolanaWalletAccountFeatureNames = keyof LedgerSolanaWalletAccountFeatures;
 
 interface SolanaLedgerApp {
     publicKey: Uint8Array;
@@ -220,7 +220,7 @@ interface SolanaLedgerApp {
 
 export class LedgerSolanaWalletAccount implements WalletAccount {
     private _chain: string;
-    private _methods: LedgerSolanaWalletAccountMethod;
+    private _features: LedgerSolanaWalletAccountFeature;
     // NOTE: represents some reference to an underlying device interface
     private _ledger: SolanaLedgerApp = {} as SolanaLedgerApp;
     private _publicKey: Bytes;
@@ -241,26 +241,26 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return [];
     }
 
-    get methods() {
-        return { ...this._methods };
+    get features() {
+        return { ...this._features };
     }
 
     // FIXME: can't rely on private properties for access control
-    private _allMethods: LedgerSolanaWalletAccountMethods = {
+    private _allFeatures: LedgerSolanaWalletAccountFeatures = {
         signTransaction: (...args) => this._signTransaction(...args),
         signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
     };
 
-    constructor({ chain, methods }: { chain: SolanaWalletChain; methods?: LedgerSolanaWalletAccountMethodNames[] }) {
+    constructor({ chain, features }: { chain: SolanaWalletChain; features?: LedgerSolanaWalletAccountFeatureNames[] }) {
         this._chain = chain;
-        this._methods = methods ? pick(this._allMethods, ...methods) : this._allMethods;
+        this._features = features ? pick(this._allFeatures, ...features) : this._allFeatures;
         this._publicKey = new Uint8Array(this._ledger.publicKey);
     }
 
     private async _signTransaction(
         input: SignTransactionInput<LedgerSolanaWalletAccount>
     ): Promise<SignTransactionOutput<LedgerSolanaWalletAccount>> {
-        if (!('signTransaction' in this._methods)) throw new Error('unauthorized');
+        if (!('signTransaction' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
@@ -280,7 +280,7 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
     private async _signAndSendTransaction(
         input: SignAndSendTransactionInput<LedgerSolanaWalletAccount>
     ): Promise<SignAndSendTransactionOutput<LedgerSolanaWalletAccount>> {
-        if (!('signAndSendTransaction' in this._methods)) throw new Error('unauthorized');
+        if (!('signAndSendTransaction' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));

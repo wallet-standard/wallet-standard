@@ -1,4 +1,4 @@
-import { WalletAccountMethodNames, WalletAccountMethods } from './methods';
+import { WalletAccountFeatureNames, WalletAccountFeatures } from './features';
 
 // TODO: see if it's possible to make this actually readonly by omitting stuff
 /** A readonly byte array. */
@@ -21,11 +21,11 @@ export type WalletAccount = Readonly<{
     /** List of ciphers supported for encryption and decryption. */
     ciphers: ReadonlyArray<string>;
 
-    /** Methods supported by the account that are authorized to be called. */
+    /** Features supported by the account that are authorized to be called. */
     // eslint-disable-next-line @typescript-eslint/ban-types
-    methods: Readonly<{}>;
+    features: Readonly<{}>;
 
-    // TODO: think about custom methods / namespacing
+    // TODO: think about custom features / namespacing
 
     /** Optional user-friendly descriptive label or name of the account. */
     label?: string;
@@ -82,7 +82,7 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
     chains: ReadonlyArray<Account['chain']>;
 
     /** TODO: docs */
-    methods: ReadonlyArray<WalletAccountMethodNames<Account>>;
+    features: ReadonlyArray<WalletAccountFeatureNames<Account>>;
 
     /** List the ciphers supported for encryption and decryption. */
     ciphers: Account['ciphers'];
@@ -96,11 +96,11 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
      */
     connect<
         Chain extends Account['chain'],
-        MethodNames extends WalletAccountMethodNames<Account>,
-        Input extends ConnectInput<Account, Chain, MethodNames>
+        FeatureNames extends WalletAccountFeatureNames<Account>,
+        Input extends ConnectInput<Account, Chain, FeatureNames>
     >(
         input: Input
-    ): Promise<ConnectOutput<Account, Chain, MethodNames, Input>>;
+    ): Promise<ConnectOutput<Account, Chain, FeatureNames, Input>>;
 
     /**
      * Add an event listener to subscribe to events.
@@ -117,13 +117,13 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
 export type ConnectInput<
     Account extends WalletAccount,
     Chain extends Account['chain'],
-    MethodNames extends WalletAccountMethodNames<Account>
+    FeatureNames extends WalletAccountFeatureNames<Account>
 > = Readonly<{
     /** Optional chains to discover accounts using. */
     chains?: ReadonlyArray<Chain>;
 
     /** TODO: docs */
-    methods?: ReadonlyArray<MethodNames>;
+    features?: ReadonlyArray<FeatureNames>;
 
     /**
      * Optional public key addresses of the accounts in the wallet to authorize an app to use.
@@ -152,14 +152,14 @@ export type ConnectInput<
 export type ConnectOutput<
     Account extends WalletAccount,
     Chain extends Account['chain'],
-    MethodNames extends WalletAccountMethodNames<Account>,
-    Input extends ConnectInput<Account, Chain, MethodNames>
+    FeatureNames extends WalletAccountFeatureNames<Account>,
+    Input extends ConnectInput<Account, Chain, FeatureNames>
 > = Readonly<{
     /** List of accounts in the wallet that the app has been authorized to use. */
-    accounts: ReadonlyArray<ConnectedAccount<Account, Chain, MethodNames, Input>>;
+    accounts: ReadonlyArray<ConnectedAccount<Account, Chain, FeatureNames, Input>>;
 
     /**
-     * Will be true if there are more accounts with the given chain(s) and method(s) in the wallet besides the `accounts` returned.
+     * Will be true if there are more accounts with the given chain(s) and feature(s) in the wallet besides the `accounts` returned.
      * Apps may choose to notify the user or periodically call `connect` again to request more accounts.
      */
     hasMoreAccounts: boolean;
@@ -169,13 +169,13 @@ export type ConnectOutput<
 export type ConnectedAccount<
     Account extends WalletAccount,
     Chain extends Account['chain'],
-    MethodNames extends WalletAccountMethodNames<Account>,
-    Input extends ConnectInput<Account, Chain, MethodNames>
+    FeatureNames extends WalletAccountFeatureNames<Account>,
+    Input extends ConnectInput<Account, Chain, FeatureNames>
 > = Readonly<
-    Omit<Account, 'chain' | 'methods'> & {
+    Omit<Account, 'chain' | 'features'> & {
         chain: Input extends { chains: ReadonlyArray<Chain> } ? Chain : Account['chain'];
-        methods: Input extends { methods: ReadonlyArray<MethodNames> }
-            ? Pick<WalletAccountMethods<Account>, Input['methods'][number]>
-            : Account['methods'];
+        features: Input extends { features: ReadonlyArray<FeatureNames> }
+            ? Pick<WalletAccountFeatures<Account>, Input['features'][number]>
+            : Account['features'];
     }
 >;
