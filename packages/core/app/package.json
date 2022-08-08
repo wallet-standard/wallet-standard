@@ -1,7 +1,6 @@
 {
-    "private": true,
-    "name": "@solana/wallet-standard-react",
-    "version": "0.1.0",
+    "name": "@solana/wallet-standard-app",
+    "version": "0.1.0-alpha.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/wallet-standard",
     "license": "Apache-2.0",
@@ -28,14 +27,9 @@
         "prebuild": "pnpm run clean"
     },
     "dependencies": {
-        "@solana/wallet-standard": "workspace:^",
-        "@solana/wallet-standard-app": "workspace:^",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "@solana/wallet-standard": "workspace:^"
     },
     "devDependencies": {
-        "@types/react": "^18.0.0",
-        "@types/react-dom": "^18.0.0",
         "shx": "^0.3.4",
         "typescript": "^4.7.4"
     }

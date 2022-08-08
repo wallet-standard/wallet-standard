@@ -1,24 +1,22 @@
 import {
-    bytesEqual,
     ConnectedAccount,
     ConnectInput,
     ConnectOutput,
-    DEFAULT_VERSION,
-    pick,
+    VERSION_1_0_0,
     Wallet,
     WalletAccount,
     WalletAccountFeatureNames,
     WalletEventNames,
     WalletEvents,
 } from '@solana/wallet-standard';
+import { bytesEqual, pick } from '@solana/wallet-standard-util';
 
 export abstract class AbstractWallet<Account extends WalletAccount> implements Wallet<Account> {
-    protected _version = DEFAULT_VERSION;
     protected _listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
     protected _accounts: Account[];
 
     get version() {
-        return this._version;
+        return VERSION_1_0_0;
     }
 
     abstract get name(): string;
@@ -29,15 +27,19 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         return this._accounts.slice();
     }
 
+    get hasMoreAccounts() {
+        return false;
+    }
+
     get chains() {
         const chains = this._accounts.map((account) => account.chain);
         return [...new Set(chains)];
     }
 
     get features() {
-        const features = this._accounts.flatMap(
-            (account) => Object.keys(account.features) as keyof typeof account.features
-        );
+        const features = this._accounts.flatMap((account) =>
+            Object.keys(account.features)
+        ) as WalletAccountFeatureNames<Account>[];
         return [...new Set(features)];
     }
 

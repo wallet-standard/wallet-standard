@@ -16,8 +16,10 @@
         "@solana/wallet-adapter-glow": "^0.1.6",
         "@solana/wallet-adapter-phantom": "^0.9.9",
         "@solana/wallet-standard": "workspace:^",
+        "@solana/wallet-standard-app": "workspace:^",
         "@solana/wallet-standard-react": "workspace:^",
         "@solana/wallet-standard-solana-wallet-adapter": "workspace:^",
+        "@solana/wallet-standard-util": "workspace:^",
         "@solana/web3.js": "^1.44.3",
         "react": "^18.0.0",
         "react-dom": "^18.0.0"

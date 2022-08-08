@@ -30,6 +30,8 @@
     "dependencies": {
         "@solana/wallet-adapter-base": "^0.9.10",
         "@solana/wallet-standard": "workspace:^",
+        "@solana/wallet-standard-app": "workspace:^",
+        "@solana/wallet-standard-util": "workspace:^",
         "@solana/web3.js": "^1.44.3",
         "bs58": "^4.0.1"
     },

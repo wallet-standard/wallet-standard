@@ -1,30 +1,35 @@
 import {
     AllWalletAccountFeatureNames,
     AllWalletAccountFeatures,
-    Bytes,
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_MAINNET,
-    CHAIN_SOLANA_TESTNET,
-    CIPHER_DEFAULT,
-    concatBytes,
     DecryptInput,
     DecryptOutput,
     EncryptInput,
     EncryptOutput,
-    pick,
-    SignAndSendTransactionInput,
     SignAndSendTransactionFeature,
+    SignAndSendTransactionInput,
     SignAndSendTransactionOutput,
     SignMessageInput,
     SignMessageOutput,
-    SignTransactionInput,
     SignTransactionFeature,
+    SignTransactionInput,
+    SignTransactionOnlyFeature,
+    SignTransactionOnlyInput,
+    SignTransactionOnlyOutput,
     SignTransactionOutput,
     UnionToIntersection,
     Wallet,
     WalletAccount,
     WalletAccountFeature,
 } from '@solana/wallet-standard';
+import {
+    CHAIN_SOLANA_DEVNET,
+    CHAIN_SOLANA_LOCALNET,
+    CHAIN_SOLANA_MAINNET,
+    CHAIN_SOLANA_TESTNET,
+    CIPHER_DEFAULT,
+    concatBytes,
+    pick,
+} from '@solana/wallet-standard-util';
 import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
 import { decode } from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
@@ -53,20 +58,24 @@ export class SolanaWallet extends AbstractWallet<SolanaWalletAccount> implements
 
 export type SolanaWalletAccount = SignerSolanaWalletAccount | LedgerSolanaWalletAccount;
 
-export type SolanaWalletChain = typeof CHAIN_SOLANA_MAINNET | typeof CHAIN_SOLANA_DEVNET | typeof CHAIN_SOLANA_TESTNET;
+export type SolanaWalletChain =
+    | typeof CHAIN_SOLANA_MAINNET
+    | typeof CHAIN_SOLANA_DEVNET
+    | typeof CHAIN_SOLANA_TESTNET
+    | typeof CHAIN_SOLANA_LOCALNET;
 
 export class SignerSolanaWalletAccount implements WalletAccount {
     private _chain: SolanaWalletChain;
     private _features: WalletAccountFeature<this>;
     private _signer: Signer;
-    private _publicKey: Bytes;
+    private _publicKey: Uint8Array;
 
     get address() {
-        return new Uint8Array(this._publicKey);
+        return this.publicKey;
     }
 
     get publicKey() {
-        return new Uint8Array(this._publicKey);
+        return this._publicKey.slice();
     }
 
     get chain() {
@@ -83,11 +92,12 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     // FIXME: can't rely on private properties for access control
     private _allFeatures: AllWalletAccountFeatures<this> = {
-        signTransaction: (...args) => this._signTransaction(...args),
-        signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
-        signMessage: (...args) => this._signMessage(...args),
-        encrypt: (...args) => this._encrypt(...args),
-        decrypt: (...args) => this._decrypt(...args),
+        signTransaction: { signTransaction: (...args) => this._signTransaction(...args) },
+        signTransactionOnly: { signTransactionOnly: (...args) => this._signTransactionOnly(...args) },
+        signAndSendTransaction: { signAndSendTransaction: (...args) => this._signAndSendTransaction(...args) },
+        signMessage: { signMessage: (...args) => this._signMessage(...args) },
+        encrypt: { encrypt: (...args) => this._encrypt(...args) },
+        decrypt: { decrypt: (...args) => this._decrypt(...args) },
     };
 
     constructor({
@@ -109,6 +119,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
+        // Prompt the user with transactions to sign
+
         for (const transaction of transactions) {
             transaction.partialSign(this._signer);
         }
@@ -120,6 +132,26 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return { signedTransactions };
     }
 
+    private async _signTransactionOnly(
+        input: SignTransactionOnlyInput<this>
+    ): Promise<SignTransactionOnlyOutput<this>> {
+        if (!('signTransactionOnly' in this._features)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
+
+        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+
+        // Prompt the user with transactions to sign
+
+        const signatures: Uint8Array[] = [];
+        for (const transaction of transactions) {
+            const message = transaction.compileMessage().serialize();
+            const signature = sign.detached(message, this._signer.secretKey);
+            signatures.push(signature);
+        }
+
+        return { signatures };
+    }
+
     private async _signAndSendTransaction(
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
@@ -127,6 +159,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+
+        // Prompt the user with transactions to sign and send
 
         for (const transaction of transactions) {
             transaction.partialSign(this._signer);
@@ -140,11 +174,11 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         } else if (this._chain === CHAIN_SOLANA_TESTNET) {
             endpoint = clusterApiUrl('testnet');
         } else {
-            throw new Error('invalid cluster');
+            endpoint = 'http://localhost:8899';
         }
 
-        const connection = new Connection(endpoint);
-        const signatures: Bytes[] = [];
+        const connection = new Connection(endpoint, 'confirmed');
+        const signatures: Uint8Array[] = [];
         for (const transaction of transactions) {
             const signature = await connection.sendRawTransaction(transaction.serialize());
             signatures.push(decode(signature));
@@ -157,7 +191,9 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         if (!('signMessage' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signedMessages: Bytes[] = [];
+        // Prompt the user with messages to sign
+
+        const signedMessages: Uint8Array[] = [];
         for (const message of input.messages) {
             const signature = sign.detached(message, this._signer.secretKey);
             signedMessages.push(concatBytes(message, signature));
@@ -168,6 +204,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     private async _encrypt(inputs: ReadonlyArray<EncryptInput<this>>): Promise<ReadonlyArray<EncryptOutput<this>>> {
         if (!('encrypt' in this._features)) throw new Error('unauthorized');
+
+        // Prompt the user with data to encrypt
 
         const outputs: EncryptOutput<this>[] = [];
         for (const { publicKey, cleartexts } of inputs) {
@@ -189,6 +227,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     private async _decrypt(inputs: ReadonlyArray<DecryptInput<this>>): Promise<ReadonlyArray<DecryptOutput<this>>> {
         if (!('decrypt' in this._features)) throw new Error('unauthorized');
 
+        // Prompt the user with data to decrypt
+
         const outputs: DecryptOutput<this>[] = [];
         for (const { publicKey, ciphertexts, nonces } of inputs) {
             const sharedKey = box.before(publicKey, this._signer.secretKey);
@@ -209,6 +249,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
 type LedgerSolanaWalletAccountFeature =
     | SignTransactionFeature<LedgerSolanaWalletAccount>
+    | SignTransactionOnlyFeature<LedgerSolanaWalletAccount>
     | SignAndSendTransactionFeature<LedgerSolanaWalletAccount>;
 type LedgerSolanaWalletAccountFeatures = UnionToIntersection<LedgerSolanaWalletAccountFeature>;
 type LedgerSolanaWalletAccountFeatureNames = keyof LedgerSolanaWalletAccountFeatures;
@@ -223,14 +264,14 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
     private _features: LedgerSolanaWalletAccountFeature;
     // NOTE: represents some reference to an underlying device interface
     private _ledger: SolanaLedgerApp = {} as SolanaLedgerApp;
-    private _publicKey: Bytes;
+    private _publicKey: Uint8Array;
 
     get address() {
-        return new Uint8Array(this._publicKey);
+        return this.publicKey;
     }
 
     get publicKey() {
-        return new Uint8Array(this._publicKey);
+        return this._publicKey.slice();
     }
 
     get chain() {
@@ -246,9 +287,12 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
     }
 
     // FIXME: can't rely on private properties for access control
-    private _allFeatures: LedgerSolanaWalletAccountFeatures = {
-        signTransaction: (...args) => this._signTransaction(...args),
-        signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
+    private _allFeatures: SignTransactionFeature<this> &
+        SignTransactionOnlyFeature<this> &
+        SignAndSendTransactionFeature<this> = {
+        signTransaction: { signTransaction: (...args) => this._signTransaction(...args) },
+        signTransactionOnly: { signTransactionOnly: (...args) => this._signTransactionOnly(...args) },
+        signAndSendTransaction: { signAndSendTransaction: (...args) => this._signAndSendTransaction(...args) },
     };
 
     constructor({ chain, features }: { chain: SolanaWalletChain; features?: LedgerSolanaWalletAccountFeatureNames[] }) {
@@ -257,16 +301,18 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         this._publicKey = new Uint8Array(this._ledger.publicKey);
     }
 
-    private async _signTransaction(
-        input: SignTransactionInput<LedgerSolanaWalletAccount>
-    ): Promise<SignTransactionOutput<LedgerSolanaWalletAccount>> {
+    private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
+        // Prompt the user with transactions to sign
+
         for (const transaction of transactions) {
-            const signature = await this._ledger.signTransaction(transaction.serialize({ requireAllSignatures: true }));
+            const signature = await this._ledger.signTransaction(
+                transaction.serialize({ requireAllSignatures: false })
+            );
             transaction.addSignature(new PublicKey(this._publicKey), Buffer.from(signature));
         }
 
@@ -277,20 +323,54 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return { signedTransactions };
     }
 
+    private async _signTransactionOnly(
+        input: SignTransactionOnlyInput<this>
+    ): Promise<SignTransactionOnlyOutput<this>> {
+        if (!('signTransactionOnly' in this._features)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
+
+        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+
+        // Prompt the user with transactions to sign
+
+        const signatures: Uint8Array[] = [];
+        for (const transaction of transactions) {
+            const signature = await this._ledger.signTransaction(transaction.serialize({ requireAllSignatures: true }));
+            signatures.push(signature);
+        }
+
+        return { signatures };
+    }
+
     private async _signAndSendTransaction(
-        input: SignAndSendTransactionInput<LedgerSolanaWalletAccount>
-    ): Promise<SignAndSendTransactionOutput<LedgerSolanaWalletAccount>> {
+        input: SignAndSendTransactionInput<this>
+    ): Promise<SignAndSendTransactionOutput<this>> {
         if (!('signAndSendTransaction' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
+        // Prompt the user with transactions to sign and send
+
         for (const transaction of transactions) {
-            const signature = await this._ledger.signTransaction(transaction.serialize({ requireAllSignatures: true }));
+            const signature = await this._ledger.signTransaction(
+                transaction.serialize({ requireAllSignatures: false })
+            );
             transaction.addSignature(new PublicKey(this._publicKey), Buffer.from(signature));
         }
 
-        const connection = new Connection(clusterApiUrl('mainnet-beta'));
+        let endpoint: string;
+        if (this._chain === CHAIN_SOLANA_MAINNET) {
+            endpoint = clusterApiUrl('mainnet-beta');
+        } else if (this._chain === CHAIN_SOLANA_DEVNET) {
+            endpoint = clusterApiUrl('devnet');
+        } else if (this._chain === CHAIN_SOLANA_TESTNET) {
+            endpoint = clusterApiUrl('testnet');
+        } else {
+            endpoint = 'http://localhost:8899';
+        }
+
+        const connection = new Connection(endpoint, 'confirmed');
         const signatures = await Promise.all(
             transactions.map(async (transaction) => {
                 const signature = await connection.sendRawTransaction(transaction.serialize());

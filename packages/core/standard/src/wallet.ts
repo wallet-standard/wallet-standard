@@ -1,19 +1,15 @@
 import { WalletAccountFeatureNames, WalletAccountFeatures } from './features';
 
-// TODO: see if it's possible to make this actually readonly by omitting stuff
-/** A readonly byte array. */
-export type Bytes = Readonly<Uint8Array>;
-
 /** An account in the wallet that the app has been authorized to use. */
 export type WalletAccount = Readonly<{
     /**
      * Address of the account, corresponding with the public key.
      * This may be the same as the public key on some chains (e.g. Solana), or different on others (e.g. Ethereum).
      */
-    address: Bytes;
+    address: Uint8Array;
 
     /** Public key of the account, corresponding with the secret key to sign, encrypt, or decrypt using. */
-    publicKey: Bytes;
+    publicKey: Uint8Array;
 
     /** Chain to sign, simulate, and send transactions using. */
     chain: string;
@@ -22,8 +18,7 @@ export type WalletAccount = Readonly<{
     ciphers: ReadonlyArray<string>;
 
     /** Features supported by the account that are authorized to be called. */
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    features: Readonly<{}>;
+    features: Readonly<Record<string, unknown>>;
 
     // TODO: think about custom features / namespacing
 
@@ -38,6 +33,11 @@ export interface WalletEvents {
      * An app can listen for this event and call `connect` without arguments to request accounts again.
      */
     accountsChanged(): void;
+
+    /**
+     * TODO: docs
+     */
+    hasMoreAccountsChanged(): void;
 
     /**
      * Emitted when the chains the wallet supports are changed.
@@ -74,6 +74,9 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
      * This can be updated by the wallet, which will emit a `accountsChanged` event when this occurs.
      */
     accounts: ReadonlyArray<Account>;
+
+    /** TODO: docs */
+    hasMoreAccounts: boolean;
 
     /**
      * List the chains supported for signing, simulating, and sending transactions.
@@ -139,7 +142,7 @@ export type ConnectInput<
      *   - If the `silent` option is not provided or `false`, the wallet should prompt the user to select accounts to authorize the app to use.
      *   - If the `silent` option is `true`, the wallet must not prompt the user, and should return any accounts the app is authorized to use.
      */
-    addresses?: ReadonlyArray<Bytes>;
+    addresses?: ReadonlyArray<Uint8Array>;
 
     /**
      * Set to true to request the authorized accounts without prompting the user.

@@ -1,5 +1,6 @@
-export * from './types';
+export * from './features';
 
 export * from './constants';
-export * from './initialize';
-export * from './util';
+export * from './errors';
+export * from './wallet';
+export * from './window';

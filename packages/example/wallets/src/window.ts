@@ -1,19 +1,21 @@
-import { initialize, WalletAccount, WalletsWindow } from '@solana/wallet-standard';
-import { EthereumWallet } from './ethereumWallet';
-import { MultiChainWallet } from './multiChainWallet';
-import { SolanaWallet } from './solanaWallet';
-
-declare const window: WalletsWindow<WalletAccount>;
+import { WalletsNavigator } from '@solana/wallet-standard';
+import { initialize } from '@solana/wallet-standard-app';
+import { EthereumWallet, EthereumWalletAccount } from './ethereumWallet';
+import { MultiChainWallet, MultiChainWalletAccount } from './multiChainWallet';
+import { SolanaWallet, SolanaWalletAccount } from './solanaWallet';
 
 (function () {
+    const navigator: WalletsNavigator<SolanaWalletAccount | EthereumWalletAccount | MultiChainWalletAccount> =
+        window.navigator;
+
     // The dapp hasn't loaded yet, so the first wallet to load creates a queue or uses one if found
-    window.navigator.wallets = window.navigator.wallets || [];
+    navigator.wallets = navigator.wallets || [];
     // The first wallet to load registers itself on the window
-    window.navigator.wallets.push({ method: 'register', wallets: [new SolanaWallet()], callback() {} });
+    navigator.wallets.push({ method: 'register', wallets: [new SolanaWallet()], callback() {} });
 
     // The second wallet does the same thing
-    window.navigator.wallets = window.navigator.wallets || [];
-    window.navigator.wallets.push({ method: 'register', wallets: [new EthereumWallet()], callback() {} });
+    navigator.wallets = navigator.wallets || [];
+    navigator.wallets.push({ method: 'register', wallets: [new EthereumWallet()], callback() {} });
 
     // ... time passes, the dapp loads ...
 
@@ -43,7 +45,8 @@ declare const window: WalletsWindow<WalletAccount>;
     // ... time passes, other wallets load ...
 
     // The third wallet to load registers itself on the window
-    window.navigator.wallets.push({ method: 'register', wallets: [new MultiChainWallet()], callback() {} });
+    navigator.wallets = navigator.wallets || [];
+    navigator.wallets.push({ method: 'register', wallets: [new MultiChainWallet()], callback() {} });
 
     // The dapp has an event listener now, so it sees new wallets immediately and doesn't need to poll or list them again
     // This also works if the dapp loads before any wallets (it will initialize the push function, see no wallets on the first call, then see wallets as they load)

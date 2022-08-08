@@ -1,30 +1,32 @@
 import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
 import {
-    Bytes,
-    bytesEqual,
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_LOCALNET,
-    CHAIN_SOLANA_MAINNET,
-    CHAIN_SOLANA_TESTNET,
-    concatBytes,
     ConnectInput,
     ConnectOutput,
-    initialize,
-    SignAndSendTransactionInput,
     SignAndSendTransactionFeature,
+    SignAndSendTransactionInput,
     SignAndSendTransactionOutput,
-    SignMessageInput,
     SignMessageFeature,
+    SignMessageInput,
     SignMessageOutput,
-    SignTransactionInput,
     SignTransactionFeature,
+    SignTransactionInput,
     SignTransactionOutput,
+    VERSION_1_0_0,
     Wallet,
     WalletAccount,
     WalletAccountFeatureNames,
     WalletEventNames,
     WalletEvents,
 } from '@solana/wallet-standard';
+import { initialize } from '@solana/wallet-standard-app';
+import {
+    bytesEqual,
+    CHAIN_SOLANA_DEVNET,
+    CHAIN_SOLANA_LOCALNET,
+    CHAIN_SOLANA_MAINNET,
+    CHAIN_SOLANA_TESTNET,
+    concatBytes,
+} from '@solana/wallet-standard-util';
 import { clusterApiUrl, Connection, Transaction, TransactionSignature } from '@solana/web3.js';
 import { decode } from 'bs58';
 
@@ -36,7 +38,7 @@ export type SolanaWalletAdapterChain =
 
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     private _adapter: Adapter;
-    private _publicKey: Bytes;
+    private _publicKey: Uint8Array;
     private _chain: SolanaWalletAdapterChain;
 
     get address() {
@@ -44,7 +46,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     }
 
     get publicKey() {
-        return new Uint8Array(this._publicKey);
+        return this._publicKey.slice();
     }
 
     get chain() {
@@ -56,23 +58,26 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     }
 
     get features(): SignTransactionFeature<this> | SignAndSendTransactionFeature<this> | SignMessageFeature<this> {
-        const features: SignAndSendTransactionFeature<this> &
-            Partial<SignTransactionFeature<this> & SignMessageFeature<this>> = {
-            signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
+        const signAndSendTransaction: SignAndSendTransactionFeature<this> = {
+            signAndSendTransaction: { signAndSendTransaction: (...args) => this._signAndSendTransaction(...args) },
         };
 
+        let signTransactionFeature: SignTransactionFeature<this> | undefined = undefined;
         if ('signTransaction' in this._adapter) {
-            features.signTransaction = (...args) => this._signTransaction(...args);
+            signTransactionFeature = {
+                signTransaction: { signTransaction: (...args) => this._signTransaction(...args) },
+            };
         }
 
+        let signMessageFeature: SignMessageFeature<this> | undefined = undefined;
         if ('signMessage' in this._adapter) {
-            features.signMessage = (...args) => this._signMessage(...args);
+            signMessageFeature = { signMessage: { signMessage: (...args) => this._signMessage(...args) } };
         }
 
-        return features;
+        return { ...signAndSendTransaction, ...signTransactionFeature, ...signMessageFeature };
     }
 
-    constructor(adapter: Adapter, publicKey: Bytes, chain: SolanaWalletAdapterChain) {
+    constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaWalletAdapterChain) {
         this._adapter = adapter;
         this._publicKey = publicKey;
         this._chain = chain;
@@ -107,12 +112,14 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
             signatures = [];
         }
 
-        return { signatures: signatures.map((signature) => decode(signature)) };
+        const rawSignatures = signatures.map((signature) => decode(signature));
+
+        return { signatures: rawSignatures };
     }
 
     private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
-        if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
         if (!('signTransaction' in this._adapter)) throw new Error('signTransaction not implemented by adapter');
+        if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
@@ -125,18 +132,18 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
             signedTransactions = [];
         }
 
-        return {
-            signedTransactions: signedTransactions.map((transaction) =>
-                transaction.serialize({ requireAllSignatures: false })
-            ),
-        };
+        const rawSignedTransactions = signedTransactions.map((transaction) =>
+            transaction.serialize({ requireAllSignatures: false })
+        );
+
+        return { signedTransactions: rawSignedTransactions };
     }
 
     private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
-        if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
         if (!('signMessage' in this._adapter)) throw new Error('signMessage not implemented by adapter');
+        if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
 
-        let signedMessages: Bytes[];
+        let signedMessages: Uint8Array[];
         if (input.messages.length === 1) {
             const signature = await this._adapter.signMessage(input.messages[0]);
             signedMessages = [concatBytes(input.messages[0], signature)];
@@ -157,7 +164,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     private _account: SolanaWalletAdapterWalletAccount | undefined;
 
     get version() {
-        return '1.0.0';
+        return VERSION_1_0_0;
     }
 
     get name() {
@@ -170,6 +177,10 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 
     get accounts() {
         return this._account ? [this._account] : [];
+    }
+
+    get hasMoreAccounts() {
+        return false;
     }
 
     get chains() {
@@ -221,6 +232,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         }
 
         if (chains?.length) {
+            if (chains.length > 1) throw new Error('multiple chains not supported');
             this._chain = chains[0];
         }
 

@@ -1,5 +1,6 @@
 import { Wallet, WalletAccount } from './wallet';
 
+// FIXME: these do nothing, maybe declare global instead
 declare const window: WalletsWindow<WalletAccount>;
 declare const navigator: WalletsNavigator<WalletAccount>;
 
@@ -14,7 +15,7 @@ export interface WalletsNavigator<Account extends WalletAccount> extends Navigat
     wallets?: NavigatorWallets<Account>;
 }
 
-/** TODO: docs */
+/** Global `navigator.wallets` object. */
 export type NavigatorWallets<Account extends WalletAccount> = Wallets<Account> | WalletsCommand<Account>[];
 
 /** Global `navigator.wallets` object API. */

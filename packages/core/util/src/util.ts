@@ -1,7 +1,5 @@
-import { Bytes } from './types';
-
 /** TODO: docs */
-export function bytesEqual(a: Bytes, b: Bytes): boolean {
+export function bytesEqual(a: Uint8Array, b: Uint8Array): boolean {
     const length = a.length;
     if (length !== b.length) return false;
     for (let i = 0; i < length; i++) {
@@ -11,7 +9,7 @@ export function bytesEqual(a: Bytes, b: Bytes): boolean {
 }
 
 /** TODO: docs */
-export function concatBytes(first: Bytes, ...others: ReadonlyArray<Bytes>): Bytes {
+export function concatBytes(first: Uint8Array, ...others: ReadonlyArray<Uint8Array>): Uint8Array {
     const length = others.reduce((length, bytes) => length + bytes.length, first.length);
     const bytes = new Uint8Array(length);
 

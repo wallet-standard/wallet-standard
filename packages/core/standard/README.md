@@ -12,8 +12,8 @@ Wallet and dapp devs are encouraged to provide their feedback and have it integr
 
 ## Code
 
-- [Global `window.navigator.wallets` interface](src/types/window.ts)
-- [Wallet interface](src/types/wallet.ts)
+- [Global `window.navigator.wallets` interface](src/window.ts)
+- [Wallet interface](src/wallet.ts)
 - [Reference implementation for how wallets attach to the window](./src/implementation/window.ts)
 
 ## Design Principles and Goals

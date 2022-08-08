@@ -2,10 +2,16 @@
     "extends": "./tsconfig.root.json",
     "references": [
         {
+            "path": "./packages/core/app"
+        },
+        {
             "path": "./packages/core/react"
         },
         {
             "path": "./packages/core/standard"
+        },
+        {
+            "path": "./packages/core/util"
         },
         {
             "path": "./packages/example/react"

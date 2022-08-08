@@ -1,25 +1,23 @@
 import {
     AllWalletAccountFeatureNames,
     AllWalletAccountFeatures,
-    Bytes,
-    CHAIN_ETHEREUM,
-    CIPHER_DEFAULT,
-    concatBytes,
     DecryptInput,
     DecryptOutput,
     EncryptInput,
     EncryptOutput,
-    pick,
     SignAndSendTransactionInput,
     SignAndSendTransactionOutput,
     SignMessageInput,
     SignMessageOutput,
     SignTransactionInput,
+    SignTransactionOnlyInput,
+    SignTransactionOnlyOutput,
     SignTransactionOutput,
     Wallet,
     WalletAccount,
     WalletAccountFeature,
 } from '@solana/wallet-standard';
+import { CHAIN_ETHEREUM, CIPHER_DEFAULT, concatBytes, pick } from '@solana/wallet-standard-util';
 import ethers from 'ethers';
 import { box, randomBytes } from 'tweetnacl';
 import { AbstractWallet } from './abstractWallet';
@@ -50,16 +48,17 @@ export class SignerEthereumWalletAccount implements WalletAccount {
     private _chain: string;
     private _features: WalletAccountFeature<this>;
     private _wallet: ethers.Wallet;
-    private _address: Bytes;
-    private _publicKey: Bytes;
-    private _secretKey: Bytes;
+    private _signingKey: ethers.utils.SigningKey;
+    private _address: Uint8Array;
+    private _publicKey: Uint8Array;
+    private _secretKey: Uint8Array;
 
     get address() {
-        return new Uint8Array(this._address);
+        return this._address.slice();
     }
 
     get publicKey() {
-        return new Uint8Array(this._publicKey);
+        return this._publicKey.slice();
     }
 
     get chain() {
@@ -76,11 +75,12 @@ export class SignerEthereumWalletAccount implements WalletAccount {
 
     // FIXME: can't rely on private properties for access control
     private _allFeatures: AllWalletAccountFeatures<this> = {
-        signTransaction: (...args) => this._signTransaction(...args),
-        signAndSendTransaction: (...args) => this._signAndSendTransaction(...args),
-        signMessage: (...args) => this._signMessage(...args),
-        encrypt: (...args) => this._encrypt(...args),
-        decrypt: (...args) => this._decrypt(...args),
+        signTransaction: { signTransaction: (...args) => this._signTransaction(...args) },
+        signTransactionOnly: { signTransactionOnly: (...args) => this._signTransactionOnly(...args) },
+        signAndSendTransaction: { signAndSendTransaction: (...args) => this._signAndSendTransaction(...args) },
+        signMessage: { signMessage: (...args) => this._signMessage(...args) },
+        encrypt: { encrypt: (...args) => this._encrypt(...args) },
+        decrypt: { decrypt: (...args) => this._decrypt(...args) },
     };
 
     constructor({
@@ -96,13 +96,14 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         this._address = ethers.utils.arrayify(this._wallet.address);
         this._publicKey = ethers.utils.arrayify(this._wallet.publicKey);
         this._secretKey = ethers.utils.arrayify(this._wallet.privateKey);
+        this._signingKey = new ethers.utils.SigningKey(this._wallet.privateKey);
     }
 
     private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
         if (!('signTransaction' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signedTransactions: Bytes[] = [];
+        const signedTransactions: Uint8Array[] = [];
         for (const rawTransaction of input.transactions) {
             const transaction = ethers.utils.parseTransaction(rawTransaction);
 
@@ -117,6 +118,37 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return { signedTransactions };
     }
 
+    private async _signTransactionOnly(
+        input: SignTransactionOnlyInput<this>
+    ): Promise<SignTransactionOnlyOutput<this>> {
+        if (!('signTransactionOnly' in this._features)) throw new Error('unauthorized');
+        if (input.extraSigners?.length) throw new Error('unsupported');
+
+        const signatures: Uint8Array[] = [];
+        for (const rawTransaction of input.transactions) {
+            const unsignedTransaction = ethers.utils.parseTransaction(rawTransaction);
+
+            const serializedTransaction = await this._wallet.signTransaction({
+                ...unsignedTransaction,
+                // HACK: signTransaction expects a `number` or `undefined`, not `null`
+                type: unsignedTransaction.type ?? undefined,
+            });
+
+            const signedTransaction = ethers.utils.parseTransaction(serializedTransaction);
+
+            const signature = ethers.utils.joinSignature({
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                r: signedTransaction.r!,
+                s: signedTransaction.s,
+                v: signedTransaction.v,
+            });
+
+            signatures.push(ethers.utils.arrayify(signature));
+        }
+
+        return { signatures };
+    }
+
     private async _signAndSendTransaction(
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
@@ -126,7 +158,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         // homestead == Ethereum Mainnet
         const wallet = this._wallet.connect(ethers.getDefaultProvider('homestead'));
 
-        const signatures: Bytes[] = [];
+        const signatures: Uint8Array[] = [];
         for (const rawTransaction of input.transactions) {
             const transaction = ethers.utils.parseTransaction(rawTransaction);
 
@@ -146,7 +178,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         if (!('signMessage' in this._features)) throw new Error('unauthorized');
         if (input.extraSigners?.length) throw new Error('unsupported');
 
-        const signedMessages: Bytes[] = [];
+        const signedMessages: Uint8Array[] = [];
         for (const message of input.messages) {
             const signature = await this._wallet.signMessage(message);
             signedMessages.push(concatBytes(message, ethers.utils.arrayify(signature)));
