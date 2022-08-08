@@ -72,12 +72,21 @@ fooWallet2.connect({
         callback() {},
     });
 
-    const wallets = initialize<SolanaWalletAccount>();
+    const wallets = initialize<SolanaWalletAccount | FooWalletAccount>();
     const wallet = wallets.get()[0];
-    const account = wallet.accounts[0];
+    const account = (await wallet.connect({ chains: ['solana:mainnet'] })).accounts[0];
 
+    // @ts-expect-error expected
+    account.features.signTransaction;
+    // @ts-expect-error expected
     account.features.one;
+    // @ts-expect-error expected
     account.features.two;
     // @ts-expect-error expected
     account.features.three;
+
+    // FIXME: passing the chain here should eliminate FooWallet
+    if ('signTransaction' in account.features) {
+        account.features.signTransaction.signTransaction();
+    }
 })();
