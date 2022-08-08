@@ -7,15 +7,13 @@ export interface WalletsProviderProps {
     children: NonNullable<ReactNode>;
 }
 
-export const WalletsProvider: FC<WalletsProviderProps> = <Account extends WalletAccount>({
-    children,
-}: WalletsProviderProps) => {
+export const WalletsProvider: FC<WalletsProviderProps> = ({ children }: WalletsProviderProps) => {
     // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
-    const [wallets, setWallets] = useState(() => initialize<Account>().get());
+    const [wallets, setWallets] = useState(() => initialize<WalletAccount>().get());
 
     useEffect(() => {
         const destructors: (() => void)[] = [];
-        const wallets = initialize<Account>();
+        const wallets = initialize<WalletAccount>();
 
         // Get and set the wallets that have been registered already, in case they changed since the state initializer.
         setWallets(wallets.get());

@@ -1,4 +1,4 @@
-import { ConnectOutput, Wallet, WalletAccount } from '@solana/wallet-standard';
+import { Wallet, WalletAccount } from '@solana/wallet-standard';
 import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { WalletContext } from './useWallet';
 
@@ -7,12 +7,9 @@ export interface WalletProviderProps {
     onError?: (error: Error) => void;
 }
 
-export const WalletProvider: FC<WalletProviderProps> = <Account extends WalletAccount>({
-    children,
-    onError,
-}: WalletProviderProps) => {
-    const [wallet, setWallet] = useState<Wallet<any>>(); // FIXME: any is a hack
-    const [accounts, setAccounts] = useState<ReadonlyArray<Account>>([]);
+export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: WalletProviderProps) => {
+    const [wallet, setWallet] = useState<Wallet<WalletAccount>>();
+    const [accounts, setAccounts] = useState<ReadonlyArray<WalletAccount>>([]);
     const [chains, setChains] = useState<ReadonlyArray<string>>([]);
 
     // If the window is closing or reloading, ignore events from the wallet
@@ -58,8 +55,8 @@ export const WalletProvider: FC<WalletProviderProps> = <Account extends WalletAc
 
     // Connect to the wallet
     const [connecting, setConnecting] = useState(false);
-    const connectPromise = useRef<Promise<ConnectOutput<any, any, any, any>>>();
-    const connect = useCallback<Wallet<Account>['connect']>(
+    const connectPromise = useRef<any>();
+    const connect = useCallback<Wallet<WalletAccount>['connect']>(
         async (input) => {
             if (!wallet) throw handleError(new Error());
             // If already connecting, wait for that promise to resolve
@@ -67,7 +64,7 @@ export const WalletProvider: FC<WalletProviderProps> = <Account extends WalletAc
                 try {
                     await connectPromise.current;
                 } catch (error: any) {
-                    // Error will be handled elsewhere
+                    // Error will already have been handled below
                 }
             }
 
