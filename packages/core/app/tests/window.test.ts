@@ -1,10 +1,10 @@
-import { Wallet, WalletAccount, WalletEvents, WalletsNavigator } from '@solana/wallet-standard';
+import { Wallet, WalletAccount, WalletEvents, WalletsWindow } from '@solana/wallet-standard';
 import { initialize } from '../src';
 
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet';
     features: { one: 1; two: 2 };
-    ciphers: never;
+    ciphers: never[];
 }
 
 // A wallet that supports multiple account types
@@ -42,18 +42,35 @@ class FooWallet implements Wallet<FooWalletAccount> {
     }
 }
 
-const fooWallet = new FooWallet();
+const fooWallet1 = new FooWallet();
+const fooWallet2: Wallet<FooWalletAccount> = fooWallet1;
 
-fooWallet.connect({
+fooWallet1.connect({
+    chains: ['mainnet'],
+    features: ['signTransaction', 'signMessage'],
+});
+
+fooWallet2.connect({
     chains: ['mainnet'],
     features: ['signTransaction', 'signMessage'],
 });
 
 (async function () {
-    const navigator: WalletsNavigator<SolanaWalletAccount> = window.navigator;
-
-    navigator.wallets = navigator.wallets || [];
-    navigator.wallets.push({ method: 'register', wallets: [{} as SolanaWallet], callback() {} });
+    ((window as WalletsWindow<SolanaWalletAccount>).navigator.wallets ||= []).push({
+        method: 'register',
+        wallets: [{} as SolanaWallet],
+        callback() {},
+    });
+    ((window as WalletsWindow<FooWalletAccount>).navigator.wallets ||= []).push({
+        method: 'register',
+        wallets: [fooWallet1],
+        callback() {},
+    });
+    ((window as WalletsWindow<FooWalletAccount>).navigator.wallets ||= []).push({
+        method: 'register',
+        wallets: [fooWallet2],
+        callback() {},
+    });
 
     const wallets = initialize<SolanaWalletAccount>();
     const wallet = wallets.get()[0];

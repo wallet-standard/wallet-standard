@@ -5,19 +5,18 @@ import {
     WalletsCommand,
     WalletsEventNames,
     WalletsEvents,
-    WalletsNavigator,
+    WalletsWindow,
 } from '@solana/wallet-standard';
 
 /** TODO: docs */
 export function initialize<Account extends WalletAccount>(): Wallets<Account> {
     if (typeof window === 'undefined') return create<Account>(); // FIXME
 
-    const navigator: WalletsNavigator<Account> = window.navigator;
-    const commands = (navigator.wallets = navigator.wallets || []);
+    const commands = ((window as WalletsWindow<Account>).navigator.wallets ||= []);
     // If it's already initialized, don't recreate it, just return it.
     if (!Array.isArray(commands)) return commands;
 
-    const wallets = (navigator.wallets = create<Account>());
+    const wallets = ((window as WalletsWindow<Account>).navigator.wallets = create<Account>());
     wallets.push(...commands);
     return wallets;
 }
