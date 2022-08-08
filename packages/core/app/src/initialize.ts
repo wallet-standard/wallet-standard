@@ -10,7 +10,7 @@ import {
 
 /** TODO: docs */
 export function initialize<Account extends WalletAccount>(): Wallets<Account> {
-    if (typeof window === 'undefined') return create<Account>(); // FIXME
+    if (typeof window === 'undefined') return create<Account>();
 
     const commands = ((window as WalletsWindow<Account>).navigator.wallets ||= []);
     // If it's already initialized, don't recreate it, just return it.
