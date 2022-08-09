@@ -28,6 +28,8 @@ export type WalletAccount = Readonly<{
 export interface WalletEvents<Account extends WalletAccount> {
     /**
      * Emitted when properties of the wallet have changed.
+     *
+     * @param properties Names of the properties that changed.
      */
     change(properties: WalletPropertyNames<Account>[]): void;
 }
