@@ -1,3 +1,4 @@
+import { UnionToIntersection } from '../typescript';
 import { WalletAccount } from '../wallet';
 import { DecryptFeature } from './decrypt';
 import { EncryptFeature } from './encrypt';
@@ -21,9 +22,6 @@ export type WalletAccountFeature<Account extends WalletAccount> =
     | SignMessageFeature<Account>
     | EncryptFeature<Account>
     | DecryptFeature<Account>;
-
-/** TODO: docs */
-export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
 /** TODO: docs */
 export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
