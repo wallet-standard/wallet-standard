@@ -86,15 +86,15 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
 
     on<E extends WalletEventNames<Account>>(event: E, listener: WalletEvents<Account>[E]): () => void {
         this._listeners[event]?.push(listener) || (this._listeners[event] = [listener]);
-        return (): void => this._off(event, listener);
+        return (): void => this.#off(event, listener);
     }
 
-    private _emit<E extends WalletEventNames<Account>>(event: E, ...args: Parameters<WalletEvents<Account>[E]>): void {
+    #emit<E extends WalletEventNames<Account>>(event: E, ...args: Parameters<WalletEvents<Account>[E]>): void {
         // eslint-disable-next-line prefer-spread
         this._listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    protected _off<E extends WalletEventNames<Account>>(event: E, listener: WalletEvents<Account>[E]): void {
+    #off<E extends WalletEventNames<Account>>(event: E, listener: WalletEvents<Account>[E]): void {
         this._listeners[event] = this._listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }

@@ -10,15 +10,15 @@ export class MultiChainWallet
     extends AbstractWallet<MultiChainWalletAccount>
     implements Wallet<MultiChainWalletAccount>
 {
-    private _name = 'MultiChain Wallet';
-    private _icon = '';
+    #name = 'MultiChain Wallet';
+    #icon = '';
 
     get name(): string {
-        return this._name;
+        return this.#name;
     }
 
     get icon(): string {
-        return this._icon;
+        return this.#icon;
     }
 
     constructor() {

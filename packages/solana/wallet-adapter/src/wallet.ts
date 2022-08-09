@@ -37,49 +37,49 @@ export type SolanaWalletAdapterChain =
     | typeof CHAIN_SOLANA_LOCALNET;
 
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
-    private _adapter: Adapter;
-    private _publicKey: Uint8Array;
-    private _chain: SolanaWalletAdapterChain;
+    readonly #adapter: Adapter;
+    readonly #publicKey: Uint8Array;
+    readonly #chain: SolanaWalletAdapterChain;
 
     get address() {
         return this.publicKey;
     }
 
     get publicKey() {
-        return this._publicKey.slice();
+        return this.#publicKey.slice();
     }
 
     get chain() {
-        return this._chain;
+        return this.#chain;
     }
 
     get features(): SignTransactionFeature<this> | SignAndSendTransactionFeature<this> | SignMessageFeature<this> {
         const signAndSendTransaction: SignAndSendTransactionFeature<this> = {
-            signAndSendTransaction: { signAndSendTransaction: (...args) => this._signAndSendTransaction(...args) },
+            signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
         };
 
         let signTransactionFeature: SignTransactionFeature<this> | undefined = undefined;
-        if ('signTransaction' in this._adapter) {
+        if ('signTransaction' in this.#adapter) {
             signTransactionFeature = {
-                signTransaction: { signTransaction: (...args) => this._signTransaction(...args) },
+                signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
             };
         }
 
         let signMessageFeature: SignMessageFeature<this> | undefined = undefined;
-        if ('signMessage' in this._adapter) {
-            signMessageFeature = { signMessage: { signMessage: (...args) => this._signMessage(...args) } };
+        if ('signMessage' in this.#adapter) {
+            signMessageFeature = { signMessage: { signMessage: (...args) => this.#signMessage(...args) } };
         }
 
         return { ...signAndSendTransaction, ...signTransactionFeature, ...signMessageFeature };
     }
 
     constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaWalletAdapterChain) {
-        this._adapter = adapter;
-        this._publicKey = publicKey;
-        this._chain = chain;
+        this.#adapter = adapter;
+        this.#publicKey = publicKey;
+        this.#chain = chain;
     }
 
-    private async _signAndSendTransaction(
+    async #signAndSendTransaction(
         input: SignAndSendTransactionInput<this>
     ): Promise<SignAndSendTransactionOutput<this>> {
         if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
@@ -88,18 +88,18 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         let signatures: TransactionSignature[];
         if (transactions.length === 1) {
             let endpoint: string;
-            if (this._chain === CHAIN_SOLANA_MAINNET) {
+            if (this.#chain === CHAIN_SOLANA_MAINNET) {
                 endpoint = clusterApiUrl('mainnet-beta');
-            } else if (this._chain === CHAIN_SOLANA_DEVNET) {
+            } else if (this.#chain === CHAIN_SOLANA_DEVNET) {
                 endpoint = clusterApiUrl('devnet');
-            } else if (this._chain === CHAIN_SOLANA_TESTNET) {
+            } else if (this.#chain === CHAIN_SOLANA_TESTNET) {
                 endpoint = clusterApiUrl('testnet');
             } else {
                 endpoint = 'http://localhost:8899';
             }
 
             const connection = new Connection(endpoint, 'confirmed');
-            const signature = await this._adapter.sendTransaction(transactions[0], connection);
+            const signature = await this.#adapter.sendTransaction(transactions[0], connection);
 
             signatures = [signature];
         } else if (transactions.length > 1) {
@@ -113,17 +113,17 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return { signatures: rawSignatures };
     }
 
-    private async _signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
-        if (!('signTransaction' in this._adapter)) throw new Error('signTransaction not implemented by adapter');
+    async #signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
+        if (!('signTransaction' in this.#adapter)) throw new Error('signTransaction not implemented by adapter');
         if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
 
         const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
 
         let signedTransactions: Transaction[];
         if (transactions.length === 1) {
-            signedTransactions = [await this._adapter.signTransaction(transactions[0])];
+            signedTransactions = [await this.#adapter.signTransaction(transactions[0])];
         } else if (transactions.length > 1) {
-            signedTransactions = await this._adapter.signAllTransactions(transactions);
+            signedTransactions = await this.#adapter.signAllTransactions(transactions);
         } else {
             signedTransactions = [];
         }
@@ -135,13 +135,13 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return { signedTransactions: rawSignedTransactions };
     }
 
-    private async _signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
-        if (!('signMessage' in this._adapter)) throw new Error('signMessage not implemented by adapter');
+    async #signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
+        if (!('signMessage' in this.#adapter)) throw new Error('signMessage not implemented by adapter');
         if (input.extraSigners?.length) throw new Error('extraSigners not implemented');
 
         let signedMessages: Uint8Array[];
         if (input.messages.length === 1) {
-            const signature = await this._adapter.signMessage(input.messages[0]);
+            const signature = await this.#adapter.signMessage(input.messages[0]);
             signedMessages = [concatBytes(input.messages[0], signature)];
         } else if (input.messages.length > 1) {
             throw new Error('signMessage for multiple messages not implemented');
@@ -154,42 +154,42 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 }
 
 export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
-    private _listeners: {
+    #listeners: {
         [E in WalletEventNames<SolanaWalletAdapterWalletAccount>]?: WalletEvents<SolanaWalletAdapterWalletAccount>[E][];
     } = {};
-    private _adapter: Adapter;
-    private _chain: SolanaWalletAdapterChain;
-    private _account: SolanaWalletAdapterWalletAccount | undefined;
+    #adapter: Adapter;
+    #chain: SolanaWalletAdapterChain;
+    #account: SolanaWalletAdapterWalletAccount | undefined;
 
     get version() {
         return VERSION_1_0_0;
     }
 
     get name() {
-        return this._adapter.name;
+        return this.#adapter.name;
     }
 
     get icon() {
-        return this._adapter.icon;
+        return this.#adapter.icon;
     }
 
     get chains() {
-        return [this._chain];
+        return [this.#chain];
     }
 
     get features() {
         const features: WalletAccountFeatureNames<SolanaWalletAdapterWalletAccount>[] = ['signAndSendTransaction'];
-        if ('signTransaction' in this._adapter) {
+        if ('signTransaction' in this.#adapter) {
             features.push('signTransaction');
         }
-        if ('signMessage' in this._adapter) {
+        if ('signMessage' in this.#adapter) {
             features.push('signMessage');
         }
         return features;
     }
 
     get accounts() {
-        return this._account ? [this._account] : [];
+        return this.#account ? [this.#account] : [];
     }
 
     get hasMoreAccounts() {
@@ -197,18 +197,18 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     }
 
     constructor(adapter: Adapter, chain: SolanaWalletAdapterChain) {
-        this._adapter = adapter;
-        this._chain = chain;
+        this.#adapter = adapter;
+        this.#chain = chain;
 
-        adapter.on('connect', this._connect, this);
-        adapter.on('disconnect', this._disconnect, this);
+        adapter.on('connect', this.#connect, this);
+        adapter.on('disconnect', this.#disconnect, this);
 
-        this._connect();
+        this.#connect();
     }
 
     destroy(): void {
-        this._adapter.off('connect', this._connect, this);
-        this._adapter.off('disconnect', this._disconnect, this);
+        this.#adapter.off('connect', this.#connect, this);
+        this.#adapter.off('disconnect', this.#disconnect, this);
     }
 
     async connect<
@@ -221,16 +221,16 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         features,
         silent,
     }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames, Input>> {
-        if (!silent && !this._adapter.connected) {
-            await this._adapter.connect();
+        if (!silent && !this.#adapter.connected) {
+            await this.#adapter.connect();
         }
 
         if (chains?.length) {
             if (chains.length > 1) throw new Error('multiple chains not supported');
-            this._chain = chains[0];
+            this.#chain = chains[0];
         }
 
-        this._connect();
+        this.#connect();
 
         return {
             accounts: this.accounts as any, // FIXME
@@ -242,40 +242,40 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         event: E,
         listener: WalletEvents<SolanaWalletAdapterWalletAccount>[E]
     ): () => void {
-        this._listeners[event]?.push(listener) || (this._listeners[event] = [listener]);
-        return (): void => this._off(event, listener);
+        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
+        return (): void => this.#off(event, listener);
     }
 
-    private _emit<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
+    #emit<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
         event: E,
         ...args: Parameters<WalletEvents<SolanaWalletAdapterWalletAccount>[E]>
     ): void {
         // eslint-disable-next-line prefer-spread
-        this._listeners[event]?.forEach((listener) => listener.apply(null, args));
+        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    private _off<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
+    #off<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
         event: E,
         listener: WalletEvents<SolanaWalletAdapterWalletAccount>[E]
     ): void {
-        this._listeners[event] = this._listeners[event]?.filter((existingListener) => listener !== existingListener);
+        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
-    private _connect(): void {
-        const publicKey = this._adapter.publicKey?.toBytes();
+    #connect(): void {
+        const publicKey = this.#adapter.publicKey?.toBytes();
         if (publicKey) {
-            const account = this._account;
-            if (!account || account.chain !== this._chain || !bytesEqual(account.publicKey, publicKey)) {
-                this._account = new SolanaWalletAdapterWalletAccount(this._adapter, publicKey, this._chain);
-                this._emit('change', ['accounts']);
+            const account = this.#account;
+            if (!account || account.chain !== this.#chain || !bytesEqual(account.publicKey, publicKey)) {
+                this.#account = new SolanaWalletAdapterWalletAccount(this.#adapter, publicKey, this.#chain);
+                this.#emit('change', ['accounts']);
             }
         }
     }
 
-    private _disconnect(): void {
-        if (this._account) {
-            this._account = undefined;
-            this._emit('change', ['accounts']);
+    #disconnect(): void {
+        if (this.#account) {
+            this.#account = undefined;
+            this.#emit('change', ['accounts']);
         }
     }
 }
