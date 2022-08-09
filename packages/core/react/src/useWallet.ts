@@ -1,12 +1,11 @@
-import { Wallet, WalletAccount } from '@solana/wallet-standard';
+import { Wallet, WalletAccount, WalletProperties } from '@solana/wallet-standard';
 import { createContext, useContext } from 'react';
 import { createDefaultContext, EMPTY_ARRAY } from './context';
 
 export interface WalletContextState<Account extends WalletAccount> {
     wallet: Wallet<Account> | undefined;
     setWallet(wallet: Wallet<Account> | undefined): void;
-    accounts: Wallet<Account>['accounts'];
-    chains: Wallet<Account>['chains'];
+    properties: WalletProperties<Account> | undefined;
     connecting: boolean;
     connect: Wallet<Account>['connect'];
 }
@@ -14,8 +13,7 @@ export interface WalletContextState<Account extends WalletAccount> {
 const DEFAULT_CONTEXT: WalletContextState<WalletAccount> = createDefaultContext('Wallet', {
     wallet: undefined,
     setWallet() {},
-    accounts: EMPTY_ARRAY,
-    chains: EMPTY_ARRAY,
+    properties: undefined,
     connecting: false,
     async connect() {
         return {

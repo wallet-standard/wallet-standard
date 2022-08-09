@@ -1,4 +1,5 @@
 import { WalletAccountFeatureNames, WalletAccountFeatures } from './features';
+import { MethodNames, PropertyNames } from './typescript';
 
 /** An account in the wallet that the app has been authorized to use. */
 export type WalletAccount = Readonly<{
@@ -24,27 +25,21 @@ export type WalletAccount = Readonly<{
 }>;
 
 /** Events emitted by wallets. */
-export interface WalletEvents {
+export interface WalletEvents<Account extends WalletAccount> {
     /**
-     * Emitted when the accounts in the wallet are added or removed.
-     * An app can listen for this event and call `connect` without arguments to request accounts again.
+     * Emitted when properties of the wallet have changed.
      */
-    accountsChanged(): void;
-
-    /**
-     * TODO: docs
-     */
-    hasMoreAccountsChanged(): void;
-
-    /**
-     * Emitted when the chains the wallet supports are changed.
-     * This can happen if the wallet supports adding chains, like Metamask.
-     */
-    chainsChanged(): void;
+    change(properties: WalletPropertyNames<Account>[]): void;
 }
 
 /** TODO: docs */
-export type WalletEventNames = keyof WalletEvents;
+export type WalletEventNames<Account extends WalletAccount> = keyof WalletEvents<Account>;
+
+/** TODO: docs */
+export type WalletPropertyNames<Account extends WalletAccount> = PropertyNames<Wallet<Account>>;
+
+/** TODO: docs */
+export type WalletProperties<Account extends WalletAccount> = Pick<Wallet<Account>, WalletPropertyNames<Account>>;
 
 /** TODO: docs */
 export type Wallet<Account extends WalletAccount> = Readonly<{
@@ -66,16 +61,6 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
     icon: string;
 
     /**
-     * List the accounts the app is authorized to use.
-     * This can be set by the wallet so the app can use authorized accounts on the initial page load.
-     * This can be updated by the wallet, which will emit a `accountsChanged` event when this occurs.
-     */
-    accounts: ReadonlyArray<Account>;
-
-    /** TODO: docs */
-    hasMoreAccounts: boolean;
-
-    /**
      * List the chains supported for signing, simulating, and sending transactions.
      * This can be updated by the wallet, which will emit a `chainsChanged` event when this occurs.
      */
@@ -84,8 +69,15 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
     /** TODO: docs */
     features: ReadonlyArray<WalletAccountFeatureNames<Account>>;
 
-    /** List the ciphers supported for encryption and decryption. */
-    ciphers: Account['ciphers'];
+    /**
+     * List the accounts the app is authorized to use.
+     * This can be set by the wallet so the app can use authorized accounts on the initial page load.
+     * This can be updated by the wallet, which will emit a `accountsChanged` event when this occurs.
+     */
+    accounts: ReadonlyArray<Account>;
+
+    /** TODO: docs */
+    hasMoreAccounts: boolean;
 
     /**
      * Connect to accounts in the wallet.
@@ -110,7 +102,7 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
      *
      * @return Function to remove the event listener and unsubscribe.
      */
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void;
+    on<E extends WalletEventNames<Account>>(event: E, listener: WalletEvents<Account>[E]): () => void;
 }>;
 
 /** Input for connecting. */

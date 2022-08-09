@@ -1,4 +1,4 @@
-import { Wallet, WalletAccount } from '@solana/wallet-standard';
+import { Wallet, WalletAccount, WalletProperties } from '@solana/wallet-standard';
 import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { WalletContext } from './useWallet';
 
@@ -9,8 +9,7 @@ export interface WalletProviderProps {
 
 export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: WalletProviderProps) => {
     const [wallet, setWallet] = useState<Wallet<WalletAccount>>();
-    const [accounts, setAccounts] = useState<ReadonlyArray<WalletAccount>>([]);
-    const [chains, setChains] = useState<ReadonlyArray<string>>([]);
+    const [properties, setProperties] = useState<WalletProperties<WalletAccount>>();
 
     // If the window is closing or reloading, ignore events from the wallet
     const isUnloading = useRef(false);
@@ -23,23 +22,31 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
         return () => window.removeEventListener('beforeunload', beforeUnload);
     }, [isUnloading]);
 
-    // When the wallet changes, set the accounts and listen for changes to the accounts
+    // When the wallet changes, set properties and listen for changes
     useEffect(() => {
         if (wallet) {
-            setAccounts(wallet.accounts);
-            return wallet.on('accountsChanged', () => setAccounts(wallet.accounts));
+            setProperties({
+                version: wallet.version,
+                name: wallet.name,
+                icon: wallet.icon,
+                chains: wallet.chains,
+                features: wallet.features,
+                accounts: wallet.accounts,
+                hasMoreAccounts: wallet.hasMoreAccounts,
+            });
+            return wallet.on('change', () =>
+                setProperties({
+                    version: wallet.version,
+                    name: wallet.name,
+                    icon: wallet.icon,
+                    chains: wallet.chains,
+                    features: wallet.features,
+                    accounts: wallet.accounts,
+                    hasMoreAccounts: wallet.hasMoreAccounts,
+                })
+            );
         } else {
-            setAccounts([]);
-        }
-    }, [wallet]);
-
-    // When the wallet changes, set the chains and listen for changes to the chains
-    useEffect(() => {
-        if (wallet) {
-            setChains(wallet.chains);
-            return wallet.on('chainsChanged', () => setChains(wallet.chains));
-        } else {
-            setChains([]);
+            setProperties(undefined);
         }
     }, [wallet]);
 
@@ -87,7 +94,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
     );
 
     return (
-        <WalletContext.Provider value={{ wallet, setWallet, accounts, chains, connecting, connect }}>
+        <WalletContext.Provider value={{ wallet, setWallet, properties, connecting, connect }}>
             {children}
         </WalletContext.Provider>
     );

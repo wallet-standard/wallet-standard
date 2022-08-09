@@ -34,7 +34,10 @@ class FooWallet implements Wallet<FooWalletAccount> {
     connect(...args: Parameters<Wallet<FooWalletAccount>['connect']>): ReturnType<Wallet<FooWalletAccount>['connect']> {
         throw new Error('Method not implemented.');
     }
-    on<E extends keyof WalletEvents>(event: E, listener: WalletEvents[E]): () => void {
+    on<E extends keyof WalletEvents<FooWalletAccount>>(
+        event: E,
+        listener: WalletEvents<FooWalletAccount>[E]
+    ): () => void {
         throw new Error('Method not implemented.');
     }
 }
