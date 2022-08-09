@@ -1,5 +1,5 @@
 import { WalletAccountFeatureNames, WalletAccountFeatures } from './features';
-import { MethodNames, PropertyNames } from './typescript';
+import { PropertyNames } from './typescript';
 
 /** An account in the wallet that the app has been authorized to use. */
 export type WalletAccount = Readonly<{

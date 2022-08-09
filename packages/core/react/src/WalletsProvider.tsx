@@ -3,10 +3,12 @@ import { initialize } from '@solana/wallet-standard-app';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { WalletsContext } from './useWallets';
 
+/** TODO: docs */
 export interface WalletsProviderProps {
     children: NonNullable<ReactNode>;
 }
 
+/** TODO: docs */
 export const WalletsProvider: FC<WalletsProviderProps> = ({ children }: WalletsProviderProps) => {
     // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
     const [wallets, setWallets] = useState(() => initialize<WalletAccount>().get());

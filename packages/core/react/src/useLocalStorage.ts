@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+/** @internal */
 export function useLocalStorage<T>(key: string, defaultState: T): [T, React.Dispatch<React.SetStateAction<T>>] {
     const state = useState<T>(() => {
         try {

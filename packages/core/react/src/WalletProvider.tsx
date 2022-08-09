@@ -1,15 +1,19 @@
-import { Wallet, WalletAccount, WalletProperties } from '@solana/wallet-standard';
+import { Wallet, WalletAccount } from '@solana/wallet-standard';
 import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { WalletContext } from './useWallet';
+import { getWalletProperties, WalletContext } from './useWallet';
 
+/** TODO: docs */
 export interface WalletProviderProps {
     children: NonNullable<ReactNode>;
     onError?: (error: Error) => void;
 }
 
+/** TODO: docs */
 export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: WalletProviderProps) => {
     const [wallet, setWallet] = useState<Wallet<WalletAccount>>();
-    const [properties, setProperties] = useState<WalletProperties<WalletAccount>>();
+    const [{ version, name, icon, chains, features, accounts, hasMoreAccounts }, setWalletProperties] = useState(
+        getWalletProperties(wallet)
+    );
 
     // If the window is closing or reloading, ignore events from the wallet
     const isUnloading = useRef(false);
@@ -24,30 +28,8 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
 
     // When the wallet changes, set properties and listen for changes
     useEffect(() => {
-        if (wallet) {
-            setProperties({
-                version: wallet.version,
-                name: wallet.name,
-                icon: wallet.icon,
-                chains: wallet.chains,
-                features: wallet.features,
-                accounts: wallet.accounts,
-                hasMoreAccounts: wallet.hasMoreAccounts,
-            });
-            return wallet.on('change', () =>
-                setProperties({
-                    version: wallet.version,
-                    name: wallet.name,
-                    icon: wallet.icon,
-                    chains: wallet.chains,
-                    features: wallet.features,
-                    accounts: wallet.accounts,
-                    hasMoreAccounts: wallet.hasMoreAccounts,
-                })
-            );
-        } else {
-            setProperties(undefined);
-        }
+        setWalletProperties(getWalletProperties(wallet));
+        if (wallet) return wallet.on('change', () => setWalletProperties(getWalletProperties(wallet)));
     }, [wallet]);
 
     // Handle errors
@@ -94,7 +76,21 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
     );
 
     return (
-        <WalletContext.Provider value={{ wallet, setWallet, properties, connecting, connect }}>
+        <WalletContext.Provider
+            value={{
+                wallet,
+                setWallet,
+                connecting,
+                connect,
+                version,
+                name,
+                icon,
+                chains,
+                features,
+                accounts,
+                hasMoreAccounts,
+            }}
+        >
             {children}
         </WalletContext.Provider>
     );

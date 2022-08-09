@@ -1,9 +1,14 @@
-export const EMPTY_ARRAY: ReadonlyArray<never> = [] as const;
+/** @internal */
+export const EMPTY_STRING = '' as const;
 
-export function createDefaultContext<V, T extends Record<string, V>>(name: string, defaults: T): T {
-    for (const property of Object.keys(defaults)) {
-        const value = defaults[property];
-        Object.defineProperty(defaults, property, {
+/** @internal */
+export const EMPTY_ARRAY = [] as const;
+
+/** @internal */
+export function createDefaultContext<V, T extends Record<string, V>>(name: string, defaultState: T): T {
+    for (const property of Object.keys(defaultState)) {
+        const value = defaultState[property];
+        Object.defineProperty(defaultState, property, {
             get(): V {
                 console.error(
                     'You have tried to access `' +
@@ -21,5 +26,5 @@ export function createDefaultContext<V, T extends Record<string, V>>(name: strin
             },
         });
     }
-    return defaults;
+    return defaultState;
 }
