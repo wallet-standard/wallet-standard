@@ -82,10 +82,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return this._chain;
     }
 
-    get ciphers() {
-        return [CIPHER_DEFAULT];
-    }
-
     get features(): WalletAccountFeature<this> {
         return { ...this._features };
     }

@@ -10,14 +10,12 @@ import {
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
     features: WalletAccountFeature<this>;
-    ciphers: ['x25519-xsalsa20-poly1305'];
 }
 
 // A Solana account on a Ledger device that can only sign transactions
 interface SolanaLedgerWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
     features: SignTransactionFeature<this> | SignAndSendTransactionFeature<this>;
-    ciphers: never;
 }
 
 // A custom feature for an account to implement
@@ -31,7 +29,6 @@ type SubscribeFeature = {
 interface EthereumWalletAccount extends WalletAccount {
     chain: 'ethereum:mainnet';
     features: WalletAccountFeature<this> | SubscribeFeature;
-    ciphers: ['x25519-xsalsa20-poly1305'];
 }
 
 // A wallet that supports multiple account types
@@ -45,8 +42,6 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     const chains = wallet.chains;
     // Good -- this may be any of the Solana, Ledger, or Ethereum features, even though some don't exist on Ledger
     const features = wallet.features;
-    // Good -- this may be any of the Solana or Ethereum ciphers, even though Ledger never has them
-    const ciphers = wallet.ciphers;
     // Good -- this may be a Solana, Ledger, or Ethereum account
     const account = wallet.accounts[0];
 
@@ -153,4 +148,6 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     // Good -- this succeeds because the account includes the feature
     await accountWithCustomFeature.features.subscribe.subscribe('change');
+
+    // TODO: add test for encrypt/decrypt feature cipher
 })();

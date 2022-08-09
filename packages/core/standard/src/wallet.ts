@@ -14,9 +14,6 @@ export type WalletAccount = Readonly<{
     /** Chain to sign, simulate, and send transactions using. */
     chain: string;
 
-    /** List of ciphers supported for encryption and decryption. */
-    ciphers: ReadonlyArray<string>;
-
     /** Features supported by the account that are authorized to be called. */
     features: Readonly<Record<string, unknown>>;
 

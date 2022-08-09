@@ -3,6 +3,9 @@ import { WalletAccount } from '../wallet';
 /** TODO: docs */
 export type EncryptFeature<Account extends WalletAccount> = Readonly<{
     encrypt: {
+        /** List of ciphers supported for encryption. */
+        ciphers: ReadonlyArray<string>;
+
         /**
          * Encrypt cleartexts using the account's secret key.
          *
@@ -23,7 +26,7 @@ export type EncryptInput<Account extends WalletAccount> = Readonly<{
     cleartexts: ReadonlyArray<Uint8Array>;
 
     /** Optional cipher to use for encryption. Default to whatever the wallet wants. */
-    cipher?: Account['ciphers'][number];
+    cipher?: string; // TODO: determine if this needs to be inferred from EncryptFeature
 
     // TODO: decide if padding is needed
 }>;
@@ -37,5 +40,5 @@ export type EncryptOutput<Account extends WalletAccount> = Readonly<{
     nonces: ReadonlyArray<Uint8Array>;
 
     /** Cipher that was used for encryption. */
-    cipher: Account['ciphers'][number];
+    cipher?: string; // TODO: determine if this needs to be inferred from EncryptFeature
 }>;

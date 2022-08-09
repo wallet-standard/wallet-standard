@@ -53,10 +53,6 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return this._chain;
     }
 
-    get ciphers() {
-        return [];
-    }
-
     get features(): SignTransactionFeature<this> | SignAndSendTransactionFeature<this> | SignMessageFeature<this> {
         const signAndSendTransaction: SignAndSendTransactionFeature<this> = {
             signAndSendTransaction: { signAndSendTransaction: (...args) => this._signAndSendTransaction(...args) },
@@ -196,10 +192,6 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
             features.push('signMessage');
         }
         return features;
-    }
-
-    get ciphers() {
-        return [];
     }
 
     constructor(adapter: Adapter, chain: SolanaWalletAdapterChain) {

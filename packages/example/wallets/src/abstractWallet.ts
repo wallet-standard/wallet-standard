@@ -43,11 +43,6 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         return [...new Set(features)];
     }
 
-    get ciphers() {
-        const ciphers = this._accounts.flatMap((account) => account.ciphers);
-        return [...new Set(ciphers)];
-    }
-
     constructor(accounts: Account[]) {
         this._accounts = accounts;
     }

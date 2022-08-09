@@ -4,7 +4,6 @@ import { initialize } from '../src';
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet';
     features: { one: 1; two: 2 };
-    ciphers: never[];
 }
 
 // A wallet that supports multiple account types
@@ -14,7 +13,6 @@ class FooWalletAccount implements WalletAccount {
     address = new Uint8Array();
     publicKey = new Uint8Array();
     chain = 'mainnet' as const;
-    ciphers = [] as const;
     features = {
         signTransaction: {
             signTransaction() {},
@@ -29,11 +27,10 @@ class FooWallet implements Wallet<FooWalletAccount> {
     version = '1.0.0';
     name = 'Foo';
     icon = 'image';
-    accounts = [new FooWalletAccount()];
-    hasMoreAccounts = false;
     chains = ['mainnet'] as const;
     features = ['signTransaction', 'signMessage'] as const;
-    ciphers = [] as const;
+    accounts = [new FooWalletAccount()];
+    hasMoreAccounts = false;
     connect(...args: Parameters<Wallet<FooWalletAccount>['connect']>): ReturnType<Wallet<FooWalletAccount>['connect']> {
         throw new Error('Method not implemented.');
     }

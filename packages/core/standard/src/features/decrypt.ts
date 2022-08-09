@@ -3,6 +3,9 @@ import { WalletAccount } from '../wallet';
 /** TODO: docs */
 export type DecryptFeature<Account extends WalletAccount> = Readonly<{
     decrypt: {
+        /** List of ciphers supported for decryption. */
+        ciphers: ReadonlyArray<string>;
+
         /**
          * Decrypt ciphertexts using the account's secret key.
          *
@@ -26,7 +29,7 @@ export type DecryptInput<Account extends WalletAccount> = Readonly<{
     nonces: ReadonlyArray<Uint8Array>;
 
     /** Cipher to use for decryption. */
-    cipher: Account['ciphers'][number];
+    cipher: string; // TODO: determine if this needs to be inferred from DecryptFeature
 
     // TODO: decide if padding is needed
 }>;
