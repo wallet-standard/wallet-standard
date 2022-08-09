@@ -86,7 +86,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    // FIXME: can't rely on private properties for access control
     #allFeatures: AllWalletAccountFeatures<this> = {
         signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
         signTransactionOnly: { signTransactionOnly: (...args) => this.#signTransactionOnly(...args) },
@@ -282,7 +281,6 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    // FIXME: can't rely on private properties for access control
     #allFeatures: SignTransactionFeature<this> &
         SignTransactionOnlyFeature<this> &
         SignAndSendTransactionFeature<this> = {

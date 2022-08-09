@@ -69,7 +69,6 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    // FIXME: can't rely on private properties for access control
     #allFeatures: AllWalletAccountFeatures<this> = {
         signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
         signTransactionOnly: { signTransactionOnly: (...args) => this.#signTransactionOnly(...args) },
