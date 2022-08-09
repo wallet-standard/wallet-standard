@@ -1,20 +1,15 @@
 import { Wallet, WalletAccount } from './wallet';
 
-/** Browser window containing a global `navigator.wallets` object. */
-export type WalletsWindow<Account extends WalletAccount> = Window & {
-    /** Global `navigator.wallets` object. */
-    navigator: WalletsNavigator<Account>;
-};
+/** Global `window` containing a `navigator.wallets` object. */
+export type WalletsWindow<Account extends WalletAccount> = Window & { navigator: WalletsNavigator<Account> };
 
-/** TODO: docs */
-export type WalletsNavigator<Account extends WalletAccount> = Navigator & {
-    wallets?: NavigatorWallets<Account>;
-};
+/** Global `window.navigator` containing a `wallets` object. */
+export type WalletsNavigator<Account extends WalletAccount> = Navigator & { wallets?: NavigatorWallets<Account> };
 
-/** Global `navigator.wallets` object. */
+/** Global `window.navigator.wallets` object or command array. */
 export type NavigatorWallets<Account extends WalletAccount> = Wallets<Account> | WalletsCommand<Account>[];
 
-/** Global `navigator.wallets` object API. */
+/** Global `window.navigator.wallets` object API. */
 export type Wallets<Account extends WalletAccount> = Readonly<{
     /**
      * TODO: docs
@@ -42,7 +37,7 @@ export type Wallets<Account extends WalletAccount> = Readonly<{
     ): () => void;
 }>;
 
-/** TODO: docs */
+/** Global `window.navigator.wallets` command array item. */
 export type WalletsCommand<Account extends WalletAccount> =
     | WalletsCommandRegister<Account>
     | WalletsCommandGet<Account>

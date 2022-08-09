@@ -15,10 +15,9 @@ export type WalletAccount = Readonly<{
     /** Chain to sign, simulate, and send transactions using. */
     chain: string;
 
+    // TODO: think about custom features / namespacing
     /** Features supported by the account that are authorized to be called. */
     features: Readonly<Record<string, unknown>>;
-
-    // TODO: think about custom features / namespacing
 
     /** Optional user-friendly descriptive label or name of the account. */
     label?: string;
@@ -45,40 +44,51 @@ export type WalletProperties<Account extends WalletAccount> = Pick<Wallet<Accoun
 
 /** TODO: docs */
 export type Wallet<Account extends WalletAccount> = Readonly<{
-    /** Version of the Wallet API. */
+    /**
+     * Version of the Wallet API.
+     * If this changes, the wallet must emit a change event.
+     * */
     version: string;
 
     /**
      * Name of the wallet.
-     * This will be displayed by Wallet Adapter and apps.
+     * This will be displayed by Wallet Adapter and apps. // TODO: remove references to Wallet Adapter
      * It should be canonical to the wallet extension.
+     * If this changes, the wallet must emit a change event.
      */
     name: string;
 
     /**
      * Icon of the wallet.
      * This will be displayed by Wallet Adapter and apps.
-     * It should be a data URL containing a base64-encoded SVG or PNG image.
+     * It should be a data URL containing a base64-encoded SVG or PNG image. // TODO: is base64 actually needed? should other types be allowed?
+     * If this changes, the wallet must emit a change event.
      */
     icon: string;
 
     /**
      * List the chains supported for signing, simulating, and sending transactions.
-     * This can be updated by the wallet, which will emit a `chainsChanged` event when this occurs.
+     * If this changes, the wallet must emit a change event.
      */
     chains: ReadonlyArray<Account['chain']>;
 
-    /** TODO: docs */
+    /**
+     * TODO: docs
+     * If this changes, the wallet must emit a change event.
+     */
     features: ReadonlyArray<WalletAccountFeatureNames<Account>>;
 
     /**
      * List the accounts the app is authorized to use.
      * This can be set by the wallet so the app can use authorized accounts on the initial page load.
-     * This can be updated by the wallet, which will emit a `accountsChanged` event when this occurs.
+     * If this changes, the wallet must emit a change event.
      */
     accounts: ReadonlyArray<Account>;
 
-    /** TODO: docs */
+    /**
+     * TODO: docs
+     * If this changes, the wallet must emit a change event.
+     */
     hasMoreAccounts: boolean;
 
     /**
