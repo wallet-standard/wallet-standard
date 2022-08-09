@@ -1,7 +1,7 @@
 {
     "private": true,
     "author": "Solana Maintainers <maintainers@solana.foundation>",
-    "repository": "https://github.com/solana-labs/wallet-standard",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
     "engines": {
         "node": ">=16",

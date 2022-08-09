@@ -3,7 +3,7 @@
     "name": "@solana/wallet-standard-example-wallets",
     "version": "0.1.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
-    "repository": "https://github.com/solana-labs/wallet-standard",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
     "type": "module",
     "sideEffects": false,

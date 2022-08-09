@@ -1,8 +1,8 @@
-# [WIP] `@solana/wallet-standard`
+# [WIP] Wallet Standard
 
-This package outlines the Solana Wallet Standard.
+This package outlines the Wallet Standard.
 
-The purpose of this standard is to improve the user experience of wallets on Solana.
+The purpose of this standard is to improve the user experience of wallets.
 
 We intend for this standard to become broadly adopted by wallets and dapps.
 
@@ -14,7 +14,7 @@ Wallet and dapp devs are encouraged to provide their feedback and have it integr
 
 - [Global `window.navigator.wallets` interface](src/window.ts)
 - [Wallet interface](src/wallet.ts)
-- [Reference implementation for how wallets attach to the window](./src/implementation/window.ts)
+- [Example of how Standard Wallets attach to the window](../../example/wallets/src/window.ts)
 
 ## Design Principles and Goals
 
@@ -58,7 +58,7 @@ It should be impossible for conflicts between individual wallet browser extensio
 
 Browser extension wallets have adapted to this by using `Object.defineProperty(window, 'ethereum', { writable: false, ... })` to race to be the first to claim it.
 
-This makes it impossible for multiple wallets a user has to coexist, or be detected reliably by dapps. Several existing wallets on Solana use `window.solana` to do the same thing.
+This makes it impossible for multiple wallets a user has to coexist, or be detected reliably by dapps. Several existing wallets use `window.solana` to do the same thing.
 
 Wallet Adapter has been doing its part to discourage use of this for the last year by consistently not accepting new adapters that use `window.solana`.
 
