@@ -154,7 +154,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 }
 
 export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
-    private _listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    private _listeners: {
+        [E in WalletEventNames<SolanaWalletAdapterWalletAccount>]?: WalletEvents<SolanaWalletAdapterWalletAccount>[E][];
+    } = {};
     private _adapter: Adapter;
     private _chain: SolanaWalletAdapterChain;
     private _account: SolanaWalletAdapterWalletAccount | undefined;
@@ -171,14 +173,6 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return this._adapter.icon;
     }
 
-    get accounts() {
-        return this._account ? [this._account] : [];
-    }
-
-    get hasMoreAccounts() {
-        return false;
-    }
-
     get chains() {
         return [this._chain];
     }
@@ -192,6 +186,14 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
             features.push('signMessage');
         }
         return features;
+    }
+
+    get accounts() {
+        return this._account ? [this._account] : [];
+    }
+
+    get hasMoreAccounts() {
+        return false;
     }
 
     constructor(adapter: Adapter, chain: SolanaWalletAdapterChain) {
@@ -236,16 +238,26 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         };
     }
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+    on<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
+        event: E,
+        listener: WalletEvents<SolanaWalletAdapterWalletAccount>[E]
+    ): () => void {
         this._listeners[event]?.push(listener) || (this._listeners[event] = [listener]);
         return (): void => this._off(event, listener);
     }
 
-    private _emit<E extends WalletEventNames>(event: E): void {
-        this._listeners[event]?.forEach((listener) => listener());
+    private _emit<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
+        event: E,
+        ...args: Parameters<WalletEvents<SolanaWalletAdapterWalletAccount>[E]>
+    ): void {
+        // eslint-disable-next-line prefer-spread
+        this._listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    private _off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+    private _off<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
+        event: E,
+        listener: WalletEvents<SolanaWalletAdapterWalletAccount>[E]
+    ): void {
         this._listeners[event] = this._listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
@@ -255,7 +267,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
             const account = this._account;
             if (!account || account.chain !== this._chain || !bytesEqual(account.publicKey, publicKey)) {
                 this._account = new SolanaWalletAdapterWalletAccount(this._adapter, publicKey, this._chain);
-                this._emit('accountsChanged');
+                this._emit('change', ['accounts']);
             }
         }
     }
@@ -263,7 +275,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     private _disconnect(): void {
         if (this._account) {
             this._account = undefined;
-            this._emit('accountsChanged');
+            this._emit('change', ['accounts']);
         }
     }
 }

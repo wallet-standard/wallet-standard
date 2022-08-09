@@ -92,8 +92,14 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         signTransactionOnly: { signTransactionOnly: (...args) => this._signTransactionOnly(...args) },
         signAndSendTransaction: { signAndSendTransaction: (...args) => this._signAndSendTransaction(...args) },
         signMessage: { signMessage: (...args) => this._signMessage(...args) },
-        encrypt: { encrypt: (...args) => this._encrypt(...args) },
-        decrypt: { decrypt: (...args) => this._decrypt(...args) },
+        encrypt: {
+            ciphers: [CIPHER_DEFAULT],
+            encrypt: (...args) => this._encrypt(...args),
+        },
+        decrypt: {
+            ciphers: [CIPHER_DEFAULT],
+            decrypt: (...args) => this._decrypt(...args),
+        },
     };
 
     constructor({
@@ -272,10 +278,6 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
 
     get chain() {
         return this._chain;
-    }
-
-    get ciphers() {
-        return [];
     }
 
     get features() {

@@ -12,7 +12,7 @@ import {
 import { bytesEqual, pick } from '@solana/wallet-standard-util';
 
 export abstract class AbstractWallet<Account extends WalletAccount> implements Wallet<Account> {
-    protected _listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    protected _listeners: { [E in WalletEventNames<Account>]?: WalletEvents<Account>[E][] } = {};
     protected _accounts: Account[];
 
     get version() {
@@ -22,14 +22,6 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
     abstract get name(): string;
 
     abstract get icon(): string;
-
-    get accounts() {
-        return this._accounts.slice();
-    }
-
-    get hasMoreAccounts() {
-        return false;
-    }
 
     get chains() {
         const chains = this._accounts.map((account) => account.chain);
@@ -41,6 +33,14 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
             Object.keys(account.features)
         ) as WalletAccountFeatureNames<Account>[];
         return [...new Set(features)];
+    }
+
+    get accounts() {
+        return this._accounts.slice();
+    }
+
+    get hasMoreAccounts() {
+        return false;
     }
 
     constructor(accounts: Account[]) {
@@ -84,16 +84,17 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         };
     }
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+    on<E extends WalletEventNames<Account>>(event: E, listener: WalletEvents<Account>[E]): () => void {
         this._listeners[event]?.push(listener) || (this._listeners[event] = [listener]);
         return (): void => this._off(event, listener);
     }
 
-    protected _emit<E extends WalletEventNames>(event: E): void {
-        this._listeners[event]?.forEach((listener) => listener());
+    private _emit<E extends WalletEventNames<Account>>(event: E, ...args: Parameters<WalletEvents<Account>[E]>): void {
+        // eslint-disable-next-line prefer-spread
+        this._listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    protected _off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+    protected _off<E extends WalletEventNames<Account>>(event: E, listener: WalletEvents<Account>[E]): void {
         this._listeners[event] = this._listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }
