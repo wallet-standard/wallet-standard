@@ -30,8 +30,6 @@ export type DecryptInput<Account extends WalletAccount> = Readonly<{
 
     /** Cipher to use for decryption. */
     cipher: string; // TODO: determine if this needs to be inferred from DecryptFeature
-
-    // TODO: decide if padding is needed
 }>;
 
 /** Output of decryption. */
