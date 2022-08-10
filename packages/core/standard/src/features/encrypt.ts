@@ -1,7 +1,5 @@
-import { WalletAccount } from '../wallet';
-
 /** TODO: docs */
-export type EncryptFeature<Account extends WalletAccount> = Readonly<{
+export type EncryptFeature = Readonly<{
     encrypt: {
         /** List of ciphers supported for encryption. */
         ciphers: ReadonlyArray<string>;
@@ -13,12 +11,12 @@ export type EncryptFeature<Account extends WalletAccount> = Readonly<{
          *
          * @return Outputs of encryption.
          */
-        encrypt(inputs: EncryptInputs<Account>): Promise<EncryptOutputs<Account>>;
+        encrypt(inputs: EncryptInputs): Promise<EncryptOutputs>;
     };
 }>;
 
 /** Input for encryption. */
-export type EncryptInput<Account extends WalletAccount> = Readonly<{
+export type EncryptInput = Readonly<{
     /** Public key to derive a shared key to encrypt the data using. */
     publicKey: Uint8Array;
 
@@ -30,10 +28,10 @@ export type EncryptInput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** Inputs for encryption. */
-export type EncryptInputs<Account extends WalletAccount> = ReadonlyArray<EncryptInput<Account>>;
+export type EncryptInputs = ReadonlyArray<EncryptInput>;
 
 /** Output of encryption. */
-export type EncryptOutput<Account extends WalletAccount> = Readonly<{
+export type EncryptOutput = Readonly<{
     /** Ciphertext that was encrypted. */
     ciphertext: Uint8Array;
 
@@ -45,4 +43,4 @@ export type EncryptOutput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** Outputs of encryption. */
-export type EncryptOutputs<Account extends WalletAccount> = ReadonlyArray<EncryptOutput<Account>>;
+export type EncryptOutputs = ReadonlyArray<EncryptOutput>;

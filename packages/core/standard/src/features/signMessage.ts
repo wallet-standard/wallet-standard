@@ -1,7 +1,7 @@
 import { WalletAccount } from '../wallet';
 
 /** TODO: docs */
-export type SignMessageFeature<Account extends WalletAccount> = Readonly<{
+export type SignMessageFeature = Readonly<{
     signMessage: {
         /**
          * Sign messages (arbitrary bytes) using the account's secret key.
@@ -10,24 +10,24 @@ export type SignMessageFeature<Account extends WalletAccount> = Readonly<{
          *
          * @return Outputs of signing messages.
          */
-        signMessage(inputs: SignMessageInputs<Account>): Promise<SignMessageOutputs<Account>>;
+        signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs>;
     };
 }>;
 
 /** Input for signing a message. */
-export type SignMessageInput<Account extends WalletAccount> = Readonly<{
+export type SignMessageInput = Readonly<{
     /** Message to sign, as raw bytes. */
     message: Uint8Array;
 
     /** Optional accounts that must also sign the messages. They must have the `signMessage` feature. */
-    extraSigners?: ReadonlyArray<Account & { features: SignMessageFeature<Account> }>;
+    extraSigners?: ReadonlyArray<WalletAccount & { features: SignMessageFeature }>;
 }>;
 
 /** Inputs for signing messages. */
-export type SignMessageInputs<Account extends WalletAccount> = ReadonlyArray<SignMessageInput<Account>>;
+export type SignMessageInputs = ReadonlyArray<SignMessageInput>;
 
 /** Output of signing a message. */
-export type SignMessageOutput<Account extends WalletAccount> = Readonly<{
+export type SignMessageOutput = Readonly<{
     /** TODO: docs */
     signedMessage: Uint8Array;
 
@@ -36,4 +36,4 @@ export type SignMessageOutput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** Outputs of signing messages. */
-export type SignMessageOutputs<Account extends WalletAccount> = ReadonlyArray<SignMessageOutput<Account>>;
+export type SignMessageOutputs = ReadonlyArray<SignMessageOutput>;

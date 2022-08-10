@@ -2,7 +2,7 @@ import { WalletAccount } from '../wallet';
 import { SignTransactionOnlyFeature } from './signTransactionOnly';
 
 /** TODO: docs */
-export type SignTransactionFeature<Account extends WalletAccount> = Readonly<{
+export type SignTransactionFeature = Readonly<{
     signTransaction: {
         /**
          * Sign transactions using the account's secret key.
@@ -11,24 +11,24 @@ export type SignTransactionFeature<Account extends WalletAccount> = Readonly<{
          *
          * @return Outputs of signing transactions.
          */
-        signTransaction(inputs: SignTransactionInputs<Account>): Promise<SignTransactionOutputs<Account>>;
+        signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs>;
     };
 }>;
 
 /** Input for signing a transaction. */
-export type SignTransactionInput<Account extends WalletAccount> = Readonly<{
+export type SignTransactionInput = Readonly<{
     /** Serialized transactions, as raw bytes. */
     transaction: Uint8Array;
 
     /** Optional accounts that must also sign the transactions. They must have the `signTransactionOnly` feature. */
-    extraSigners?: ReadonlyArray<Account & { features: SignTransactionOnlyFeature<Account> }>;
+    extraSigners?: ReadonlyArray<WalletAccount & { features: SignTransactionOnlyFeature }>;
 }>;
 
 /** Inputs for signing transactions. */
-export type SignTransactionInputs<Account extends WalletAccount> = ReadonlyArray<SignTransactionInput<Account>>;
+export type SignTransactionInputs = ReadonlyArray<SignTransactionInput>;
 
 /** Output of signing a transaction. */
-export type SignTransactionOutput<Account extends WalletAccount> = Readonly<{
+export type SignTransactionOutput = Readonly<{
     /**
      * Signed, serialized transactions, as raw bytes.
      * Returning transactions rather than signatures allows multisig wallets, program wallets, and other wallets that
@@ -38,4 +38,4 @@ export type SignTransactionOutput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** Outputs of signing transactions. */
-export type SignTransactionOutputs<Account extends WalletAccount> = ReadonlyArray<SignTransactionOutput<Account>>;
+export type SignTransactionOutputs = ReadonlyArray<SignTransactionOutput>;

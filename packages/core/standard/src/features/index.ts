@@ -15,13 +15,19 @@ export * from './signTransaction';
 export * from './signTransactionOnly';
 
 /** TODO: docs */
-export type WalletAccountFeature<Account extends WalletAccount> =
-    | SignTransactionFeature<Account>
-    | SignTransactionOnlyFeature<Account>
-    | SignAndSendTransactionFeature<Account>
-    | SignMessageFeature<Account>
-    | EncryptFeature<Account>
-    | DecryptFeature<Account>;
+export type Feature =
+    | SignTransactionFeature
+    | SignTransactionOnlyFeature
+    | SignAndSendTransactionFeature
+    | SignMessageFeature
+    | EncryptFeature
+    | DecryptFeature;
+
+/** TODO: docs */
+export type Features = UnionToIntersection<Feature>;
+
+/** TODO: docs */
+export type FeatureNames = keyof Features;
 
 /** TODO: docs */
 export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;

@@ -1,7 +1,5 @@
-import { WalletAccount } from '../wallet';
-
 /** TODO: docs */
-export type DecryptFeature<Account extends WalletAccount> = Readonly<{
+export type DecryptFeature = Readonly<{
     decrypt: {
         /** List of ciphers supported for decryption. */
         ciphers: ReadonlyArray<string>;
@@ -13,12 +11,12 @@ export type DecryptFeature<Account extends WalletAccount> = Readonly<{
          *
          * @return Outputs of decryption.
          */
-        decrypt(inputs: DecryptInputs<Account>): Promise<DecryptOutputs<Account>>;
+        decrypt(inputs: DecryptInputs): Promise<DecryptOutputs>;
     };
 }>;
 
 /** Input for decryption. */
-export type DecryptInput<Account extends WalletAccount> = Readonly<{
+export type DecryptInput = Readonly<{
     /** Public key to derive a shared key to decrypt the data using. */
     publicKey: Uint8Array;
 
@@ -33,13 +31,13 @@ export type DecryptInput<Account extends WalletAccount> = Readonly<{
 }>;
 
 /** Inputs for decryption. */
-export type DecryptInputs<Account extends WalletAccount> = ReadonlyArray<DecryptInput<Account>>;
+export type DecryptInputs = ReadonlyArray<DecryptInput>;
 
 /** Output of decryption. */
-export type DecryptOutput<Account extends WalletAccount> = Readonly<{
+export type DecryptOutput = Readonly<{
     /** Cleartext that was decrypted. */
     cleartext: Uint8Array;
 }>;
 
 /** Outputs of decryption. */
-export type DecryptOutputs<Account extends WalletAccount> = ReadonlyArray<DecryptOutput<Account>>;
+export type DecryptOutputs = ReadonlyArray<DecryptOutput>;
