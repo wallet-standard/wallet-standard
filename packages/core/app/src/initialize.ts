@@ -6,7 +6,7 @@ import {
     WalletsEventNames,
     WalletsEvents,
     WalletsWindow,
-} from '@solana/wallet-standard';
+} from '@wallet-standard/standard';
 
 /** TODO: docs */
 export function initialize<Account extends WalletAccount>(): Wallets<Account> {

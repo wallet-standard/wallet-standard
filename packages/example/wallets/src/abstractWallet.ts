@@ -9,8 +9,8 @@ import {
     WalletAccountNonstandardFeatureNames,
     WalletEventNames,
     WalletEvents,
-} from '@solana/wallet-standard';
-import { bytesEqual, pick } from '@solana/wallet-standard-util';
+} from '@wallet-standard/standard';
+import { bytesEqual, pick } from '@wallet-standard/util';
 
 export abstract class AbstractWallet<Account extends WalletAccount> implements Wallet<Account> {
     protected _listeners: { [E in WalletEventNames<Account>]?: WalletEvents<Account>[E][] } = {};

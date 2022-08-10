@@ -1,5 +1,5 @@
 {
-    "name": "@solana/wallet-standard-solana-wallet-adapter",
+    "name": "@wallet-standard/solana-wallet-adapter",
     "version": "0.1.0-alpha.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",

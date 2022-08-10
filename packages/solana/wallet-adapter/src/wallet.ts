@@ -1,4 +1,6 @@
 import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
+import { clusterApiUrl, Connection, Transaction } from '@solana/web3.js';
+import { initialize } from '@wallet-standard/app';
 import {
     ConnectInput,
     ConnectOutput,
@@ -18,16 +20,14 @@ import {
     WalletAccountNonstandardFeatureNames,
     WalletEventNames,
     WalletEvents,
-} from '@solana/wallet-standard';
-import { initialize } from '@solana/wallet-standard-app';
+} from '@wallet-standard/standard';
 import {
     bytesEqual,
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
-} from '@solana/wallet-standard-util';
-import { clusterApiUrl, Connection, Transaction } from '@solana/web3.js';
+} from '@wallet-standard/util';
 import { decode } from 'bs58';
 
 export type SolanaWalletAdapterChain =

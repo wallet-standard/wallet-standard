@@ -1,4 +1,4 @@
-import { Wallet, WalletAccount } from '@solana/wallet-standard';
+import { Wallet, WalletAccount } from '@wallet-standard/standard';
 import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { getWalletProperties, WalletContext } from './useWallet';
 

@@ -1,3 +1,4 @@
+import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
 import {
     DecryptInputs,
     DecryptOutput,
@@ -34,8 +35,7 @@ import {
     CHAIN_SOLANA_TESTNET,
     CIPHER_x25519_xsalsa20_poly1305,
     pick,
-} from '@solana/wallet-standard-util';
-import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
+} from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
 import { AbstractWallet } from './abstractWallet';

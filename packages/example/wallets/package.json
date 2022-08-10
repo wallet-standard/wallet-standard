@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "@solana/wallet-standard-example-wallets",
+    "name": "@wallet-standard/example-wallets",
     "version": "0.1.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",

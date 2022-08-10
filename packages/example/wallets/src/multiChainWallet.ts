@@ -1,5 +1,5 @@
-import { Wallet } from '@solana/wallet-standard';
-import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@solana/wallet-standard-util';
+import { Wallet } from '@wallet-standard/standard';
+import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import { AbstractWallet } from './abstractWallet';
 import { EthereumWalletAccount, SignerEthereumWalletAccount } from './ethereumWallet';
 import { LedgerSolanaWalletAccount, SignerSolanaWalletAccount, SolanaWalletAccount } from './solanaWallet';

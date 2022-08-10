@@ -1,4 +1,4 @@
-import { Wallet, WalletAccount, WalletEvents, WalletsWindow } from '@solana/wallet-standard';
+import { Wallet, WalletAccount, WalletEvents, WalletsWindow } from '@wallet-standard/standard';
 import { initialize } from '../src';
 
 interface SolanaWalletAccount extends WalletAccount {

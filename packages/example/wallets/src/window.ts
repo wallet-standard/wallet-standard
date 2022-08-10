@@ -1,5 +1,5 @@
-import { WalletsWindow } from '@solana/wallet-standard';
-import { initialize } from '@solana/wallet-standard-app';
+import { initialize } from '@wallet-standard/app';
+import { WalletsWindow } from '@wallet-standard/standard';
 import { EthereumWallet, EthereumWalletAccount } from './ethereumWallet';
 import { MultiChainWallet, MultiChainWalletAccount } from './multiChainWallet';
 import { SolanaWallet, SolanaWalletAccount } from './solanaWallet';

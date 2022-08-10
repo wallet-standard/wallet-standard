@@ -22,8 +22,8 @@ import {
     SignTransactionOutputs,
     Wallet,
     WalletAccount,
-} from '@solana/wallet-standard';
-import { CHAIN_ETHEREUM, CIPHER_x25519_xsalsa20_poly1305, pick } from '@solana/wallet-standard-util';
+} from '@wallet-standard/standard';
+import { CHAIN_ETHEREUM, CIPHER_x25519_xsalsa20_poly1305, pick } from '@wallet-standard/util';
 import ethers from 'ethers';
 import { box, randomBytes } from 'tweetnacl';
 import { AbstractWallet } from './abstractWallet';

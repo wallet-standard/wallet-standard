@@ -1,4 +1,4 @@
-import { Wallet, WalletAccount, WalletProperties } from '@solana/wallet-standard';
+import { Wallet, WalletAccount, WalletProperties } from '@wallet-standard/standard';
 import { createContext, useContext } from 'react';
 import { createDefaultContext, EMPTY_ARRAY, EMPTY_STRING } from './context';
 
