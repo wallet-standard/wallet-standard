@@ -59,7 +59,7 @@ export type WalletProperties<Account extends WalletAccount> = Pick<Wallet<Accoun
 /** TODO: docs */
 export type Wallet<Account extends WalletAccount> = Readonly<{
     /**
-     * Version of the Wallet API.
+     * Version of the Wallet Standard API.
      * If this changes, the wallet must emit a change event.
      * */
     version: string;
@@ -79,32 +79,32 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
     icon: string;
 
     /**
-     * List the chains supported for signing, simulating, and sending transactions.
+     * List of chains supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
     chains: ReadonlyArray<Account['chain']>;
 
     /**
-     * TODO: docs
+     * List of standard features supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
     features: ReadonlyArray<WalletAccountFeatureNames<Account>>;
 
     /**
-     * TODO: docs
+     * List of nonstandard features supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
     nonstandardFeatures: ReadonlyArray<WalletAccountNonstandardFeatureNames<Account>>;
 
     /**
-     * List the accounts the app is authorized to use.
+     * List of accounts the app is authorized to use.
      * This can be set by the wallet so the app can use authorized accounts on the initial page load.
      * If this changes, the wallet must emit a change event.
      */
     accounts: ReadonlyArray<Account>;
 
     /**
-     * TODO: docs
+     * `true` if calling `connect` may result in the app being authorized to use additional accounts.
      * If this changes, the wallet must emit a change event.
      */
     hasMoreAccounts: boolean;
