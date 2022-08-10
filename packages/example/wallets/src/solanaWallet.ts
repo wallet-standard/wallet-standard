@@ -1,21 +1,27 @@
 import {
     AllWalletAccountFeatureNames,
     AllWalletAccountFeatures,
-    DecryptInput,
+    DecryptInputs,
     DecryptOutput,
-    EncryptInput,
+    DecryptOutputs,
+    EncryptInputs,
     EncryptOutput,
+    EncryptOutputs,
     SignAndSendTransactionFeature,
-    SignAndSendTransactionInput,
+    SignAndSendTransactionInputs,
     SignAndSendTransactionOutput,
-    SignMessageInput,
+    SignAndSendTransactionOutputs,
+    SignMessageInputs,
     SignMessageOutput,
+    SignMessageOutputs,
     SignTransactionFeature,
-    SignTransactionInput,
+    SignTransactionInputs,
     SignTransactionOnlyFeature,
-    SignTransactionOnlyInput,
+    SignTransactionOnlyInputs,
     SignTransactionOnlyOutput,
+    SignTransactionOnlyOutputs,
     SignTransactionOutput,
+    SignTransactionOutputs,
     UnionToIntersection,
     Wallet,
     WalletAccount,
@@ -26,8 +32,7 @@ import {
     CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
-    CIPHER_DEFAULT,
-    concatBytes,
+    CIPHER_x25519_xsalsa20_poly1305,
     pick,
 } from '@solana/wallet-standard-util';
 import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
@@ -92,11 +97,11 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
         signMessage: { signMessage: (...args) => this.#signMessage(...args) },
         encrypt: {
-            ciphers: [CIPHER_DEFAULT],
+            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
             encrypt: (...args) => this.#encrypt(...args),
         },
         decrypt: {
-            ciphers: [CIPHER_DEFAULT],
+            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
             decrypt: (...args) => this.#decrypt(...args),
         },
     };
@@ -114,56 +119,50 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         this.#publicKey = this.#signer.publicKey.toBytes();
     }
 
-    async #signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
-        if (!('signTransaction' in this.#features)) throw new Error('unauthorized');
-        if (input.extraSigners?.length) throw new Error('unsupported');
+    async #signTransaction(inputs: SignTransactionInputs<this>): Promise<SignTransactionOutputs<this>> {
+        if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
+        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
-        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         // Prompt the user with transactions to sign
 
+        const outputs: SignTransactionOutput<this>[] = [];
         for (const transaction of transactions) {
             transaction.partialSign(this.#signer);
+            outputs.push({ signedTransaction: transaction.serialize({ requireAllSignatures: false }) });
         }
 
-        const signedTransactions = transactions.map((transaction) =>
-            transaction.serialize({ requireAllSignatures: false })
-        );
-
-        return { signedTransactions };
+        return outputs;
     }
 
-    async #signTransactionOnly(input: SignTransactionOnlyInput<this>): Promise<SignTransactionOnlyOutput<this>> {
-        if (!('signTransactionOnly' in this.#features)) throw new Error('unauthorized');
-        if (input.extraSigners?.length) throw new Error('unsupported');
+    async #signTransactionOnly(inputs: SignTransactionOnlyInputs<this>): Promise<SignTransactionOnlyOutputs<this>> {
+        if (!('signTransactionOnly' in this.#features)) throw new Error('signTransactionOnly not authorized');
+        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
-        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         // Prompt the user with transactions to sign
 
-        const signatures: Uint8Array[] = [];
+        const outputs: SignTransactionOnlyOutput<this>[] = [];
         for (const transaction of transactions) {
             const message = transaction.compileMessage().serialize();
             const signature = sign.detached(message, this.#signer.secretKey);
-            signatures.push(signature);
+            outputs.push({ signatures: [signature] });
         }
 
-        return { signatures };
+        return outputs;
     }
 
     async #signAndSendTransaction(
-        input: SignAndSendTransactionInput<this>
-    ): Promise<SignAndSendTransactionOutput<this>> {
-        if (!('signAndSendTransaction' in this.#features)) throw new Error('unauthorized');
-        if (input.extraSigners?.length) throw new Error('unsupported');
+        inputs: SignAndSendTransactionInputs<this>
+    ): Promise<SignAndSendTransactionOutputs<this>> {
+        if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
+        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
-        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         // Prompt the user with transactions to sign and send
-
-        for (const transaction of transactions) {
-            transaction.partialSign(this.#signer);
-        }
 
         let endpoint: string;
         if (this.#chain === CHAIN_SOLANA_MAINNET) {
@@ -175,71 +174,61 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         } else {
             endpoint = 'http://localhost:8899';
         }
-
         const connection = new Connection(endpoint, 'confirmed');
-        const signatures: Uint8Array[] = [];
+
+        const outputs: SignAndSendTransactionOutput<this>[] = [];
         for (const transaction of transactions) {
+            transaction.partialSign(this.#signer);
             const signature = await connection.sendRawTransaction(transaction.serialize());
-            signatures.push(decode(signature));
-        }
-
-        return { signatures };
-    }
-
-    async #signMessage(input: SignMessageInput<this>): Promise<SignMessageOutput<this>> {
-        if (!('signMessage' in this.#features)) throw new Error('unauthorized');
-        if (input.extraSigners?.length) throw new Error('unsupported');
-
-        // Prompt the user with messages to sign
-
-        const signedMessages: Uint8Array[] = [];
-        for (const message of input.messages) {
-            const signature = sign.detached(message, this.#signer.secretKey);
-            signedMessages.push(concatBytes(message, signature));
-        }
-
-        return { signedMessages };
-    }
-
-    async #encrypt(inputs: ReadonlyArray<EncryptInput<this>>): Promise<ReadonlyArray<EncryptOutput<this>>> {
-        if (!('encrypt' in this.#features)) throw new Error('unauthorized');
-
-        // Prompt the user with data to encrypt
-
-        const outputs: EncryptOutput<this>[] = [];
-        for (const { publicKey, cleartexts } of inputs) {
-            const sharedKey = box.before(publicKey, this.#signer.secretKey);
-
-            const nonces = [];
-            const ciphertexts = [];
-            for (let i = 0; i < cleartexts.length; i++) {
-                nonces[i] = randomBytes(32);
-                ciphertexts[i] = box.after(cleartexts[i], nonces[i], sharedKey);
-            }
-
-            outputs.push({ ciphertexts, nonces, cipher: CIPHER_DEFAULT });
+            outputs.push({ signature: decode(signature) });
         }
 
         return outputs;
     }
 
-    async #decrypt(inputs: ReadonlyArray<DecryptInput<this>>): Promise<ReadonlyArray<DecryptOutput<this>>> {
-        if (!('decrypt' in this.#features)) throw new Error('unauthorized');
+    async #signMessage(inputs: SignMessageInputs<this>): Promise<SignMessageOutputs<this>> {
+        if (!('signMessage' in this.#features)) throw new Error('signMessage not authorized');
+        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
-        // Prompt the user with data to decrypt
+        // Prompt the user with messages to sign
+
+        const outputs: SignMessageOutput<this>[] = [];
+        for (const { message } of inputs) {
+            // TODO: prefix according to https://github.com/solana-labs/solana/pull/26915
+            outputs.push({
+                signedMessage: message,
+                signatures: [sign.detached(message, this.#signer.secretKey)],
+            });
+        }
+
+        return outputs;
+    }
+
+    async #encrypt(inputs: EncryptInputs<this>): Promise<EncryptOutputs<this>> {
+        if (!('encrypt' in this.#features)) throw new Error('encrypt not authorized');
+        if (inputs.some((input) => input.cipher && input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
+            throw new Error('cipher not supported');
+
+        const outputs: EncryptOutput<this>[] = [];
+        for (const { publicKey, cleartext } of inputs) {
+            const nonce = randomBytes(32);
+            const ciphertext = box(cleartext, nonce, publicKey, this.#signer.secretKey);
+            outputs.push({ ciphertext, nonce, cipher: CIPHER_x25519_xsalsa20_poly1305 });
+        }
+
+        return outputs;
+    }
+
+    async #decrypt(inputs: DecryptInputs<this>): Promise<DecryptOutputs<this>> {
+        if (!('decrypt' in this.#features)) throw new Error('decrypt not authorized');
+        if (inputs.some((input) => input.cipher && input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
+            throw new Error('cipher not supported');
 
         const outputs: DecryptOutput<this>[] = [];
-        for (const { publicKey, ciphertexts, nonces } of inputs) {
-            const sharedKey = box.before(publicKey, this.#signer.secretKey);
-
-            const cleartexts = [];
-            for (let i = 0; i < cleartexts.length; i++) {
-                const cleartext = box.open.after(ciphertexts[i], nonces[i], sharedKey);
-                if (!cleartext) throw new Error('message authentication failed');
-                cleartexts[i] = cleartext;
-            }
-
-            outputs.push({ cleartexts });
+        for (const { publicKey, ciphertext, nonce } of inputs) {
+            const cleartext = box.open(ciphertext, nonce, publicKey, this.#signer.secretKey);
+            if (!cleartext) throw new Error('message authentication failed');
+            outputs.push({ cleartext });
         }
 
         return outputs;
@@ -295,52 +284,50 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         this.#publicKey = new Uint8Array(this.#ledger.publicKey);
     }
 
-    async #signTransaction(input: SignTransactionInput<this>): Promise<SignTransactionOutput<this>> {
-        if (!('signTransaction' in this.#features)) throw new Error('unauthorized');
-        if (input.extraSigners?.length) throw new Error('unsupported');
+    async #signTransaction(inputs: SignTransactionInputs<this>): Promise<SignTransactionOutputs<this>> {
+        if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
+        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
-        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         // Prompt the user with transactions to sign
 
+        const outputs: SignTransactionOutput<this>[] = [];
         for (const transaction of transactions) {
             const signature = await this.#ledger.signTransaction(
                 transaction.serialize({ requireAllSignatures: false })
             );
             transaction.addSignature(new PublicKey(this.#publicKey), Buffer.from(signature));
+            outputs.push({ signedTransaction: transaction.serialize({ requireAllSignatures: false }) });
         }
 
-        const signedTransactions = transactions.map((transaction) =>
-            transaction.serialize({ requireAllSignatures: false })
-        );
-
-        return { signedTransactions };
+        return outputs;
     }
 
-    async #signTransactionOnly(input: SignTransactionOnlyInput<this>): Promise<SignTransactionOnlyOutput<this>> {
-        if (!('signTransactionOnly' in this.#features)) throw new Error('unauthorized');
-        if (input.extraSigners?.length) throw new Error('unsupported');
+    async #signTransactionOnly(inputs: SignTransactionOnlyInputs<this>): Promise<SignTransactionOnlyOutputs<this>> {
+        if (!('signTransactionOnly' in this.#features)) throw new Error('signTransactionOnly not authorized');
+        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
-        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         // Prompt the user with transactions to sign
 
-        const signatures: Uint8Array[] = [];
+        const outputs: SignTransactionOnlyOutput<this>[] = [];
         for (const transaction of transactions) {
             const signature = await this.#ledger.signTransaction(transaction.serialize({ requireAllSignatures: true }));
-            signatures.push(signature);
+            outputs.push({ signatures: [signature] });
         }
 
-        return { signatures };
+        return outputs;
     }
 
     async #signAndSendTransaction(
-        input: SignAndSendTransactionInput<this>
-    ): Promise<SignAndSendTransactionOutput<this>> {
-        if (!('signAndSendTransaction' in this.#features)) throw new Error('unauthorized');
-        if (input.extraSigners?.length) throw new Error('unsupported');
+        inputs: SignAndSendTransactionInputs<this>
+    ): Promise<SignAndSendTransactionOutputs<this>> {
+        if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
+        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
-        const transactions = input.transactions.map((rawTransaction) => Transaction.from(rawTransaction));
+        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         // Prompt the user with transactions to sign and send
 
@@ -361,15 +348,14 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         } else {
             endpoint = 'http://localhost:8899';
         }
-
         const connection = new Connection(endpoint, 'confirmed');
-        const signatures = await Promise.all(
-            transactions.map(async (transaction) => {
-                const signature = await connection.sendRawTransaction(transaction.serialize());
-                return decode(signature);
-            })
-        );
 
-        return { signatures };
+        const outputs: SignAndSendTransactionOutput<this>[] = [];
+        for (const transaction of transactions) {
+            const signature = await connection.sendRawTransaction(transaction.serialize());
+            outputs.push({ signature: decode(signature) });
+        }
+
+        return outputs;
     }
 }

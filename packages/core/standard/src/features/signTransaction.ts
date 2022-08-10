@@ -6,32 +6,36 @@ export type SignTransactionFeature<Account extends WalletAccount> = Readonly<{
     signTransaction: {
         /**
          * Sign transactions using the account's secret key.
-         * The transactions may already be partially signed, and may even have a "primary" signature.
-         * This feature covers existing `signTransaction` and `signAllTransactions` functionality, matching the SMS Mobile Wallet Adapter SDK.
          *
-         * @param input Input for signing transactions.
+         * @param inputs Inputs for signing transactions.
          *
-         * @return Output of signing transactions.
+         * @return Outputs of signing transactions.
          */
-        signTransaction(input: SignTransactionInput<Account>): Promise<SignTransactionOutput<Account>>;
+        signTransaction(inputs: SignTransactionInputs<Account>): Promise<SignTransactionOutputs<Account>>;
     };
 }>;
 
-/** Input for signing transactions. */
+/** Input for signing a transaction. */
 export type SignTransactionInput<Account extends WalletAccount> = Readonly<{
     /** Serialized transactions, as raw bytes. */
-    transactions: ReadonlyArray<Uint8Array>;
+    transaction: Uint8Array;
 
     /** Optional accounts that must also sign the transactions. They must have the `signTransactionOnly` feature. */
     extraSigners?: ReadonlyArray<Account & { features: SignTransactionOnlyFeature<Account> }>;
 }>;
 
-/** Result of signing transactions. */
+/** Inputs for signing transactions. */
+export type SignTransactionInputs<Account extends WalletAccount> = ReadonlyArray<SignTransactionInput<Account>>;
+
+/** Output of signing a transaction. */
 export type SignTransactionOutput<Account extends WalletAccount> = Readonly<{
     /**
      * Signed, serialized transactions, as raw bytes.
      * Returning transactions rather than signatures allows multisig wallets, program wallets, and other wallets that
      * use meta-transactions to return a modified, signed transaction.
      */
-    signedTransactions: ReadonlyArray<Uint8Array>;
+    signedTransaction: Uint8Array;
 }>;
+
+/** Outputs of signing transactions. */
+export type SignTransactionOutputs<Account extends WalletAccount> = ReadonlyArray<SignTransactionOutput<Account>>;

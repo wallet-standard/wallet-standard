@@ -11,9 +11,9 @@ export type EncryptFeature<Account extends WalletAccount> = Readonly<{
          *
          * @param inputs Inputs for encryption.
          *
-         * @return Result of encryption.
+         * @return Outputs of encryption.
          */
-        encrypt(inputs: ReadonlyArray<EncryptInput<Account>>): Promise<ReadonlyArray<EncryptOutput<Account>>>;
+        encrypt(inputs: EncryptInputs<Account>): Promise<EncryptOutputs<Account>>;
     };
 }>;
 
@@ -22,23 +22,27 @@ export type EncryptInput<Account extends WalletAccount> = Readonly<{
     /** Public key to derive a shared key to encrypt the data using. */
     publicKey: Uint8Array;
 
-    /** Cleartexts to decrypt. */
-    cleartexts: ReadonlyArray<Uint8Array>;
+    /** Cleartext to decrypt. */
+    cleartext: Uint8Array;
 
     /** Optional cipher to use for encryption. Default to whatever the wallet wants. */
     cipher?: string; // TODO: determine if this needs to be inferred from EncryptFeature
-
-    // TODO: decide if padding is needed
 }>;
+
+/** Inputs for encryption. */
+export type EncryptInputs<Account extends WalletAccount> = ReadonlyArray<EncryptInput<Account>>;
 
 /** Output of encryption. */
 export type EncryptOutput<Account extends WalletAccount> = Readonly<{
-    /** Ciphertexts that were encrypted, corresponding with the cleartexts provided. */
-    ciphertexts: ReadonlyArray<Uint8Array>;
+    /** Ciphertext that was encrypted. */
+    ciphertext: Uint8Array;
 
-    /** Nonces that were used for encryption, corresponding with each ciphertext. */
-    nonces: ReadonlyArray<Uint8Array>;
+    /** Nonce that was used for encryption. */
+    nonce: Uint8Array;
 
     /** Cipher that was used for encryption. */
     cipher?: string; // TODO: determine if this needs to be inferred from EncryptFeature
 }>;
+
+/** Outputs of encryption. */
+export type EncryptOutputs<Account extends WalletAccount> = ReadonlyArray<EncryptOutput<Account>>;

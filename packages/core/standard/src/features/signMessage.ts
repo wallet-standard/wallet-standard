@@ -6,29 +6,34 @@ export type SignMessageFeature<Account extends WalletAccount> = Readonly<{
         /**
          * Sign messages (arbitrary bytes) using the account's secret key.
          *
-         * @param input Input for signing messages.
+         * @param inputs Inputs for signing messages.
          *
-         * @return Output of signing messages.
+         * @return Outputs of signing messages.
          */
-        signMessage(input: SignMessageInput<Account>): Promise<SignMessageOutput<Account>>;
+        signMessage(inputs: SignMessageInputs<Account>): Promise<SignMessageOutputs<Account>>;
     };
 }>;
 
-/** Input for signing messages. */
+/** Input for signing a message. */
 export type SignMessageInput<Account extends WalletAccount> = Readonly<{
-    /** Messages to sign, as raw bytes. */
-    messages: ReadonlyArray<Uint8Array>;
+    /** Message to sign, as raw bytes. */
+    message: Uint8Array;
 
     /** Optional accounts that must also sign the messages. They must have the `signMessage` feature. */
     extraSigners?: ReadonlyArray<Account & { features: SignMessageFeature<Account> }>;
 }>;
 
-/** Output of signing messages. */
+/** Inputs for signing messages. */
+export type SignMessageInputs<Account extends WalletAccount> = ReadonlyArray<SignMessageInput<Account>>;
+
+/** Output of signing a message. */
 export type SignMessageOutput<Account extends WalletAccount> = Readonly<{
-    /**
-     * Messages with concatenated signatures, as raw bytes.
-     * Returning signed messages rather than signatures allows wallets to prefix messages before signing and return the
-     * modified, prefixed messages along with their signatures.
-     */
-    signedMessages: ReadonlyArray<Uint8Array>;
+    /** TODO: docs */
+    signedMessage: Uint8Array;
+
+    /** TODO: docs */
+    signatures: ReadonlyArray<Uint8Array>;
 }>;
+
+/** Outputs of signing messages. */
+export type SignMessageOutputs<Account extends WalletAccount> = ReadonlyArray<SignMessageOutput<Account>>;

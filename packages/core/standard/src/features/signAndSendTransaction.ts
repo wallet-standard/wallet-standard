@@ -5,33 +5,41 @@ import { SignTransactionOnlyFeature } from './signTransactionOnly';
 export type SignAndSendTransactionFeature<Account extends WalletAccount> = Readonly<{
     signAndSendTransaction: {
         /**
-         * Sign transactions using the account's secret key and send them to the network.
-         * The transactions may already be partially signed, and may even have a "primary" signature.
-         * This feature covers existing `signAndSendTransaction` functionality, and also provides an `All` version of the
-         * same, matching the SMS Mobile Wallet Adapter SDK.
+         * Sign transactions using the account's secret key and send them to the chain.
          *
-         * @param input Input for signing and sending transactions.
+         * @param inputs Inputs for signing and sending transactions.
          *
-         * @return Output of signing and sending transactions.
+         * @return Outputs of signing and sending transactions.
          */
         signAndSendTransaction(
-            input: SignAndSendTransactionInput<Account>
-        ): Promise<SignAndSendTransactionOutput<Account>>;
+            inputs: SignAndSendTransactionInputs<Account>
+        ): Promise<SignAndSendTransactionOutputs<Account>>;
     };
 }>;
 
 /** Input for signing and sending transactions. */
 export type SignAndSendTransactionInput<Account extends WalletAccount> = Readonly<{
-    /** Serialized transactions, as raw bytes. */
-    transactions: ReadonlyArray<Uint8Array>;
-    // TODO: figure out if options for sending need to be supported
+    /** Serialized transaction, as raw bytes. */
+    transaction: Uint8Array;
 
     /** Optional accounts that must also sign the transactions. They must have the `signTransactionOnly` feature. */
     extraSigners?: ReadonlyArray<Account & { features: SignTransactionOnlyFeature<Account> }>;
+
+    // TODO: figure out if options for sending need to be supported
 }>;
+
+/** Inputs for signing and sending transactions. */
+export type SignAndSendTransactionInputs<Account extends WalletAccount> = ReadonlyArray<
+    SignAndSendTransactionInput<Account>
+>;
 
 /** Output of signing and sending transactions. */
 export type SignAndSendTransactionOutput<Account extends WalletAccount> = Readonly<{
-    /** "Primary" transaction signatures, as raw bytes. */
-    signatures: ReadonlyArray<Uint8Array>;
+    /** Transaction signature, as raw bytes. */
+    signature: Uint8Array;
 }>;
+
+/** Outputs of signing and sending transactions. */
+export type SignAndSendTransactionOutputs<Account extends WalletAccount> = ReadonlyArray<
+    SignAndSendTransactionOutput<Account>
+>;
