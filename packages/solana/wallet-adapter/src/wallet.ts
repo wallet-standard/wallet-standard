@@ -116,18 +116,27 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
-        let signedTransactions: Transaction[];
         if (transactions.length === 1) {
-            signedTransactions = [await this.#adapter.signTransaction(transactions[0])];
+            const signedTransaction = await this.#adapter.signTransaction(transactions[0]);
+            return [
+                {
+                    signedTransaction: signedTransaction.serialize({
+                        requireAllSignatures: false,
+                        verifySignatures: false,
+                    }),
+                },
+            ];
         } else if (transactions.length > 1) {
-            signedTransactions = await this.#adapter.signAllTransactions(transactions);
+            const signedTransactions = await this.#adapter.signAllTransactions(transactions);
+            return signedTransactions.map((signedTransaction) => ({
+                signedTransaction: signedTransaction.serialize({
+                    requireAllSignatures: false,
+                    verifySignatures: false,
+                }),
+            }));
         } else {
-            signedTransactions = [];
+            return [];
         }
-
-        return signedTransactions.map((transaction) => ({
-            signedTransaction: transaction.serialize({ requireAllSignatures: false }),
-        }));
     }
 
     async #signMessage(inputs: SignMessageInputs<this>): Promise<SignMessageOutputs<this>> {
@@ -135,9 +144,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         if (inputs.length === 1) {
-            const signature = await this.#adapter.signMessage(inputs[0].message);
-            const signedMessage = concatBytes(inputs[0].message, signature);
-            return [{ signedMessage }];
+            const signedMessage = inputs[0].message;
+            const signature = await this.#adapter.signMessage(signedMessage);
+            return [{ signedMessage, signatures: [signature] }];
         } else if (inputs.length > 1) {
             throw new Error('signMessage for multiple messages not implemented');
         } else {
