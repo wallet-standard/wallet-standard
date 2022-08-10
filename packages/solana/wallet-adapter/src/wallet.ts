@@ -15,6 +15,7 @@ import {
     Wallet,
     WalletAccount,
     WalletAccountFeatureNames,
+    WalletAccountNonstandardFeatureNames,
     WalletEventNames,
     WalletEvents,
 } from '@solana/wallet-standard';
@@ -25,7 +26,6 @@ import {
     CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
-    concatBytes,
 } from '@solana/wallet-standard-util';
 import { clusterApiUrl, Connection, Transaction } from '@solana/web3.js';
 import { decode } from 'bs58';
@@ -53,25 +53,28 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return this.#chain;
     }
 
-    get features(): SignAndSendTransactionFeature<this> &
-        Partial<SignTransactionFeature<this> & SignMessageFeature<this>> {
-        const signAndSendTransaction: SignAndSendTransactionFeature<this> = {
+    get features(): SignAndSendTransactionFeature & Partial<SignTransactionFeature & SignMessageFeature> {
+        const signAndSendTransaction: SignAndSendTransactionFeature = {
             signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
         };
 
-        let signTransactionFeature: SignTransactionFeature<this> | undefined = undefined;
+        let signTransactionFeature: SignTransactionFeature | undefined = undefined;
         if ('signTransaction' in this.#adapter) {
             signTransactionFeature = {
                 signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
             };
         }
 
-        let signMessageFeature: SignMessageFeature<this> | undefined = undefined;
+        let signMessageFeature: SignMessageFeature | undefined = undefined;
         if ('signMessage' in this.#adapter) {
             signMessageFeature = { signMessage: { signMessage: (...args) => this.#signMessage(...args) } };
         }
 
         return { ...signAndSendTransaction, ...signTransactionFeature, ...signMessageFeature };
+    }
+
+    get nonstandardFeatures() {
+        return {};
     }
 
     constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaWalletAdapterChain) {
@@ -80,9 +83,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         this.#chain = chain;
     }
 
-    async #signAndSendTransaction(
-        inputs: SignAndSendTransactionInputs<this>
-    ): Promise<SignAndSendTransactionOutputs<this>> {
+    async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
         if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
@@ -110,7 +111,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         }
     }
 
-    async #signTransaction(inputs: SignTransactionInputs<this>): Promise<SignTransactionOutputs<this>> {
+    async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
         if (!('signTransaction' in this.#adapter)) throw new Error('signTransaction not implemented by adapter');
         if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
@@ -139,7 +140,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         }
     }
 
-    async #signMessage(inputs: SignMessageInputs<this>): Promise<SignMessageOutputs<this>> {
+    async #signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs> {
         if (!('signMessage' in this.#adapter)) throw new Error('signMessage not implemented by adapter');
         if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
@@ -190,6 +191,10 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return features;
     }
 
+    get nonstandardFeatures() {
+        return [];
+    }
+
     get accounts() {
         return this.#account ? [this.#account] : [];
     }
@@ -216,13 +221,21 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     async connect<
         Chain extends SolanaWalletAdapterWalletAccount['chain'],
         FeatureNames extends WalletAccountFeatureNames<SolanaWalletAdapterWalletAccount>,
-        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames>
+        NonstandardFeatureNames extends WalletAccountNonstandardFeatureNames<SolanaWalletAdapterWalletAccount>,
+        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames, NonstandardFeatureNames>
     >({
         chains,
         addresses,
         features,
+        nonstandardFeatures,
         silent,
-    }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames, Input>> {
+    }: Input): Promise<
+        ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames, NonstandardFeatureNames, Input>
+    > {
+        // FIXME: features
+
+        if (nonstandardFeatures?.length) throw new Error('nonstandard features not supported');
+
         if (!silent && !this.#adapter.connected) {
             await this.#adapter.connect();
         }

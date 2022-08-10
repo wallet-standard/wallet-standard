@@ -1,4 +1,10 @@
-import { WalletAccountFeatureNames, WalletAccountFeatures } from './features';
+import {
+    Feature,
+    WalletAccountFeatureNames,
+    WalletAccountFeatures,
+    WalletAccountNonstandardFeatureNames,
+    WalletAccountNonstandardFeatures,
+} from './features';
 import { PropertyNames } from './typescript';
 
 /** An account in the wallet that the app has been authorized to use. */
@@ -15,11 +21,13 @@ export type WalletAccount = Readonly<{
     /** Chain to sign, simulate, and send transactions using. */
     chain: string;
 
-    // TODO: think about custom features / namespacing
-    /** Features supported by the account that are authorized to be called. */
-    features: Readonly<Record<string, unknown>>;
+    /** Standard features supported by the account that are authorized to be used. */
+    features: Feature;
 
-    /** Optional user-friendly descriptive label or name of the account. */
+    /** Nonstandard features supported by the account that are authorized to be used. */
+    nonstandardFeatures: Readonly<Record<string, unknown>>;
+
+    /** Optional user-friendly descriptive label or name for the account, to be displayed by apps. */
     label?: string;
 }>;
 
@@ -51,17 +59,15 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
     version: string;
 
     /**
-     * Name of the wallet.
-     * This will be displayed by Wallet Adapter and apps. // TODO: remove references to Wallet Adapter
-     * It should be canonical to the wallet extension.
+     * Name of the wallet, to be displayed by apps.
+     * Must be canonical to the wallet extension.
      * If this changes, the wallet must emit a change event.
      */
     name: string;
 
     /**
-     * Icon of the wallet.
-     * This will be displayed by Wallet Adapter and apps.
-     * It should be a data URL containing a base64-encoded SVG or PNG image. // TODO: is base64 actually needed? should other types be allowed?
+     * Icon of the wallet, to be displayed by apps.
+     * Must be a data URL containing a base64-encoded SVG or PNG image. // TODO: is base64 actually needed? should other types be allowed?
      * If this changes, the wallet must emit a change event.
      */
     icon: string;
@@ -77,6 +83,12 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
      * If this changes, the wallet must emit a change event.
      */
     features: ReadonlyArray<WalletAccountFeatureNames<Account>>;
+
+    /**
+     * TODO: docs
+     * If this changes, the wallet must emit a change event.
+     */
+    nonstandardFeatures: ReadonlyArray<WalletAccountNonstandardFeatureNames<Account>>;
 
     /**
      * List the accounts the app is authorized to use.
@@ -101,10 +113,11 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
     connect<
         Chain extends Account['chain'],
         FeatureNames extends WalletAccountFeatureNames<Account>,
-        Input extends ConnectInput<Account, Chain, FeatureNames>
+        NonstandardFeatureNames extends WalletAccountNonstandardFeatureNames<Account>,
+        Input extends ConnectInput<Account, Chain, FeatureNames, NonstandardFeatureNames>
     >(
         input: Input
-    ): Promise<ConnectOutput<Account, Chain, FeatureNames, Input>>;
+    ): Promise<ConnectOutput<Account, Chain, FeatureNames, NonstandardFeatureNames, Input>>;
 
     /**
      * Add an event listener to subscribe to events.
@@ -121,7 +134,8 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
 export type ConnectInput<
     Account extends WalletAccount,
     Chain extends Account['chain'],
-    FeatureNames extends WalletAccountFeatureNames<Account>
+    FeatureNames extends WalletAccountFeatureNames<Account>,
+    NonstandardFeatureNames extends WalletAccountNonstandardFeatureNames<Account>
 > = Readonly<{
     /** Optional chains to discover accounts using. */
     chains?: ReadonlyArray<Chain>;
@@ -129,6 +143,10 @@ export type ConnectInput<
     /** TODO: docs */
     features?: ReadonlyArray<FeatureNames>;
 
+    /** TODO: docs */
+    nonstandardFeatures?: ReadonlyArray<NonstandardFeatureNames>;
+
+    // TODO: decide if addresses are even needed
     /**
      * Optional public key addresses of the accounts in the wallet to authorize an app to use.
      *
@@ -157,10 +175,11 @@ export type ConnectOutput<
     Account extends WalletAccount,
     Chain extends Account['chain'],
     FeatureNames extends WalletAccountFeatureNames<Account>,
-    Input extends ConnectInput<Account, Chain, FeatureNames>
+    NonstandardFeatureNames extends WalletAccountNonstandardFeatureNames<Account>,
+    Input extends ConnectInput<Account, Chain, FeatureNames, NonstandardFeatureNames>
 > = Readonly<{
     /** List of accounts in the wallet that the app has been authorized to use. */
-    accounts: ReadonlyArray<ConnectedAccount<Account, Chain, FeatureNames, Input>>;
+    accounts: ReadonlyArray<ConnectedAccount<Account, Chain, FeatureNames, NonstandardFeatureNames, Input>>;
 
     /**
      * Will be true if there are more accounts with the given chain(s) and feature(s) in the wallet besides the `accounts` returned.
@@ -174,12 +193,16 @@ export type ConnectedAccount<
     Account extends WalletAccount,
     Chain extends Account['chain'],
     FeatureNames extends WalletAccountFeatureNames<Account>,
-    Input extends ConnectInput<Account, Chain, FeatureNames>
+    NonstandardFeatureNames extends WalletAccountNonstandardFeatureNames<Account>,
+    Input extends ConnectInput<Account, Chain, FeatureNames, NonstandardFeatureNames>
 > = Readonly<
-    Omit<Account, 'chain' | 'features'> & {
+    Omit<Account, 'chain' | 'features' | 'nonstandardFeatures'> & {
         chain: Input extends { chains: ReadonlyArray<Chain> } ? Chain : Account['chain'];
         features: Input extends { features: ReadonlyArray<FeatureNames> }
             ? Pick<WalletAccountFeatures<Account>, Input['features'][number]>
             : Account['features'];
+        nonstandardFeatures: Input extends { nonstandardFeatures: ReadonlyArray<NonstandardFeatureNames> }
+            ? Pick<WalletAccountNonstandardFeatures<Account>, Input['nonstandardFeatures'][number]>
+            : Account['nonstandardFeatures'];
     }
 >;

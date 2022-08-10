@@ -16,6 +16,7 @@ const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties<WalletAccount>> = {
     icon: EMPTY_STRING,
     chains: EMPTY_ARRAY,
     features: EMPTY_ARRAY,
+    nonstandardFeatures: EMPTY_ARRAY,
     accounts: EMPTY_ARRAY,
     hasMoreAccounts: false,
 } as const;
@@ -54,6 +55,7 @@ export function getWalletProperties(
               icon: wallet.icon,
               chains: wallet.chains,
               features: wallet.features,
+              nonstandardFeatures: wallet.nonstandardFeatures,
               accounts: wallet.accounts,
               hasMoreAccounts: wallet.hasMoreAccounts,
           }

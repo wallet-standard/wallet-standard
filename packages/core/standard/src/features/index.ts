@@ -36,9 +36,10 @@ export type WalletAccountFeatures<Account extends WalletAccount> = UnionToInters
 export type WalletAccountFeatureNames<Account extends WalletAccount> = keyof WalletAccountFeatures<Account>;
 
 /** TODO: docs */
-export type AllWalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<
-    WalletAccountFeature<Account>
+export type WalletAccountNonstandardFeatures<Account extends WalletAccount> = UnionToIntersection<
+    Account['nonstandardFeatures']
 >;
 
 /** TODO: docs */
-export type AllWalletAccountFeatureNames<Account extends WalletAccount> = keyof AllWalletAccountFeatures<Account>;
+export type WalletAccountNonstandardFeatureNames<Account extends WalletAccount> =
+    keyof WalletAccountNonstandardFeatures<Account>;

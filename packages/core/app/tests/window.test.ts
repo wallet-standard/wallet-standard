@@ -3,7 +3,7 @@ import { initialize } from '../src';
 
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet';
-    features: { one: 1; two: 2 };
+    nonstandardFeatures: { one: 1; two: 2 };
 }
 
 // A wallet that supports multiple account types
@@ -14,13 +14,10 @@ class FooWalletAccount implements WalletAccount {
     publicKey = new Uint8Array();
     chain = 'mainnet' as const;
     features = {
-        signTransaction: {
-            signTransaction() {},
-        },
-        signMessage: {
-            signTransaction() {},
-        },
+        signTransaction: {} as any,
+        signMessage: {} as any,
     };
+    nonstandardFeatures = {};
 }
 
 class FooWallet implements Wallet<FooWalletAccount> {
@@ -29,6 +26,7 @@ class FooWallet implements Wallet<FooWalletAccount> {
     icon = 'image';
     chains = ['mainnet'] as const;
     features = ['signTransaction', 'signMessage'] as const;
+    nonstandardFeatures = [] as const;
     accounts = [new FooWalletAccount()];
     hasMoreAccounts = false;
     connect(...args: Parameters<Wallet<FooWalletAccount>['connect']>): ReturnType<Wallet<FooWalletAccount>['connect']> {

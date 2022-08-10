@@ -1,24 +1,18 @@
-import {
-    SignAndSendTransactionFeature,
-    SignTransactionFeature,
-    Wallet,
-    WalletAccount,
-    WalletAccountFeature,
-} from '../src';
+import { Feature, SignAndSendTransactionFeature, SignTransactionFeature, Wallet, WalletAccount } from '../src';
 
 // A Solana account that supports all the features
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
-    features: WalletAccountFeature<this>;
+    features: Feature;
 }
 
 // A Solana account on a Ledger device that can only sign transactions
 interface SolanaLedgerWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
-    features: SignTransactionFeature<this> | SignAndSendTransactionFeature<this>;
+    features: SignTransactionFeature | SignAndSendTransactionFeature;
 }
 
-// A custom feature for an account to implement
+// A nonstandard feature for an account to implement
 type SubscribeFeature = {
     subscribe: {
         subscribe(event: string): void;
@@ -28,7 +22,8 @@ type SubscribeFeature = {
 // An account on a different chain that supports all the features, and a custom one
 interface EthereumWalletAccount extends WalletAccount {
     chain: 'ethereum:mainnet';
-    features: WalletAccountFeature<this> | SubscribeFeature;
+    features: Feature;
+    nonstandardFeatures: SubscribeFeature;
 }
 
 // A wallet that supports multiple account types
@@ -138,16 +133,16 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     // @ts-expect-error expected
     await accountWithMultipleFeatures.features.signAndSendTransaction.signAndSendTransaction([]);
 
-    // Good -- this succeeds because the chain and features are known
-    const accountWithCustomFeature = (
+    // Good -- this succeeds because the chain and nonstandard features are known
+    const accountWithNonstandardFeature = (
         await wallet.connect({
             chains: ['ethereum:mainnet'],
-            features: ['subscribe'],
+            nonstandardFeatures: ['subscribe'],
         })
     ).accounts[0];
 
-    // Good -- this succeeds because the account includes the feature
-    await accountWithCustomFeature.features.subscribe.subscribe('change');
+    // Good -- this succeeds because the account includes the nonstandard feature
+    await accountWithNonstandardFeature.nonstandardFeatures.subscribe.subscribe('change');
 
     // TODO: add test for signTransactionOnly feature
 
