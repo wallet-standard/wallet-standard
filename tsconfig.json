@@ -11,6 +11,9 @@
             "path": "./packages/core/standard"
         },
         {
+            "path": "./packages/core/types"
+        },
+        {
             "path": "./packages/core/util"
         },
         {

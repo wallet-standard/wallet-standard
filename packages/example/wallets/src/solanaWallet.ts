@@ -23,10 +23,10 @@ import {
     SignTransactionOnlyOutputs,
     SignTransactionOutput,
     SignTransactionOutputs,
-    UnionToIntersection,
     Wallet,
     WalletAccount,
-} from '@solana/wallet-standard';
+} from '@wallet-standard/standard';
+import type { UnionToIntersection } from '@wallet-standard/types';
 import {
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_LOCALNET,

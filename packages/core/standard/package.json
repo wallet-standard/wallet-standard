@@ -26,6 +26,9 @@
         "clean": "shx mkdir -p lib && shx rm -rf lib",
         "prebuild": "pnpm run clean"
     },
+    "dependencies": {
+        "@wallet-standard/types": "workspace:^"
+    },
     "devDependencies": {
         "shx": "^0.3.4",
         "typescript": "^4.7.4"

@@ -1,3 +1,4 @@
+import type { PropertyNames } from '@wallet-standard/types';
 import {
     Feature,
     WalletAccountFeatureNames,
@@ -5,7 +6,6 @@ import {
     WalletAccountNonstandardFeatureNames,
     WalletAccountNonstandardFeatures,
 } from './features';
-import { PropertyNames } from './typescript';
 
 /** An account in the wallet that the app has been authorized to use. */
 export type WalletAccount = Readonly<{

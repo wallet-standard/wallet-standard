@@ -8,6 +8,9 @@
             "path": "../../core/standard"
         },
         {
+            "path": "../../core/types"
+        },
+        {
             "path": "../../core/util"
         },
         {

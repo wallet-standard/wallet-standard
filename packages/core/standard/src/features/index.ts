@@ -1,4 +1,4 @@
-import { UnionToIntersection } from '../typescript';
+import type { UnionToIntersection } from '@wallet-standard/types';
 import { WalletAccount } from '../wallet';
 import { DecryptFeature } from './decrypt';
 import { EncryptFeature } from './encrypt';

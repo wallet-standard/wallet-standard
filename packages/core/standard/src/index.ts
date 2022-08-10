@@ -1,7 +1,5 @@
 export * from './features';
-
-export * from './constants';
 export * from './errors';
-export * from './typescript';
+export * from './versions';
 export * from './wallet';
 export * from './window';

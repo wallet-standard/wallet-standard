@@ -28,9 +28,10 @@
         "prebuild": "pnpm run clean"
     },
     "dependencies": {
-        "@solana/wallet-standard": "workspace:^",
-        "@solana/wallet-standard-app": "workspace:^",
-        "@solana/wallet-standard-util": "workspace:^",
+        "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/standard": "workspace:^",
+        "@wallet-standard/types": "workspace:^",
+        "@wallet-standard/util": "workspace:^",
         "@solana/web3.js": "^1.44.3",
         "bs58": "^4.0.1",
         "ethers": "^5.6.9",
