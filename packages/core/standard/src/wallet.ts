@@ -29,6 +29,12 @@ export type WalletAccount = Readonly<{
 
     /** Optional user-friendly descriptive label or name for the account, to be displayed by apps. */
     label?: string;
+
+    /**
+     * Optional user-friendly icon for the account, to be displayed by apps.
+     * Must be a data URL containing a base64-encoded SVG or PNG image.
+     */
+    icon?: string;
 }>;
 
 /** Events emitted by wallets. */
