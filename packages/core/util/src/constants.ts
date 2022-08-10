@@ -14,12 +14,7 @@ export const CHAIN_SOLANA_LOCALNET = 'solana:localnet';
 export const CHAIN_ETHEREUM = 'ethereum:1';
 
 /**
- * Default in NaCl.
+ * Default encryption algorithm in NaCl.
  * Curve25519 scalar multiplication, Salsa20 secret-key encryption, and Poly1305 one-time authentication.
  */
 export const CIPHER_x25519_xsalsa20_poly1305 = 'x25519-xsalsa20-poly1305';
-
-/** Alias for x25519-xsalsa20-poly1305 */
-export const CIPHER_DEFAULT = CIPHER_x25519_xsalsa20_poly1305;
-
-// TODO: add cipher for padded x25519-xsalsa20-poly1305

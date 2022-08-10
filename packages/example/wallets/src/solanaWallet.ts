@@ -202,14 +202,14 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     async #encrypt(inputs: EncryptInputs): Promise<EncryptOutputs> {
         if (!('encrypt' in this.#features)) throw new Error('encrypt not authorized');
-        if (inputs.some((input) => input.cipher && input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
+        if (inputs.some((input) => input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
             throw new Error('cipher not supported');
 
         const outputs: EncryptOutput[] = [];
         for (const { publicKey, cleartext } of inputs) {
             const nonce = randomBytes(32);
             const ciphertext = box(cleartext, nonce, publicKey, this.#signer.secretKey);
-            outputs.push({ ciphertext, nonce, cipher: CIPHER_x25519_xsalsa20_poly1305 });
+            outputs.push({ ciphertext, nonce });
         }
 
         return outputs;
@@ -217,7 +217,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     async #decrypt(inputs: DecryptInputs): Promise<DecryptOutputs> {
         if (!('decrypt' in this.#features)) throw new Error('decrypt not authorized');
-        if (inputs.some((input) => input.cipher && input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
+        if (inputs.some((input) => input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
             throw new Error('cipher not supported');
 
         const outputs: DecryptOutput[] = [];

@@ -23,8 +23,11 @@ export type EncryptInput = Readonly<{
     /** Cleartext to decrypt. */
     cleartext: Uint8Array;
 
-    /** Optional cipher to use for encryption. Default to whatever the wallet wants. */
-    cipher?: string; // TODO: determine if this needs to be inferred from EncryptFeature
+    /** Cipher to use for encryption. */
+    cipher: string; // TODO: determine if this needs to be inferred from EncryptFeature
+
+    /** Multiple of padding bytes to use for encryption, defaulting to 0. */
+    padding?: 0 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
 }>;
 
 /** Inputs for encryption. */
@@ -37,9 +40,6 @@ export type EncryptOutput = Readonly<{
 
     /** Nonce that was used for encryption. */
     nonce: Uint8Array;
-
-    /** Cipher that was used for encryption. */
-    cipher?: string; // TODO: determine if this needs to be inferred from EncryptFeature
 }>;
 
 /** Outputs of encryption. */
