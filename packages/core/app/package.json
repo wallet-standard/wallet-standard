@@ -30,7 +30,6 @@
         "@solana/wallet-standard": "workspace:^"
     },
     "devDependencies": {
-        "shx": "^0.3.4",
-        "typescript": "^4.7.4"
+        "shx": "^0.3.4"
     }
 }
