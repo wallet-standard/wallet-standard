@@ -17,6 +17,9 @@ export type DecryptFeature = Readonly<{
 
 /** Input for decryption. */
 export type DecryptInput = Readonly<{
+    /** Cipher to use for decryption. */
+    cipher: string; // TODO: determine if this needs to be inferred from DecryptFeature
+
     /** Public key to derive a shared key to decrypt the data using. */
     publicKey: Uint8Array;
 
@@ -25,9 +28,6 @@ export type DecryptInput = Readonly<{
 
     /** Nonce to use for decryption. */
     nonce: Uint8Array;
-
-    /** Cipher to use for decryption. */
-    cipher: string; // TODO: determine if this needs to be inferred from DecryptFeature
 
     /** Multiple of padding bytes to use for decryption, defaulting to 0. */
     padding?: 0 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
