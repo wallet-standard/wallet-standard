@@ -16,8 +16,8 @@ import {
     VERSION_1_0_0,
     Wallet,
     WalletAccount,
-    WalletAccountFeatureNames,
-    WalletAccountNonstandardFeatureNames,
+    WalletAccountFeatureName,
+    WalletAccountNonstandardFeatureName,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
@@ -181,7 +181,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     }
 
     get features() {
-        const features: WalletAccountFeatureNames<SolanaWalletAdapterWalletAccount>[] = ['signAndSendTransaction'];
+        const features: WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>[] = ['signAndSendTransaction'];
         if ('signTransaction' in this.#adapter) {
             features.push('signTransaction');
         }
@@ -220,9 +220,9 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 
     async connect<
         Chain extends SolanaWalletAdapterWalletAccount['chain'],
-        FeatureNames extends WalletAccountFeatureNames<SolanaWalletAdapterWalletAccount>,
-        NonstandardFeatureNames extends WalletAccountNonstandardFeatureNames<SolanaWalletAdapterWalletAccount>,
-        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames, NonstandardFeatureNames>
+        FeatureName extends WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>,
+        NonstandardFeatureName extends WalletAccountNonstandardFeatureName<SolanaWalletAdapterWalletAccount>,
+        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, NonstandardFeatureName>
     >({
         chains,
         addresses,
@@ -230,7 +230,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         nonstandardFeatures,
         silent,
     }: Input): Promise<
-        ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureNames, NonstandardFeatureNames, Input>
+        ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, NonstandardFeatureName, Input>
     > {
         // FIXME: features
 

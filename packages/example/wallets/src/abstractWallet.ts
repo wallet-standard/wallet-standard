@@ -5,8 +5,8 @@ import {
     VERSION_1_0_0,
     Wallet,
     WalletAccount,
-    WalletAccountFeatureNames,
-    WalletAccountNonstandardFeatureNames,
+    WalletAccountFeatureName,
+    WalletAccountNonstandardFeatureName,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
@@ -32,7 +32,7 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
     get features() {
         const features = this._accounts.flatMap((account) =>
             Object.keys(account.features)
-        ) as WalletAccountFeatureNames<Account>[];
+        ) as WalletAccountFeatureName<Account>[];
         return [...new Set(features)];
     }
 
@@ -54,15 +54,15 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
 
     async connect<
         Chain extends Account['chain'],
-        FeatureNames extends WalletAccountFeatureNames<Account>,
-        NonstandardFeatureNames extends WalletAccountNonstandardFeatureNames<Account>,
-        Input extends ConnectInput<Account, Chain, FeatureNames, NonstandardFeatureNames>
+        FeatureName extends WalletAccountFeatureName<Account>,
+        NonstandardFeatureName extends WalletAccountNonstandardFeatureName<Account>,
+        Input extends ConnectInput<Account, Chain, FeatureName, NonstandardFeatureName>
     >({
         chains,
         addresses,
         features,
         silent,
-    }: Input): Promise<ConnectOutput<Account, Chain, FeatureNames, NonstandardFeatureNames, Input>> {
+    }: Input): Promise<ConnectOutput<Account, Chain, FeatureName, NonstandardFeatureName, Input>> {
         let accounts = this.accounts;
 
         if (chains) {
@@ -82,14 +82,14 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
             accounts = accounts.map((account) => ({
                 // FIXME: this won't work when account is a class instance
                 ...account,
-                features: pick(account.features as { [_ in FeatureNames]: any }, ...features),
+                features: pick(account.features as { [_ in FeatureName]: any }, ...features),
             }));
         }
 
         // TODO: ask the user to grant access to the desired set, unless `silent` is true
 
         return {
-            accounts: accounts as ConnectedAccount<any, Chain, FeatureNames, NonstandardFeatureNames, Input>[],
+            accounts: accounts as ConnectedAccount<any, Chain, FeatureName, NonstandardFeatureName, Input>[],
             // FIXME: this should be true if there are more accounts found for the given inputs that weren't granted access
             hasMoreAccounts: false,
         };

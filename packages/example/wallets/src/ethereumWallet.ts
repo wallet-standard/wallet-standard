@@ -6,7 +6,7 @@ import {
     EncryptOutput,
     EncryptOutputs,
     Feature,
-    FeatureNames,
+    FeatureName,
     Features,
     SignAndSendTransactionInputs,
     SignAndSendTransactionOutput,
@@ -94,7 +94,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         },
     };
 
-    constructor({ chain, features }: { chain: EthereumWalletChain; features?: FeatureNames[] }) {
+    constructor({ chain, features }: { chain: EthereumWalletChain; features?: FeatureName[] }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#wallet = ethers.Wallet.createRandom();

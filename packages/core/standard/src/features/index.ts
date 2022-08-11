@@ -27,13 +27,13 @@ export type Feature =
 export type Features = UnionToIntersection<Feature>;
 
 /** TODO: docs */
-export type FeatureNames = keyof Features;
+export type FeatureName = keyof Features;
 
 /** TODO: docs */
 export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
 
 /** TODO: docs */
-export type WalletAccountFeatureNames<Account extends WalletAccount> = keyof WalletAccountFeatures<Account>;
+export type WalletAccountFeatureName<Account extends WalletAccount> = keyof WalletAccountFeatures<Account>;
 
 /** TODO: docs */
 export type WalletAccountNonstandardFeatures<Account extends WalletAccount> = UnionToIntersection<
@@ -41,5 +41,5 @@ export type WalletAccountNonstandardFeatures<Account extends WalletAccount> = Un
 >;
 
 /** TODO: docs */
-export type WalletAccountNonstandardFeatureNames<Account extends WalletAccount> =
+export type WalletAccountNonstandardFeatureName<Account extends WalletAccount> =
     keyof WalletAccountNonstandardFeatures<Account>;

@@ -7,7 +7,7 @@ import {
     EncryptOutput,
     EncryptOutputs,
     Feature,
-    FeatureNames,
+    FeatureName,
     Features,
     SignAndSendTransactionFeature,
     SignAndSendTransactionInputs,
@@ -110,7 +110,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         },
     };
 
-    constructor({ chain, features }: { chain: SolanaWalletChain; features?: FeatureNames[] }) {
+    constructor({ chain, features }: { chain: SolanaWalletChain; features?: FeatureName[] }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#signer = Keypair.generate();
@@ -236,7 +236,7 @@ type LedgerSolanaWalletAccountFeature =
     | SignTransactionOnlyFeature
     | SignAndSendTransactionFeature;
 type LedgerSolanaWalletAccountFeatures = UnionToIntersection<LedgerSolanaWalletAccountFeature>;
-type LedgerSolanaWalletAccountFeatureNames = keyof LedgerSolanaWalletAccountFeatures;
+type LedgerSolanaWalletAccountFeatureName = keyof LedgerSolanaWalletAccountFeatures;
 
 interface SolanaLedgerApp {
     publicKey: Uint8Array;
@@ -276,7 +276,7 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
     };
 
-    constructor({ chain, features }: { chain: SolanaWalletChain; features?: LedgerSolanaWalletAccountFeatureNames[] }) {
+    constructor({ chain, features }: { chain: SolanaWalletChain; features?: LedgerSolanaWalletAccountFeatureName[] }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#publicKey = new Uint8Array(this.#ledger.publicKey);
