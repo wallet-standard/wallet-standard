@@ -32,7 +32,7 @@ export type DecryptInput = Readonly<{
     nonce: Uint8Array;
 
     /** Multiple of padding bytes to use for decryption, defaulting to 0. */
-    padding?: 0 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
+    padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
 }>;
 
 /** Output of decryption. */
