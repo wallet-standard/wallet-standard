@@ -15,9 +15,6 @@ import {
     SignMessageOutput,
     SignMessageOutputs,
     SignTransactionInputs,
-    SignTransactionOnlyInputs,
-    SignTransactionOnlyOutput,
-    SignTransactionOnlyOutputs,
     SignTransactionOutput,
     SignTransactionOutputs,
     Wallet,
@@ -81,7 +78,6 @@ export class SignerEthereumWalletAccount implements WalletAccount {
 
     #allFeatures: Features = {
         signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
-        signTransactionOnly: { signTransactionOnly: (...args) => this.#signTransactionOnly(...args) },
         signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
         signMessage: { signMessage: (...args) => this.#signMessage(...args) },
         encrypt: {
@@ -106,7 +102,6 @@ export class SignerEthereumWalletAccount implements WalletAccount {
 
     async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const outputs: SignTransactionOutput[] = [];
         for (const { transaction } of inputs) {
@@ -124,38 +119,8 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return outputs;
     }
 
-    async #signTransactionOnly(inputs: SignTransactionOnlyInputs): Promise<SignTransactionOnlyOutputs> {
-        if (!('signTransactionOnly' in this.#features)) throw new Error('signTransactionOnly not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
-
-        const outputs: SignTransactionOnlyOutput[] = [];
-        for (const { transaction } of inputs) {
-            const parsedTransaction = ethers.utils.parseTransaction(transaction);
-
-            const serializedTransaction = await this.#wallet.signTransaction({
-                ...parsedTransaction,
-                // HACK: signTransaction expects a `number` or `undefined`, not `null`
-                type: parsedTransaction.type ?? undefined,
-            });
-
-            const signedTransaction = ethers.utils.parseTransaction(serializedTransaction);
-
-            const signature = ethers.utils.joinSignature({
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                r: signedTransaction.r!,
-                s: signedTransaction.s,
-                v: signedTransaction.v,
-            });
-
-            outputs.push({ signatures: [ethers.utils.arrayify(signature)] });
-        }
-
-        return outputs;
-    }
-
     async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
         if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         // homestead == Ethereum Mainnet
         const wallet = this.#wallet.connect(ethers.getDefaultProvider('homestead'));
@@ -178,14 +143,13 @@ export class SignerEthereumWalletAccount implements WalletAccount {
 
     async #signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs> {
         if (!('signMessage' in this.#features)) throw new Error('signMessage not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const outputs: SignMessageOutput[] = [];
         for (const { message } of inputs) {
             const signature = await this.#wallet.signMessage(message);
             outputs.push({
                 signedMessage: ethers.utils.arrayify(ethers.utils.hashMessage(message)),
-                signatures: [ethers.utils.arrayify(signature)],
+                signature: ethers.utils.arrayify(signature),
             });
         }
 

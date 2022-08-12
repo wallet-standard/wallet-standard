@@ -18,10 +18,6 @@ import {
     SignMessageOutputs,
     SignTransactionFeature,
     SignTransactionInputs,
-    SignTransactionOnlyFeature,
-    SignTransactionOnlyInputs,
-    SignTransactionOnlyOutput,
-    SignTransactionOnlyOutputs,
     SignTransactionOutput,
     SignTransactionOutputs,
     Wallet,
@@ -97,7 +93,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     #allFeatures: Features = {
         signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
-        signTransactionOnly: { signTransactionOnly: (...args) => this.#signTransactionOnly(...args) },
         signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
         signMessage: { signMessage: (...args) => this.#signMessage(...args) },
         encrypt: {
@@ -119,7 +114,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
@@ -134,27 +128,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return outputs;
     }
 
-    async #signTransactionOnly(inputs: SignTransactionOnlyInputs): Promise<SignTransactionOnlyOutputs> {
-        if (!('signTransactionOnly' in this.#features)) throw new Error('signTransactionOnly not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
-
-        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
-
-        // Prompt the user with transactions to sign
-
-        const outputs: SignTransactionOnlyOutput[] = [];
-        for (const transaction of transactions) {
-            const message = transaction.compileMessage().serialize();
-            const signature = sign.detached(message, this.#signer.secretKey);
-            outputs.push({ signatures: [signature] });
-        }
-
-        return outputs;
-    }
-
     async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
         if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
@@ -184,7 +159,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
     async #signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs> {
         if (!('signMessage' in this.#features)) throw new Error('signMessage not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         // Prompt the user with messages to sign
 
@@ -193,7 +167,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
             // TODO: prefix according to https://github.com/solana-labs/solana/pull/26915
             outputs.push({
                 signedMessage: message,
-                signatures: [sign.detached(message, this.#signer.secretKey)],
+                signature: sign.detached(message, this.#signer.secretKey),
             });
         }
 
@@ -231,10 +205,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     }
 }
 
-type LedgerSolanaWalletAccountFeature =
-    | SignTransactionFeature
-    | SignTransactionOnlyFeature
-    | SignAndSendTransactionFeature;
+type LedgerSolanaWalletAccountFeature = SignTransactionFeature | SignAndSendTransactionFeature;
 type LedgerSolanaWalletAccountFeatures = UnionToIntersection<LedgerSolanaWalletAccountFeature>;
 type LedgerSolanaWalletAccountFeatureName = keyof LedgerSolanaWalletAccountFeatures;
 
@@ -270,9 +241,8 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return {};
     }
 
-    #allFeatures: SignTransactionFeature & SignTransactionOnlyFeature & SignAndSendTransactionFeature = {
+    #allFeatures: SignTransactionFeature & SignAndSendTransactionFeature = {
         signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
-        signTransactionOnly: { signTransactionOnly: (...args) => this.#signTransactionOnly(...args) },
         signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
     };
 
@@ -284,7 +254,6 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
 
     async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
@@ -302,26 +271,8 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return outputs;
     }
 
-    async #signTransactionOnly(inputs: SignTransactionOnlyInputs): Promise<SignTransactionOnlyOutputs> {
-        if (!('signTransactionOnly' in this.#features)) throw new Error('signTransactionOnly not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
-
-        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
-
-        // Prompt the user with transactions to sign
-
-        const outputs: SignTransactionOnlyOutput[] = [];
-        for (const transaction of transactions) {
-            const signature = await this.#ledger.signTransaction(transaction.serialize({ requireAllSignatures: true }));
-            outputs.push({ signatures: [signature] });
-        }
-
-        return outputs;
-    }
-
     async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
         if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 

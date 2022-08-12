@@ -84,8 +84,6 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     }
 
     async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
-
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         if (transactions.length === 1) {
@@ -113,7 +111,6 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
     async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
         if (!('signTransaction' in this.#adapter)) throw new Error('signTransaction not implemented by adapter');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
@@ -142,12 +139,11 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
     async #signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs> {
         if (!('signMessage' in this.#adapter)) throw new Error('signMessage not implemented by adapter');
-        if (inputs.some((input) => !!input.extraSigners?.length)) throw new Error('extraSigners not implemented');
 
         if (inputs.length === 1) {
             const signedMessage = inputs[0].message;
             const signature = await this.#adapter.signMessage(signedMessage);
-            return [{ signedMessage, signatures: [signature] }];
+            return [{ signedMessage, signature }];
         } else if (inputs.length > 1) {
             throw new Error('signMessage for multiple messages not implemented');
         } else {
