@@ -1,25 +1,20 @@
 import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
 import {
-    DecryptInputs,
+    DecryptMethod,
     DecryptOutput,
-    DecryptOutputs,
-    EncryptInputs,
+    EncryptMethod,
     EncryptOutput,
-    EncryptOutputs,
     Feature,
     FeatureName,
     Features,
     SignAndSendTransactionFeature,
-    SignAndSendTransactionInputs,
+    SignAndSendTransactionMethod,
     SignAndSendTransactionOutput,
-    SignAndSendTransactionOutputs,
-    SignMessageInputs,
+    SignMessageMethod,
     SignMessageOutput,
-    SignMessageOutputs,
     SignTransactionFeature,
-    SignTransactionInputs,
+    SignTransactionMethod,
     SignTransactionOutput,
-    SignTransactionOutputs,
     Wallet,
     WalletAccount,
 } from '@wallet-standard/standard';
@@ -91,20 +86,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return {};
     }
 
-    #allFeatures: Features = {
-        signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
-        signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
-        signMessage: { signMessage: (...args) => this.#signMessage(...args) },
-        encrypt: {
-            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
-            encrypt: (...args) => this.#encrypt(...args),
-        },
-        decrypt: {
-            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
-            decrypt: (...args) => this.#decrypt(...args),
-        },
-    };
-
     constructor({ chain, features }: { chain: SolanaWalletChain; features?: FeatureName[] }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
@@ -112,7 +93,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         this.#publicKey = this.#signer.publicKey.toBytes();
     }
 
-    async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
+    #signTransaction: SignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
@@ -125,10 +106,10 @@ export class SignerSolanaWalletAccount implements WalletAccount {
             outputs.push({ signedTransaction: transaction.serialize({ requireAllSignatures: false }) });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
+    #signAndSendTransaction: SignAndSendTransactionMethod = async (...inputs) => {
         if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
@@ -154,10 +135,10 @@ export class SignerSolanaWalletAccount implements WalletAccount {
             outputs.push({ signature: decode(signature) });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs> {
+    #signMessage: SignMessageMethod = async (...inputs) => {
         if (!('signMessage' in this.#features)) throw new Error('signMessage not authorized');
 
         // Prompt the user with messages to sign
@@ -171,10 +152,10 @@ export class SignerSolanaWalletAccount implements WalletAccount {
             });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #encrypt(inputs: EncryptInputs): Promise<EncryptOutputs> {
+    #encrypt: EncryptMethod = async (...inputs) => {
         if (!('encrypt' in this.#features)) throw new Error('encrypt not authorized');
         if (inputs.some((input) => input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
             throw new Error('cipher not supported');
@@ -186,10 +167,10 @@ export class SignerSolanaWalletAccount implements WalletAccount {
             outputs.push({ ciphertext, nonce });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #decrypt(inputs: DecryptInputs): Promise<DecryptOutputs> {
+    #decrypt: DecryptMethod = async (...inputs) => {
         if (!('decrypt' in this.#features)) throw new Error('decrypt not authorized');
         if (inputs.some((input) => input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
             throw new Error('cipher not supported');
@@ -201,8 +182,22 @@ export class SignerSolanaWalletAccount implements WalletAccount {
             outputs.push({ cleartext });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
+
+    #allFeatures: Features = {
+        signTransaction: { signTransaction: this.#signTransaction },
+        signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
+        signMessage: { signMessage: this.#signMessage },
+        encrypt: {
+            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
+            encrypt: this.#encrypt,
+        },
+        decrypt: {
+            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
+            decrypt: this.#decrypt,
+        },
+    };
 }
 
 type LedgerSolanaWalletAccountFeature = SignTransactionFeature | SignAndSendTransactionFeature;
@@ -241,18 +236,13 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return {};
     }
 
-    #allFeatures: SignTransactionFeature & SignAndSendTransactionFeature = {
-        signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
-        signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
-    };
-
     constructor({ chain, features }: { chain: SolanaWalletChain; features?: LedgerSolanaWalletAccountFeatureName[] }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#publicKey = new Uint8Array(this.#ledger.publicKey);
     }
 
-    async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
+    #signTransaction: SignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
@@ -268,10 +258,10 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
             outputs.push({ signedTransaction: transaction.serialize({ requireAllSignatures: false }) });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
+    #signAndSendTransaction: SignAndSendTransactionMethod = async (...inputs) => {
         if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
@@ -303,6 +293,11 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
             outputs.push({ signature: decode(signature) });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
+
+    #allFeatures: SignTransactionFeature & SignAndSendTransactionFeature = {
+        signTransaction: { signTransaction: this.#signTransaction },
+        signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
+    };
 }

@@ -1,22 +1,17 @@
 import {
-    DecryptInputs,
+    DecryptMethod,
     DecryptOutput,
-    DecryptOutputs,
-    EncryptInputs,
+    EncryptMethod,
     EncryptOutput,
-    EncryptOutputs,
     Feature,
     FeatureName,
     Features,
-    SignAndSendTransactionInputs,
+    SignAndSendTransactionMethod,
     SignAndSendTransactionOutput,
-    SignAndSendTransactionOutputs,
-    SignMessageInputs,
+    SignMessageMethod,
     SignMessageOutput,
-    SignMessageOutputs,
-    SignTransactionInputs,
+    SignTransactionMethod,
     SignTransactionOutput,
-    SignTransactionOutputs,
     Wallet,
     WalletAccount,
 } from '@wallet-standard/standard';
@@ -76,20 +71,6 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return {};
     }
 
-    #allFeatures: Features = {
-        signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
-        signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
-        signMessage: { signMessage: (...args) => this.#signMessage(...args) },
-        encrypt: {
-            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
-            encrypt: (...args) => this.#encrypt(...args),
-        },
-        decrypt: {
-            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
-            decrypt: (...args) => this.#decrypt(...args),
-        },
-    };
-
     constructor({ chain, features }: { chain: EthereumWalletChain; features?: FeatureName[] }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
@@ -100,7 +81,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         this.#signingKey = new ethers.utils.SigningKey(this.#wallet.privateKey);
     }
 
-    async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
+    #signTransaction: SignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
 
         const outputs: SignTransactionOutput[] = [];
@@ -116,10 +97,10 @@ export class SignerEthereumWalletAccount implements WalletAccount {
             outputs.push({ signedTransaction: ethers.utils.arrayify(signedTransaction) });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
+    #signAndSendTransaction: SignAndSendTransactionMethod = async (...inputs) => {
         if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
 
         // homestead == Ethereum Mainnet
@@ -138,10 +119,10 @@ export class SignerEthereumWalletAccount implements WalletAccount {
             outputs.push({ signature: ethers.utils.arrayify(hash) });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs> {
+    #signMessage: SignMessageMethod = async (...inputs) => {
         if (!('signMessage' in this.#features)) throw new Error('signMessage not authorized');
 
         const outputs: SignMessageOutput[] = [];
@@ -153,10 +134,10 @@ export class SignerEthereumWalletAccount implements WalletAccount {
             });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #encrypt(inputs: EncryptInputs): Promise<EncryptOutputs> {
+    #encrypt: EncryptMethod = async (...inputs) => {
         if (!('encrypt' in this.#features)) throw new Error('encrypt not authorized');
         if (inputs.some((input) => input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
             throw new Error('cipher not supported');
@@ -168,10 +149,10 @@ export class SignerEthereumWalletAccount implements WalletAccount {
             outputs.push({ ciphertext, nonce });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
 
-    async #decrypt(inputs: DecryptInputs): Promise<DecryptOutputs> {
+    #decrypt: DecryptMethod = async (...inputs) => {
         if (!('decrypt' in this.#features)) throw new Error('decrypt not authorized');
         if (inputs.some((input) => input.cipher !== CIPHER_x25519_xsalsa20_poly1305))
             throw new Error('cipher not supported');
@@ -183,6 +164,20 @@ export class SignerEthereumWalletAccount implements WalletAccount {
             outputs.push({ cleartext });
         }
 
-        return outputs;
-    }
+        return outputs as any;
+    };
+
+    #allFeatures: Features = {
+        signTransaction: { signTransaction: this.#signTransaction },
+        signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
+        signMessage: { signMessage: this.#signMessage },
+        encrypt: {
+            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
+            encrypt: this.#encrypt,
+        },
+        decrypt: {
+            ciphers: [CIPHER_x25519_xsalsa20_poly1305],
+            decrypt: this.#decrypt,
+        },
+    };
 }

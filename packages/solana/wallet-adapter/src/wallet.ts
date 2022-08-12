@@ -5,14 +5,11 @@ import {
     ConnectInput,
     ConnectOutput,
     SignAndSendTransactionFeature,
-    SignAndSendTransactionInputs,
-    SignAndSendTransactionOutputs,
+    SignAndSendTransactionMethod,
     SignMessageFeature,
-    SignMessageInputs,
-    SignMessageOutputs,
+    SignMessageMethod,
     SignTransactionFeature,
-    SignTransactionInputs,
-    SignTransactionOutputs,
+    SignTransactionMethod,
     VERSION_1_0_0,
     Wallet,
     WalletAccount,
@@ -55,19 +52,17 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
     get features(): SignAndSendTransactionFeature & Partial<SignTransactionFeature & SignMessageFeature> {
         const signAndSendTransaction: SignAndSendTransactionFeature = {
-            signAndSendTransaction: { signAndSendTransaction: (...args) => this.#signAndSendTransaction(...args) },
+            signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
         };
 
         let signTransactionFeature: SignTransactionFeature | undefined = undefined;
         if ('signTransaction' in this.#adapter) {
-            signTransactionFeature = {
-                signTransaction: { signTransaction: (...args) => this.#signTransaction(...args) },
-            };
+            signTransactionFeature = { signTransaction: { signTransaction: this.#signTransaction } };
         }
 
         let signMessageFeature: SignMessageFeature | undefined = undefined;
         if ('signMessage' in this.#adapter) {
-            signMessageFeature = { signMessage: { signMessage: (...args) => this.#signMessage(...args) } };
+            signMessageFeature = { signMessage: { signMessage: this.#signMessage } };
         }
 
         return { ...signAndSendTransaction, ...signTransactionFeature, ...signMessageFeature };
@@ -83,7 +78,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         this.#chain = chain;
     }
 
-    async #signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs> {
+    #signAndSendTransaction: SignAndSendTransactionMethod = async (...inputs) => {
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         if (transactions.length === 1) {
@@ -105,11 +100,11 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         } else if (transactions.length > 1) {
             throw new Error('signAndSendTransaction for multiple transactions not implemented');
         } else {
-            return [];
+            return [] as any;
         }
-    }
+    };
 
-    async #signTransaction(inputs: SignTransactionInputs): Promise<SignTransactionOutputs> {
+    #signTransaction: SignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#adapter)) throw new Error('signTransaction not implemented by adapter');
 
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
@@ -133,11 +128,11 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
                 }),
             }));
         } else {
-            return [];
+            return [] as any;
         }
-    }
+    };
 
-    async #signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs> {
+    #signMessage: SignMessageMethod = async (...inputs) => {
         if (!('signMessage' in this.#adapter)) throw new Error('signMessage not implemented by adapter');
 
         if (inputs.length === 1) {
@@ -147,9 +142,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         } else if (inputs.length > 1) {
             throw new Error('signMessage for multiple messages not implemented');
         } else {
-            return [];
+            return [] as any;
         }
-    }
+    };
 }
 
 export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
