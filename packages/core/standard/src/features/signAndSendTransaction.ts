@@ -10,9 +10,12 @@ export type SignAndSendTransactionFeature = Readonly<{
          *
          * @return Outputs of signing and sending transactions.
          */
-        signAndSendTransaction: AsyncMapFunction<SignAndSendTransactionInput, SignAndSendTransactionOutput>;
+        signAndSendTransaction: SignAndSendTransactionMethod;
     };
 }>;
+
+/** TODO: docs */
+export type SignAndSendTransactionMethod = AsyncMapFunction<SignAndSendTransactionInput, SignAndSendTransactionOutput>;
 
 /** Input for signing and sending transactions. */
 export type SignAndSendTransactionInput = Readonly<{

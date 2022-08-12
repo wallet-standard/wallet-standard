@@ -13,9 +13,12 @@ export type DecryptFeature = Readonly<{
          *
          * @return Outputs of decryption.
          */
-        decrypt: AsyncMapFunction<DecryptInput, DecryptOutput>;
+        decrypt: DecryptMethod;
     };
 }>;
+
+/** TODO: docs */
+export type DecryptMethod = AsyncMapFunction<DecryptInput, DecryptOutput>;
 
 /** Input for decryption. */
 export type DecryptInput = Readonly<{

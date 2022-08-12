@@ -13,9 +13,12 @@ export type EncryptFeature = Readonly<{
          *
          * @return Outputs of encryption.
          */
-        encrypt: AsyncMapFunction<EncryptInput, EncryptOutput>;
+        encrypt: EncryptMethod;
     };
 }>;
+
+/** TODO: docs */
+export type EncryptMethod = AsyncMapFunction<EncryptInput, EncryptOutput>;
 
 /** Input for encryption. */
 export type EncryptInput = Readonly<{

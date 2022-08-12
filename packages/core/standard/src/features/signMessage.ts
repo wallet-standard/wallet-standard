@@ -10,9 +10,12 @@ export type SignMessageFeature = Readonly<{
          *
          * @return Outputs of signing messages.
          */
-        signMessage: AsyncMapFunction<SignMessageInput, SignMessageOutput>;
+        signMessage: SignMessageMethod;
     };
 }>;
+
+/** TODO: docs */
+export type SignMessageMethod = AsyncMapFunction<SignMessageInput, SignMessageOutput>;
 
 /** Input for signing a message. */
 export type SignMessageInput = Readonly<{
