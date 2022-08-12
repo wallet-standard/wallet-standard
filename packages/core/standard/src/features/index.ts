@@ -5,19 +5,16 @@ import { EncryptFeature } from './encrypt';
 import { SignAndSendTransactionFeature } from './signAndSendTransaction';
 import { SignMessageFeature } from './signMessage';
 import { SignTransactionFeature } from './signTransaction';
-import { SignTransactionOnlyFeature } from './signTransactionOnly';
 
 export * from './decrypt';
 export * from './encrypt';
 export * from './signAndSendTransaction';
 export * from './signMessage';
 export * from './signTransaction';
-export * from './signTransactionOnly';
 
 /** TODO: docs */
 export type Feature =
     | SignTransactionFeature
-    | SignTransactionOnlyFeature
     | SignAndSendTransactionFeature
     | SignMessageFeature
     | EncryptFeature
