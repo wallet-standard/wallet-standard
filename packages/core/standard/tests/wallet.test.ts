@@ -1,9 +1,8 @@
-import { Feature, SignAndSendTransactionFeature, SignTransactionFeature, Wallet, WalletAccount } from '../src';
+import { SignAndSendTransactionFeature, SignTransactionFeature, Wallet, WalletAccount } from '../src';
 
 // A Solana account that supports all the features
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
-    features: Feature;
 }
 
 // A Solana account on a Ledger device that can only sign transactions
@@ -22,7 +21,7 @@ type SubscribeFeature = {
 // An account on a different chain that supports all the features, and a custom one
 interface EthereumWalletAccount extends WalletAccount {
     chain: 'ethereum:mainnet';
-    features: Feature;
+    features: never;
     nonstandardFeatures: SubscribeFeature;
 }
 
@@ -42,11 +41,11 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     // Good -- this fails because while `signTransaction` is a feature of the accounts, we don't know if we have access to it
     // @ts-expect-error expected
-    await account.features.signTransaction.signTransaction([]);
+    await account.features.signTransaction.signTransaction();
 
     if ('signTransaction' in account.features) {
         // Good -- this succeeds because we feature detected the feature, and statically know its signature
-        await account.features.signTransaction.signTransaction([]);
+        await account.features.signTransaction.signTransaction();
     }
 
     await wallet.connect({
@@ -72,11 +71,11 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     // Good -- this fails because we can't know that each account will actually have every feature just because we asked for it
     // @ts-expect-error expected
-    await accountWithAnyFeatures.features.signTransaction.signTransaction([]);
+    await accountWithAnyFeatures.features.signTransaction.signTransaction();
 
     if ('signTransaction' in accountWithAnyFeatures.features) {
         // Good -- this succeeds because if the account does have the feature, we know it's signature
-        await accountWithAnyFeatures.features.signTransaction.signTransaction([]);
+        await accountWithAnyFeatures.features.signTransaction.signTransaction();
     }
 
     // Good -- this succeeds because if `features` is empty, and the wallet should grant none (aka "readonly" access)
@@ -89,12 +88,12 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     // Good -- this fails because the account has no features
     // @ts-expect-error expected
-    await accountWithNoFeatures.features.signTransaction.signTransaction([]);
+    await accountWithNoFeatures.features.signTransaction.signTransaction();
 
     if ('signTransaction' in accountWithNoFeatures.features) {
         // Good -- this fails because the account has no features, even though we know what its signature would be
         // @ts-expect-error expected
-        await accountWithNoFeatures.features.signTransaction.signTransaction([]);
+        await accountWithNoFeatures.features.signTransaction.signTransaction();
     }
 
     // Good -- this succeeds because the chain and features are known
@@ -106,15 +105,15 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     ).accounts[0];
 
     // Good -- this succeeds because the account includes the feature
-    await accountWithOneFeature.features.signTransaction.signTransaction([]);
+    await accountWithOneFeature.features.signTransaction.signTransaction();
     // Good -- this fails because the account excludes the feature, even though the account type includes it
     // @ts-expect-error expected
-    await accountWithOneFeature.features.signMessage.signMessage([]);
+    await accountWithOneFeature.features.signMessage.signMessage();
 
     if ('signMessage' in accountWithOneFeature.features) {
         // Good -- this fails because the account has no signature for `signMessage`
         // @ts-expect-error expected
-        await accountWithOneFeature.features.signMessage.signMessage([]);
+        await accountWithOneFeature.features.signMessage.signMessage();
     }
 
     // Good -- this succeeds because the chain and features are known
@@ -126,12 +125,12 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     ).accounts[0];
 
     // Good -- these succeed because the account includes the feature
-    await accountWithMultipleFeatures.features.signTransaction.signTransaction([]);
-    await accountWithMultipleFeatures.features.signMessage.signMessage([]);
+    await accountWithMultipleFeatures.features.signTransaction.signTransaction();
+    await accountWithMultipleFeatures.features.signMessage.signMessage();
 
     // Good -- this fails because the account doesn't include the feature
     // @ts-expect-error expected
-    await accountWithMultipleFeatures.features.signAndSendTransaction.signAndSendTransaction([]);
+    await accountWithMultipleFeatures.features.signAndSendTransaction.signAndSendTransaction();
 
     // Good -- this succeeds because the chain and nonstandard features are known
     const accountWithNonstandardFeature = (
@@ -143,8 +142,6 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     // Good -- this succeeds because the account includes the nonstandard feature
     await accountWithNonstandardFeature.nonstandardFeatures.subscribe.subscribe('change');
-
-    // TODO: add test for signTransactionOnly feature
 
     // TODO: add test for encrypt/decrypt feature cipher
 })();
