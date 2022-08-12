@@ -1,5 +1,4 @@
-import { WalletAccount } from '../wallet';
-import { SignTransactionOnlyFeature } from './signTransactionOnly';
+import type { AsyncMapFunction } from '@wallet-standard/types';
 
 /** TODO: docs */
 export type SignAndSendTransactionFeature = Readonly<{
@@ -11,7 +10,7 @@ export type SignAndSendTransactionFeature = Readonly<{
          *
          * @return Outputs of signing and sending transactions.
          */
-        signAndSendTransaction(inputs: SignAndSendTransactionInputs): Promise<SignAndSendTransactionOutputs>;
+        signAndSendTransaction: AsyncMapFunction<SignAndSendTransactionInput, SignAndSendTransactionOutput>;
     };
 }>;
 
@@ -20,20 +19,11 @@ export type SignAndSendTransactionInput = Readonly<{
     /** Serialized transaction, as raw bytes. */
     transaction: Uint8Array;
 
-    /** Optional accounts that must also sign the transactions. They must have the `signTransactionOnly` feature. */
-    extraSigners?: ReadonlyArray<WalletAccount & { features: SignTransactionOnlyFeature }>;
-
     // TODO: figure out if options for sending need to be supported
 }>;
-
-/** Inputs for signing and sending transactions. */
-export type SignAndSendTransactionInputs = ReadonlyArray<SignAndSendTransactionInput>;
 
 /** Output of signing and sending transactions. */
 export type SignAndSendTransactionOutput = Readonly<{
     /** Transaction signature, as raw bytes. */
     signature: Uint8Array;
 }>;
-
-/** Outputs of signing and sending transactions. */
-export type SignAndSendTransactionOutputs = ReadonlyArray<SignAndSendTransactionOutput>;

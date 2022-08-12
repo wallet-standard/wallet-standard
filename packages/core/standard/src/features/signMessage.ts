@@ -1,4 +1,4 @@
-import { WalletAccount } from '../wallet';
+import type { AsyncMapFunction } from '@wallet-standard/types';
 
 /** TODO: docs */
 export type SignMessageFeature = Readonly<{
@@ -10,7 +10,7 @@ export type SignMessageFeature = Readonly<{
          *
          * @return Outputs of signing messages.
          */
-        signMessage(inputs: SignMessageInputs): Promise<SignMessageOutputs>;
+        signMessage: AsyncMapFunction<SignMessageInput, SignMessageOutput>;
     };
 }>;
 
@@ -18,13 +18,7 @@ export type SignMessageFeature = Readonly<{
 export type SignMessageInput = Readonly<{
     /** Message to sign, as raw bytes. */
     message: Uint8Array;
-
-    /** Optional accounts that must also sign the messages. They must have the `signMessage` feature. */
-    extraSigners?: ReadonlyArray<WalletAccount & { features: SignMessageFeature }>;
 }>;
-
-/** Inputs for signing messages. */
-export type SignMessageInputs = ReadonlyArray<SignMessageInput>;
 
 /** Output of signing a message. */
 export type SignMessageOutput = Readonly<{
@@ -32,8 +26,5 @@ export type SignMessageOutput = Readonly<{
     signedMessage: Uint8Array;
 
     /** TODO: docs */
-    signatures: ReadonlyArray<Uint8Array>;
+    signature: Uint8Array;
 }>;
-
-/** Outputs of signing messages. */
-export type SignMessageOutputs = ReadonlyArray<SignMessageOutput>;

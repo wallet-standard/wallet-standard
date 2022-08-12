@@ -1,3 +1,5 @@
+import type { AsyncMapFunction } from '@wallet-standard/types';
+
 /** TODO: docs */
 export type DecryptFeature = Readonly<{
     decrypt: {
@@ -11,7 +13,7 @@ export type DecryptFeature = Readonly<{
          *
          * @return Outputs of decryption.
          */
-        decrypt(inputs: DecryptInputs): Promise<DecryptOutputs>;
+        decrypt: AsyncMapFunction<DecryptInput, DecryptOutput>;
     };
 }>;
 
@@ -33,14 +35,8 @@ export type DecryptInput = Readonly<{
     padding?: 0 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
 }>;
 
-/** Inputs for decryption. */
-export type DecryptInputs = ReadonlyArray<DecryptInput>;
-
 /** Output of decryption. */
 export type DecryptOutput = Readonly<{
     /** Cleartext that was decrypted. */
     cleartext: Uint8Array;
 }>;
-
-/** Outputs of decryption. */
-export type DecryptOutputs = ReadonlyArray<DecryptOutput>;
