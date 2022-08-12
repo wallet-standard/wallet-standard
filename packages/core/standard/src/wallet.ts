@@ -32,11 +32,12 @@ export type WalletAccount = Readonly<{
 
     /**
      * Optional user-friendly icon for the account, to be displayed by apps.
-     * Must be a data URL containing a base64-encoded SVG or PNG image.
+     * Must be a data URL containing a base64-encoded SVG or PNG image. // TODO: is base64 actually needed? should other types be allowed?
      */
     icon?: string;
 }>;
 
+// TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
 export interface WalletEvents<Account extends WalletAccount> {
     /**
@@ -194,6 +195,7 @@ export type ConnectOutput<
     hasMoreAccounts: boolean;
 }>;
 
+// TODO: test that this filters account types by chain/features/nonstandardFeatures
 /** An account in the wallet that the app has been authorized to use. */
 export type ConnectedAccount<
     Account extends WalletAccount,
