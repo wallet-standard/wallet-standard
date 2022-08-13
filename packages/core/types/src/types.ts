@@ -34,7 +34,7 @@ export type TuplePick<T extends any[], K extends PropertyKey> = {
 };
 
 /** TODO: docs */
-export type MapTuple<Input extends unknown[], Value, Output extends unknown[] = []> = Input extends []
+export type MapTuple<Input extends unknown[], Value, Output extends Value[] = []> = Input extends []
     ? []
     : Input extends [unknown]
     ? [...Output, Value]
