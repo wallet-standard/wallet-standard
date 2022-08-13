@@ -1,7 +1,14 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
+// Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
+declare const encryptMethod: AsyncMapFunction<EncryptInput, EncryptOutput>;
+
+/** TODO: docs */
+export type EncryptMethod = typeof encryptMethod;
+
 /** TODO: docs */
 export type EncryptFeature = Readonly<{
+    /** Namespace for the feature. */
     encrypt: {
         /** List of ciphers supported for encryption. */
         ciphers: ReadonlyArray<string>;
@@ -16,9 +23,6 @@ export type EncryptFeature = Readonly<{
         encrypt: EncryptMethod;
     };
 }>;
-
-/** TODO: docs */
-export type EncryptMethod = AsyncMapFunction<EncryptInput, EncryptOutput>;
 
 /** Input for encryption. */
 export type EncryptInput = Readonly<{

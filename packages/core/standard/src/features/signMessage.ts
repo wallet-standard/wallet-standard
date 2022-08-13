@@ -1,21 +1,19 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
+// Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
+declare const signMessageMethod: AsyncMapFunction<SignMessageInput, SignMessageOutput>;
+
+/** TODO: docs */
+export type SignMessageMethod = typeof signMessageMethod;
+
 /** TODO: docs */
 export type SignMessageFeature = Readonly<{
+    /** Namespace for the feature. */
     signMessage: {
-        /**
-         * Sign messages (arbitrary bytes) using the account's secret key.
-         *
-         * @param inputs Inputs for signing messages.
-         *
-         * @return Outputs of signing messages.
-         */
+        /** Sign messages (arbitrary bytes) using the account's secret key. */
         signMessage: SignMessageMethod;
     };
 }>;
-
-/** TODO: docs */
-export type SignMessageMethod = AsyncMapFunction<SignMessageInput, SignMessageOutput>;
 
 /** Input for signing a message. */
 export type SignMessageInput = Readonly<{
