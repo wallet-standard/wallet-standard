@@ -162,7 +162,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
 
         const outputs: EncryptOutput[] = [];
         for (const { publicKey, cleartext } of inputs) {
-            const nonce = randomBytes(32);
+            const nonce = randomBytes(box.nonceLength);
             const ciphertext = box(cleartext, nonce, publicKey, this.#signer.secretKey);
             outputs.push({ ciphertext, nonce });
         }
