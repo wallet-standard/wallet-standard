@@ -40,6 +40,8 @@ export type MapTuple<Input extends unknown[], Value, Output extends unknown[] = 
     ? [...Output, Value]
     : Input extends [unknown, ...infer Tail]
     ? MapTuple<[...Tail], Value, [...Output, Value]>
+    : Output extends []
+    ? []
     : Readonly<Output>;
 
 /** TODO: docs */
