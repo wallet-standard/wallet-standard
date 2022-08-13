@@ -1,7 +1,10 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
-// Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
-declare const signTransactionMethod: AsyncMapFunction<SignTransactionInput, SignTransactionOutput>;
+/**
+ * TODO: docs
+ * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
+ */
+export declare const signTransactionMethod: AsyncMapFunction<SignTransactionInput, SignTransactionOutput>;
 
 /** TODO: docs */
 export type SignTransactionMethod = typeof signTransactionMethod;

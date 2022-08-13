@@ -1,7 +1,10 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
-// Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
-declare const decryptMethod: AsyncMapFunction<DecryptInput, DecryptOutput>;
+/**
+ * TODO: docs
+ * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
+ */
+export declare const decryptMethod: AsyncMapFunction<DecryptInput, DecryptOutput>;
 
 /** TODO: docs */
 export type DecryptMethod = typeof decryptMethod;
