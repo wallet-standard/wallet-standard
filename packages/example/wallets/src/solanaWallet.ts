@@ -82,7 +82,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    get nonstandardFeatures() {
+    get extensions() {
         return {};
     }
 
@@ -232,7 +232,7 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    get nonstandardFeatures() {
+    get extensions() {
         return {};
     }
 

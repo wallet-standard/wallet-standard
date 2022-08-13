@@ -3,8 +3,8 @@ import {
     Feature,
     WalletAccountFeatureName,
     WalletAccountFeatures,
-    WalletAccountNonstandardFeatureName,
-    WalletAccountNonstandardFeatures,
+    WalletAccountExtensionName,
+    WalletAccountExtensions,
 } from './features';
 
 /** An account in the wallet that the app has been authorized to use. */
@@ -24,8 +24,8 @@ export type WalletAccount = Readonly<{
     /** Standard features supported by the account that are authorized to be used. */
     features: Feature;
 
-    /** Nonstandard features supported by the account that are authorized to be used. */
-    nonstandardFeatures: Readonly<Record<string, unknown>>;
+    /** Nonstandard extensions supported by the account that are authorized to be used. */
+    extensions: Readonly<Record<string, unknown>>;
 
     /** Optional user-friendly descriptive label or name for the account, to be displayed by apps. */
     label?: string;
@@ -95,7 +95,7 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
      * List of nonstandard features supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
-    nonstandardFeatures: ReadonlyArray<WalletAccountNonstandardFeatureName<Account>>;
+    extensions: ReadonlyArray<WalletAccountExtensionName<Account>>;
 
     /**
      * List of accounts the app is authorized to use.
@@ -120,11 +120,11 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
     connect<
         Chain extends Account['chain'],
         FeatureName extends WalletAccountFeatureName<Account>,
-        NonstandardFeatureName extends WalletAccountNonstandardFeatureName<Account>,
-        Input extends ConnectInput<Account, Chain, FeatureName, NonstandardFeatureName>
+        ExtensionName extends WalletAccountExtensionName<Account>,
+        Input extends ConnectInput<Account, Chain, FeatureName, ExtensionName>
     >(
         input: Input
-    ): Promise<ConnectOutput<Account, Chain, FeatureName, NonstandardFeatureName, Input>>;
+    ): Promise<ConnectOutput<Account, Chain, FeatureName, ExtensionName, Input>>;
 
     /**
      * Add an event listener to subscribe to events.
@@ -142,7 +142,7 @@ export type ConnectInput<
     Account extends WalletAccount,
     Chain extends Account['chain'],
     FeatureName extends WalletAccountFeatureName<Account>,
-    NonstandardFeatureName extends WalletAccountNonstandardFeatureName<Account>
+    ExtensionName extends WalletAccountExtensionName<Account>
 > = Readonly<{
     /** Optional chains to discover accounts using. */
     chains?: ReadonlyArray<Chain>;
@@ -151,7 +151,7 @@ export type ConnectInput<
     features?: ReadonlyArray<FeatureName>;
 
     /** TODO: docs */
-    nonstandardFeatures?: ReadonlyArray<NonstandardFeatureName>;
+    extensions?: ReadonlyArray<ExtensionName>;
 
     // TODO: decide if addresses are even needed
     /**
@@ -182,11 +182,11 @@ export type ConnectOutput<
     Account extends WalletAccount,
     Chain extends Account['chain'],
     FeatureName extends WalletAccountFeatureName<Account>,
-    NonstandardFeatureName extends WalletAccountNonstandardFeatureName<Account>,
-    Input extends ConnectInput<Account, Chain, FeatureName, NonstandardFeatureName>
+    ExtensionName extends WalletAccountExtensionName<Account>,
+    Input extends ConnectInput<Account, Chain, FeatureName, ExtensionName>
 > = Readonly<{
     /** List of accounts in the wallet that the app has been authorized to use. */
-    accounts: ReadonlyArray<ConnectedAccount<Account, Chain, FeatureName, NonstandardFeatureName, Input>>;
+    accounts: ReadonlyArray<ConnectedAccount<Account, Chain, FeatureName, ExtensionName, Input>>;
 
     /**
      * Will be true if there are more accounts with the given chain(s) and feature(s) in the wallet besides the `accounts` returned.
@@ -195,22 +195,22 @@ export type ConnectOutput<
     hasMoreAccounts: boolean;
 }>;
 
-// TODO: test that this filters account types by chain/features/nonstandardFeatures
+// TODO: test that this filters account types by chain/features/extensions
 /** An account in the wallet that the app has been authorized to use. */
 export type ConnectedAccount<
     Account extends WalletAccount,
     Chain extends Account['chain'],
     FeatureName extends WalletAccountFeatureName<Account>,
-    NonstandardFeatureName extends WalletAccountNonstandardFeatureName<Account>,
-    Input extends ConnectInput<Account, Chain, FeatureName, NonstandardFeatureName>
+    ExtensionName extends WalletAccountExtensionName<Account>,
+    Input extends ConnectInput<Account, Chain, FeatureName, ExtensionName>
 > = Readonly<
-    Omit<Account, 'chain' | 'features' | 'nonstandardFeatures'> & {
+    Omit<Account, 'chain' | 'features' | 'extensions'> & {
         chain: Input extends { chains: ReadonlyArray<Chain> } ? Chain : Account['chain'];
         features: Input extends { features: ReadonlyArray<FeatureName> }
             ? Pick<WalletAccountFeatures<Account>, Input['features'][number]>
             : Account['features'];
-        nonstandardFeatures: Input extends { nonstandardFeatures: ReadonlyArray<NonstandardFeatureName> }
-            ? Pick<WalletAccountNonstandardFeatures<Account>, Input['nonstandardFeatures'][number]>
-            : Account['nonstandardFeatures'];
+        extensions: Input extends { extensions: ReadonlyArray<ExtensionName> }
+            ? Pick<WalletAccountExtensions<Account>, Input['extensions'][number]>
+            : Account['extensions'];
     }
 >;

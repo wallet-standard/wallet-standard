@@ -14,7 +14,7 @@ import {
     Wallet,
     WalletAccount,
     WalletAccountFeatureName,
-    WalletAccountNonstandardFeatureName,
+    WalletAccountExtensionName,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
@@ -68,7 +68,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return { ...signAndSendTransaction, ...signTransactionFeature, ...signMessageFeature };
     }
 
-    get nonstandardFeatures() {
+    get extensions() {
         return {};
     }
 
@@ -182,7 +182,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return features;
     }
 
-    get nonstandardFeatures() {
+    get extensions() {
         return [];
     }
 
@@ -212,20 +212,18 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     async connect<
         Chain extends SolanaWalletAdapterWalletAccount['chain'],
         FeatureName extends WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>,
-        NonstandardFeatureName extends WalletAccountNonstandardFeatureName<SolanaWalletAdapterWalletAccount>,
-        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, NonstandardFeatureName>
+        ExtensionName extends WalletAccountExtensionName<SolanaWalletAdapterWalletAccount>,
+        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName>
     >({
         chains,
         addresses,
         features,
-        nonstandardFeatures,
+        extensions,
         silent,
-    }: Input): Promise<
-        ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, NonstandardFeatureName, Input>
-    > {
+    }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
         // FIXME: features
 
-        if (nonstandardFeatures?.length) throw new Error('nonstandard features not supported');
+        if (extensions?.length) throw new Error('nonstandard features not supported');
 
         if (!silent && !this.#adapter.connected) {
             await this.#adapter.connect();

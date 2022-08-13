@@ -6,7 +6,7 @@ import {
     Wallet,
     WalletAccount,
     WalletAccountFeatureName,
-    WalletAccountNonstandardFeatureName,
+    WalletAccountExtensionName,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
@@ -36,7 +36,7 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         return [...new Set(features)];
     }
 
-    get nonstandardFeatures() {
+    get extensions() {
         return [];
     }
 
@@ -55,14 +55,14 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
     async connect<
         Chain extends Account['chain'],
         FeatureName extends WalletAccountFeatureName<Account>,
-        NonstandardFeatureName extends WalletAccountNonstandardFeatureName<Account>,
-        Input extends ConnectInput<Account, Chain, FeatureName, NonstandardFeatureName>
+        ExtensionName extends WalletAccountExtensionName<Account>,
+        Input extends ConnectInput<Account, Chain, FeatureName, ExtensionName>
     >({
         chains,
         addresses,
         features,
         silent,
-    }: Input): Promise<ConnectOutput<Account, Chain, FeatureName, NonstandardFeatureName, Input>> {
+    }: Input): Promise<ConnectOutput<Account, Chain, FeatureName, ExtensionName, Input>> {
         let accounts = this.accounts;
 
         if (chains) {
@@ -89,7 +89,7 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         // TODO: ask the user to grant access to the desired set, unless `silent` is true
 
         return {
-            accounts: accounts as ConnectedAccount<any, Chain, FeatureName, NonstandardFeatureName, Input>[],
+            accounts: accounts as ConnectedAccount<any, Chain, FeatureName, ExtensionName, Input>[],
             // FIXME: this should be true if there are more accounts found for the given inputs that weren't granted access
             hasMoreAccounts: false,
         };

@@ -11,10 +11,8 @@ export interface WalletProviderProps {
 /** TODO: docs */
 export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: WalletProviderProps) => {
     const [wallet, setWallet] = useState<Wallet<WalletAccount>>();
-    const [
-        { version, name, icon, chains, features, nonstandardFeatures, accounts, hasMoreAccounts },
-        setWalletProperties,
-    ] = useState(getWalletProperties(wallet));
+    const [{ version, name, icon, chains, features, extensions, accounts, hasMoreAccounts }, setWalletProperties] =
+        useState(getWalletProperties(wallet));
 
     // If the window is closing or reloading, ignore events from the wallet
     const isUnloading = useRef(false);
@@ -88,7 +86,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
                 icon,
                 chains,
                 features,
-                nonstandardFeatures,
+                extensions,
                 accounts,
                 hasMoreAccounts,
             }}

@@ -67,7 +67,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    get nonstandardFeatures() {
+    get extensions() {
         return {};
     }
 

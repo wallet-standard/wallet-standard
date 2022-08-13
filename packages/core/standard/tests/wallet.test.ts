@@ -22,7 +22,7 @@ type SubscribeFeature = {
 interface EthereumWalletAccount extends WalletAccount {
     chain: 'ethereum:mainnet';
     features: never;
-    nonstandardFeatures: SubscribeFeature;
+    extensions: SubscribeFeature;
 }
 
 // A wallet that supports multiple account types
@@ -133,15 +133,15 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     await accountWithMultipleFeatures.features.signAndSendTransaction.signAndSendTransaction();
 
     // Good -- this succeeds because the chain and nonstandard features are known
-    const accountWithNonstandardFeature = (
+    const accountWithExtension = (
         await wallet.connect({
             chains: ['ethereum:mainnet'],
-            nonstandardFeatures: ['subscribe'],
+            extensions: ['subscribe'],
         })
     ).accounts[0];
 
     // Good -- this succeeds because the account includes the nonstandard feature
-    await accountWithNonstandardFeature.nonstandardFeatures.subscribe.subscribe('change');
+    await accountWithExtension.extensions.subscribe.subscribe('change');
 
     // TODO: add test for encrypt/decrypt feature cipher
 })();
