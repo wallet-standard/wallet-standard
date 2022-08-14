@@ -8,7 +8,7 @@ import {
     WalletAccount,
 } from '@wallet-standard/standard';
 import type { FC } from 'react';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type Account = WalletAccount & {
     features: SignAndSendTransactionFeature | SignTransactionFeature | SignMessageFeature;
@@ -22,7 +22,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({
     localStorageKey = 'walletName',
 }) => {
     // Start with the adapters provided by the app.
-    const [adapters, setAdapters] = useState(() => wallets);
+    const [adapters, setAdapters] = useState(wallets);
 
     useEffect(() => {
         const destructors: (() => void)[] = [];
@@ -53,7 +53,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({
         destructors.push(
             wallets.on('unregister', (unregistered) =>
                 setAdapters((adapters) =>
-                    // Filter out adapters that have the same name as unregistered wallets.
+                    // Filter out adapters with the same name as unregistered wallets.
                     adapters.filter((adapter) =>
                         unregistered.some((unregistered) => unregistered.name === adapter.name)
                     )
