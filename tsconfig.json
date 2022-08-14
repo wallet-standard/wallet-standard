@@ -24,6 +24,9 @@
         },
         {
             "path": "./packages/solana/wallet-adapter"
+        },
+        {
+            "path": "./packages/solana/wallet-adapter-react"
         }
     ]
 }

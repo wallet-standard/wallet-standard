@@ -1,0 +1,49 @@
+{
+    "name": "@wallet-standard/solana-wallet-adapter-react",
+    "version": "0.1.0-alpha.0",
+    "author": "Solana Maintainers <maintainers@solana.foundation>",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
+    "license": "Apache-2.0",
+    "type": "module",
+    "sideEffects": false,
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "prebuild": "pnpm run clean"
+    },
+    "peerDependencies": {
+        "react": "*",
+        "react-dom": "*"
+    },
+    "dependencies": {
+        "@solana/wallet-adapter-base": "^0.9.10",
+        "@solana/wallet-adapter-react": "^0.15.9",
+        "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/solana-wallet-adapter": "workspace:^",
+        "@wallet-standard/standard": "workspace:^"
+    },
+    "devDependencies": {
+        "@types/bs58": "^4.0.1",
+        "@types/node-fetch": "^2.6.2",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "shx": "^0.3.4"
+    }
+}
