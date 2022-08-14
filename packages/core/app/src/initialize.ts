@@ -16,7 +16,8 @@ export function initialize<Account extends WalletAccount>(): Wallets<Account> {
     // If it's already initialized, don't recreate it, just return it.
     if (!Array.isArray(commands)) return commands;
 
-    const wallets = ((window as WalletsWindow<Account>).navigator.wallets = create<Account>());
+    const wallets = create<Account>();
+    Object.defineProperty(window.navigator, 'wallets', { value: wallets });
     wallets.push(...commands);
     return wallets;
 }
