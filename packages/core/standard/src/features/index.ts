@@ -7,6 +7,7 @@ import { SignAndSendTransactionFeature } from './signAndSendTransaction';
 import { SignMessageFeature } from './signMessage';
 import { SignTransactionFeature } from './signTransaction';
 import { SolanaFeature } from './solana';
+import { WSJSONRPCFeature } from './WSJSONRPC';
 
 export * from './decrypt';
 export * from './encrypt';
@@ -22,7 +23,8 @@ export type Feature =
     | EncryptFeature
     | DecryptFeature
     | SolanaFeature
-    | JSONRPCFeature;
+    | JSONRPCFeature
+    | WSJSONRPCFeature;
 
 /** TODO: docs */
 export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
