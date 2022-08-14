@@ -14,6 +14,9 @@ export * from './encrypt';
 export * from './signAndSendTransaction';
 export * from './signMessage';
 export * from './signTransaction';
+export * from './solana';
+export * from './JSONRPC';
+export * from './WSJSONRPC';
 
 /** TODO: docs */
 export type Feature =
