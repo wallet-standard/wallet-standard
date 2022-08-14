@@ -5,8 +5,8 @@ import {
     VERSION_1_0_0,
     Wallet,
     WalletAccount,
-    WalletAccountFeatureName,
     WalletAccountExtensionName,
+    WalletAccountFeatureName,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';

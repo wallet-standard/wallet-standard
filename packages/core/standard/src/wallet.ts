@@ -1,10 +1,10 @@
 import type { PropertyNames } from '@wallet-standard/types';
 import {
     Feature,
-    WalletAccountFeatureName,
-    WalletAccountFeatures,
     WalletAccountExtensionName,
     WalletAccountExtensions,
+    WalletAccountFeatureName,
+    WalletAccountFeatures,
 } from './features';
 
 /** An account in the wallet that the app has been authorized to use. */
