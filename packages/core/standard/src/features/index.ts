@@ -5,6 +5,7 @@ import { EncryptFeature } from './encrypt';
 import { SignAndSendTransactionFeature } from './signAndSendTransaction';
 import { SignMessageFeature } from './signMessage';
 import { SignTransactionFeature } from './signTransaction';
+import { SolanaFeature } from './solana';
 
 export * from './decrypt';
 export * from './encrypt';
@@ -18,7 +19,8 @@ export type Feature =
     | SignAndSendTransactionFeature
     | SignMessageFeature
     | EncryptFeature
-    | DecryptFeature;
+    | DecryptFeature
+    | SolanaFeature;
 
 /** TODO: docs */
 export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;

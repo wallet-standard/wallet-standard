@@ -1,14 +1,15 @@
-import { SignAndSendTransactionFeature, SignTransactionFeature, Wallet, WalletAccount } from '../src';
+import { SignMessageFeature, SignTransactionFeature, SolanaFeature, Wallet, WalletAccount } from '../src';
 
 // A Solana account that supports all the features
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
+    features: SignTransactionFeature | SignMessageFeature | SolanaFeature;
 }
 
 // A Solana account on a Ledger device that can only sign transactions
 interface SolanaLedgerWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
-    features: SignTransactionFeature | SignAndSendTransactionFeature;
+    features: SignTransactionFeature | SolanaFeature;
 }
 
 // A nonstandard feature for an account to implement
@@ -130,7 +131,7 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     // Good -- this fails because the account doesn't include the feature
     // @ts-expect-error expected
-    await accountWithMultipleFeatures.features.signAndSendTransaction.signAndSendTransaction();
+    await accountWithMultipleFeatures.features.solana.signAndSendTransaction();
 
     // Good -- this succeeds because the chain and nonstandard features are known
     const accountWithExtension = (
