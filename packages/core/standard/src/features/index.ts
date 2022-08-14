@@ -21,12 +21,6 @@ export type Feature =
     | DecryptFeature;
 
 /** TODO: docs */
-export type Features = UnionToIntersection<Feature>;
-
-/** TODO: docs */
-export type FeatureName = keyof Features;
-
-/** TODO: docs */
 export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
 
 /** TODO: docs */

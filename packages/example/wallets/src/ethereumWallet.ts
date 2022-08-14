@@ -1,20 +1,23 @@
 import {
+    DecryptFeature,
     DecryptMethod,
     DecryptOutput,
+    EncryptFeature,
     EncryptMethod,
     EncryptOutput,
-    Feature,
-    FeatureName,
-    Features,
+    SignAndSendTransactionFeature,
     SignAndSendTransactionMethod,
     SignAndSendTransactionOutput,
+    SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
+    SignTransactionFeature,
     SignTransactionMethod,
     SignTransactionOutput,
     Wallet,
     WalletAccount,
 } from '@wallet-standard/standard';
+import type { UnionToIntersection } from '@wallet-standard/types';
 import { CHAIN_ETHEREUM, CIPHER_x25519_xsalsa20_poly1305, pick } from '@wallet-standard/util';
 import ethers from 'ethers';
 import { box, randomBytes } from 'tweetnacl';
@@ -42,9 +45,16 @@ export type EthereumWalletChain = typeof CHAIN_ETHEREUM;
 
 export type EthereumWalletAccount = SignerEthereumWalletAccount;
 
+export type EthereumWalletAccountFeature =
+    | SignTransactionFeature
+    | SignAndSendTransactionFeature
+    | SignMessageFeature
+    | EncryptFeature
+    | DecryptFeature;
+
 export class SignerEthereumWalletAccount implements WalletAccount {
     #chain: string;
-    #features: Feature;
+    #features: EthereumWalletAccountFeature;
     #wallet: ethers.Wallet;
     #signingKey: ethers.utils.SigningKey;
     #address: Uint8Array;
@@ -63,7 +73,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return this.#chain;
     }
 
-    get features(): Feature {
+    get features() {
         return { ...this.#features };
     }
 
@@ -71,7 +81,13 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return {};
     }
 
-    constructor({ chain, features }: { chain: EthereumWalletChain; features?: FeatureName[] }) {
+    constructor({
+        chain,
+        features,
+    }: {
+        chain: EthereumWalletChain;
+        features?: ReadonlyArray<keyof UnionToIntersection<EthereumWalletAccountFeature>>;
+    }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#wallet = ethers.Wallet.createRandom();
@@ -167,7 +183,7 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return outputs as any;
     };
 
-    #allFeatures: Features = {
+    #allFeatures: UnionToIntersection<EthereumWalletAccountFeature> = {
         signTransaction: { signTransaction: this.#signTransaction },
         signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
         signMessage: { signMessage: this.#signMessage },

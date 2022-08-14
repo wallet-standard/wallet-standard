@@ -1,15 +1,16 @@
 import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
 import {
+    DecryptFeature,
     DecryptMethod,
     DecryptOutput,
+    EncryptFeature,
     EncryptMethod,
     EncryptOutput,
     Feature,
-    FeatureName,
-    Features,
     SignAndSendTransactionFeature,
     SignAndSendTransactionMethod,
     SignAndSendTransactionOutput,
+    SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
     SignTransactionFeature,
@@ -60,9 +61,16 @@ export type SolanaWalletChain =
     | typeof CHAIN_SOLANA_TESTNET
     | typeof CHAIN_SOLANA_LOCALNET;
 
+export type SolanaWalletAccountFeature =
+    | SignTransactionFeature
+    | SignAndSendTransactionFeature
+    | SignMessageFeature
+    | EncryptFeature
+    | DecryptFeature;
+
 export class SignerSolanaWalletAccount implements WalletAccount {
     #chain: SolanaWalletChain;
-    #features: Feature;
+    #features: SolanaWalletAccountFeature;
     #signer: Signer;
     #publicKey: Uint8Array;
 
@@ -78,7 +86,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return this.#chain;
     }
 
-    get features(): Feature {
+    get features() {
         return { ...this.#features };
     }
 
@@ -86,7 +94,13 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return {};
     }
 
-    constructor({ chain, features }: { chain: SolanaWalletChain; features?: FeatureName[] }) {
+    constructor({
+        chain,
+        features,
+    }: {
+        chain: SolanaWalletChain;
+        features?: ReadonlyArray<keyof UnionToIntersection<SolanaWalletAccountFeature>>;
+    }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#signer = Keypair.generate();
@@ -185,7 +199,7 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return outputs as any;
     };
 
-    #allFeatures: Features = {
+    #allFeatures: UnionToIntersection<SolanaWalletAccountFeature> = {
         signTransaction: { signTransaction: this.#signTransaction },
         signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
         signMessage: { signMessage: this.#signMessage },
@@ -200,10 +214,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     };
 }
 
-type LedgerSolanaWalletAccountFeature = SignTransactionFeature | SignAndSendTransactionFeature;
-type LedgerSolanaWalletAccountFeatures = UnionToIntersection<LedgerSolanaWalletAccountFeature>;
-type LedgerSolanaWalletAccountFeatureName = keyof LedgerSolanaWalletAccountFeatures;
-
 interface SolanaLedgerApp {
     publicKey: Uint8Array;
     signTransaction(transaction: Uint8Array): Promise<Uint8Array>;
@@ -211,7 +221,7 @@ interface SolanaLedgerApp {
 
 export class LedgerSolanaWalletAccount implements WalletAccount {
     #chain: string;
-    #features: LedgerSolanaWalletAccountFeature;
+    #features: SignTransactionFeature | SignAndSendTransactionFeature;
     // NOTE: represents some reference to an underlying device interface
     #ledger: SolanaLedgerApp = {} as SolanaLedgerApp;
     #publicKey: Uint8Array;
@@ -236,7 +246,13 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return {};
     }
 
-    constructor({ chain, features }: { chain: SolanaWalletChain; features?: LedgerSolanaWalletAccountFeatureName[] }) {
+    constructor({
+        chain,
+        features,
+    }: {
+        chain: SolanaWalletChain;
+        features?: ReadonlyArray<keyof UnionToIntersection<SignTransactionFeature | SignAndSendTransactionFeature>>;
+    }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#publicKey = new Uint8Array(this.#ledger.publicKey);
@@ -296,7 +312,7 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return outputs as any;
     };
 
-    #allFeatures: SignTransactionFeature & SignAndSendTransactionFeature = {
+    #allFeatures: UnionToIntersection<SignTransactionFeature | SignAndSendTransactionFeature> = {
         signTransaction: { signTransaction: this.#signTransaction },
         signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
     };
