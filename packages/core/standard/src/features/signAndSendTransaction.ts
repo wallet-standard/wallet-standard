@@ -31,8 +31,6 @@ export type SignAndSendTransactionFeature = Readonly<{
 export type SignAndSendTransactionInput = Readonly<{
     /** Serialized transaction, as raw bytes. */
     transaction: Uint8Array;
-
-    // TODO: figure out if options for sending need to be supported
 }>;
 
 /** Output of signing and sending transactions. */
