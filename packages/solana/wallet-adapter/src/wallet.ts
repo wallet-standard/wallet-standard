@@ -214,13 +214,11 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         FeatureName extends WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>,
         ExtensionName extends WalletAccountExtensionName<SolanaWalletAdapterWalletAccount>,
         Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName>
-    >({
-        chains,
-        addresses,
-        features,
-        extensions,
-        silent,
-    }: Input): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
+    >(
+        input?: Input
+    ): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
+        const { chains, addresses, features, extensions, silent } = input || {};
+
         // FIXME: features
 
         if (extensions?.length) throw new Error('nonstandard features not supported');

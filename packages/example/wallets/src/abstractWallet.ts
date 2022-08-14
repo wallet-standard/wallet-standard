@@ -57,12 +57,9 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         FeatureName extends WalletAccountFeatureName<Account>,
         ExtensionName extends WalletAccountExtensionName<Account>,
         Input extends ConnectInput<Account, Chain, FeatureName, ExtensionName>
-    >({
-        chains,
-        addresses,
-        features,
-        silent,
-    }: Input): Promise<ConnectOutput<Account, Chain, FeatureName, ExtensionName, Input>> {
+    >(input?: Input): Promise<ConnectOutput<Account, Chain, FeatureName, ExtensionName, Input>> {
+        const { chains, addresses, features, silent } = input || {};
+
         let accounts = this.accounts;
 
         if (chains) {

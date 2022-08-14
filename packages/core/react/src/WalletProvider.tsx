@@ -56,7 +56,8 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
                 }
             }
 
-            if (!input.silent) {
+            const loud = !input?.silent;
+            if (loud) {
                 setConnecting(true);
             }
             try {
@@ -65,7 +66,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
             } catch (error: any) {
                 throw handleError(error);
             } finally {
-                if (!input.silent) {
+                if (loud) {
                     setConnecting(false);
                 }
                 connectPromise.current = undefined;

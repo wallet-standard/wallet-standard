@@ -123,7 +123,7 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
         ExtensionName extends WalletAccountExtensionName<Account>,
         Input extends ConnectInput<Account, Chain, FeatureName, ExtensionName>
     >(
-        input: Input
+        input?: Input
     ): Promise<ConnectOutput<Account, Chain, FeatureName, ExtensionName, Input>>;
 
     /**
