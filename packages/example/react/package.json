@@ -20,7 +20,7 @@
         "@wallet-standard/solana-wallet-adapter": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
         "@wallet-standard/util": "workspace:^",
-        "@solana/web3.js": "^1.44.3",
+        "@solana/web3.js": "^1.51.0",
         "react": "^18.0.0",
         "react-dom": "^18.0.0"
     },
