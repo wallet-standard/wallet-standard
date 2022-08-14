@@ -27,7 +27,8 @@
         "prebuild": "pnpm run clean"
     },
     "dependencies": {
-        "@wallet-standard/types": "workspace:^"
+        "@wallet-standard/types": "workspace:^",
+        "jayson": "^4.0.0"
     },
     "devDependencies": {
         "shx": "^0.3.4"

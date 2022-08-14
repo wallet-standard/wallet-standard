@@ -2,6 +2,7 @@ import type { UnionToIntersection } from '@wallet-standard/types';
 import { WalletAccount } from '../wallet';
 import { DecryptFeature } from './decrypt';
 import { EncryptFeature } from './encrypt';
+import { JSONRPCFeature } from './JSONRPC';
 import { SignAndSendTransactionFeature } from './signAndSendTransaction';
 import { SignMessageFeature } from './signMessage';
 import { SignTransactionFeature } from './signTransaction';
@@ -20,7 +21,8 @@ export type Feature =
     | SignMessageFeature
     | EncryptFeature
     | DecryptFeature
-    | SolanaFeature;
+    | SolanaFeature
+    | JSONRPCFeature;
 
 /** TODO: docs */
 export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
