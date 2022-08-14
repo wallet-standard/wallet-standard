@@ -12,7 +12,7 @@ interface SolanaLedgerWalletAccount extends WalletAccount {
 }
 
 // A nonstandard feature for an account to implement
-type SubscribeFeature = {
+type SubscribeExtension = {
     subscribe: {
         subscribe(event: string): void;
     };
@@ -22,7 +22,7 @@ type SubscribeFeature = {
 interface EthereumWalletAccount extends WalletAccount {
     chain: 'ethereum:mainnet';
     features: never;
-    extensions: SubscribeFeature;
+    extensions: SubscribeExtension;
 }
 
 // A wallet that supports multiple account types
