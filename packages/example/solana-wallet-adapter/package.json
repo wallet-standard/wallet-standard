@@ -1,0 +1,33 @@
+{
+    "private": true,
+    "name": "@wallet-standard/example-solana-wallet-adapter",
+    "version": "0.1.0",
+    "author": "Solana Maintainers <maintainers@solana.foundation>",
+    "repository": "https://github.com/solana-labs/wallet-standard",
+    "license": "Apache-2.0",
+    "scripts": {
+        "clean": "shx mkdir -p dist .parcel-cache && shx rm -rf dist .parcel-cache",
+        "prebuild": "pnpm run clean",
+        "start": "parcel src/index.html",
+        "build": "parcel build src/index.html"
+    },
+    "dependencies": {
+        "@solana/wallet-adapter-base": "^0.9.10",
+        "@solana/wallet-adapter-react": "^0.15.9",
+        "@solana/wallet-adapter-react-ui": "^0.9.12",
+        "@solana/wallet-adapter-wallets": "^0.17.1",
+        "@solana/web3.js": "^1.51.0",
+        "@wallet-standard/solana-wallet-adapter-react": "workspace:^",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
+    },
+    "devDependencies": {
+        "@types/keccak": "^3.0.0",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "@types/readable-stream": "^2.0.0",
+        "parcel": "^2.3.2",
+        "process": "^0.11.10",
+        "shx": "^0.3.4"
+    }
+}

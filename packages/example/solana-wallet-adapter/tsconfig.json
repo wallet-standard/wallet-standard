@@ -1,0 +1,11 @@
+{
+    "extends": "../../../tsconfig.root.json",
+    "references": [
+        {
+            "path": "../../solana/wallet-adapter-react"
+        },
+        {
+            "path": "./tsconfig.base.json"
+        }
+    ]
+}

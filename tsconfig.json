@@ -20,6 +20,9 @@
             "path": "./packages/example/react"
         },
         {
+            "path": "./packages/example/solana-wallet-adapter"
+        },
+        {
             "path": "./packages/example/wallets"
         },
         {
