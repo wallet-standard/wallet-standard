@@ -16,46 +16,51 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction } from '@solana/web3.js';
+import { initialize } from '@wallet-standard/app';
+import { getCommitment } from '@wallet-standard/solana-web3.js';
 import type {
-    SignAndSendTransactionFeature,
     SignMessageFeature,
     SignTransactionFeature,
+    SolanaFeature,
     Wallet,
     WalletAccount,
     WalletPropertyNames,
-    WalletsNavigator,
 } from '@wallet-standard/standard';
 import { encode } from 'bs58';
 
-export interface StandardWalletAdapterConfig<
-    Account extends WalletAccount & {
-        features: SignAndSendTransactionFeature | SignTransactionFeature | SignMessageFeature;
-    }
-> {
-    wallet: Wallet<Account>;
+export interface StandardWalletAdapterAccount extends WalletAccount {
+    features: SolanaFeature & (SignTransactionFeature | SignMessageFeature);
+}
+
+export function isStandardWalletAdapterCompatibleWallet(
+    wallet: Wallet<WalletAccount>
+): wallet is Wallet<StandardWalletAdapterAccount> {
+    return wallet.features.includes('solana');
+}
+
+export interface StandardWalletAdapterConfig {
+    wallet: Wallet<StandardWalletAdapterAccount>;
     // TODO: chain or endpoint?
 }
 
-export class StandardWalletAdapter<
-    Account extends WalletAccount & {
-        features: SignAndSendTransactionFeature | SignTransactionFeature | SignMessageFeature;
-    }
-> extends BaseWalletAdapter {
-    readonly #wallet: Wallet<Account>;
-    #account: Account | null;
+export class StandardWalletAdapter extends BaseWalletAdapter {
+    readonly #wallet: Wallet<StandardWalletAdapterAccount>;
+    #account: StandardWalletAdapterAccount | null;
     #publicKey: PublicKey | null;
     #connecting: boolean;
+    #destructors: Array<() => void>;
     readonly #readyState: WalletReadyState =
         typeof window === 'undefined' || typeof document === 'undefined'
             ? WalletReadyState.Unsupported
             : WalletReadyState.Installed;
 
-    constructor({ wallet }: StandardWalletAdapterConfig<Account>) {
+    constructor({ wallet }: StandardWalletAdapterConfig) {
         super();
         this.#wallet = wallet;
         this.#account = null;
         this.#publicKey = null;
         this.#connecting = false;
+        this.#destructors = [];
     }
 
     get name() {
@@ -114,21 +119,15 @@ export class StandardWalletAdapter<
 
             // FIXME
             // Listen for property changes on the wallet, and remove the listener if the wallet is unregistered
-            const destructors = [this.#wallet.on('change', this.#change)];
-
-            (window.navigator as WalletsNavigator<Account>).wallets?.push({
-                method: 'on',
-                event: 'unregister',
-                listener: (wallets) => {
+            this.#destructors = [
+                this.#wallet.on('change', this.#change),
+                initialize<WalletAccount>().on('unregister', (wallets) => {
                     if (wallets.includes(this.#wallet)) {
-                        destructors.forEach((destroy) => destroy());
-                        destructors.length = 0;
+                        this.#destructors.forEach((destroy) => destroy());
+                        this.#destructors.length = 0;
                     }
-                },
-                callback(off) {
-                    destructors.push(off);
-                },
-            });
+                }),
+            ];
 
             this.#reconnect(account);
             this.emit('connect', publicKey);
@@ -145,61 +144,7 @@ export class StandardWalletAdapter<
         this.emit('disconnect');
     }
 
-    async sendTransaction(
-        transaction: Transaction,
-        connection: Connection,
-        options: SendTransactionOptions = {}
-    ): Promise<TransactionSignature> {
-        try {
-            if (!this.#account) throw new WalletNotConnectedError();
-            if (!('signAndSendTransaction' in this.#account.features) && !('signTransaction' in this.#account.features))
-                throw new WalletConfigError();
-
-            // TODO: check if this.#wallet.accounts[0].chain matches connection
-
-            try {
-                transaction = await this.prepareTransaction(transaction, connection);
-
-                // TODO: sendOptions handling?
-                const { signers, ...sendOptions } = options;
-                signers?.length && transaction.partialSign(...signers);
-
-                sendOptions.preflightCommitment = sendOptions.preflightCommitment || connection.commitment;
-
-                if ('signAndSendTransaction' in this.#account.features) {
-                    const [{ signature }] = await this.#account.features.signAndSendTransaction.signAndSendTransaction({
-                        transaction: transaction.serialize({
-                            requireAllSignatures: false,
-                            verifySignatures: false,
-                        }),
-                    });
-
-                    return encode(signature);
-                } else {
-                    const [{ signedTransaction }] = await this.#account.features.signTransaction.signTransaction({
-                        transaction: transaction.serialize({
-                            requireAllSignatures: false,
-                            verifySignatures: false,
-                        }),
-                    });
-
-                    return await connection.sendRawTransaction(signedTransaction, sendOptions);
-                }
-            } catch (error: any) {
-                if (error instanceof WalletError) throw error;
-                throw new WalletSendTransactionError(error?.message, error);
-            }
-        } catch (error: any) {
-            this.emit('error', error);
-            throw error;
-        }
-    }
-
-    signTransaction: ((transaction: Transaction) => Promise<Transaction>) | undefined;
-    signAllTransactions: ((transaction: Transaction[]) => Promise<Transaction[]>) | undefined;
-    signMessage: ((message: Uint8Array) => Promise<Uint8Array>) | undefined;
-
-    #reconnect(account: Account | null) {
+    #reconnect(account: StandardWalletAdapterAccount | null) {
         this.#account = account;
         this.#publicKey = account ? new PublicKey(account.publicKey) : null;
 
@@ -225,7 +170,7 @@ export class StandardWalletAdapter<
         }
     }
 
-    #change = (properties: WalletPropertyNames<Account>[]) => {
+    #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
         if (properties.includes('accounts')) {
             // FIXME
             this.#publicKey = null;
@@ -235,6 +180,48 @@ export class StandardWalletAdapter<
         this.emit('disconnect');
     };
 
+    async sendTransaction(
+        transaction: Transaction,
+        connection: Connection,
+        options: SendTransactionOptions = {}
+    ): Promise<TransactionSignature> {
+        try {
+            if (!this.#account) throw new WalletNotConnectedError();
+
+            // TODO: check if this.#wallet.accounts[0].chain matches connection
+
+            try {
+                const { signers, ...sendOptions } = options;
+
+                transaction = await this.prepareTransaction(transaction, connection, sendOptions);
+
+                signers?.length && transaction.partialSign(...signers);
+
+                const [{ signature }] = await this.#account.features.solana.signAndSendTransaction({
+                    transaction: transaction.serialize({
+                        requireAllSignatures: false,
+                        verifySignatures: false,
+                    }),
+                    options: {
+                        preflightCommitment: getCommitment(sendOptions.preflightCommitment || connection.commitment),
+                        skipPreflight: sendOptions.skipPreflight,
+                        maxRetries: sendOptions.maxRetries,
+                        minContextSlot: sendOptions.minContextSlot,
+                    },
+                });
+
+                return encode(signature);
+            } catch (error: any) {
+                if (error instanceof WalletError) throw error;
+                throw new WalletSendTransactionError(error?.message, error);
+            }
+        } catch (error: any) {
+            this.emit('error', error);
+            throw error;
+        }
+    }
+
+    signTransaction: ((transaction: Transaction) => Promise<Transaction>) | undefined;
     async #signTransaction(transaction: Transaction): Promise<Transaction> {
         try {
             if (!this.#account) throw new WalletNotConnectedError();
@@ -258,6 +245,7 @@ export class StandardWalletAdapter<
         }
     }
 
+    signAllTransactions: ((transaction: Transaction[]) => Promise<Transaction[]>) | undefined;
     async #signAllTransactions(transactions: Transaction[]): Promise<Transaction[]> {
         try {
             if (!this.#account) throw new WalletNotConnectedError();
@@ -282,6 +270,8 @@ export class StandardWalletAdapter<
             throw error;
         }
     }
+
+    signMessage: ((message: Uint8Array) => Promise<Uint8Array>) | undefined;
     async #signMessage(message: Uint8Array): Promise<Uint8Array> {
         try {
             if (!this.#account) throw new WalletNotConnectedError();

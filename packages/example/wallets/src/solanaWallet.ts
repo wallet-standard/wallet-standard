@@ -1,4 +1,5 @@
-import { clusterApiUrl, Connection, Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
+import { Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
+import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import {
     DecryptFeature,
     DecryptMethod,
@@ -6,16 +7,15 @@ import {
     EncryptFeature,
     EncryptMethod,
     EncryptOutput,
-    Feature,
-    SignAndSendTransactionFeature,
-    SignAndSendTransactionMethod,
-    SignAndSendTransactionOutput,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
     SignTransactionFeature,
     SignTransactionMethod,
     SignTransactionOutput,
+    SolanaFeature,
+    SolanaSignAndSendTransactionMethod,
+    SolanaSignAndSendTransactionOutput,
     Wallet,
     WalletAccount,
 } from '@wallet-standard/standard';
@@ -62,8 +62,8 @@ export type SolanaWalletChain =
     | typeof CHAIN_SOLANA_LOCALNET;
 
 export type SolanaWalletAccountFeature =
+    | SolanaFeature
     | SignTransactionFeature
-    | SignAndSendTransactionFeature
     | SignMessageFeature
     | EncryptFeature
     | DecryptFeature;
@@ -71,6 +71,7 @@ export type SolanaWalletAccountFeature =
 export class SignerSolanaWalletAccount implements WalletAccount {
     #chain: SolanaWalletChain;
     #features: SolanaWalletAccountFeature;
+    #endpoint: string;
     #signer: Signer;
     #publicKey: Uint8Array;
 
@@ -103,9 +104,29 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
+        this.#endpoint = getEndpointForChain(chain);
         this.#signer = Keypair.generate();
         this.#publicKey = this.#signer.publicKey.toBytes();
     }
+
+    #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
+        if (!('solana' in this.#features)) throw new Error('signAndSendTransaction not authorized');
+
+        const outputs: SolanaSignAndSendTransactionOutput[] = [];
+        for (const input of inputs) {
+            const transaction = Transaction.from(input.transaction);
+
+            // Prompt the user with transaction to sign and send
+
+            transaction.partialSign(this.#signer);
+
+            const signature = await sendAndConfirmTransaction(transaction, this.#endpoint, input.options);
+
+            outputs.push({ signature: decode(signature) });
+        }
+
+        return outputs as any;
+    };
 
     #signTransaction: SignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
@@ -118,35 +139,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         for (const transaction of transactions) {
             transaction.partialSign(this.#signer);
             outputs.push({ signedTransaction: transaction.serialize({ requireAllSignatures: false }) });
-        }
-
-        return outputs as any;
-    };
-
-    #signAndSendTransaction: SignAndSendTransactionMethod = async (...inputs) => {
-        if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
-
-        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
-
-        // Prompt the user with transactions to sign and send
-
-        let endpoint: string;
-        if (this.#chain === CHAIN_SOLANA_MAINNET) {
-            endpoint = clusterApiUrl('mainnet-beta');
-        } else if (this.#chain === CHAIN_SOLANA_DEVNET) {
-            endpoint = clusterApiUrl('devnet');
-        } else if (this.#chain === CHAIN_SOLANA_TESTNET) {
-            endpoint = clusterApiUrl('testnet');
-        } else {
-            endpoint = 'http://localhost:8899';
-        }
-        const connection = new Connection(endpoint, 'confirmed');
-
-        const outputs: SignAndSendTransactionOutput[] = [];
-        for (const transaction of transactions) {
-            transaction.partialSign(this.#signer);
-            const signature = await connection.sendRawTransaction(transaction.serialize());
-            outputs.push({ signature: decode(signature) });
         }
 
         return outputs as any;
@@ -200,8 +192,8 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     };
 
     #allFeatures: UnionToIntersection<SolanaWalletAccountFeature> = {
+        solana: { signAndSendTransaction: this.#signAndSendTransaction },
         signTransaction: { signTransaction: this.#signTransaction },
-        signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
         signMessage: { signMessage: this.#signMessage },
         encrypt: {
             ciphers: [CIPHER_x25519_xsalsa20_poly1305],
@@ -221,7 +213,8 @@ interface SolanaLedgerApp {
 
 export class LedgerSolanaWalletAccount implements WalletAccount {
     #chain: string;
-    #features: SignTransactionFeature | SignAndSendTransactionFeature;
+    #features: SolanaFeature | SignTransactionFeature;
+    #endpoint: string;
     // NOTE: represents some reference to an underlying device interface
     #ledger: SolanaLedgerApp = {} as SolanaLedgerApp;
     #publicKey: Uint8Array;
@@ -249,14 +242,40 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
     constructor({
         chain,
         features,
+        endpoint,
     }: {
         chain: SolanaWalletChain;
-        features?: ReadonlyArray<keyof UnionToIntersection<SignTransactionFeature | SignAndSendTransactionFeature>>;
+        features?: ReadonlyArray<keyof UnionToIntersection<SolanaFeature | SignTransactionFeature>>;
+        endpoint?: string;
     }) {
         this.#chain = chain;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
+        this.#endpoint = getEndpointForChain(chain, endpoint);
         this.#publicKey = new Uint8Array(this.#ledger.publicKey);
     }
+
+    #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
+        if (!('solana' in this.#features)) throw new Error('signAndSendTransaction not authorized');
+
+        const publicKey = new PublicKey(this.#publicKey);
+
+        const outputs: SolanaSignAndSendTransactionOutput[] = [];
+        for (const input of inputs) {
+            const transaction = Transaction.from(input.transaction);
+
+            // Prompt the user with transaction to sign and send
+
+            const rawSignature = await this.#ledger.signTransaction(input.transaction);
+
+            transaction.addSignature(publicKey, Buffer.from(rawSignature));
+
+            const signature = await sendAndConfirmTransaction(transaction, this.#endpoint, input.options);
+
+            outputs.push({ signature: decode(signature) });
+        }
+
+        return outputs as any;
+    };
 
     #signTransaction: SignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#features)) throw new Error('signTransaction not authorized');
@@ -277,43 +296,8 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
         return outputs as any;
     };
 
-    #signAndSendTransaction: SignAndSendTransactionMethod = async (...inputs) => {
-        if (!('signAndSendTransaction' in this.#features)) throw new Error('signAndSendTransaction not authorized');
-
-        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
-
-        // Prompt the user with transactions to sign and send
-
-        for (const transaction of transactions) {
-            const signature = await this.#ledger.signTransaction(
-                transaction.serialize({ requireAllSignatures: false })
-            );
-            transaction.addSignature(new PublicKey(this.#publicKey), Buffer.from(signature));
-        }
-
-        let endpoint: string;
-        if (this.#chain === CHAIN_SOLANA_MAINNET) {
-            endpoint = clusterApiUrl('mainnet-beta');
-        } else if (this.#chain === CHAIN_SOLANA_DEVNET) {
-            endpoint = clusterApiUrl('devnet');
-        } else if (this.#chain === CHAIN_SOLANA_TESTNET) {
-            endpoint = clusterApiUrl('testnet');
-        } else {
-            endpoint = 'http://localhost:8899';
-        }
-        const connection = new Connection(endpoint, 'confirmed');
-
-        const outputs: SignAndSendTransactionOutput[] = [];
-        for (const transaction of transactions) {
-            const signature = await connection.sendRawTransaction(transaction.serialize());
-            outputs.push({ signature: decode(signature) });
-        }
-
-        return outputs as any;
-    };
-
-    #allFeatures: UnionToIntersection<SignTransactionFeature | SignAndSendTransactionFeature> = {
+    #allFeatures: UnionToIntersection<SolanaFeature | SignTransactionFeature> = {
+        solana: { signAndSendTransaction: this.#signAndSendTransaction },
         signTransaction: { signTransaction: this.#signTransaction },
-        signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
     };
 }

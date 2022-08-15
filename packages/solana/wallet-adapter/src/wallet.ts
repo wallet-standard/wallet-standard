@@ -1,15 +1,16 @@
 import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
-import { clusterApiUrl, Connection, Transaction } from '@solana/web3.js';
+import { Transaction } from '@solana/web3.js';
 import { initialize } from '@wallet-standard/app';
+import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import {
     ConnectInput,
     ConnectOutput,
-    SignAndSendTransactionFeature,
-    SignAndSendTransactionMethod,
     SignMessageFeature,
     SignMessageMethod,
     SignTransactionFeature,
     SignTransactionMethod,
+    SolanaFeature,
+    SolanaSignAndSendTransactionMethod,
     VERSION_1_0_0,
     Wallet,
     WalletAccount,
@@ -37,6 +38,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     readonly #adapter: Adapter;
     readonly #publicKey: Uint8Array;
     readonly #chain: SolanaWalletAdapterChain;
+    readonly #endpoint: string;
 
     get address() {
         return this.publicKey;
@@ -50,9 +52,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return this.#chain;
     }
 
-    get features(): SignAndSendTransactionFeature & Partial<SignTransactionFeature & SignMessageFeature> {
-        const signAndSendTransaction: SignAndSendTransactionFeature = {
-            signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
+    get features(): SolanaFeature & Partial<SignTransactionFeature & SignMessageFeature> {
+        const solana: SolanaFeature = {
+            solana: { signAndSendTransaction: this.#signAndSendTransaction },
         };
 
         let signTransactionFeature: SignTransactionFeature | undefined = undefined;
@@ -65,40 +67,44 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
             signMessageFeature = { signMessage: { signMessage: this.#signMessage } };
         }
 
-        return { ...signAndSendTransaction, ...signTransactionFeature, ...signMessageFeature };
+        return { ...solana, ...signTransactionFeature, ...signMessageFeature };
     }
 
     get extensions() {
         return {};
     }
 
-    constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaWalletAdapterChain) {
+    get endpoint() {
+        return this.#endpoint;
+    }
+
+    constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaWalletAdapterChain, endpoint: string) {
         this.#adapter = adapter;
         this.#publicKey = publicKey;
         this.#chain = chain;
+        this.#endpoint = endpoint;
     }
 
-    #signAndSendTransaction: SignAndSendTransactionMethod = async (...inputs) => {
-        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
+    #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
+        if (inputs.length === 1) {
+            const transaction = Transaction.from(inputs[0].transaction);
 
-        if (transactions.length === 1) {
-            let endpoint: string;
-            if (this.#chain === CHAIN_SOLANA_MAINNET) {
-                endpoint = clusterApiUrl('mainnet-beta');
-            } else if (this.#chain === CHAIN_SOLANA_DEVNET) {
-                endpoint = clusterApiUrl('devnet');
-            } else if (this.#chain === CHAIN_SOLANA_TESTNET) {
-                endpoint = clusterApiUrl('testnet');
-            } else {
-                endpoint = 'http://localhost:8899';
-            }
-
-            const connection = new Connection(endpoint, 'confirmed');
-            const signature = await this.#adapter.sendTransaction(transactions[0], connection);
+            const signature = await sendAndConfirmTransaction(
+                transaction,
+                this.#endpoint,
+                inputs[0].options,
+                async (transaction, connection, options) =>
+                    await this.#adapter.sendTransaction(transaction, connection, options)
+            );
 
             return [{ signature: decode(signature) }];
-        } else if (transactions.length > 1) {
-            throw new Error('signAndSendTransaction for multiple transactions not implemented');
+        } else if (inputs.length > 1) {
+            // Adapters have no `sendAllTransactions` method, so just sign and send each transaction in serial.
+            const outputs = [];
+            for (const input of inputs) {
+                outputs.push(await this.#signAndSendTransaction(input));
+            }
+            return outputs;
         } else {
             return [] as any;
         }
@@ -153,6 +159,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     } = {};
     #adapter: Adapter;
     #chain: SolanaWalletAdapterChain;
+    #endpoint: string;
     #account: SolanaWalletAdapterWalletAccount | undefined;
 
     get version() {
@@ -172,7 +179,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     }
 
     get features() {
-        const features: WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>[] = ['signAndSendTransaction'];
+        const features: WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>[] = ['solana'];
         if ('signTransaction' in this.#adapter) {
             features.push('signTransaction');
         }
@@ -194,9 +201,14 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return false;
     }
 
-    constructor(adapter: Adapter, chain: SolanaWalletAdapterChain) {
+    get endpoint() {
+        return this.#endpoint;
+    }
+
+    constructor(adapter: Adapter, chain: SolanaWalletAdapterChain, endpoint?: string) {
         this.#adapter = adapter;
         this.#chain = chain;
+        this.#endpoint = getEndpointForChain(chain);
 
         adapter.on('connect', this.#connect, this);
         adapter.on('disconnect', this.#disconnect, this);
@@ -230,6 +242,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         if (chains?.length) {
             if (chains.length > 1) throw new Error('multiple chains not supported');
             this.#chain = chains[0];
+            // FIXME: endpoint needs to change if chain changes
         }
 
         this.#connect();
@@ -267,8 +280,18 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         const publicKey = this.#adapter.publicKey?.toBytes();
         if (publicKey) {
             const account = this.#account;
-            if (!account || account.chain !== this.#chain || !bytesEqual(account.publicKey, publicKey)) {
-                this.#account = new SolanaWalletAdapterWalletAccount(this.#adapter, publicKey, this.#chain);
+            if (
+                !account ||
+                account.chain !== this.#chain ||
+                account.endpoint !== this.#endpoint ||
+                !bytesEqual(account.publicKey, publicKey)
+            ) {
+                this.#account = new SolanaWalletAdapterWalletAccount(
+                    this.#adapter,
+                    publicKey,
+                    this.#chain,
+                    this.#endpoint
+                );
                 this.#emit('change', ['accounts']);
             }
         }
@@ -292,6 +315,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 export function registerWalletAdapter(
     adapter: Adapter,
     chain: SolanaWalletAdapterChain,
+    endpoint?: string,
     match: (wallet: Wallet<SolanaWalletAdapterWalletAccount>) => boolean = (wallet) => wallet.name === adapter.name
 ): () => void {
     const wallets = initialize<SolanaWalletAdapterWalletAccount>();
@@ -310,7 +334,7 @@ export function registerWalletAdapter(
         const ready =
             adapter.readyState === WalletReadyState.Installed || adapter.readyState === WalletReadyState.Loadable;
         if (ready) {
-            const wallet = new SolanaWalletAdapterWallet(adapter, chain);
+            const wallet = new SolanaWalletAdapterWallet(adapter, chain, endpoint);
             destructors.push(() => wallet.destroy());
             // Register the adapter wrapped as a standard wallet, and receive a function to unregister the adapter.
             destructors.push(wallets.register([wallet]));
