@@ -30,6 +30,9 @@
         },
         {
             "path": "./packages/solana/wallet-adapter-react"
+        },
+        {
+            "path": "./packages/solana/web3.js"
         }
     ]
 }

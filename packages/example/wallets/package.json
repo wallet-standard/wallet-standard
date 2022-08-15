@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/solana-web3.js": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
         "@wallet-standard/types": "workspace:^",
         "@wallet-standard/util": "workspace:^",

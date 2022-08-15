@@ -11,6 +11,9 @@
             "path": "../../core/util"
         },
         {
+            "path": "../web3.js"
+        },
+        {
             "path": "./tsconfig.cjs.json"
         },
         {
