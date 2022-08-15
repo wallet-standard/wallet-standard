@@ -13,11 +13,11 @@ export class MultiChainWallet
     #name = 'MultiChain Wallet';
     #icon = '';
 
-    get name(): string {
+    get name() {
         return this.#name;
     }
 
-    get icon(): string {
+    get icon() {
         return this.#icon;
     }
 
