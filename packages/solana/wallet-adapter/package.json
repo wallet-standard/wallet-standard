@@ -27,7 +27,7 @@
         "prebuild": "pnpm run clean"
     },
     "dependencies": {
-        "@solana/wallet-adapter-base": "^0.9.10",
+        "@solana/wallet-adapter-base": "^0.9.11",
         "@solana/web3.js": "^1.51.0",
         "@wallet-standard/app": "workspace:^",
         "@wallet-standard/standard": "workspace:^",

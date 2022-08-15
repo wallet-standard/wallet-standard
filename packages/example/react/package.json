@@ -12,7 +12,7 @@
         "build": "parcel build src/index.html"
     },
     "dependencies": {
-        "@solana/wallet-adapter-base": "^0.9.10",
+        "@solana/wallet-adapter-base": "^0.9.11",
         "@solana/wallet-adapter-glow": "^0.1.6",
         "@solana/wallet-adapter-phantom": "^0.9.9",
         "@wallet-standard/app": "workspace:^",
