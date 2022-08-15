@@ -40,10 +40,10 @@ export type SolanaSignAndSendTransactionInput = SignAndSendTransactionInput &
 export type SolanaSignAndSendTransactionOptions = {
     /** Desired commitment level. If provided, confirm the transaction after sending. */
     commitment?: 'processed' | 'confirmed' | 'finalized';
-    /** Disable transaction verification at the RPC. */
-    skipPreflight?: boolean;
     /** Preflight commitment level. */
     preflightCommitment?: 'processed' | 'confirmed' | 'finalized';
+    /** Disable transaction verification at the RPC. */
+    skipPreflight?: boolean;
     /** Maximum number of times for the RPC node to retry sending the transaction to the leader. */
     maxRetries?: number;
     /** The minimum slot that the request can be evaluated at. */
