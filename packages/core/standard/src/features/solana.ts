@@ -13,6 +13,7 @@ export declare const solanaSignAndSendTransactionMethod: AsyncMapFunction<
 /** TODO: docs */
 export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransactionMethod;
 
+// TODO: consider namespacing/renaming to solanaSignAndSendTransaction
 /** TODO: docs */
 export type SolanaFeature = Readonly<{
     /** Namespace for the feature. */
