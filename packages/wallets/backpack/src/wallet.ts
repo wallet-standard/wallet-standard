@@ -2,6 +2,7 @@ import { clusterApiUrl, Transaction } from '@solana/web3.js';
 import type {
     ConnectInput,
     ConnectOutput,
+    JSONRPCFeature,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
@@ -17,6 +18,7 @@ import type {
     WalletAccountFeatureName,
     WalletEventNames,
     WalletEvents,
+    WSJSONRPCFeature,
 } from '@wallet-standard/standard';
 import { VERSION_1_0_0 } from '@wallet-standard/standard';
 import {
@@ -49,16 +51,18 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
         return this.#chain;
     }
 
-    get features(): SolanaFeature & SignTransactionFeature & SignMessageFeature {
+    get features(): SolanaFeature & SignTransactionFeature & SignMessageFeature & JSONRPCFeature & WSJSONRPCFeature {
         return {
             solana: { signAndSendTransaction: this.#signAndSendTransaction },
             signTransaction: { signTransaction: this.#signTransaction },
             signMessage: { signMessage: this.#signMessage },
+            JSONRPC: { client: window.backpack.connection._rpcClient },
+            WSJSONRPC: { client: window.backpack.connection._rpcWebSocket },
         };
     }
 
     get extensions() {
-        return {} as const;
+        return {};
     }
 
     constructor(publicKey: Uint8Array, chain: SolanaChain) {

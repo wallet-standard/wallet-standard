@@ -9,6 +9,7 @@ import type {
     Transaction,
     TransactionSignature,
 } from '@solana/web3.js';
+import type { JSONRPCClient, WSJSONRPCClient } from '@wallet-standard/standard';
 
 export interface BackpackWindow extends Window {
     backpack: Backpack;
@@ -24,7 +25,7 @@ export interface Backpack {
     isBackpack: boolean;
     isConnected: boolean;
     publicKey: PublicKey | undefined;
-    connection: Connection;
+    connection: Connection & { _rpcClient: JSONRPCClient; _rpcWebSocket: WSJSONRPCClient };
     connect(): Promise<void>;
     disconnect(): Promise<void>;
     sendAndConfirm(tx: Transaction, signers?: Signer[], options?: ConfirmOptions): Promise<TransactionSignature>;
