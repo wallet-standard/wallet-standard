@@ -94,7 +94,6 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
 
             this.#connecting = true;
 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             if (!this.#wallet.accounts.length) {
                 try {
                     await this.#wallet.connect();
