@@ -18,6 +18,8 @@ export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransac
 export type SolanaFeature = Readonly<{
     /** Namespace for the feature. */
     solana: {
+        // TODO: should each feature be versioned?
+
         /**
          * Sign transactions using the account's secret key and send them to the chain.
          *
