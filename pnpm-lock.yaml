@@ -210,8 +210,8 @@ importers:
 
   packages/solana/wallet-adapter-react:
     specifiers:
-      '@solana/wallet-adapter-base': ^0.9.11
-      '@solana/wallet-adapter-react': ^0.15.9
+      '@solana/wallet-adapter-base': ^0.9.12
+      '@solana/wallet-adapter-react': ^0.15.10
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@types/react': ^18.0.0
@@ -223,8 +223,8 @@ importers:
       react-dom: ^18.0.0
       shx: ^0.3.4
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.11_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.9_rhn4fdsep7vhl3zkypaxxk4ks4
+      '@solana/wallet-adapter-base': 0.9.12_@solana+web3.js@1.53.0
+      '@solana/wallet-adapter-react': 0.15.10_rhn4fdsep7vhl3zkypaxxk4ks4
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/solana-wallet-adapter': link:../wallet-adapter
       '@wallet-standard/standard': link:../../core/standard
@@ -3341,6 +3341,15 @@ packages:
       eventemitter3: 4.0.7
     dev: false
 
+  /@solana/wallet-adapter-base/0.9.12_@solana+web3.js@1.53.0:
+    resolution: {integrity: sha512-4pwhvCLlGNHV8WmrG/2OYI145zp2ZFKUmyBJj+ID54D1xA7wJI+oHCdiqhtp3m2OrEu0AKWhhgy8R3Dns7UF7A==}
+    peerDependencies:
+      '@solana/web3.js': ^1.50.1
+    dependencies:
+      '@solana/web3.js': 1.53.0
+      eventemitter3: 4.0.7
+    dev: false
+
   /@solana/wallet-adapter-bitkeep/0.3.8_@solana+web3.js@1.53.0:
     resolution: {integrity: sha512-cNlnbIS7CZEqBGmXONm9RSVieJKY1XvBBmui8nYRlNRX3JBPU2It6ejHqS5dOz5+6eBJI+X+e98t78fH1qP20w==}
     peerDependencies:
@@ -3567,6 +3576,17 @@ packages:
       '@solana/web3.js': 1.53.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@solana/wallet-adapter-react/0.15.10_rhn4fdsep7vhl3zkypaxxk4ks4:
+    resolution: {integrity: sha512-dXnEXpvba8vwuxGOw8DKI8ghhuhMQ6eyVmQQmb3MkzP/QjFvzj0YmirfjT3KSBELa7Q+/tMmltAtLQpd23s55g==}
+    peerDependencies:
+      '@solana/web3.js': ^1.50.1
+      react: '*'
+    dependencies:
+      '@solana/wallet-adapter-base': 0.9.12_@solana+web3.js@1.53.0
+      '@solana/web3.js': 1.53.0
+      react: 18.2.0
     dev: false
 
   /@solana/wallet-adapter-react/0.15.9_rhn4fdsep7vhl3zkypaxxk4ks4:
