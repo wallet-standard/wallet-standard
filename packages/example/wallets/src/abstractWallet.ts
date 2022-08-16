@@ -97,7 +97,10 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
         return (): void => this.#off(event, listener);
     }
 
-    #emit<E extends WalletEventNames<Account>>(event: E, ...args: Parameters<WalletEvents<Account>[E]>): void {
+    protected _emit<E extends WalletEventNames<Account>>(
+        event: E,
+        ...args: Parameters<WalletEvents<Account>[E]>
+    ): void {
         // eslint-disable-next-line prefer-spread
         this._listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
