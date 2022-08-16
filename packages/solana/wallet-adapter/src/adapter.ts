@@ -83,10 +83,6 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
         return this.#connecting;
     }
 
-    get connected() {
-        return !!this.#publicKey;
-    }
-
     get readyState() {
         return this.#readyState;
     }
