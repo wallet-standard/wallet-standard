@@ -234,24 +234,24 @@ export class BackpackSolanaWallet implements Wallet<BackpackSolanaWalletAccount>
 
     private _connect(): void {
         const publicKey = window.backpack.publicKey?.toBytes();
-        if (publicKey) {
-            let chain: SolanaChain;
-            const endpoint = window.backpack.connection.rpcEndpoint;
-            if (endpoint === clusterApiUrl('devnet')) {
-                chain = CHAIN_SOLANA_DEVNET;
-            } else if (endpoint === clusterApiUrl('testnet')) {
-                chain = CHAIN_SOLANA_TESTNET;
-            } else if (/^https?:\/\/localhost[:/]/.test(endpoint)) {
-                chain = CHAIN_SOLANA_LOCALNET;
-            } else {
-                chain = CHAIN_SOLANA_MAINNET;
-            }
+        if (!publicKey) return;
 
-            const account = this.#account;
-            if (!account || account.chain !== chain || !bytesEqual(account.publicKey, publicKey)) {
-                this.#account = new BackpackSolanaWalletAccount(publicKey, chain);
-                this.#emit('change', ['accounts', 'chains']);
-            }
+        let chain: SolanaChain;
+        const endpoint = window.backpack.connection.rpcEndpoint;
+        if (endpoint === clusterApiUrl('devnet')) {
+            chain = CHAIN_SOLANA_DEVNET;
+        } else if (endpoint === clusterApiUrl('testnet')) {
+            chain = CHAIN_SOLANA_TESTNET;
+        } else if (/^https?:\/\/localhost[:/]/.test(endpoint)) {
+            chain = CHAIN_SOLANA_LOCALNET;
+        } else {
+            chain = CHAIN_SOLANA_MAINNET;
+        }
+
+        const account = this.#account;
+        if (!account || account.chain !== chain || !bytesEqual(account.publicKey, publicKey)) {
+            this.#account = new BackpackSolanaWalletAccount(publicKey, chain);
+            this.#emit('change', ['accounts', 'chains']);
         }
     }
 
