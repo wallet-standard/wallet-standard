@@ -16,7 +16,6 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { initialize } from '@wallet-standard/app';
 import { getCommitment } from '@wallet-standard/solana-web3.js';
 import type {
     SignMessageFeature,
@@ -26,6 +25,7 @@ import type {
     WalletAccount,
     WalletPropertyNames,
 } from '@wallet-standard/standard';
+import { bytesEqual } from '@wallet-standard/util';
 import { encode } from 'bs58';
 
 export interface StandardWalletAdapterAccount extends WalletAccount {
@@ -48,7 +48,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
     #account: StandardWalletAdapterAccount | null;
     #publicKey: PublicKey | null;
     #connecting: boolean;
-    #destructors: Array<() => void>;
+    #off: (() => void) | undefined;
     readonly #readyState: WalletReadyState =
         typeof window === 'undefined' || typeof document === 'undefined'
             ? WalletReadyState.Unsupported
@@ -60,7 +60,6 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
         this.#account = null;
         this.#publicKey = null;
         this.#connecting = false;
-        this.#destructors = [];
     }
 
     get name() {
@@ -112,19 +111,9 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
                 throw new WalletPublicKeyError(error?.message, error);
             }
 
-            // FIXME
-            // Listen for property changes on the wallet, and remove the listener if the wallet is unregistered
-            this.#destructors = [
-                this.#wallet.on('change', this.#change),
-                initialize<WalletAccount>().on('unregister', (wallets) => {
-                    if (wallets.includes(this.#wallet)) {
-                        this.#destructors.forEach((destroy) => destroy());
-                        this.#destructors.length = 0;
-                    }
-                }),
-            ];
+            this.#off = this.#wallet.on('change', this.#change);
+            this.#connect(account, publicKey);
 
-            this.#reconnect(account);
             this.emit('connect', publicKey);
         } catch (error: any) {
             this.emit('error', error);
@@ -135,22 +124,17 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
     }
 
     async disconnect(): Promise<void> {
-        this.#reconnect(null);
+        this.#disconnect();
         this.emit('disconnect');
     }
 
-    #reconnect(account: StandardWalletAdapterAccount | null) {
+    #connect(account: StandardWalletAdapterAccount, publicKey: PublicKey): void;
+    #connect(account: null, publicKey: null): void;
+    #connect(account: StandardWalletAdapterAccount | null, publicKey: PublicKey | null) {
         this.#account = account;
-        this.#publicKey = account ? new PublicKey(account.publicKey) : null;
+        this.#publicKey = publicKey;
 
-        let signTransaction = false;
-        let signMessage = false;
-        if (account) {
-            signTransaction = 'signTransaction' in account.features;
-            signMessage = 'signMessage' in account.features;
-        }
-
-        if (signTransaction) {
+        if (account && 'signTransaction' in account.features) {
             this.signTransaction = this.#signTransaction;
             this.signAllTransactions = this.#signAllTransactions;
         } else {
@@ -158,21 +142,38 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
             this.signAllTransactions = undefined;
         }
 
-        if (signMessage) {
+        if (account && 'signMessage' in account.features) {
             this.signMessage = this.#signMessage;
         } else {
             this.signMessage = undefined;
         }
     }
 
-    #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
-        if (properties.includes('accounts')) {
-            // FIXME
-            this.#publicKey = null;
+    #disconnect(): void {
+        const off = this.#off;
+        if (off) {
+            this.#off = undefined;
+            off();
         }
 
-        this.emit('error', new WalletDisconnectedError());
-        this.emit('disconnect');
+        this.#connect(null, null);
+    }
+
+    #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
+        if (properties.includes('accounts')) {
+            if (this.#account && this.#publicKey) {
+                const account = this.#wallet.accounts[0];
+                if (
+                    !account ||
+                    account !== this.#account ||
+                    !bytesEqual(account.publicKey, this.#publicKey.toBytes())
+                ) {
+                    this.#disconnect();
+                    this.emit('error', new WalletDisconnectedError());
+                    this.emit('disconnect');
+                }
+            }
+        }
     };
 
     async sendTransaction(
