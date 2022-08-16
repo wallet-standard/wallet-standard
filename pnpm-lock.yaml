@@ -252,6 +252,25 @@ importers:
       '@types/node-fetch': 2.6.2
       shx: 0.3.4
 
+  packages/wallets/backpack:
+    specifiers:
+      '@solana/web3.js': ^1.51.0
+      '@types/bs58': ^4.0.1
+      '@types/node-fetch': ^2.6.2
+      '@wallet-standard/standard': workspace:^
+      '@wallet-standard/util': workspace:^
+      bs58: ^4.0.1
+      shx: ^0.3.4
+    dependencies:
+      '@solana/web3.js': 1.53.0
+      '@wallet-standard/standard': link:../../core/standard
+      '@wallet-standard/util': link:../../core/util
+      bs58: 4.0.1
+    devDependencies:
+      '@types/bs58': 4.0.1
+      '@types/node-fetch': 2.6.2
+      shx: 0.3.4
+
 packages:
 
   /@ampproject/remapping/2.2.0:

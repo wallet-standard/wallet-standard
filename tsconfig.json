@@ -33,6 +33,9 @@
         },
         {
             "path": "./packages/solana/web3.js"
+        },
+        {
+            "path": "./packages/wallets/backpack"
         }
     ]
 }
