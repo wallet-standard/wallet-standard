@@ -11,6 +11,7 @@ import {
     SignTransactionMethod,
     SolanaFeature,
     SolanaSignAndSendTransactionMethod,
+    SolanaSignAndSendTransactionOutput,
     VERSION_1_0_0,
     Wallet,
     WalletAccount,
@@ -57,12 +58,12 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
             solana: { signAndSendTransaction: this.#signAndSendTransaction },
         };
 
-        let signTransactionFeature: SignTransactionFeature | undefined = undefined;
+        let signTransactionFeature: SignTransactionFeature | undefined;
         if ('signTransaction' in this.#adapter) {
             signTransactionFeature = { signTransaction: { signTransaction: this.#signTransaction } };
         }
 
-        let signMessageFeature: SignMessageFeature | undefined = undefined;
+        let signMessageFeature: SignMessageFeature | undefined;
         if ('signMessage' in this.#adapter) {
             signMessageFeature = { signMessage: { signMessage: this.#signMessage } };
         }
@@ -100,9 +101,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
             return [{ signature: decode(signature) }];
         } else if (inputs.length > 1) {
             // Adapters have no `sendAllTransactions` method, so just sign and send each transaction in serial.
-            const outputs = [];
+            const outputs: SolanaSignAndSendTransactionOutput[] = [];
             for (const input of inputs) {
-                outputs.push(await this.#signAndSendTransaction(input));
+                outputs.push(...(await this.#signAndSendTransaction(input)));
             }
             return outputs;
         } else {
