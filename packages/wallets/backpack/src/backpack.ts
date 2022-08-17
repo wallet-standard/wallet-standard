@@ -16,9 +16,9 @@ export interface BackpackWindow extends Window {
 }
 
 export interface BackpackEvents {
-    connect(...args: unknown[]): unknown;
-    disconnect(...args: unknown[]): unknown;
-    connectionDidChange(...args: unknown[]): unknown;
+    connect(): void;
+    disconnect(): void;
+    connectionDidChange(): void;
 }
 
 export interface Backpack {
