@@ -22,7 +22,6 @@ export interface BackpackEvents {
 }
 
 export interface Backpack {
-    isBackpack: boolean;
     isConnected: boolean;
     publicKey: PublicKey | undefined;
     connection: Connection & { _rpcClient: JSONRPCClient; _rpcWebSocket: WSJSONRPCClient };
@@ -42,13 +41,6 @@ export interface Backpack {
         connection?: Connection,
         publicKey?: PublicKey
     ): Promise<TransactionSignature>;
-    simulate(
-        tx: Transaction,
-        signers?: Signer[],
-        commitment?: Commitment,
-        connection?: Connection,
-        publicKey?: PublicKey
-    ): Promise<SimulatedTransactionResponse>;
     signTransaction(tx: Transaction, publicKey?: PublicKey): Promise<Transaction>;
     signAllTransactions(txs: Array<Transaction>, publicKey?: PublicKey): Promise<Array<Transaction>>;
     signMessage(msg: Uint8Array, publicKey?: PublicKey): Promise<Uint8Array>;
