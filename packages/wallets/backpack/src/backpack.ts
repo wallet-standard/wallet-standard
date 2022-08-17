@@ -1,11 +1,9 @@
 import type {
-    Commitment,
     ConfirmOptions,
     Connection,
     PublicKey,
     SendOptions,
     Signer,
-    SimulatedTransactionResponse,
     Transaction,
     TransactionSignature,
 } from '@solana/web3.js';
