@@ -28,12 +28,30 @@ export interface Backpack {
     connection: Connection & { _rpcClient: JSONRPCClient; _rpcWebSocket: WSJSONRPCClient };
     connect(): Promise<void>;
     disconnect(): Promise<void>;
-    sendAndConfirm(tx: Transaction, signers?: Signer[], options?: ConfirmOptions): Promise<TransactionSignature>;
-    send(tx: Transaction, signers?: Signer[], options?: SendOptions): Promise<TransactionSignature>;
-    simulate(tx: Transaction, signers?: Signer[], commitment?: Commitment): Promise<SimulatedTransactionResponse>;
-    signTransaction(tx: Transaction): Promise<Transaction>;
-    signAllTransactions(txs: Array<Transaction>): Promise<Array<Transaction>>;
-    signMessage(msg: Uint8Array): Promise<Uint8Array>;
+    sendAndConfirm(
+        tx: Transaction,
+        signers?: Signer[],
+        options?: ConfirmOptions,
+        connection?: Connection,
+        publicKey?: PublicKey
+    ): Promise<TransactionSignature>;
+    send(
+        tx: Transaction,
+        signers?: Signer[],
+        options?: SendOptions,
+        connection?: Connection,
+        publicKey?: PublicKey
+    ): Promise<TransactionSignature>;
+    simulate(
+        tx: Transaction,
+        signers?: Signer[],
+        commitment?: Commitment,
+        connection?: Connection,
+        publicKey?: PublicKey
+    ): Promise<SimulatedTransactionResponse>;
+    signTransaction(tx: Transaction, publicKey?: PublicKey): Promise<Transaction>;
+    signAllTransactions(txs: Array<Transaction>, publicKey?: PublicKey): Promise<Array<Transaction>>;
+    signMessage(msg: Uint8Array, publicKey?: PublicKey): Promise<Uint8Array>;
 
     on<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context: any): void;
     off<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context: any): void;

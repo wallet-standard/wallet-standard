@@ -1,4 +1,4 @@
-import { clusterApiUrl, Transaction } from '@solana/web3.js';
+import { clusterApiUrl, PublicKey, Transaction } from '@solana/web3.js';
 import type {
     ConnectInput,
     ConnectOutput,
@@ -77,19 +77,31 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
                 inputs[0].options || {};
 
             const signature = commitment
-                ? await window.backpack.sendAndConfirm(transaction, [], {
-                      commitment,
-                      preflightCommitment,
-                      skipPreflight,
-                      maxRetries,
-                      minContextSlot,
-                  })
-                : await window.backpack.send(transaction, [], {
-                      preflightCommitment,
-                      skipPreflight,
-                      maxRetries,
-                      minContextSlot,
-                  });
+                ? await window.backpack.sendAndConfirm(
+                      transaction,
+                      [],
+                      {
+                          commitment,
+                          preflightCommitment,
+                          skipPreflight,
+                          maxRetries,
+                          minContextSlot,
+                      },
+                      undefined,
+                      new PublicKey(this.publicKey)
+                  )
+                : await window.backpack.send(
+                      transaction,
+                      [],
+                      {
+                          preflightCommitment,
+                          skipPreflight,
+                          maxRetries,
+                          minContextSlot,
+                      },
+                      undefined,
+                      new PublicKey(this.publicKey)
+                  );
 
             return [{ signature: decode(signature) }];
         } else if (inputs.length > 1) {
@@ -108,9 +120,11 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
 
         let signedTransactions: Transaction[];
         if (transactions.length === 1) {
-            signedTransactions = [await window.backpack.signTransaction(transactions[0])];
+            signedTransactions = [
+                await window.backpack.signTransaction(transactions[0], new PublicKey(this.publicKey)),
+            ];
         } else if (transactions.length > 1) {
-            signedTransactions = await window.backpack.signAllTransactions(transactions);
+            signedTransactions = await window.backpack.signAllTransactions(transactions, new PublicKey(this.publicKey));
         } else {
             signedTransactions = [];
         }
@@ -128,7 +142,7 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
     #signMessage: SignMessageMethod = async (...inputs) => {
         if (inputs.length === 1) {
             const signedMessage = inputs[0].message;
-            const signature = await window.backpack.signMessage(signedMessage);
+            const signature = await window.backpack.signMessage(signedMessage, new PublicKey(this.publicKey));
             return [{ signedMessage, signatures: [signature] }];
         } else if (inputs.length > 1) {
             const outputs: SignMessageOutput[] = [];
