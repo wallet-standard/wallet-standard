@@ -1,6 +1,4 @@
 import { Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
-import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import type {
     DecryptFeature,
     DecryptMethod,
@@ -18,6 +16,8 @@ import type {
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
 } from '@wallet-standard/features';
+import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
+import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import type { UnionToIntersection } from '@wallet-standard/types';
 import {
     CHAIN_SOLANA_DEVNET,

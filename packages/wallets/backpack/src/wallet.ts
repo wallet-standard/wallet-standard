@@ -1,16 +1,5 @@
 import { clusterApiUrl, PublicKey, Transaction } from '@solana/web3.js';
 import type {
-    ConnectInput,
-    ConnectOutput,
-    Wallet,
-    WalletAccount,
-    WalletAccountExtensionName,
-    WalletAccountFeatureName,
-    WalletEventNames,
-    WalletEvents,
-} from '@wallet-standard/standard';
-import type {
-    JSONRPCFeature,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
@@ -20,8 +9,17 @@ import type {
     SolanaFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
-    WSJSONRPCFeature,
 } from '@wallet-standard/features';
+import type {
+    ConnectInput,
+    ConnectOutput,
+    Wallet,
+    WalletAccount,
+    WalletAccountExtensionName,
+    WalletAccountFeatureName,
+    WalletEventNames,
+    WalletEvents,
+} from '@wallet-standard/standard';
 import { VERSION_1_0_0 } from '@wallet-standard/standard';
 import {
     bytesEqual,
