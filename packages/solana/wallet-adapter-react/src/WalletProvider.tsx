@@ -5,13 +5,7 @@ import { WalletAccount } from '@wallet-standard/standard';
 import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
-export const WalletProvider: FC<WalletProviderProps> = ({
-    children,
-    wallets,
-    autoConnect = false,
-    onError,
-    localStorageKey = 'walletName',
-}) => {
+export const WalletProvider: FC<WalletProviderProps> = ({ children, wallets, ...props }) => {
     // Start with the adapters provided by the app.
     const [adapters, setAdapters] = useState(wallets);
 
@@ -59,12 +53,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({
     }, []);
 
     return (
-        <BaseWalletProvider
-            wallets={adapters}
-            autoConnect={autoConnect}
-            onError={onError}
-            localStorageKey={localStorageKey}
-        >
+        <BaseWalletProvider wallets={adapters} {...props}>
             {children}
         </BaseWalletProvider>
     );
