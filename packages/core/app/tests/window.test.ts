@@ -71,8 +71,10 @@ fooWallet2.connect({
     });
 
     const wallets = initialize<SolanaWalletAccount | FooWalletAccount>();
-    const wallet = wallets.get()[0];
-    const account = (await wallet.connect({ chains: ['solana:mainnet'] })).accounts[0];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const wallet = wallets.get()[0]!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const account = (await wallet.connect({ chains: ['solana:mainnet'] })).accounts[0]!;
 
     // @ts-expect-error expected
     account.features.signTransaction;

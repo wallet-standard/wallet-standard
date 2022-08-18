@@ -7,7 +7,8 @@ export const EMPTY_ARRAY = [] as const;
 /** @internal */
 export function createDefaultContext<V, T extends Record<string, V>>(name: string, defaultState: T): T {
     for (const property of Object.keys(defaultState)) {
-        const value = defaultState[property];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const value = defaultState[property]!;
         Object.defineProperty(defaultState, property, {
             get(): V {
                 console.error(

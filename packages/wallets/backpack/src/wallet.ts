@@ -72,9 +72,10 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
         if (inputs.length === 1) {
-            const transaction = Transaction.from(inputs[0].transaction);
-            const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } =
-                inputs[0].options || {};
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const input = inputs[0]!;
+            const transaction = Transaction.from(input.transaction);
+            const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = input.options || {};
 
             const signature = commitment
                 ? await window.backpack.sendAndConfirm(
@@ -121,7 +122,8 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
         let signedTransactions: Transaction[];
         if (transactions.length === 1) {
             signedTransactions = [
-                await window.backpack.signTransaction(transactions[0], new PublicKey(this.publicKey)),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                await window.backpack.signTransaction(transactions[0]!, new PublicKey(this.publicKey)),
             ];
         } else if (transactions.length > 1) {
             signedTransactions = await window.backpack.signAllTransactions(transactions, new PublicKey(this.publicKey));
@@ -141,7 +143,8 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
 
     #signMessage: SignMessageMethod = async (...inputs) => {
         if (inputs.length === 1) {
-            const signedMessage = inputs[0].message;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const signedMessage = inputs[0]!.message;
             const signature = await window.backpack.signMessage(signedMessage, new PublicKey(this.publicKey));
             return [{ signedMessage, signatures: [signature] }];
         } else if (inputs.length > 1) {

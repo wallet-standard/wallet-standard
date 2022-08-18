@@ -38,7 +38,8 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     // Good -- this may be any of the Solana, Ledger, or Ethereum features, even though some don't exist on Ledger
     const features = wallet.features;
     // Good -- this may be a Solana, Ledger, or Ethereum account
-    const account = wallet.accounts[0];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const account = wallet.accounts[0]!;
 
     // Good -- this fails because while `signTransaction` is a feature of the accounts, we don't know if we have access to it
     // @ts-expect-error expected
@@ -64,11 +65,12 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     });
 
     // Good -- this succeeds because `features` are not required, and the wallet should grant all
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const accountWithAnyFeatures = (
         await wallet.connect({
             chains: ['ethereum:mainnet'],
         })
-    ).accounts[0];
+    ).accounts[0]!;
 
     // Good -- this fails because we can't know that each account will actually have every feature just because we asked for it
     // @ts-expect-error expected
@@ -80,12 +82,13 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     }
 
     // Good -- this succeeds because if `features` is empty, and the wallet should grant none (aka "readonly" access)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const accountWithNoFeatures = (
         await wallet.connect({
             chains: ['ethereum:mainnet'],
             features: [],
         })
-    ).accounts[0];
+    ).accounts[0]!;
 
     // Good -- this fails because the account has no features
     // @ts-expect-error expected
@@ -98,12 +101,13 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     }
 
     // Good -- this succeeds because the chain and features are known
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const accountWithOneFeature = (
         await wallet.connect({
             chains: ['solana:mainnet'],
             features: ['signTransaction'],
         })
-    ).accounts[0];
+    ).accounts[0]!;
 
     // Good -- this succeeds because the account includes the feature
     await accountWithOneFeature.features.signTransaction.signTransaction();
@@ -118,12 +122,13 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     }
 
     // Good -- this succeeds because the chain and features are known
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const accountWithMultipleFeatures = (
         await wallet.connect({
             chains: ['solana:mainnet'],
             features: ['signTransaction', 'signMessage'],
         })
-    ).accounts[0];
+    ).accounts[0]!;
 
     // Good -- these succeed because the account includes the feature
     await accountWithMultipleFeatures.features.signTransaction.signTransaction();
@@ -134,12 +139,13 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
     await accountWithMultipleFeatures.features.solana.signAndSendTransaction();
 
     // Good -- this succeeds because the chain and nonstandard features are known
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const accountWithExtension = (
         await wallet.connect({
             chains: ['ethereum:mainnet'],
             extensions: ['subscribe'],
         })
-    ).accounts[0];
+    ).accounts[0]!;
 
     // Good -- this succeeds because the account includes the nonstandard feature
     await accountWithExtension.extensions.subscribe.subscribe('change');

@@ -102,7 +102,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
             }
 
             if (!this.#wallet.accounts.length) throw new WalletAccountError();
-            const account = this.#wallet.accounts[0];
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const account = this.#wallet.accounts[0]!;
 
             let publicKey: PublicKey;
             try {
@@ -162,7 +163,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
     #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
         if (properties.includes('accounts')) {
             if (this.#account && this.#publicKey) {
-                const account = this.#wallet.accounts[0];
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const account = this.#wallet.accounts[0]!;
                 if (
                     !account ||
                     account !== this.#account ||

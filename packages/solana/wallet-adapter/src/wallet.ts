@@ -88,12 +88,15 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
         if (inputs.length === 1) {
-            const transaction = Transaction.from(inputs[0].transaction);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const input = inputs[0]!;
+            const transaction = Transaction.from(input.transaction);
 
             const signature = await sendAndConfirmTransaction(
                 transaction,
                 this.#endpoint,
-                inputs[0].options,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                input.options,
                 async (transaction, connection, options) =>
                     await this.#adapter.sendTransaction(transaction, connection, options)
             );
@@ -117,7 +120,8 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
         if (transactions.length === 1) {
-            const signedTransaction = await this.#adapter.signTransaction(transactions[0]);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const signedTransaction = await this.#adapter.signTransaction(transactions[0]!);
             return [
                 {
                     signedTransaction: signedTransaction.serialize({
@@ -143,7 +147,8 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         if (!('signMessage' in this.#adapter)) throw new Error('signMessage not implemented by adapter');
 
         if (inputs.length === 1) {
-            const signedMessage = inputs[0].message;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const signedMessage = inputs[0]!.message;
             const signature = await this.#adapter.signMessage(signedMessage);
             return [{ signedMessage, signature }];
         } else if (inputs.length > 1) {
@@ -242,7 +247,8 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 
         if (chains?.length) {
             if (chains.length > 1) throw new Error('multiple chains not supported');
-            this.#chain = chains[0];
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.#chain = chains[0]!;
             // FIXME: endpoint needs to change if chain changes
         }
 
