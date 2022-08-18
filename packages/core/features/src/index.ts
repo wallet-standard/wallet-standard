@@ -1,5 +1,3 @@
-import type { UnionToIntersection } from '@wallet-standard/types';
-import { WalletAccount } from '../wallet';
 import { DecryptFeature } from './decrypt';
 import { EncryptFeature } from './encrypt';
 import { JSONRPCFeature } from './JSONRPC';
@@ -28,15 +26,3 @@ export type Feature =
     | SolanaFeature
     | JSONRPCFeature
     | WSJSONRPCFeature;
-
-/** TODO: docs */
-export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
-
-/** TODO: docs */
-export type WalletAccountFeatureName<Account extends WalletAccount> = keyof WalletAccountFeatures<Account>;
-
-/** TODO: docs */
-export type WalletAccountExtensions<Account extends WalletAccount> = UnionToIntersection<Account['extensions']>;
-
-/** TODO: docs */
-export type WalletAccountExtensionName<Account extends WalletAccount> = keyof WalletAccountExtensions<Account>;

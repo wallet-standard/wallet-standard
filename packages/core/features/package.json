@@ -1,6 +1,6 @@
 {
-    "name": "@wallet-standard/standard",
-    "version": "0.1.0-alpha.1",
+    "name": "@wallet-standard/features",
+    "version": "0.1.0-alpha.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
@@ -27,6 +27,7 @@
         "prebuild": "pnpm run clean"
     },
     "dependencies": {
+        "@wallet-standard/standard": "workspace:^",
         "@wallet-standard/types": "workspace:^"
     },
     "devDependencies": {

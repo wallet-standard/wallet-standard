@@ -1,0 +1,20 @@
+{
+    "extends": "../../../tsconfig.root.json",
+    "references": [
+        {
+            "path": "../standard"
+        },
+        {
+            "path": "../types"
+        },
+        {
+            "path": "./tsconfig.cjs.json"
+        },
+        {
+            "path": "./tsconfig.esm.json"
+        },
+        {
+            "path": "./tsconfig.tests.json"
+        }
+    ]
+}

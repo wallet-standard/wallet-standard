@@ -1,15 +1,28 @@
-import { SignMessageFeature, SignTransactionFeature, SolanaFeature, Wallet, WalletAccount } from '../src';
+import { Wallet, WalletAccount } from '../src';
+
+// Standard feature for an account to implement
+type SignTransactionFeature = {
+    signTransaction: {
+        signTransaction(): void;
+    };
+};
+
+type SignMessageFeature = {
+    signMessage: {
+        signMessage(): void;
+    };
+};
 
 // A Solana account that supports all the features
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
-    features: SignTransactionFeature | SignMessageFeature | SolanaFeature;
+    features: SignTransactionFeature | SignMessageFeature;
 }
 
 // A Solana account on a Ledger device that can only sign transactions
 interface SolanaLedgerWalletAccount extends WalletAccount {
     chain: 'solana:mainnet' | 'solana:devnet' | 'solana:testnet';
-    features: SignTransactionFeature | SolanaFeature;
+    features: SignTransactionFeature;
 }
 
 // A nonstandard feature for an account to implement
@@ -136,7 +149,7 @@ type MultiChainWallet = Wallet<SolanaWalletAccount | SolanaLedgerWalletAccount |
 
     // Good -- this fails because the account doesn't include the feature
     // @ts-expect-error expected
-    await accountWithMultipleFeatures.features.solana.signAndSendTransaction();
+    await accountWithMultipleFeatures.features.signAndSendTransaction.signAndSendTransaction();
 
     // Good -- this succeeds because the chain and nonstandard features are known
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

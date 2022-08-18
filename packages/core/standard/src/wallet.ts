@@ -1,11 +1,4 @@
-import type { PropertyNames } from '@wallet-standard/types';
-import {
-    Feature,
-    WalletAccountExtensionName,
-    WalletAccountExtensions,
-    WalletAccountFeatureName,
-    WalletAccountFeatures,
-} from './features';
+import type { PropertyNames, UnionToIntersection } from '@wallet-standard/types';
 
 /** An account in the wallet that the app has been authorized to use. */
 export type WalletAccount = Readonly<{
@@ -22,7 +15,7 @@ export type WalletAccount = Readonly<{
     chain: string;
 
     /** Standard features supported by the account that are authorized to be used. */
-    features: Feature;
+    features: Readonly<Record<string, unknown>>;
 
     /** Nonstandard extensions supported by the account that are authorized to be used. */
     extensions: Readonly<Record<string, unknown>>;
@@ -37,6 +30,18 @@ export type WalletAccount = Readonly<{
     icon?: string;
 }>;
 
+/** TODO: docs */
+export type WalletAccountFeatures<Account extends WalletAccount> = UnionToIntersection<Account['features']>;
+
+/** TODO: docs */
+export type WalletAccountFeatureName<Account extends WalletAccount> = keyof WalletAccountFeatures<Account>;
+
+/** TODO: docs */
+export type WalletAccountExtensions<Account extends WalletAccount> = UnionToIntersection<Account['extensions']>;
+
+/** TODO: docs */
+export type WalletAccountExtensionName<Account extends WalletAccount> = keyof WalletAccountExtensions<Account>;
+
 // TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
 export interface WalletEvents<Account extends WalletAccount> {
@@ -50,12 +55,6 @@ export interface WalletEvents<Account extends WalletAccount> {
 
 /** TODO: docs */
 export type WalletEventNames<Account extends WalletAccount> = keyof WalletEvents<Account>;
-
-/** TODO: docs */
-export type WalletPropertyNames<Account extends WalletAccount> = PropertyNames<Wallet<Account>>;
-
-/** TODO: docs */
-export type WalletProperties<Account extends WalletAccount> = Pick<Wallet<Account>, WalletPropertyNames<Account>>;
 
 /** TODO: docs */
 export type Wallet<Account extends WalletAccount> = Readonly<{
@@ -136,6 +135,12 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
      */
     on<E extends WalletEventNames<Account>>(event: E, listener: WalletEvents<Account>[E]): () => void;
 }>;
+
+/** TODO: docs */
+export type WalletPropertyNames<Account extends WalletAccount> = PropertyNames<Wallet<Account>>;
+
+/** TODO: docs */
+export type WalletProperties<Account extends WalletAccount> = Pick<Wallet<Account>, WalletPropertyNames<Account>>;
 
 /** Input for connecting. */
 export type ConnectInput<
