@@ -69,6 +69,8 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
     }
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
+        const outputs: SolanaSignAndSendTransactionOutput[] = [];
+
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const input = inputs[0]!;
@@ -102,58 +104,66 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
                       new PublicKey(this.publicKey)
                   );
 
-            return [{ signature: decode(signature) }];
+            outputs.push({ signature: decode(signature) });
         } else if (inputs.length > 1) {
-            const outputs: SolanaSignAndSendTransactionOutput[] = [];
             for (const input of inputs) {
                 outputs.push(...(await this.#signAndSendTransaction(input)));
             }
-            return outputs;
-        } else {
-            return [] as any;
         }
+
+        return outputs as any;
     };
 
     #signTransaction: SignTransactionMethod = async (...inputs) => {
-        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
+        const outputs: SignTransactionOutput[] = [];
 
-        let signedTransactions: Transaction[];
-        if (transactions.length === 1) {
-            signedTransactions = [
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                await window.backpack.signTransaction(transactions[0]!, new PublicKey(this.publicKey)),
-            ];
-        } else if (transactions.length > 1) {
-            signedTransactions = await window.backpack.signAllTransactions(transactions, new PublicKey(this.publicKey));
-        } else {
-            signedTransactions = [];
+        if (inputs.length === 1) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const transaction = Transaction.from(inputs[0]!.transaction);
+            const signedTransaction = await window.backpack.signTransaction(transaction, new PublicKey(this.publicKey));
+
+            outputs.push({
+                signedTransaction: signedTransaction.serialize({
+                    requireAllSignatures: false,
+                    verifySignatures: false,
+                }),
+            });
+        } else if (inputs.length > 1) {
+            const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
+            const signedTransactions = await window.backpack.signAllTransactions(
+                transactions,
+                new PublicKey(this.publicKey)
+            );
+
+            outputs.push(
+                ...signedTransactions.map((signedTransaction) => ({
+                    signedTransaction: signedTransaction.serialize({
+                        requireAllSignatures: false,
+                        verifySignatures: false,
+                    }),
+                }))
+            );
         }
-
-        const outputs: SignTransactionOutput[] = signedTransactions.map((transaction) => ({
-            signedTransaction: transaction.serialize({
-                requireAllSignatures: false,
-                verifySignatures: false,
-            }),
-        }));
 
         return outputs as any;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
+        const outputs: SignMessageOutput[] = [];
+
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const signedMessage = inputs[0]!.message;
             const signature = await window.backpack.signMessage(signedMessage, new PublicKey(this.publicKey));
-            return [{ signedMessage, signatures: [signature] }];
+
+            outputs.push({ signedMessage, signature });
         } else if (inputs.length > 1) {
-            const outputs: SignMessageOutput[] = [];
             for (const input of inputs) {
                 outputs.push(...(await this.#signMessage(input)));
             }
-            return outputs;
-        } else {
-            return [] as any;
         }
+
+        return outputs as any;
     };
 }
 
