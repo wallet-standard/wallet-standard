@@ -53,13 +53,11 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
         return this.#chain;
     }
 
-    get features(): SolanaFeature & SignTransactionFeature & SignMessageFeature & JSONRPCFeature & WSJSONRPCFeature {
+    get features(): SolanaFeature & SignTransactionFeature & SignMessageFeature {
         return {
             solana: { signAndSendTransaction: this.#signAndSendTransaction },
             signTransaction: { signTransaction: this.#signTransaction },
             signMessage: { signMessage: this.#signMessage },
-            JSONRPC: { client: window.backpack.connection._rpcClient },
-            WSJSONRPC: { client: window.backpack.connection._rpcWebSocket },
         };
     }
 
