@@ -18,37 +18,41 @@ export const WalletProvider: FC<WalletProviderProps> = ({
     useEffect(() => {
         const wallets = initialize<WalletAccount>();
         // Get wallets that have been registered already that are able to be wrapped with adapters.
-        const registered = wallets.get().filter(isStandardWalletAdapterCompatibleWallet);
+        const filtered = wallets.get().filter(isStandardWalletAdapterCompatibleWallet);
 
-        // Add an adapter for every standard wallet that has been registered already.
-        setAdapters((adapters) => [
-            ...registered
-                .filter(isStandardWalletAdapterCompatibleWallet)
-                .map((wallet) => new StandardWalletAdapter({ wallet })),
-            // Filter out adapters with the same name as registered wallets.
-            ...adapters.filter((adapter) => registered.some((wallet) => wallet.name === adapter.name)),
-        ]);
+        // Add an adapter for standard wallets that have been registered already.
+        if (filtered.length) {
+            setAdapters((adapters) => {
+                return [
+                    ...filtered.map((wallet) => new StandardWalletAdapter({ wallet })),
+                    // Filter out adapters with the same name as registered standard wallets.
+                    ...adapters.filter((adapter) => filtered.some((wallet) => wallet.name === adapter.name)),
+                ];
+            });
+        }
 
         const destructors = [
-            // Add an event listener to add adapters for wallets that are registered after this point.
-            wallets.on('register', (registered) =>
-                setAdapters((adapters) => [
-                    ...registered
-                        .filter(isStandardWalletAdapterCompatibleWallet)
-                        .map((wallet) => new StandardWalletAdapter({ wallet })),
-                    // Filter out adapters with the same name as registered wallets.
-                    ...adapters.filter((adapter) => registered.some((wallet) => wallet.name === adapter.name)),
-                ])
-            ),
+            // Add an event listener to add adapters for standard wallets that are registered after this point.
+            wallets.on('register', (registered) => {
+                const filtered = registered.filter(isStandardWalletAdapterCompatibleWallet);
+                if (filtered.length) {
+                    setAdapters((adapters) => [
+                        ...filtered.map((wallet) => new StandardWalletAdapter({ wallet })),
+                        // Filter out adapters with the same name as registered standard wallets.
+                        ...adapters.filter((adapter) => filtered.some((wallet) => wallet.name === adapter.name)),
+                    ]);
+                }
+            }),
             // Add an event listener to remove any adapters for wallets that are unregistered after this point.
-            wallets.on('unregister', (unregistered) =>
-                setAdapters((adapters) =>
-                    // Filter out adapters with the same name as unregistered wallets.
-                    adapters.filter((adapter) =>
-                        unregistered.some((unregistered) => unregistered.name === adapter.name)
-                    )
-                )
-            ),
+            wallets.on('unregister', (unregistered) => {
+                const filtered = unregistered.filter(isStandardWalletAdapterCompatibleWallet);
+                if (filtered.length) {
+                    setAdapters((adapters) =>
+                        // Filter out adapters with the same name as unregistered wallets.
+                        adapters.filter((adapter) => filtered.some((wallet) => wallet.name === adapter.name))
+                    );
+                }
+            }),
         ];
 
         return () => destructors.forEach((destroy) => destroy());
