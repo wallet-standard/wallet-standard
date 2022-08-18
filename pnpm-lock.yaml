@@ -122,7 +122,7 @@ importers:
   packages/example/solana-wallet-adapter:
     specifiers:
       '@solana/wallet-adapter-base': ^0.9.11
-      '@solana/wallet-adapter-react': ^0.15.12
+      '@solana/wallet-adapter-react': ^0.15.13
       '@solana/wallet-adapter-react-ui': ^0.9.12
       '@solana/wallet-adapter-wallets': ^0.17.1
       '@solana/web3.js': ^1.51.0
@@ -138,7 +138,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@solana/wallet-adapter-base': 0.9.11_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.12_rhn4fdsep7vhl3zkypaxxk4ks4
+      '@solana/wallet-adapter-react': 0.15.13_rhn4fdsep7vhl3zkypaxxk4ks4
       '@solana/wallet-adapter-react-ui': 0.9.12_m3af7tvqjonsol6kibc4lrjw4q
       '@solana/wallet-adapter-wallets': 0.17.2_jojj674veskeypqr57urbr4v3u
       '@solana/web3.js': 1.53.0
@@ -211,7 +211,7 @@ importers:
   packages/solana/wallet-adapter-react:
     specifiers:
       '@solana/wallet-adapter-base': ^0.9.12
-      '@solana/wallet-adapter-react': ^0.15.12
+      '@solana/wallet-adapter-react': ^0.15.13
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@types/react': ^18.0.0
@@ -224,7 +224,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@solana/wallet-adapter-base': 0.9.12_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.12_rhn4fdsep7vhl3zkypaxxk4ks4
+      '@solana/wallet-adapter-react': 0.15.13_rhn4fdsep7vhl3zkypaxxk4ks4
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/solana-wallet-adapter': link:../wallet-adapter
       '@wallet-standard/standard': link:../../core/standard
@@ -3572,14 +3572,14 @@ packages:
       react-dom: '*'
     dependencies:
       '@solana/wallet-adapter-base': 0.9.11_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.12_rhn4fdsep7vhl3zkypaxxk4ks4
+      '@solana/wallet-adapter-react': 0.15.13_rhn4fdsep7vhl3zkypaxxk4ks4
       '@solana/web3.js': 1.53.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@solana/wallet-adapter-react/0.15.12_rhn4fdsep7vhl3zkypaxxk4ks4:
-    resolution: {integrity: sha512-YW38NQrfPqkLlPbX5fnOxlQg+xbjsb3WQR2TaRwvPssmwO36ERgHUToxM/9wZNaAR8fW8V2hfrQ9HXi7/ZsiJg==}
+  /@solana/wallet-adapter-react/0.15.13_rhn4fdsep7vhl3zkypaxxk4ks4:
+    resolution: {integrity: sha512-m5rJ30tAW/rhCF8PC/izgLle2HNLwnQcz4xJpipfkAc2qrS15bgtNE0T/ECV4BcfCb0bpGyabcP25cMJcQlNfQ==}
     peerDependencies:
       '@solana/web3.js': ^1.50.1
       react: '*'
