@@ -1,8 +1,7 @@
-import {
+import type {
     ConnectedAccount,
     ConnectInput,
     ConnectOutput,
-    VERSION_1_0_0,
     Wallet,
     WalletAccount,
     WalletAccountExtensionName,
@@ -10,6 +9,7 @@ import {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
+import { VERSION_1_0_0 } from '@wallet-standard/standard';
 import { bytesEqual, pick } from '@wallet-standard/util';
 
 export abstract class AbstractWallet<Account extends WalletAccount> implements Wallet<Account> {

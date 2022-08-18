@@ -2,6 +2,9 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
+            "path": "../../core/features"
+        },
+        {
             "path": "../../core/standard"
         },
         {

@@ -31,6 +31,7 @@
         "bs58": "^4.0.1"
     },
     "dependencies": {
+        "@wallet-standard/features": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
         "@wallet-standard/util": "workspace:^"
     },

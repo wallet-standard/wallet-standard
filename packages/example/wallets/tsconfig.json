@@ -5,6 +5,9 @@
             "path": "../../core/app"
         },
         {
+            "path": "../../core/features"
+        },
+        {
             "path": "../../core/standard"
         },
         {

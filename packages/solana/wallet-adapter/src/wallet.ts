@@ -1,10 +1,7 @@
 import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
 import { Transaction } from '@solana/web3.js';
 import { initialize } from '@wallet-standard/app';
-import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import {
-    ConnectInput,
-    ConnectOutput,
+import type {
     SignMessageFeature,
     SignMessageMethod,
     SignTransactionFeature,
@@ -12,7 +9,11 @@ import {
     SolanaFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
-    VERSION_1_0_0,
+} from '@wallet-standard/features';
+import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
+import type {
+    ConnectInput,
+    ConnectOutput,
     Wallet,
     WalletAccount,
     WalletAccountExtensionName,
@@ -20,6 +21,7 @@ import {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
+import { VERSION_1_0_0 } from '@wallet-standard/standard';
 import {
     bytesEqual,
     CHAIN_SOLANA_DEVNET,
