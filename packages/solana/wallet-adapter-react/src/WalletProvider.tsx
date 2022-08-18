@@ -11,18 +11,16 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, wallets, ...
 
     useEffect(() => {
         const wallets = initialize<WalletAccount>();
-        // Get wallets that have been registered already that are able to be wrapped with adapters.
+        // Get wallets that have been registered already that can be wrapped as adapters.
         const filtered = wallets.get().filter(isStandardWalletAdapterCompatibleWallet);
 
         // Add an adapter for standard wallets that have been registered already.
         if (filtered.length) {
-            setAdapters((adapters) => {
-                return [
-                    ...filtered.map((wallet) => new StandardWalletAdapter({ wallet })),
-                    // Filter out adapters with the same name as registered standard wallets.
-                    ...adapters.filter((adapter) => filtered.some((wallet) => wallet.name === adapter.name)),
-                ];
-            });
+            setAdapters((adapters) => [
+                ...filtered.map((wallet) => new StandardWalletAdapter({ wallet })),
+                // Filter out adapters with the same name as registered standard wallets.
+                ...adapters.filter((adapter) => !filtered.some((wallet) => wallet.name === adapter.name)),
+            ]);
         }
 
         const destructors = [
@@ -33,7 +31,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, wallets, ...
                     setAdapters((adapters) => [
                         ...filtered.map((wallet) => new StandardWalletAdapter({ wallet })),
                         // Filter out adapters with the same name as registered standard wallets.
-                        ...adapters.filter((adapter) => filtered.some((wallet) => wallet.name === adapter.name)),
+                        ...adapters.filter((adapter) => !filtered.some((wallet) => wallet.name === adapter.name)),
                     ]);
                 }
             }),
