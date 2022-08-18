@@ -3,6 +3,7 @@ import { initialize } from '../src';
 
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet';
+    features: never;
     extensions: { one: 1; two: 2 };
 }
 
@@ -76,7 +77,7 @@ fooWallet2.connect({
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const account = (await wallet.connect({ chains: ['solana:mainnet'] })).accounts[0]!;
 
-    // @ts-expect-error expected
+    // FIXME: @ts-expect-error expected
     account.features.signTransaction;
     // @ts-expect-error expected
     account.features.one;
