@@ -5,6 +5,9 @@
             "path": "./packages/core/app"
         },
         {
+            "path": "./packages/core/features"
+        },
+        {
             "path": "./packages/core/react"
         },
         {
