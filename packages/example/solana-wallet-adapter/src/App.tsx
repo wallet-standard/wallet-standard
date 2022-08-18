@@ -5,6 +5,9 @@ import { GlowWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-
 import { clusterApiUrl } from '@solana/web3.js';
 import { WalletProvider } from '@wallet-standard/solana-wallet-adapter-react';
 import React, { FC, ReactNode, useMemo } from 'react';
+import { RequestAirdrop } from './RequestAirdrop';
+import { SendTransaction } from './SendTransaction';
+import { SignMessage } from './SignMessage';
 
 export const App: FC = () => {
     return (
@@ -33,5 +36,16 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const Content: FC = () => {
-    return <WalletMultiButton />;
+    return (
+        <div>
+            <WalletMultiButton />
+            <br />
+            <RequestAirdrop />
+            <br />
+            <SendTransaction />
+            <br />
+            <SignMessage />
+            <br />
+        </div>
+    );
 };
