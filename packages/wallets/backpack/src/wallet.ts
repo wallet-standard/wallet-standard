@@ -53,9 +53,18 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
 
     get features(): SolanaFeature & SignTransactionFeature & SignMessageFeature {
         return {
-            solana: { signAndSendTransaction: this.#signAndSendTransaction },
-            signTransaction: { signTransaction: this.#signTransaction },
-            signMessage: { signMessage: this.#signMessage },
+            solana: {
+                version: '1.0.0',
+                signAndSendTransaction: this.#signAndSendTransaction,
+            },
+            signTransaction: {
+                version: '1.0.0',
+                signTransaction: this.#signTransaction,
+            },
+            signMessage: {
+                version: '1.0.0',
+                signMessage: this.#signMessage,
+            },
         };
     }
 
@@ -174,7 +183,7 @@ export class BackpackSolanaWallet implements Wallet<BackpackSolanaWalletAccount>
     #account: BackpackSolanaWalletAccount | undefined;
 
     get version() {
-        return VERSION_1_0_0;
+        return '1.0.0' as const;
     }
 
     get name() {

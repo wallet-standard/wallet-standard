@@ -191,14 +191,25 @@ export class SignerSolanaWalletAccount implements WalletAccount {
     };
 
     #allFeatures: UnionToIntersection<SolanaWalletAccountFeature> = {
-        solana: { signAndSendTransaction: this.#signAndSendTransaction },
-        signTransaction: { signTransaction: this.#signTransaction },
-        signMessage: { signMessage: this.#signMessage },
+        solana: {
+            version: '1.0.0',
+            signAndSendTransaction: this.#signAndSendTransaction,
+        },
+        signTransaction: {
+            version: '1.0.0',
+            signTransaction: this.#signTransaction,
+        },
+        signMessage: {
+            version: '1.0.0',
+            signMessage: this.#signMessage,
+        },
         encrypt: {
+            version: '1.0.0',
             ciphers: [CIPHER_x25519_xsalsa20_poly1305],
             encrypt: this.#encrypt,
         },
         decrypt: {
+            version: '1.0.0',
             ciphers: [CIPHER_x25519_xsalsa20_poly1305],
             decrypt: this.#decrypt,
         },
@@ -296,7 +307,13 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
     };
 
     #allFeatures: UnionToIntersection<SolanaFeature | SignTransactionFeature> = {
-        solana: { signAndSendTransaction: this.#signAndSendTransaction },
-        signTransaction: { signTransaction: this.#signTransaction },
+        solana: {
+            version: '1.0.0',
+            signAndSendTransaction: this.#signAndSendTransaction,
+        },
+        signTransaction: {
+            version: '1.0.0',
+            signTransaction: this.#signTransaction,
+        },
     };
 }

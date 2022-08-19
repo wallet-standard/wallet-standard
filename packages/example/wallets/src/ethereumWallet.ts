@@ -183,14 +183,25 @@ export class SignerEthereumWalletAccount implements WalletAccount {
     };
 
     #allFeatures: UnionToIntersection<EthereumWalletAccountFeature> = {
-        signTransaction: { signTransaction: this.#signTransaction },
-        signAndSendTransaction: { signAndSendTransaction: this.#signAndSendTransaction },
-        signMessage: { signMessage: this.#signMessage },
+        signTransaction: {
+            version: '1.0.0',
+            signTransaction: this.#signTransaction,
+        },
+        signAndSendTransaction: {
+            version: '1.0.0',
+            signAndSendTransaction: this.#signAndSendTransaction,
+        },
+        signMessage: {
+            version: '1.0.0',
+            signMessage: this.#signMessage,
+        },
         encrypt: {
+            version: '1.0.0',
             ciphers: [CIPHER_x25519_xsalsa20_poly1305],
             encrypt: this.#encrypt,
         },
         decrypt: {
+            version: '1.0.0',
             ciphers: [CIPHER_x25519_xsalsa20_poly1305],
             decrypt: this.#decrypt,
         },

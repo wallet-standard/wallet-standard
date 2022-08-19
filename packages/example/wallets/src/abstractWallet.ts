@@ -9,7 +9,6 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import { VERSION_1_0_0 } from '@wallet-standard/standard';
 import { bytesEqual, pick } from '@wallet-standard/util';
 
 export abstract class AbstractWallet<Account extends WalletAccount> implements Wallet<Account> {
@@ -17,7 +16,7 @@ export abstract class AbstractWallet<Account extends WalletAccount> implements W
     protected _accounts: Account[];
 
     get version() {
-        return VERSION_1_0_0;
+        return '1.0.0' as const;
     }
 
     abstract get name(): string;

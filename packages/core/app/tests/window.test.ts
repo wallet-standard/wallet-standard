@@ -22,7 +22,7 @@ class FooWalletAccount implements WalletAccount {
 }
 
 class FooWallet implements Wallet<FooWalletAccount> {
-    version = '1.0.0';
+    version = '1.0.0' as const;
     name = 'Foo';
     icon = 'image';
     chains = ['mainnet'] as const;

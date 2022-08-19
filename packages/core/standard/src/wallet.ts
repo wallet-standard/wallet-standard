@@ -62,7 +62,7 @@ export type Wallet<Account extends WalletAccount> = Readonly<{
      * Version of the Wallet Standard API.
      * If this changes, the wallet must emit a change event.
      * */
-    version: string;
+    version: '1.0.0';
 
     /**
      * Name of the wallet, to be displayed by apps.

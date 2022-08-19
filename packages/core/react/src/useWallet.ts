@@ -11,7 +11,7 @@ export interface WalletContextState<Account extends WalletAccount> extends Walle
 }
 
 const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties<WalletAccount>> = {
-    version: EMPTY_STRING,
+    version: '1.0.0',
     name: EMPTY_STRING,
     icon: EMPTY_STRING,
     chains: EMPTY_ARRAY,
