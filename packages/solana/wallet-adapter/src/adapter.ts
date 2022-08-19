@@ -1,4 +1,4 @@
-import type { SendTransactionOptions, WalletName } from '@solana/wallet-adapter-base';
+import type { SendTransactionOptions, WalletAdapter, WalletName } from '@solana/wallet-adapter-base';
 import {
     BaseWalletAdapter,
     WalletAccountError,
@@ -37,7 +37,14 @@ export interface StandardWalletAdapterConfig {
     // TODO: chain or endpoint?
 }
 
-export class StandardWalletAdapter extends BaseWalletAdapter {
+/** TODO: docs */
+export type StandardAdapter = WalletAdapter & {
+    wallet: Wallet<StandardWalletAdapterAccount>;
+    standard: true;
+};
+
+/** TODO: docs */
+export class StandardWalletAdapter extends BaseWalletAdapter implements StandardAdapter {
     readonly #wallet: Wallet<StandardWalletAdapterAccount>;
     #account: StandardWalletAdapterAccount | null;
     #publicKey: PublicKey | null;
@@ -47,14 +54,6 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
         typeof window === 'undefined' || typeof document === 'undefined'
             ? WalletReadyState.Unsupported
             : WalletReadyState.Installed;
-
-    constructor({ wallet }: StandardWalletAdapterConfig) {
-        super();
-        this.#wallet = wallet;
-        this.#account = null;
-        this.#publicKey = null;
-        this.#connecting = false;
-    }
 
     get name() {
         return this.#wallet.name as WalletName;
@@ -78,6 +77,22 @@ export class StandardWalletAdapter extends BaseWalletAdapter {
 
     get readyState() {
         return this.#readyState;
+    }
+
+    get wallet(): Wallet<StandardWalletAdapterAccount> {
+        return this.#wallet;
+    }
+
+    get standard() {
+        return true as const;
+    }
+
+    constructor({ wallet }: StandardWalletAdapterConfig) {
+        super();
+        this.#wallet = wallet;
+        this.#account = null;
+        this.#publicKey = null;
+        this.#connecting = false;
     }
 
     async connect(): Promise<void> {
