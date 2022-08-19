@@ -22,19 +22,21 @@ import type { Wallet, WalletAccount, WalletPropertyNames } from '@wallet-standar
 import { bytesEqual } from '@wallet-standard/util';
 import { encode } from 'bs58';
 
+/** TODO: docs */
 export interface StandardWalletAdapterAccount extends WalletAccount {
     features: SolanaFeature & (SignTransactionFeature | SignMessageFeature);
 }
 
+/** TODO: docs */
 export function isStandardWalletAdapterCompatibleWallet(
     wallet: Wallet<WalletAccount>
 ): wallet is Wallet<StandardWalletAdapterAccount> {
     return wallet.features.includes('solana');
 }
 
+/** TODO: docs */
 export interface StandardWalletAdapterConfig {
     wallet: Wallet<StandardWalletAdapterAccount>;
-    // TODO: chain or endpoint?
 }
 
 /** TODO: docs */

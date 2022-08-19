@@ -5,8 +5,10 @@ import { initialize } from '@wallet-standard/app';
 import type {
     SignMessageFeature,
     SignMessageMethod,
+    SignMessageOutput,
     SignTransactionFeature,
     SignTransactionMethod,
+    SignTransactionOutput,
     SolanaFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
@@ -22,26 +24,16 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import type {
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_LOCALNET,
-    CHAIN_SOLANA_MAINNET,
-    CHAIN_SOLANA_TESTNET,
-} from '@wallet-standard/util';
+import type { SolanaChain } from '@wallet-standard/util';
 import { bytesEqual } from '@wallet-standard/util';
 import { decode } from 'bs58';
 
-export type SolanaWalletAdapterChain =
-    | typeof CHAIN_SOLANA_MAINNET
-    | typeof CHAIN_SOLANA_DEVNET
-    | typeof CHAIN_SOLANA_TESTNET
-    | typeof CHAIN_SOLANA_LOCALNET;
-
+/** TODO: docs */
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     readonly #adapter: Adapter;
     readonly #publicKey: Uint8Array;
-    readonly #chain: SolanaWalletAdapterChain;
-    readonly #endpoint: string;
+    readonly #chain: SolanaChain;
+    readonly #endpoint: string | undefined;
 
     get address() {
         return this.publicKey;
@@ -94,7 +86,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return this.#endpoint;
     }
 
-    constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaWalletAdapterChain, endpoint: string) {
+    constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaChain, endpoint?: string) {
         this.#adapter = adapter;
         this.#publicKey = publicKey;
         this.#chain = chain;
@@ -102,85 +94,91 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     }
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
+        const outputs: SolanaSignAndSendTransactionOutput[] = [];
+
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const input = inputs[0]!;
             const transaction = Transaction.from(input.transaction);
+            const endpoint = getEndpointForChain(this.#chain, this.#endpoint);
 
             const signature = await sendAndConfirmTransaction(
                 transaction,
-                this.#endpoint,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                endpoint,
                 input.options,
                 async (transaction, connection, options) =>
                     await this.#adapter.sendTransaction(transaction, connection, options)
             );
 
-            return [{ signature: decode(signature) }];
+            outputs.push({ signature: decode(signature) });
         } else if (inputs.length > 1) {
             // Adapters have no `sendAllTransactions` method, so just sign and send each transaction in serial.
-            const outputs: SolanaSignAndSendTransactionOutput[] = [];
             for (const input of inputs) {
                 outputs.push(...(await this.#signAndSendTransaction(input)));
             }
-            return outputs;
-        } else {
-            return [] as any;
         }
+
+        return outputs as any;
     };
 
     #signTransaction: SignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#adapter)) throw new Error('signTransaction not implemented by adapter');
+        const outputs: SignTransactionOutput[] = [];
 
-        const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
-
-        if (transactions.length === 1) {
+        if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const signedTransaction = await this.#adapter.signTransaction(transactions[0]!);
-            return [
-                {
-                    signedTransaction: signedTransaction.serialize({
-                        requireAllSignatures: false,
-                        verifySignatures: false,
-                    }),
-                },
-            ];
-        } else if (transactions.length > 1) {
-            const signedTransactions = await this.#adapter.signAllTransactions(transactions);
-            return signedTransactions.map((signedTransaction) => ({
+            const transaction = Transaction.from(inputs[0]!.transaction);
+            const signedTransaction = await this.#adapter.signTransaction(transaction);
+
+            outputs.push({
                 signedTransaction: signedTransaction.serialize({
                     requireAllSignatures: false,
                     verifySignatures: false,
                 }),
-            }));
-        } else {
-            return [] as any;
+            });
+        } else if (inputs.length > 1) {
+            const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
+            const signedTransactions = await this.#adapter.signAllTransactions(transactions);
+
+            outputs.push(
+                ...signedTransactions.map((signedTransaction) => ({
+                    signedTransaction: signedTransaction.serialize({
+                        requireAllSignatures: false,
+                        verifySignatures: false,
+                    }),
+                }))
+            );
         }
+
+        return outputs as any;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
         if (!('signMessage' in this.#adapter)) throw new Error('signMessage not implemented by adapter');
+        const outputs: SignMessageOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const signedMessage = inputs[0]!.message;
             const signature = await this.#adapter.signMessage(signedMessage);
-            return [{ signedMessage, signature }];
+
+            outputs.push({ signedMessage, signature });
         } else if (inputs.length > 1) {
             throw new Error('signMessage for multiple messages not implemented');
-        } else {
-            return [] as any;
         }
+
+        return outputs as any;
     };
 }
 
+/** TODO: docs */
 export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
     #listeners: {
         [E in WalletEventNames<SolanaWalletAdapterWalletAccount>]?: WalletEvents<SolanaWalletAdapterWalletAccount>[E][];
     } = {};
     #adapter: Adapter;
-    #chain: SolanaWalletAdapterChain;
-    #endpoint: string;
+    #chain: SolanaChain;
+    #endpoint: string | undefined;
     #account: SolanaWalletAdapterWalletAccount | undefined;
 
     get version() {
@@ -226,10 +224,10 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return this.#endpoint;
     }
 
-    constructor(adapter: Adapter, chain: SolanaWalletAdapterChain, endpoint?: string) {
+    constructor(adapter: Adapter, chain: SolanaChain, endpoint?: string) {
         this.#adapter = adapter;
         this.#chain = chain;
-        this.#endpoint = getEndpointForChain(chain);
+        this.#endpoint = endpoint;
 
         adapter.on('connect', this.#connect, this);
         adapter.on('disconnect', this.#disconnect, this);
@@ -252,9 +250,9 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     ): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
         const { chains, addresses, features, extensions, silent } = input || {};
 
-        // FIXME: features
+        // FIXME: features, extensions
 
-        if (extensions?.length) throw new Error('nonstandard features not supported');
+        if (extensions?.length) throw new Error('extensions not supported');
 
         if (!silent && !this.#adapter.connected) {
             await this.#adapter.connect();
@@ -264,7 +262,6 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
             if (chains.length > 1) throw new Error('multiple chains not supported');
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.#chain = chains[0]!;
-            // FIXME: endpoint needs to change if chain changes
         }
 
         this.#connect();
@@ -327,16 +324,10 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     }
 }
 
-/**
- * TODO: docs
- *
- * @param adapter TODO: docs
- * @param chain   TODO: docs
- * @param match   TODO: docs
- */
+/** TODO: docs */
 export function registerWalletAdapter(
     adapter: Adapter,
-    chain: SolanaWalletAdapterChain,
+    chain: SolanaChain,
     endpoint?: string,
     match: (wallet: Wallet<SolanaWalletAdapterWalletAccount>) => boolean = (wallet) => wallet.name === adapter.name
 ): () => void {
