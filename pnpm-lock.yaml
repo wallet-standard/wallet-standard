@@ -144,7 +144,7 @@ importers:
   packages/example/solana-wallet-adapter:
     specifiers:
       '@solana/wallet-adapter-base': ^0.9.11
-      '@solana/wallet-adapter-react': ^0.15.14
+      '@solana/wallet-adapter-react': ^0.15.15
       '@solana/wallet-adapter-react-ui': ^0.9.12
       '@solana/wallet-adapter-wallets': ^0.18.1
       '@solana/web3.js': ^1.51.0
@@ -164,7 +164,7 @@ importers:
       tweetnacl: ^1.0.3
     dependencies:
       '@solana/wallet-adapter-base': 0.9.11_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.14_rhn4fdsep7vhl3zkypaxxk4ks4
+      '@solana/wallet-adapter-react': 0.15.15_rhn4fdsep7vhl3zkypaxxk4ks4
       '@solana/wallet-adapter-react-ui': 0.9.12_m3af7tvqjonsol6kibc4lrjw4q
       '@solana/wallet-adapter-wallets': 0.18.1_4vfebyes3kv3xfcr3iv3l2kffu
       '@solana/web3.js': 1.53.0
@@ -245,7 +245,7 @@ importers:
   packages/solana/wallet-adapter-react:
     specifiers:
       '@solana/wallet-adapter-base': ^0.9.12
-      '@solana/wallet-adapter-react': ^0.15.14
+      '@solana/wallet-adapter-react': ^0.15.15
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@types/react': ^18.0.0
@@ -258,7 +258,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@solana/wallet-adapter-base': 0.9.12_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.14_rhn4fdsep7vhl3zkypaxxk4ks4
+      '@solana/wallet-adapter-react': 0.15.15_rhn4fdsep7vhl3zkypaxxk4ks4
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/solana-wallet-adapter': link:../wallet-adapter
       '@wallet-standard/standard': link:../../core/standard
@@ -3237,7 +3237,7 @@ packages:
       - encoding
     dev: true
 
-  /@react-native-community/cli-plugin-metro/8.0.4:
+  /@react-native-community/cli-plugin-metro/8.0.4_@babel+core@7.18.10:
     resolution: {integrity: sha512-UWzY1eMcEr/6262R2+d0Is5M3L/7Y/xXSDIFMoc5Rv5Wucl3hJM/TxHXmByvHpuJf6fJAfqOskyt4bZCvbI+wQ==}
     dependencies:
       '@react-native-community/cli-server-api': 8.0.4
@@ -3246,11 +3246,12 @@ packages:
       metro: 0.70.3
       metro-config: 0.70.3
       metro-core: 0.70.3
-      metro-react-native-babel-transformer: 0.70.3
+      metro-react-native-babel-transformer: 0.70.3_@babel+core@7.18.10
       metro-resolver: 0.70.3
       metro-runtime: 0.70.3
       readline: 1.3.0
     transitivePeerDependencies:
+      - '@babel/core'
       - bufferutil
       - encoding
       - supports-color
@@ -3299,7 +3300,7 @@ packages:
       joi: 17.6.0
     dev: true
 
-  /@react-native-community/cli/8.0.6_react-native@0.69.4:
+  /@react-native-community/cli/8.0.6_mqmjqcyqm4trh6m6pjidkcb5na:
     resolution: {integrity: sha512-E36hU/if3quQCfJHGWVkpsCnwtByRCwORuAX0r6yr1ebKktpKeEO49zY9PAu/Z1gfyxCtgluXY0HfRxjKRFXTg==}
     engines: {node: '>=12'}
     hasBin: true
@@ -3311,7 +3312,7 @@ packages:
       '@react-native-community/cli-debugger-ui': 8.0.0
       '@react-native-community/cli-doctor': 8.0.6
       '@react-native-community/cli-hermes': 8.0.5
-      '@react-native-community/cli-plugin-metro': 8.0.4
+      '@react-native-community/cli-plugin-metro': 8.0.4_@babel+core@7.18.10
       '@react-native-community/cli-server-api': 8.0.4
       '@react-native-community/cli-tools': 8.0.4
       '@react-native-community/cli-types': 8.0.0
@@ -3325,9 +3326,10 @@ packages:
       lodash: 4.17.21
       minimist: 1.2.6
       prompts: 2.4.2
-      react-native: 0.69.4_6iplzvqeiudpi4sy52vugn7nxq
+      react-native: 0.69.4_mu3jvlaeljwoblc7kfv3lw2koe
       semver: 6.3.0
     transitivePeerDependencies:
+      - '@babel/core'
       - bufferutil
       - encoding
       - supports-color
@@ -3649,14 +3651,14 @@ packages:
       react-dom: '*'
     dependencies:
       '@solana/wallet-adapter-base': 0.9.11_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.14_rhn4fdsep7vhl3zkypaxxk4ks4
+      '@solana/wallet-adapter-react': 0.15.15_rhn4fdsep7vhl3zkypaxxk4ks4
       '@solana/web3.js': 1.53.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@solana/wallet-adapter-react/0.15.14_rhn4fdsep7vhl3zkypaxxk4ks4:
-    resolution: {integrity: sha512-gmWQjUIn18niv9JxDGpYpP9H7imWugPE+bcCLLbLfcPsV/0Uzy55tuJ9yXETN7hw/W47sNaO+ezQrttV4hLXCw==}
+  /@solana/wallet-adapter-react/0.15.15_rhn4fdsep7vhl3zkypaxxk4ks4:
+    resolution: {integrity: sha512-sY1fLQ8Wf5qx66Alw6V5J8L5o6ymRxw55qvsVBqS7EkMTsGxpUm4Q6anrjNPp5/9oaARw/kdhURa5JQihPBn/w==}
     peerDependencies:
       '@solana/web3.js': ^1.50.1
       react: '*'
@@ -7389,8 +7391,10 @@ packages:
       uglify-es: 3.3.9
     dev: true
 
-  /metro-react-native-babel-preset/0.70.3:
+  /metro-react-native-babel-preset/0.70.3_@babel+core@7.18.10:
     resolution: {integrity: sha512-4Nxc1zEiHEu+GTdEMEsHnRgfaBkg8f/Td3+FcQ8NTSvs+xL3LBrQy6N07idWSQZHIdGFf+tTHvRfSIWLD8u8Tg==}
+    peerDependencies:
+      '@babel/core': '*'
     dependencies:
       '@babel/core': 7.18.10
       '@babel/plugin-proposal-async-generator-functions': 7.18.10_@babel+core@7.18.10
@@ -7435,14 +7439,16 @@ packages:
       - supports-color
     dev: true
 
-  /metro-react-native-babel-transformer/0.70.3:
+  /metro-react-native-babel-transformer/0.70.3_@babel+core@7.18.10:
     resolution: {integrity: sha512-WKBU6S/G50j9cfmFM4k4oRYprd8u3qjleD4so1E2zbTNILg+gYla7ZFGCAvi2G0ZcqS2XuGCR375c2hF6VVvwg==}
+    peerDependencies:
+      '@babel/core': '*'
     dependencies:
       '@babel/core': 7.18.10
       babel-preset-fbjs: 3.4.0_@babel+core@7.18.10
       hermes-parser: 0.6.0
       metro-babel-transformer: 0.70.3
-      metro-react-native-babel-preset: 0.70.3
+      metro-react-native-babel-preset: 0.70.3_@babel+core@7.18.10
       metro-source-map: 0.70.3
       nullthrows: 1.1.1
     transitivePeerDependencies:
@@ -7562,7 +7568,7 @@ packages:
       metro-hermes-compiler: 0.70.3
       metro-inspector-proxy: 0.70.3
       metro-minify-uglify: 0.70.3
-      metro-react-native-babel-preset: 0.70.3
+      metro-react-native-babel-preset: 0.70.3_@babel+core@7.18.10
       metro-resolver: 0.70.3
       metro-runtime: 0.70.3
       metro-source-map: 0.70.3
@@ -8424,11 +8430,11 @@ packages:
     peerDependencies:
       react-native: '*'
     dependencies:
-      react-native: 0.69.4_6iplzvqeiudpi4sy52vugn7nxq
+      react-native: 0.69.4_mu3jvlaeljwoblc7kfv3lw2koe
       whatwg-url-without-unicode: 8.0.0-3
     dev: true
 
-  /react-native/0.69.4_6iplzvqeiudpi4sy52vugn7nxq:
+  /react-native/0.69.4_mu3jvlaeljwoblc7kfv3lw2koe:
     resolution: {integrity: sha512-rqNMialM/T4pHRKWqTIpOxA65B/9kUjtnepxwJqvsdCeMP9Q2YdSx4VASFR9RoEFYcPRU41yGf6EKrChNfns3g==}
     engines: {node: '>=14'}
     hasBin: true
@@ -8436,7 +8442,7 @@ packages:
       react: 18.0.0
     dependencies:
       '@jest/create-cache-key-function': 27.5.1
-      '@react-native-community/cli': 8.0.6_react-native@0.69.4
+      '@react-native-community/cli': 8.0.6_mqmjqcyqm4trh6m6pjidkcb5na
       '@react-native-community/cli-platform-android': 8.0.5
       '@react-native-community/cli-platform-ios': 8.0.6
       '@react-native/assets': 1.0.0
@@ -8450,7 +8456,7 @@ packages:
       invariant: 2.2.4
       jsc-android: 250230.2.1
       memoize-one: 5.2.1
-      metro-react-native-babel-transformer: 0.70.3
+      metro-react-native-babel-transformer: 0.70.3_@babel+core@7.18.10
       metro-runtime: 0.70.3
       metro-source-map: 0.70.3
       mkdirp: 0.5.6
@@ -8470,6 +8476,7 @@ packages:
       whatwg-fetch: 3.6.2
       ws: 6.2.2
     transitivePeerDependencies:
+      - '@babel/core'
       - '@babel/preset-env'
       - bufferutil
       - encoding
