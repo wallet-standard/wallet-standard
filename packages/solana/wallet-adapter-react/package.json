@@ -1,6 +1,6 @@
 {
     "name": "@wallet-standard/solana-wallet-adapter-react",
-    "version": "0.1.0-alpha.1",
+    "version": "0.1.0-alpha.2",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
@@ -32,7 +32,6 @@
     },
     "dependencies": {
         "@solana/wallet-adapter-base": "^0.9.12",
-        "@solana/wallet-adapter-react": "^0.15.15",
         "@wallet-standard/app": "workspace:^",
         "@wallet-standard/solana-wallet-adapter": "workspace:^",
         "@wallet-standard/standard": "workspace:^"

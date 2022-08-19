@@ -1,9 +1,9 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { ConnectionProvider } from '@solana/wallet-adapter-react';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { GlowWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
-import { StandardWalletProvider as WalletProvider } from '@wallet-standard/solana-wallet-adapter-react';
+import { useStandardWalletAdapters } from '@wallet-standard/solana-wallet-adapter-react';
 import type { FC, ReactNode } from 'react';
 import React, { useMemo } from 'react';
 import { RequestAirdrop } from './RequestAirdrop';
@@ -27,9 +27,11 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
 
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new GlowWalletAdapter({ network })], [network]);
 
+    const adapters = useStandardWalletAdapters(wallets);
+
     return (
         <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
+            <WalletProvider wallets={adapters} autoConnect>
                 <WalletModalProvider>{children}</WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

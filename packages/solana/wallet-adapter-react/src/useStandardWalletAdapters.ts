@@ -1,16 +1,15 @@
-import type { WalletProviderProps } from '@solana/wallet-adapter-react';
-import { WalletProvider } from '@solana/wallet-adapter-react';
+import type { Adapter } from '@solana/wallet-adapter-base';
 import { initialize } from '@wallet-standard/app';
 import { isStandardWalletAdapterCompatibleWallet, StandardWalletAdapter } from '@wallet-standard/solana-wallet-adapter';
 import type { WalletAccount } from '@wallet-standard/standard';
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export const StandardWalletProvider: FC<WalletProviderProps> = ({ children, wallets, ...props }) => {
+export function useStandardWalletAdapters(wallets: Adapter[]): Adapter[] {
     // Start with the adapters provided by the app.
     const [adapters, setAdapters] = useState(wallets);
 
     useEffect(() => {
+        // Initialize the `window.navigator.wallets` interface.
         const wallets = initialize<WalletAccount>();
         // Get wallets that have been registered already that can be wrapped as adapters.
         const filtered = wallets.get().filter(isStandardWalletAdapterCompatibleWallet);
@@ -51,9 +50,5 @@ export const StandardWalletProvider: FC<WalletProviderProps> = ({ children, wall
         return () => destructors.forEach((destroy) => destroy());
     }, []);
 
-    return (
-        <WalletProvider wallets={adapters} {...props}>
-            {children}
-        </WalletProvider>
-    );
-};
+    return adapters;
+}

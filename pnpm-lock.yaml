@@ -245,7 +245,6 @@ importers:
   packages/solana/wallet-adapter-react:
     specifiers:
       '@solana/wallet-adapter-base': ^0.9.12
-      '@solana/wallet-adapter-react': ^0.15.15
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@types/react': ^18.0.0
@@ -258,7 +257,6 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@solana/wallet-adapter-base': 0.9.12_@solana+web3.js@1.53.0
-      '@solana/wallet-adapter-react': 0.15.15_rhn4fdsep7vhl3zkypaxxk4ks4
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/solana-wallet-adapter': link:../wallet-adapter
       '@wallet-standard/standard': link:../../core/standard
