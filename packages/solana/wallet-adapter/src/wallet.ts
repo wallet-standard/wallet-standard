@@ -1,4 +1,5 @@
-import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
+import type { Adapter } from '@solana/wallet-adapter-base';
+import { WalletReadyState } from '@solana/wallet-adapter-base';
 import { Transaction } from '@solana/web3.js';
 import { initialize } from '@wallet-standard/app';
 import type {
@@ -21,14 +22,13 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import { VERSION_1_0_0 } from '@wallet-standard/standard';
-import {
-    bytesEqual,
+import type {
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
 } from '@wallet-standard/util';
+import { bytesEqual } from '@wallet-standard/util';
 import { decode } from 'bs58';
 
 export type SolanaWalletAdapterChain =

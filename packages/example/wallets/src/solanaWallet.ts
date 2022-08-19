@@ -1,4 +1,5 @@
-import { Keypair, PublicKey, Signer, Transaction } from '@solana/web3.js';
+import type { Signer } from '@solana/web3.js';
+import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
 import type {
     DecryptFeature,
     DecryptMethod,
@@ -19,14 +20,8 @@ import type {
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import type { UnionToIntersection } from '@wallet-standard/types';
-import {
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_LOCALNET,
-    CHAIN_SOLANA_MAINNET,
-    CHAIN_SOLANA_TESTNET,
-    CIPHER_x25519_xsalsa20_poly1305,
-    pick,
-} from '@wallet-standard/util';
+import type { CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET, CHAIN_SOLANA_TESTNET } from '@wallet-standard/util';
+import { CHAIN_SOLANA_MAINNET, CIPHER_x25519_xsalsa20_poly1305, pick } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
 import { AbstractWallet } from './abstractWallet';

@@ -1,10 +1,10 @@
-import { UnionToIntersection } from '@wallet-standard/types';
-import { DecryptFeature } from './decrypt';
-import { EncryptFeature } from './encrypt';
-import { SignAndSendTransactionFeature } from './signAndSendTransaction';
-import { SignMessageFeature } from './signMessage';
-import { SignTransactionFeature } from './signTransaction';
-import { SolanaFeature } from './solana';
+import type { UnionToIntersection } from '@wallet-standard/types';
+import type { DecryptFeature } from './decrypt';
+import type { EncryptFeature } from './encrypt';
+import type { SignAndSendTransactionFeature } from './signAndSendTransaction';
+import type { SignMessageFeature } from './signMessage';
+import type { SignTransactionFeature } from './signTransaction';
+import type { SolanaFeature } from './solana';
 
 export * from './decrypt';
 export * from './encrypt';

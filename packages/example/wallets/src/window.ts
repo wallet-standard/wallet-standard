@@ -1,8 +1,11 @@
 import { initialize } from '@wallet-standard/app';
-import { WalletsWindow } from '@wallet-standard/standard';
-import { EthereumWallet, EthereumWalletAccount } from './ethereumWallet';
-import { MultiChainWallet, MultiChainWalletAccount } from './multiChainWallet';
-import { SolanaWallet, SolanaWalletAccount } from './solanaWallet';
+import type { WalletsWindow } from '@wallet-standard/standard';
+import type { EthereumWalletAccount } from './ethereumWallet';
+import { EthereumWallet } from './ethereumWallet';
+import type { MultiChainWalletAccount } from './multiChainWallet';
+import { MultiChainWallet } from './multiChainWallet';
+import type { SolanaWalletAccount } from './solanaWallet';
+import { SolanaWallet } from './solanaWallet';
 
 (function () {
     // The dapp hasn't loaded yet, so the first wallet to load gets or creates a queue, and registers itself on the window

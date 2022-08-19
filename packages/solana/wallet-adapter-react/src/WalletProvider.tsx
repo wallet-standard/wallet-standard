@@ -1,7 +1,8 @@
-import { WalletProvider as BaseWalletProvider, WalletProviderProps } from '@solana/wallet-adapter-react';
+import type { WalletProviderProps } from '@solana/wallet-adapter-react';
+import { WalletProvider as BaseWalletProvider } from '@solana/wallet-adapter-react';
 import { initialize } from '@wallet-standard/app';
 import { isStandardWalletAdapterCompatibleWallet, StandardWalletAdapter } from '@wallet-standard/solana-wallet-adapter';
-import { WalletAccount } from '@wallet-standard/standard';
+import type { WalletAccount } from '@wallet-standard/standard';
 import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 

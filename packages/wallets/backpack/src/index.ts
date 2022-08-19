@@ -1,4 +1,4 @@
-import { WalletsWindow } from '@wallet-standard/standard';
+import type { WalletsWindow } from '@wallet-standard/standard';
 import type { BackpackSolanaWalletAccount } from './wallet';
 import { BackpackSolanaWallet } from './wallet';
 

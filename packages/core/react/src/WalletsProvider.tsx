@@ -1,6 +1,7 @@
 import { initialize } from '@wallet-standard/app';
-import { WalletAccount } from '@wallet-standard/standard';
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import type { WalletAccount } from '@wallet-standard/standard';
+import type { FC, ReactNode } from 'react';
+import React, { useEffect, useState } from 'react';
 import { WalletsContext } from './useWallets';
 
 /** TODO: docs */

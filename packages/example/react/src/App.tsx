@@ -3,7 +3,8 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { useWallets, WalletProvider, WalletsProvider } from '@wallet-standard/react';
 import { registerWalletAdapter } from '@wallet-standard/solana-wallet-adapter';
 import { CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
-import React, { FC, ReactNode, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
+import React, { useEffect } from 'react';
 
 export const App: FC = () => {
     return (

@@ -1,5 +1,6 @@
-import { Wallet, WalletAccount } from '@wallet-standard/standard';
-import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import type { Wallet, WalletAccount } from '@wallet-standard/standard';
+import type { FC, ReactNode } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getWalletProperties, WalletContext } from './useWallet';
 
 /** TODO: docs */

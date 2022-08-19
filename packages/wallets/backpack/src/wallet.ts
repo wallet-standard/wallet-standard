@@ -20,17 +20,16 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import { VERSION_1_0_0 } from '@wallet-standard/standard';
+import type { SolanaChain } from '@wallet-standard/util';
 import {
     bytesEqual,
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
-    SolanaChain,
 } from '@wallet-standard/util';
 import { decode } from 'bs58';
-import { BackpackWindow } from './backpack';
+import type { BackpackWindow } from './backpack';
 import { icon } from './icon';
 
 declare const window: BackpackWindow;

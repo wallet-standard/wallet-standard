@@ -1,4 +1,4 @@
-import { Wallet, WalletAccount, WalletProperties } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletProperties } from '@wallet-standard/standard';
 import { createContext, useContext } from 'react';
 import { createDefaultContext, EMPTY_ARRAY, EMPTY_STRING } from './context';
 
