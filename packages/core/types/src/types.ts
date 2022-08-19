@@ -34,7 +34,11 @@ export type TuplePick<T extends any[], K extends PropertyKey> = {
 };
 
 /** TODO: docs */
-export type MapTuple<Input extends unknown[], Value, Output extends Value[] = []> = Input extends []
+export type MapTuple<
+    Input extends ReadonlyArray<unknown>,
+    Value,
+    Output extends ReadonlyArray<Value> = []
+> = Input extends []
     ? []
     : Input extends [unknown]
     ? [...Output, Value]
@@ -42,10 +46,13 @@ export type MapTuple<Input extends unknown[], Value, Output extends Value[] = []
     ? MapTuple<[...Tail], Value, [...Output, Value]>
     : Output extends []
     ? []
-    : Readonly<Output>;
+    : Output;
+
+// TODO: fix `return * as any` hacks with mapped outputs
+/** TODO: docs */
+export type AsyncMapFunction<Arg, Return> = <Args extends ReadonlyArray<Arg>>(
+    ...args: Args
+) => Promise<MapTuple<Args, Return>>;
 
 /** TODO: docs */
-export type AsyncMapFunction<Arg, Return> = <Args extends Arg[]>(...args: Args) => Promise<MapTuple<Args, Return>>;
-
-/** TODO: docs */
-export type MapFunction<Arg, Return> = <Args extends Arg[]>(...args: Args) => MapTuple<Args, Return>;
+export type MapFunction<Arg, Return> = <Args extends ReadonlyArray<Arg>>(...args: Args) => MapTuple<Args, Return>;
