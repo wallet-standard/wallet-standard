@@ -13,6 +13,9 @@ export type EncryptMethod = typeof encryptMethod;
 export type EncryptFeature = Readonly<{
     /** Namespace for the feature. */
     encrypt: {
+        /** Version of the feature API. */
+        version: '1.0.0';
+
         /** List of ciphers supported for encryption. */
         ciphers: ReadonlyArray<string>;
 

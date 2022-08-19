@@ -16,6 +16,9 @@ export type SignAndSendTransactionMethod = typeof signAndSendTransactionMethod;
 export type SignAndSendTransactionFeature = Readonly<{
     /** Namespace for the feature. */
     signAndSendTransaction: {
+        /** Version of the feature API. */
+        version: '1.0.0';
+
         /**
          * Sign transactions using the account's secret key and send them to the chain.
          *

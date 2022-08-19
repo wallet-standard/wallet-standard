@@ -13,6 +13,9 @@ export type SignMessageMethod = typeof signMessageMethod;
 export type SignMessageFeature = Readonly<{
     /** Namespace for the feature. */
     signMessage: {
+        /** Version of the feature API. */
+        version: '1.0.0';
+
         /** Sign messages (arbitrary bytes) using the account's secret key. */
         signMessage: SignMessageMethod;
     };

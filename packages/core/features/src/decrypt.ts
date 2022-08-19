@@ -13,6 +13,9 @@ export type DecryptMethod = typeof decryptMethod;
 export type DecryptFeature = Readonly<{
     /** Namespace for the feature. */
     decrypt: {
+        /** Version of the feature API. */
+        version: '1.0.0';
+
         /** List of ciphers supported for decryption. */
         ciphers: ReadonlyArray<string>;
 

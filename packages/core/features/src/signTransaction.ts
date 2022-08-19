@@ -13,6 +13,9 @@ export type SignTransactionMethod = typeof signTransactionMethod;
 export type SignTransactionFeature = Readonly<{
     /** Namespace for the feature. */
     signTransaction: {
+        /** Version of the feature API. */
+        version: '1.0.0';
+
         /** Sign transactions using the account's secret key. */
         signTransaction: SignTransactionMethod;
     };
