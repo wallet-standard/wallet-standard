@@ -1,3 +1,4 @@
+import { UnionToIntersection } from '@wallet-standard/types';
 import { DecryptFeature } from './decrypt';
 import { EncryptFeature } from './encrypt';
 import { SignAndSendTransactionFeature } from './signAndSendTransaction';
@@ -20,3 +21,5 @@ export type Feature =
     | EncryptFeature
     | DecryptFeature
     | SolanaFeature;
+
+export type FeatureName = keyof UnionToIntersection<Feature>;
