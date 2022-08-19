@@ -176,11 +176,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             if (this.#account && this.#publicKey) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const account = this.#wallet.accounts[0]!;
-                if (
-                    !account ||
-                    account !== this.#account ||
-                    !bytesEqual(account.publicKey, this.#publicKey.toBytes())
-                ) {
+                if (!account || !bytesEqual(account.publicKey, this.#publicKey.toBytes())) {
                     this.#disconnect();
                     this.emit('error', new WalletDisconnectedError());
                     this.emit('disconnect');
