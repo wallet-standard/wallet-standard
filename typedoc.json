@@ -1,0 +1,6 @@
+{
+    "entryPoints": ["packages/core/*", "packages/solana/*"],
+    "entryPointStrategy": "packages",
+    "out": "docs",
+    "readme": "README.md"
+}
