@@ -6,8 +6,7 @@
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
     "scripts": {
-        "clean": "shx mkdir -p dist .parcel-cache && shx rm -rf dist .parcel-cache",
-        "prebuild": "pnpm run clean",
+        "clean": "shx mkdir -p .parcel-cache dist lib && shx rm -rf .parcel-cache dist lib",
         "start": "parcel src/index.html",
         "build": "parcel build src/index.html"
     },

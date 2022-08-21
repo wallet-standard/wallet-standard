@@ -23,8 +23,7 @@
         "access": "public"
     },
     "scripts": {
-        "clean": "shx mkdir -p lib && shx rm -rf lib",
-        "prebuild": "pnpm run clean"
+        "clean": "shx mkdir -p lib && shx rm -rf lib"
     },
     "peerDependencies": {
         "@solana/web3.js": "^1.51.0",

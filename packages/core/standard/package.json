@@ -23,8 +23,7 @@
         "access": "public"
     },
     "scripts": {
-        "clean": "shx mkdir -p lib && shx rm -rf lib",
-        "prebuild": "pnpm run clean"
+        "clean": "shx mkdir -p lib && shx rm -rf lib"
     },
     "dependencies": {
         "@wallet-standard/types": "workspace:^"
