@@ -2,19 +2,19 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
-            "path": "../../core/app"
+            "path": "../standard/tsconfig.all.json"
         },
         {
-            "path": "../../core/standard"
-        },
-        {
-            "path": "../wallet-adapter"
+            "path": "../types/tsconfig.all.json"
         },
         {
             "path": "./tsconfig.cjs.json"
         },
         {
             "path": "./tsconfig.esm.json"
+        },
+        {
+            "path": "./tsconfig.tests.json"
         }
     ]
 }

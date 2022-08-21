@@ -1,0 +1,44 @@
+{
+    "extends": "./tsconfig.root.json",
+    "references": [
+        {
+            "path": "./packages/core/app/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/core/features/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/core/react/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/core/standard/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/core/types/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/core/util/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/example/react/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/example/solana-wallet-adapter/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/example/wallets/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/solana/wallet-adapter/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/solana/wallet-adapter-react/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/solana/web3.js/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/wallets/backpack/tsconfig.all.json"
+        }
+    ]
+}

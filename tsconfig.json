@@ -1,44 +1,9 @@
 {
-    "extends": "./tsconfig.root.json",
-    "references": [
-        {
-            "path": "./packages/core/app"
-        },
-        {
-            "path": "./packages/core/features"
-        },
-        {
-            "path": "./packages/core/react"
-        },
-        {
-            "path": "./packages/core/standard"
-        },
-        {
-            "path": "./packages/core/types"
-        },
-        {
-            "path": "./packages/core/util"
-        },
-        {
-            "path": "./packages/example/react"
-        },
-        {
-            "path": "./packages/example/solana-wallet-adapter"
-        },
-        {
-            "path": "./packages/example/wallets"
-        },
-        {
-            "path": "./packages/solana/wallet-adapter"
-        },
-        {
-            "path": "./packages/solana/wallet-adapter-react"
-        },
-        {
-            "path": "./packages/solana/web3.js"
-        },
-        {
-            "path": "./packages/wallets/backpack"
-        }
-    ]
+    "extends": "./tsconfig.all.json",
+    "include": ["./packages/*/*/src"],
+    "compilerOptions": {
+        "noEmit": true,
+        "skipLibCheck": true,
+        "jsx": "react"
+    }
 }

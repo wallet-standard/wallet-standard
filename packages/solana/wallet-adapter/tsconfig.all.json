@@ -2,19 +2,19 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
-            "path": "../../core/app"
+            "path": "../../core/app/tsconfig.all.json"
         },
         {
-            "path": "../../core/features"
+            "path": "../../core/features/tsconfig.all.json"
         },
         {
-            "path": "../../core/standard"
+            "path": "../../core/standard/tsconfig.all.json"
         },
         {
-            "path": "../../core/util"
+            "path": "../../core/util/tsconfig.all.json"
         },
         {
-            "path": "../web3.js"
+            "path": "../web3.js/tsconfig.all.json"
         },
         {
             "path": "./tsconfig.cjs.json"

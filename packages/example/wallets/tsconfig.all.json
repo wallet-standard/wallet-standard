@@ -1,0 +1,29 @@
+{
+    "extends": "../../../tsconfig.root.json",
+    "references": [
+        {
+            "path": "../../core/app/tsconfig.all.json"
+        },
+        {
+            "path": "../../core/features/tsconfig.all.json"
+        },
+        {
+            "path": "../../core/standard/tsconfig.all.json"
+        },
+        {
+            "path": "../../core/types/tsconfig.all.json"
+        },
+        {
+            "path": "../../core/util/tsconfig.all.json"
+        },
+        {
+            "path": "../../solana/web3.js/tsconfig.all.json"
+        },
+        {
+            "path": "./tsconfig.cjs.json"
+        },
+        {
+            "path": "./tsconfig.esm.json"
+        }
+    ]
+}
