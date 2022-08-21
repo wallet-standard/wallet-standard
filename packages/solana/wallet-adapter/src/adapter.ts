@@ -125,7 +125,6 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
 
             this.#off = this.#wallet.on('change', this.#change);
             this.#connect(account, publicKey);
-
             this.emit('connect', publicKey);
         } catch (error: any) {
             this.emit('error', error);
@@ -172,17 +171,35 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     }
 
     #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
-        if (properties.includes('accounts')) {
-            if (this.#account && this.#publicKey) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const account = this.#wallet.accounts[0]!;
-                if (!account || !bytesEqual(account.publicKey, this.#publicKey.toBytes())) {
-                    this.#disconnect();
-                    this.emit('error', new WalletDisconnectedError());
-                    this.emit('disconnect');
-                }
+        if (!this.#account || !this.#publicKey || properties.includes('accounts')) return;
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const account = this.#wallet.accounts[0]!;
+        if (!account) {
+            this.#disconnect();
+            this.emit('error', new WalletDisconnectedError());
+            this.emit('disconnect');
+            return;
+        }
+
+        if (account === this.#account) return;
+
+        let publicKey: PublicKey;
+        if (bytesEqual(account.publicKey, this.#publicKey.toBytes())) {
+            publicKey = this.#publicKey;
+        } else {
+            try {
+                publicKey = new PublicKey(account.publicKey);
+            } catch (error: any) {
+                this.#disconnect();
+                this.emit('error', new WalletDisconnectedError(error?.message));
+                this.emit('disconnect');
+                return;
             }
         }
+
+        this.#connect(account, publicKey);
+        this.emit('connect', publicKey);
     };
 
     async sendTransaction(
