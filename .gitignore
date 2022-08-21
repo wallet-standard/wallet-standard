@@ -8,8 +8,10 @@ package-lock.json
 yarn.lock
 
 .parcel-cache
-lib
+.next
 build
+lib
 dist
+docs
 out
 *.tsbuildinfo
