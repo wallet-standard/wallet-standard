@@ -171,10 +171,12 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     }
 
     #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
+        // If the adapter isn't connected or the change doesn't include accounts, do nothing.
         if (!this.#account || !this.#publicKey || properties.includes('accounts')) return;
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const account = this.#wallet.accounts[0]!;
+        // If there's no connected account, disconnect the adapter.
         if (!account) {
             this.#disconnect();
             this.emit('error', new WalletDisconnectedError());
@@ -182,22 +184,21 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             return;
         }
 
+        // If the account hasn't actually changed, do nothing.
         if (account === this.#account) return;
 
         let publicKey: PublicKey;
-        if (bytesEqual(account.publicKey, this.#publicKey.toBytes())) {
-            publicKey = this.#publicKey;
-        } else {
-            try {
-                publicKey = new PublicKey(account.publicKey);
-            } catch (error: any) {
-                this.#disconnect();
-                this.emit('error', new WalletDisconnectedError(error?.message));
-                this.emit('disconnect');
-                return;
-            }
+        // If the account public key isn't valid, disconnect the adapter.
+        try {
+            publicKey = new PublicKey(account.publicKey);
+        } catch (error: any) {
+            this.#disconnect();
+            this.emit('error', new WalletDisconnectedError(error?.message));
+            this.emit('disconnect');
+            return;
         }
 
+        // Change the adapter's account and public key and emit an event.
         this.#connect(account, publicKey);
         this.emit('connect', publicKey);
     };
