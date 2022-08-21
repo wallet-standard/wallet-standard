@@ -1,6 +1,7 @@
 import type { Commitment } from '@solana/web3.js';
+import type { SolanaSignAndSendTransactionCommitment } from '@wallet-standard/features';
 
-export function getCommitment(commitment?: Commitment): 'processed' | 'confirmed' | 'finalized' | undefined {
+export function getCommitment(commitment?: Commitment): SolanaSignAndSendTransactionCommitment | undefined {
     switch (commitment) {
         case 'processed':
         case 'confirmed':

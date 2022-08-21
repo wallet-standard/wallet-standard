@@ -40,13 +40,16 @@ export type SolanaSignAndSendTransactionInput = SignAndSendTransactionInput &
         options?: SolanaSignAndSendTransactionOptions;
     }>;
 
+/** Commitment level for preflight and confirmation of transactions. */
+export type SolanaSignAndSendTransactionCommitment = 'processed' | 'confirmed' | 'finalized';
+
 // TODO: figure out what options are actually needed
 /** Options for signing and sending transactions. */
 export type SolanaSignAndSendTransactionOptions = {
     /** Desired commitment level. If provided, confirm the transaction after sending. */
-    commitment?: 'processed' | 'confirmed' | 'finalized';
+    commitment?: SolanaSignAndSendTransactionCommitment;
     /** Preflight commitment level. */
-    preflightCommitment?: 'processed' | 'confirmed' | 'finalized';
+    preflightCommitment?: SolanaSignAndSendTransactionCommitment;
     /** Disable transaction verification at the RPC. */
     skipPreflight?: boolean;
     /** Maximum number of times for the RPC node to retry sending the transaction to the leader. */
