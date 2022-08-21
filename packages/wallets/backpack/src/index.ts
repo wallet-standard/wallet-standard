@@ -9,6 +9,7 @@ export function register(): void {
     window.navigator.wallets.push({
         method: 'register',
         wallets: [new BackpackSolanaWallet()],
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         callback() {},
     });
 }
