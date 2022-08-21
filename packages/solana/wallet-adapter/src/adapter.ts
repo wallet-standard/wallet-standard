@@ -19,7 +19,6 @@ import { PublicKey, Transaction } from '@solana/web3.js';
 import type { SignMessageFeature, SignTransactionFeature, SolanaFeature } from '@wallet-standard/features';
 import { getCommitment } from '@wallet-standard/solana-web3.js';
 import type { Wallet, WalletAccount, WalletPropertyNames } from '@wallet-standard/standard';
-import { bytesEqual } from '@wallet-standard/util';
 import { encode } from 'bs58';
 
 /** TODO: docs */
