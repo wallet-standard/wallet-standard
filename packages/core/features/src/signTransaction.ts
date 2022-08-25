@@ -23,9 +23,12 @@ export interface SignTransactionFeature {
 }
 
 /** Input for signing a transaction. */
-export interface SignTransactionInput {
+export interface SignTransactionInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<string, 'signTransaction', string>;
+    account: WalletAccount<Chain, 'signTransaction'>;
+
+    /** Chain to use. */
+    chain: Chain;
 
     /** Serialized transactions, as raw bytes. */
     transaction: Uint8Array;

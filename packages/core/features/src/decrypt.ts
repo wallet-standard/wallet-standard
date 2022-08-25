@@ -32,9 +32,12 @@ export interface DecryptFeature {
 }
 
 /** Input for decryption. */
-export interface DecryptInput {
+export interface DecryptInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<string, 'decrypt', string>;
+    account: WalletAccount<Chain, 'decrypt'>;
+
+    /** Chain to use. */
+    chain: Chain;
 
     /** Cipher to use for decryption. */
     cipher: string; // TODO: determine if this needs to be inferred from DecryptFeature

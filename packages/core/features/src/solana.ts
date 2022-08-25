@@ -35,12 +35,24 @@ export interface SolanaFeature {
 }
 
 /** Input for signing and sending transactions. */
-export interface SolanaSignAndSendTransactionInput extends Omit<SignAndSendTransactionInput, 'account'> {
+export interface SolanaSignAndSendTransactionInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<string, 'solana', string>;
+    account: WalletAccount<Chain, 'solana'>;
+
+    /** Chain to use. */
+    chain: Chain;
+
+    /** Serialized transaction, as raw bytes. */
+    transaction: Uint8Array;
 
     /** TODO: docs */
     options?: SolanaSignAndSendTransactionOptions;
+}
+
+/** Output of signing and sending transactions. */
+export interface SolanaSignAndSendTransactionOutput {
+    /** Transaction signature, as raw bytes. */
+    signature: Uint8Array;
 }
 
 /** Commitment level for preflight and confirmation of transactions. */
@@ -60,6 +72,3 @@ export interface SolanaSignAndSendTransactionOptions {
     /** The minimum slot that the request can be evaluated at. */
     minContextSlot?: number;
 }
-
-/** Output of signing and sending transactions. */
-export type SolanaSignAndSendTransactionOutput = SignAndSendTransactionOutput;

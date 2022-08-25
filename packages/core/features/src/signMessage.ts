@@ -23,9 +23,12 @@ export interface SignMessageFeature {
 }
 
 /** Input for signing a message. */
-export interface SignMessageInput {
+export interface SignMessageInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<string, 'signMessage', string>;
+    account: WalletAccount<Chain, 'signMessage'>;
+
+    /** Chain to use. */
+    chain: Chain;
 
     /** Message to sign, as raw bytes. */
     message: Uint8Array;

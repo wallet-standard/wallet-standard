@@ -32,9 +32,12 @@ export interface EncryptFeature {
 }
 
 /** Input for encryption. */
-export interface EncryptInput {
+export interface EncryptInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<string, 'encrypt', string>;
+    account: WalletAccount<Chain, 'encrypt'>;
+
+    /** Chain to use. */
+    chain: Chain;
 
     /** Cipher to use for encryption. */
     cipher: string; // TODO: determine if this needs to be inferred from EncryptFeature
