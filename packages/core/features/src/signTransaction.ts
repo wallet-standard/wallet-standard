@@ -1,3 +1,4 @@
+import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
 /**
@@ -10,7 +11,7 @@ export declare const signTransactionMethod: AsyncMapFunction<SignTransactionInpu
 export type SignTransactionMethod = typeof signTransactionMethod;
 
 /** TODO: docs */
-export type SignTransactionFeature = Readonly<{
+export interface SignTransactionFeature {
     /** Namespace for the feature. */
     signTransaction: {
         /** Version of the feature API. */
@@ -19,20 +20,23 @@ export type SignTransactionFeature = Readonly<{
         /** Sign transactions using the account's secret key. */
         signTransaction: SignTransactionMethod;
     };
-}>;
+}
 
 /** Input for signing a transaction. */
-export type SignTransactionInput = Readonly<{
+export interface SignTransactionInput {
+    /** Account to use. */
+    account: WalletAccount<string, 'signTransaction', string>;
+
     /** Serialized transactions, as raw bytes. */
     transaction: Uint8Array;
-}>;
+}
 
 /** Output of signing a transaction. */
-export type SignTransactionOutput = Readonly<{
+export interface SignTransactionOutput {
     /**
      * Signed, serialized transactions, as raw bytes.
      * Returning transactions rather than signatures allows multisig wallets, program wallets, and other wallets that
      * use meta-transactions to return a modified, signed transaction.
      */
     signedTransaction: Uint8Array;
-}>;
+}

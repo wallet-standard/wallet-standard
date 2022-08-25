@@ -1,3 +1,4 @@
+import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
 /**
@@ -10,14 +11,14 @@ export declare const decryptMethod: AsyncMapFunction<DecryptInput, DecryptOutput
 export type DecryptMethod = typeof decryptMethod;
 
 /** TODO: docs */
-export type DecryptFeature = Readonly<{
+export interface DecryptFeature {
     /** Namespace for the feature. */
     decrypt: {
         /** Version of the feature API. */
         version: '1.0.0';
 
         /** List of ciphers supported for decryption. */
-        ciphers: ReadonlyArray<string>;
+        ciphers: string[];
 
         /**
          * Decrypt ciphertexts using the account's secret key.
@@ -28,10 +29,13 @@ export type DecryptFeature = Readonly<{
          */
         decrypt: DecryptMethod;
     };
-}>;
+}
 
 /** Input for decryption. */
-export type DecryptInput = Readonly<{
+export interface DecryptInput {
+    /** Account to use. */
+    account: WalletAccount<string, 'decrypt', string>;
+
     /** Cipher to use for decryption. */
     cipher: string; // TODO: determine if this needs to be inferred from DecryptFeature
 
@@ -46,10 +50,10 @@ export type DecryptInput = Readonly<{
 
     /** Multiple of padding bytes to use for decryption, defaulting to 0. */
     padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
-}>;
+}
 
 /** Output of decryption. */
-export type DecryptOutput = Readonly<{
+export interface DecryptOutput {
     /** Cleartext that was decrypted. */
     cleartext: Uint8Array;
-}>;
+}

@@ -1,3 +1,4 @@
+import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from './signAndSendTransaction';
 
@@ -15,7 +16,7 @@ export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransac
 
 // TODO: consider namespacing/renaming to solanaSignAndSendTransaction
 /** TODO: docs */
-export type SolanaFeature = Readonly<{
+export interface SolanaFeature {
     /** Namespace for the feature. */
     solana: {
         // TODO: think about feature versions more
@@ -31,21 +32,23 @@ export type SolanaFeature = Readonly<{
          */
         signAndSendTransaction: SolanaSignAndSendTransactionMethod;
     };
-}>;
+}
 
 /** Input for signing and sending transactions. */
-export type SolanaSignAndSendTransactionInput = SignAndSendTransactionInput &
-    Readonly<{
-        /** TODO: docs */
-        options?: SolanaSignAndSendTransactionOptions;
-    }>;
+export interface SolanaSignAndSendTransactionInput extends Omit<SignAndSendTransactionInput, 'account'> {
+    /** Account to use. */
+    account: WalletAccount<string, 'solana', string>;
+
+    /** TODO: docs */
+    options?: SolanaSignAndSendTransactionOptions;
+}
 
 /** Commitment level for preflight and confirmation of transactions. */
 export type SolanaSignAndSendTransactionCommitment = 'processed' | 'confirmed' | 'finalized';
 
 // TODO: figure out what options are actually needed
 /** Options for signing and sending transactions. */
-export type SolanaSignAndSendTransactionOptions = {
+export interface SolanaSignAndSendTransactionOptions {
     /** Desired commitment level. If provided, confirm the transaction after sending. */
     commitment?: SolanaSignAndSendTransactionCommitment;
     /** Preflight commitment level. */
@@ -56,7 +59,7 @@ export type SolanaSignAndSendTransactionOptions = {
     maxRetries?: number;
     /** The minimum slot that the request can be evaluated at. */
     minContextSlot?: number;
-};
+}
 
 /** Output of signing and sending transactions. */
 export type SolanaSignAndSendTransactionOutput = SignAndSendTransactionOutput;

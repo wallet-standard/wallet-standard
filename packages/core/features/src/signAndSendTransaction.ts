@@ -1,3 +1,4 @@
+import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
 /**
@@ -13,7 +14,7 @@ export declare const signAndSendTransactionMethod: AsyncMapFunction<
 export type SignAndSendTransactionMethod = typeof signAndSendTransactionMethod;
 
 /** TODO: docs */
-export type SignAndSendTransactionFeature = Readonly<{
+export interface SignAndSendTransactionFeature {
     /** Namespace for the feature. */
     signAndSendTransaction: {
         /** Version of the feature API. */
@@ -28,16 +29,19 @@ export type SignAndSendTransactionFeature = Readonly<{
          */
         signAndSendTransaction: SignAndSendTransactionMethod;
     };
-}>;
+}
 
 /** Input for signing and sending transactions. */
-export type SignAndSendTransactionInput = Readonly<{
+export interface SignAndSendTransactionInput {
+    /** Account to use. */
+    account: WalletAccount<string, 'signAndSendTransaction', string>;
+
     /** Serialized transaction, as raw bytes. */
     transaction: Uint8Array;
-}>;
+}
 
 /** Output of signing and sending transactions. */
-export type SignAndSendTransactionOutput = Readonly<{
+export interface SignAndSendTransactionOutput {
     /** Transaction signature, as raw bytes. */
     signature: Uint8Array;
-}>;
+}
