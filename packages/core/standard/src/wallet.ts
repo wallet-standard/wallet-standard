@@ -15,6 +15,7 @@ export interface WalletAccount<
     /** Public key of the account, corresponding with the secret key to sign, encrypt, or decrypt using. */
     publicKey: Uint8Array;
 
+    // TODO: think about separating chain and network -- single chain per account, multiple networks
     /** Chain to sign, simulate, and send transactions using. */
     chains: Chain[];
 
