@@ -54,7 +54,7 @@ It should be impossible for conflicts between individual wallet browser extensio
 
 ### `window.navigator.wallets` is the namespace of the global interface
 
-`window.ethereum` has traditionally been used by injected wallets like Metamask. This convention causes multiple wallets to conflict for access to a global variable.
+`window.ethereum` has traditionally been used by injected wallets like MetaMask. This convention causes multiple wallets to conflict for access to a global variable.
 
 Browser extension wallets have adapted to this by using `Object.defineProperty(window, 'ethereum', { writable: false, ... })` to race to be the first to claim it.
 
