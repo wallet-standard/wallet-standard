@@ -1,7 +1,11 @@
 import type { PropertyNames, UnionToIntersection, StringKeyOf } from '@wallet-standard/types';
 
 /** An account in the wallet that the app has been authorized to use. */
-export interface WalletAccount<Chain extends string, FeatureName extends string, ExtensionName extends string> {
+export interface WalletAccount<
+    Chain extends string = string,
+    FeatureName extends string = string,
+    ExtensionName extends string = string
+> {
     /**
      * Address of the account, corresponding with the public key.
      * This may be the same as the public key on some chains (e.g. Solana), or different on others (e.g. Ethereum).
