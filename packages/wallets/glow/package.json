@@ -1,6 +1,6 @@
 {
-    "name": "@wallet-standard/wallets-backpack",
-    "version": "0.1.0-alpha.5",
+    "name": "@wallet-standard/wallets-glow",
+    "version": "0.1.0-alpha.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
@@ -26,19 +26,19 @@
         "clean": "shx mkdir -p lib && shx rm -rf lib"
     },
     "peerDependencies": {
-        "@solana/web3.js": "^1.51.0",
-        "bs58": "^4.0.1"
+        "@solana/web3.js": "^1.51.0"
     },
     "dependencies": {
+        "@glow-xyz/glow-client": "^1.1.2",
         "@wallet-standard/features": "workspace:^",
+        "@wallet-standard/solana-web3.js": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
-        "@wallet-standard/util": "workspace:^"
+        "@wallet-standard/util": "workspace:^",
+        "bs58": "5.0.0",
+        "buffer": "6.0.3"
     },
     "devDependencies": {
         "@solana/web3.js": "^1.51.0",
-        "@types/bs58": "^4.0.1",
-        "@types/node-fetch": "^2.6.2",
-        "bs58": "^4.0.1",
         "shx": "^0.3.4"
     }
 }
