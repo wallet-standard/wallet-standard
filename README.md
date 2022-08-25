@@ -22,6 +22,7 @@ This is a simple monorepo template with some specific design goals:
 * PNPM
 
 If you have Node 16+, you can [activate PNPM with Corepack](https://pnpm.io/installation#using-corepack):
+
 ```shell
 corepack enable
 corepack prepare pnpm@`npm info pnpm --json | jq -r .version` --activate
@@ -36,7 +37,7 @@ corepack prepare pnpm@7.8.0 --activate
 ## Setup
 
 ```shell
-git clone https://github.com/solana-labs/wallet-standard.git
+git clone https://github.com/wallet-standard/wallet-standard.git
 cd wallet-standard
 pnpm install
 ```
