@@ -89,13 +89,13 @@ export interface Wallet {
     chains: string[];
 
     /**
-     * Standard features supported by the account that are authorized to be used.
+     * Standard features supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
     features: Record<string, unknown>;
 
     /**
-     * Nonstandard extensions supported by the account that are authorized to be used.
+     * Nonstandard extensions supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
     extensions: Record<string, unknown>;
