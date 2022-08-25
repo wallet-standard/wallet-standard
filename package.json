@@ -15,7 +15,7 @@
         "build:ts": "tsc --build --verbose tsconfig.all.json",
         "build:other": "pnpm --recursive run build",
         "package": "pnpm --recursive run package",
-        "release": "pnpm run clean && pnpm run build && pnpm run package",
+        "release": "pnpm run clean && pnpm run build:ts && pnpm run package && pnpm run build:other",
         "watch": "pnpm run watch:ts",
         "watch:ts": "tsc --build --verbose --watch tsconfig.all.json",
         "fmt": "prettier --write '{*,**/*}.{ts,tsx,js,jsx,json}'",
