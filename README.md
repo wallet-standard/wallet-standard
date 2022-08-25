@@ -67,7 +67,8 @@ Other packages can build and run with their own tools (like CRA's react-scripts 
 Run this in a separate terminal from the `watch` command.
 
 ```shell
-(cd packages/example/react && pnpm start)
+cd packages/example/react
+pnpm start
 ```
 
 A basic example app will now be running with Hot Module Reloading of the entire workspace.
