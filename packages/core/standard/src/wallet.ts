@@ -11,9 +11,11 @@ export type WalletAccount = Readonly<{
     /** Public key of the account, corresponding with the secret key to sign, encrypt, or decrypt using. */
     publicKey: Uint8Array;
 
+    // TODO: is an account having a single chain a good model?
     /** Chain to sign, simulate, and send transactions using. */
     chain: string;
 
+    //  TODO: what about declaring features/extensions on Wallet and passing accounts to it?
     /** Standard features supported by the account that are authorized to be used. */
     features: Readonly<Record<string, unknown>>;
 

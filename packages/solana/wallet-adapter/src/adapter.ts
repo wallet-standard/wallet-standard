@@ -36,6 +36,7 @@ export function isStandardWalletAdapterCompatibleWallet(
 /** TODO: docs */
 export interface StandardWalletAdapterConfig {
     wallet: Wallet<StandardWalletAdapterAccount>;
+    // TODO: add chain to this config? can filter accounts by it on `connect`
 }
 
 /** TODO: docs */
@@ -114,6 +115,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             if (!this.#wallet.accounts.length) throw new WalletAccountError();
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const account = this.#wallet.accounts[0]!;
+
+            // TODO: account selection?
 
             let publicKey: PublicKey;
             try {

@@ -37,6 +37,7 @@ export type Wallets<Account extends WalletAccount> = Readonly<{
     ): () => void;
 }>;
 
+// TODO: `register` is the only command wallets need
 /** Global `window.navigator.wallets` command array item. */
 export type WalletsCommand<Account extends WalletAccount> =
     | WalletsCommandRegister<Account>
@@ -51,6 +52,7 @@ export type WalletsCommandRegister<Account extends WalletAccount> = Readonly<{
     /** Wallets to register. */
     wallets: ReadonlyArray<Wallet<Account>>;
 
+    // TODO: consider making this optional
     /** Function that will be called with a function to unregister the wallets. */
     callback: (unregister: () => void) => void;
 }>;
