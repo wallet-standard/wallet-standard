@@ -36,7 +36,7 @@ corepack prepare pnpm@7.8.0 --activate
 ## Setup
 
 ```shell
-git clone https://github.com/solana-labs/wallet-standard.git
+git clone https://github.com/wallet-standard/wallet-standard.git
 cd wallet-standard
 pnpm install
 ```
