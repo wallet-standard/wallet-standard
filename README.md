@@ -22,6 +22,7 @@ This is a simple monorepo template with some specific design goals:
 * PNPM
 
 If you have Node 16+, you can [activate PNPM with Corepack](https://pnpm.io/installation#using-corepack):
+
 ```shell
 corepack enable
 corepack prepare pnpm@`npm info pnpm --json | jq -r .version` --activate
