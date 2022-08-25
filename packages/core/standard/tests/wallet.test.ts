@@ -1,4 +1,4 @@
-import type { Wallet, WalletAccount } from '../src';
+import type { Wallet, WalletAccount } from '..';
 
 // Standard feature for an account to implement
 type SignTransactionFeature = {

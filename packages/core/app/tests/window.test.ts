@@ -1,5 +1,5 @@
 import type { Wallet, WalletAccount, WalletEvents, WalletsWindow } from '@wallet-standard/standard';
-import { initialize } from '../src';
+import { initialize } from '..';
 
 interface SolanaWalletAccount extends WalletAccount {
     chain: 'solana:mainnet';
