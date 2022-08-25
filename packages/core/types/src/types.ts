@@ -56,3 +56,8 @@ export type AsyncMapFunction<Arg, Return> = <Args extends ReadonlyArray<Arg>>(
 
 /** TODO: docs */
 export type MapFunction<Arg, Return> = <Args extends ReadonlyArray<Arg>>(...args: Args) => MapTuple<Args, Return>;
+
+/** TODO: docs */
+export type StringKeyOf<T, K extends keyof UnionToIntersection<T> = keyof UnionToIntersection<T>> = K extends string
+    ? K
+    : never;
