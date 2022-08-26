@@ -1,0 +1,20 @@
+{
+    "private": true,
+    "name": "@wallet-standard/example-extension",
+    "version": "0.1.0",
+    "author": "Exodus Maintainers <maintainers@exodus.io>",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
+    "license": "Apache-2.0",
+    "scripts": {
+        "clean": "shx mkdir -p .parcel-cache dist lib && shx rm -rf .parcel-cache dist lib",
+        "start": "parcel src/manifest.json --host localhost",
+        "build": "parcel build src/manifest.json"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "@parcel/config-webextension": "^2.7.0",
+        "@types/chrome": "^0.0.195",
+        "parcel": "^2.3.2",
+        "shx": "^0.3.4"
+    }
+}

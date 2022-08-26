@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "MultiChain Wallet",
+    "description": "A multi-chain wallet",
+    "version": "0.0.0",
+    "background": {
+        "service_worker": "background/index.ts",
+        "type": "module"
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://*/*"],
+            "js": ["content/index.ts"]
+        }
+    ]
+}
