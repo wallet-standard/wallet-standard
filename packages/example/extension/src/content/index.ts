@@ -1,3 +1,4 @@
-console.log('content loaded!')
+import { inject } from './utils';
 
-export {}
+const windowScript = new URL('./window.ts', import.meta.url);
+inject(windowScript.href);

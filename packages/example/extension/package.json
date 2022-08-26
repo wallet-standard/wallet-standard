@@ -10,7 +10,11 @@
         "start": "parcel src/manifest.json --host localhost",
         "build": "parcel build src/manifest.json"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@wallet-standard/features": "workspace:^",
+        "@wallet-standard/standard": "workspace:^",
+        "@wallet-standard/util": "workspace:^"
+    },
     "devDependencies": {
         "@parcel/config-webextension": "^2.7.0",
         "@types/chrome": "^0.0.195",
