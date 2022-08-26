@@ -18,13 +18,13 @@ export interface WalletAccount<
     // TODO: think about separating chain and network -- single chain per account, multiple networks
     // TODO: this won't work on wallets though, which has an array of chains
     /** Chain to sign, simulate, and send transactions using. */
-    chains: Record<Chain, true>;
+    chains: { [K in Chain]: true };
 
     /** List of standard features supported by the account. */
-    features: Record<FeatureName, true>;
+    features: { [K in FeatureName]: true };
 
     /** List of nonstandard extensions supported by the account. */
-    extensions: Record<ExtensionName, true>;
+    extensions: { [K in ExtensionName]: true };
 
     /** Optional user-friendly descriptive label or name for the account, to be displayed by apps. */
     label?: string;
@@ -210,7 +210,7 @@ export type ConnectedAccount<
     Input extends ConnectInput<Chain, FeatureName, ExtensionName>,
     Account extends WalletAccount<string, string, string>
 > = Omit<Account, 'chains' | 'features' | 'extensions'> & {
-    chains: Input extends { chains: Chain[] } ? Record<Chain, true> : Account['chains'];
-    features: Input extends { features: FeatureName[] } ? Record<FeatureName, true> : Account['features'];
-    extensions: Input extends { extensions: ExtensionName[] } ? Record<ExtensionName, true> : Account['extensions'];
+    chains: Input extends { chains: Chain[] } ? { [K in Chain]: true } : Account['chains'];
+    features: Input extends { features: FeatureName[] } ? { [K in FeatureName]: true } : Account['features'];
+    extensions: Input extends { extensions: ExtensionName[] } ? { [K in ExtensionName]: true } : Account['extensions'];
 };
