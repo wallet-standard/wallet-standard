@@ -1,2 +1,2 @@
-export * from './JSONRPC';
-export * from './WSJSONRPC';
+export * from './JSONRPC.js';
+export * from './WSJSONRPC.js';

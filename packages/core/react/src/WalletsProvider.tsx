@@ -2,7 +2,7 @@ import { initialize } from '@wallet-standard/app';
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect, useState } from 'react';
-import { WalletsContext } from './useWallets';
+import { WalletsContext } from './useWallets.js';
 
 /** TODO: docs */
 export interface WalletsProviderProps {

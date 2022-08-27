@@ -29,8 +29,8 @@ import {
     CHAIN_SOLANA_TESTNET,
 } from '@wallet-standard/util';
 import { decode } from 'bs58';
-import type { BackpackWindow } from './backpack';
-import { icon } from './icon';
+import type { BackpackWindow } from './backpack.js';
+import { icon } from './icon.js';
 
 declare const window: BackpackWindow;
 

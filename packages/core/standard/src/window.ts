@@ -1,4 +1,4 @@
-import type { Wallet, WalletAccount } from './wallet';
+import type { Wallet, WalletAccount } from './wallet.js';
 
 /** Global `window` containing a `navigator.wallets` object. */
 export type WalletsWindow<Account extends WalletAccount> = Window & { navigator: WalletsNavigator<Account> };

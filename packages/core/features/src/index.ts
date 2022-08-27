@@ -1,17 +1,17 @@
 import type { UnionToIntersection } from '@wallet-standard/types';
-import type { DecryptFeature } from './decrypt';
-import type { EncryptFeature } from './encrypt';
-import type { SignAndSendTransactionFeature } from './signAndSendTransaction';
-import type { SignMessageFeature } from './signMessage';
-import type { SignTransactionFeature } from './signTransaction';
-import type { SolanaFeature } from './solana';
+import type { DecryptFeature } from './decrypt.js';
+import type { EncryptFeature } from './encrypt.js';
+import type { SignAndSendTransactionFeature } from './signAndSendTransaction.js';
+import type { SignMessageFeature } from './signMessage.js';
+import type { SignTransactionFeature } from './signTransaction.js';
+import type { SolanaFeature } from './solana.js';
 
-export * from './decrypt';
-export * from './encrypt';
-export * from './signAndSendTransaction';
-export * from './signMessage';
-export * from './signTransaction';
-export * from './solana';
+export * from './decrypt.js';
+export * from './encrypt.js';
+export * from './signAndSendTransaction.js';
+export * from './signMessage.js';
+export * from './signTransaction.js';
+export * from './solana.js';
 
 /** TODO: docs */
 export type Feature =

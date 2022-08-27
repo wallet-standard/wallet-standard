@@ -1,6 +1,6 @@
 import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import { createContext, useContext } from 'react';
-import { createDefaultContext, EMPTY_ARRAY } from './context';
+import { createDefaultContext, EMPTY_ARRAY } from './context.js';
 
 /** TODO: docs */
 export interface WalletsContextState<Account extends WalletAccount> {

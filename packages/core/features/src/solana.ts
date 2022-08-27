@@ -1,5 +1,5 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from './signAndSendTransaction';
+import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from './signAndSendTransaction.js';
 
 /**
  * TODO: docs

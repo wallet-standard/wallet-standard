@@ -1,2 +1,2 @@
-export * from './adapter';
-export * from './wallet';
+export * from './adapter.js';
+export * from './wallet.js';
