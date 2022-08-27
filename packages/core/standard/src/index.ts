@@ -1,3 +1,3 @@
-export * from './errors';
-export * from './wallet';
-export * from './window';
+export * from './errors.js';
+export * from './wallet.js';
+export * from './window.js';

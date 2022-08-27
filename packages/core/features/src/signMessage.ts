@@ -1,5 +1,6 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
+import type { WalletAccountWithChainAndFeatures } from './types.js';
 
 /**
  * TODO: docs
@@ -25,7 +26,7 @@ export interface SignMessageFeature {
 /** Input for signing a message. */
 export interface SignMessageInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<Chain, 'signMessage'>;
+    account: WalletAccountWithChainAndFeatures<Chain, { signMessage: true }>;
 
     /** Chain to use. */
     chain: Chain;

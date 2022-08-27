@@ -24,7 +24,7 @@ import type { CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET, CHAIN_SOLANA_TESTNET }
 import { CHAIN_SOLANA_MAINNET, CIPHER_x25519_xsalsa20_poly1305, pick } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
-import { AbstractWallet } from './abstractWallet';
+import { AbstractWallet } from './abstractWallet.js';
 
 export class SolanaWallet extends AbstractWallet<SolanaWalletAccount> implements Wallet<SolanaWalletAccount> {
     #name = 'Solana Wallet';

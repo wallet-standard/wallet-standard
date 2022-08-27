@@ -1,6 +1,5 @@
-import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from './signAndSendTransaction';
+import type { WalletAccountWithChainAndFeatures } from './types.js';
 
 /**
  * TODO: docs
@@ -37,7 +36,7 @@ export interface SolanaFeature {
 /** Input for signing and sending transactions. */
 export interface SolanaSignAndSendTransactionInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<Chain, 'solana'>;
+    account: WalletAccountWithChainAndFeatures<Chain, { solana: true }>;
 
     /** Chain to use. */
     chain: Chain;

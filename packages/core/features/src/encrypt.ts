@@ -1,5 +1,6 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
+import type { WalletAccountWithChainAndFeatures } from './types.js';
 
 /**
  * TODO: docs
@@ -34,7 +35,7 @@ export interface EncryptFeature {
 /** Input for encryption. */
 export interface EncryptInput<Chain extends string = string> {
     /** Account to use. */
-    account: WalletAccount<Chain, 'encrypt'>;
+    account: WalletAccountWithChainAndFeatures<Chain, { encrypt: true }>;
 
     /** Chain to use. */
     chain: Chain;

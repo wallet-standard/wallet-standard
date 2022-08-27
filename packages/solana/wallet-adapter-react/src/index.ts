@@ -1,1 +1,1 @@
-export * from './useStandardWalletAdapters';
+export * from './useStandardWalletAdapters.js';

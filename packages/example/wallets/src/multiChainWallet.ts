@@ -1,10 +1,10 @@
 import type { Wallet } from '@wallet-standard/standard';
 import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
-import { AbstractWallet } from './abstractWallet';
-import type { EthereumWalletAccount } from './ethereumWallet';
-import { SignerEthereumWalletAccount } from './ethereumWallet';
-import type { SolanaWalletAccount } from './solanaWallet';
-import { LedgerSolanaWalletAccount, SignerSolanaWalletAccount } from './solanaWallet';
+import { AbstractWallet } from './abstractWallet.js';
+import type { EthereumWalletAccount } from './ethereumWallet.js';
+import { SignerEthereumWalletAccount } from './ethereumWallet.js';
+import type { SolanaWalletAccount } from './solanaWallet.js';
+import { LedgerSolanaWalletAccount, SignerSolanaWalletAccount } from './solanaWallet.js';
 
 export type MultiChainWalletAccount = SolanaWalletAccount | EthereumWalletAccount;
 

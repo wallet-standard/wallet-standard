@@ -20,7 +20,7 @@ import type { UnionToIntersection } from '@wallet-standard/types';
 import { CHAIN_ETHEREUM, CIPHER_x25519_xsalsa20_poly1305, pick } from '@wallet-standard/util';
 import ethers from 'ethers';
 import { box, randomBytes } from 'tweetnacl';
-import { AbstractWallet } from './abstractWallet';
+import { AbstractWallet } from './abstractWallet.js';
 
 export class EthereumWallet extends AbstractWallet<EthereumWalletAccount> implements Wallet<EthereumWalletAccount> {
     #name = 'Ethereum Wallet';

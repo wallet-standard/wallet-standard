@@ -1,6 +1,6 @@
 import type { WalletsWindow } from '@wallet-standard/standard';
-import type { BackpackSolanaWalletAccount } from './wallet';
-import { BackpackSolanaWallet } from './wallet';
+import type { BackpackSolanaWalletAccount } from './wallet.js';
+import { BackpackSolanaWallet } from './wallet.js';
 
 declare const window: WalletsWindow<BackpackSolanaWalletAccount>;
 

@@ -6,9 +6,9 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { useStandardWalletAdapters } from '@wallet-standard/solana-wallet-adapter-react';
 import type { FC, ReactNode } from 'react';
 import React, { useMemo } from 'react';
-import { RequestAirdrop } from './RequestAirdrop';
-import { SendTransaction } from './SendTransaction';
-import { SignMessage } from './SignMessage';
+import { RequestAirdrop } from './RequestAirdrop.js';
+import { SendTransaction } from './SendTransaction.js';
+import { SignMessage } from './SignMessage.js';
 
 export const App: FC = () => {
     return (
