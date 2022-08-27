@@ -17,7 +17,6 @@
     },
     "devDependencies": {
         "@parcel/config-webextension": "^2.7.0",
-        "@types/chrome": "^0.0.195",
         "parcel": "^2.3.2",
         "shx": "^0.3.4"
     }
