@@ -11,6 +11,13 @@ import type {
 } from '@wallet-standard/standard';
 import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 
+import type { Channel } from '../messages';
+import { deserializeMessage } from '../messages';
+
+declare const window: {
+    _channel: Channel;
+};
+
 export type EthereumChain = typeof CHAIN_ETHEREUM;
 
 export type EthereumWalletAccountFeature = SignTransactionFeature;
@@ -146,14 +153,37 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
         return this.#hasMoreAccounts;
     }
 
+    #request(method: string, params?: any[]) {
+        return window._channel.sendMessage(method, params);
+    }
+
     async connect<
         Chain extends MultiChainWalletAccount['chain'],
         FeatureName extends WalletAccountFeatureName<MultiChainWalletAccount>,
         ExtensionName extends WalletAccountExtensionName<MultiChainWalletAccount>,
         Input extends ConnectInput<MultiChainWalletAccount, Chain, FeatureName, ExtensionName>
     >(input?: Input): Promise<ConnectOutput<MultiChainWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
-        // TODO
-        this.#accounts = [];
+        const accounts = await this.#request('connect');
+
+        if (accounts === null) {
+            // TODO: Use custom errors.
+            throw new Error('The user rejected the request.');
+        }
+
+        this.#accounts = accounts.map((account: { chain: string; publicKey: string }) => {
+            const { chain, publicKey: wirePublicKey } = account;
+
+            const publicKey = deserializeMessage(wirePublicKey);
+
+            switch (chain) {
+                case 'ethereum':
+                    return new EthereumWalletAccount(publicKey);
+                case 'solana':
+                    return new SolanaWalletAccount(publicKey);
+                default:
+                    throw new Error(`Unknown chain: '${chain}'`);
+            }
+        });
 
         return {
             accounts: this.accounts as any,
