@@ -1,3 +1,8 @@
-console.log('background loaded!');
+import { generateMnemonic } from './wallet';
 
-export {};
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+        const mnemonic = generateMnemonic();
+        chrome.storage.local.set({ mnemonic });
+    }
+});

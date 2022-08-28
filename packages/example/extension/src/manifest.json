@@ -12,5 +12,6 @@
             "matches": ["*://*/*"],
             "js": ["content/index.ts"]
         }
-    ]
+    ],
+    "permissions": ["storage"]
 }

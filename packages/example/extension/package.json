@@ -11,9 +11,17 @@
         "build": "parcel build src/manifest.json"
     },
     "dependencies": {
+        "@solana/web3.js": "^1.51.0",
         "@wallet-standard/features": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
-        "@wallet-standard/util": "workspace:^"
+        "@wallet-standard/util": "workspace:^",
+        "bip39": "^3.0.4",
+        "buffer": "^6.0.3",
+        "ed25519-hd-key": "^1.3.0",
+        "ethers": "^5.6.9",
+        "events": "^3.3.0",
+        "process": "^0.11.10",
+        "stream-browserify": "^3.0.0"
     },
     "devDependencies": {
         "@parcel/config-default": "2.7.0",
