@@ -10,6 +10,7 @@ import type {
     WalletEvents,
 } from '@wallet-standard/standard';
 import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
+import * as ethers from 'ethers';
 
 import type { Channel } from '../messages';
 
@@ -25,7 +26,7 @@ export class EthereumWalletAccount implements WalletAccount {
     readonly #publicKey: Uint8Array;
 
     get address() {
-        return this.publicKey;
+        return ethers.utils.arrayify(ethers.utils.computeAddress(this.publicKey));
     }
 
     get publicKey() {
