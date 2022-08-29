@@ -6,7 +6,7 @@ import * as ethers from 'ethers';
 export type Mnemonic = string;
 
 export interface Account {
-    address: Uint8Array;
+    address: string;
     publicKey: Uint8Array;
     privateKey: Uint8Array;
 }
@@ -18,7 +18,7 @@ export function generateMnemonic(): Mnemonic {
 export function deriveEthereumAccount(mnemonic: Mnemonic): Account {
     const { address, publicKey, privateKey } = ethers.Wallet.fromMnemonic(mnemonic);
     return {
-        address: ethers.utils.arrayify(address),
+        address,
         publicKey: ethers.utils.arrayify(publicKey),
         privateKey: ethers.utils.arrayify(privateKey),
     };
@@ -28,10 +28,9 @@ export function deriveSolanaAccount(mnemonic: Mnemonic): Account {
     const seed = bip39.mnemonicToSeedSync(mnemonic, '');
     const path = "m/44'/501'/0'/0'";
     const { publicKey, secretKey } = Keypair.fromSeed(derivePath(path, seed.toString('hex')).key);
-    const rawPublicKey = new Uint8Array(publicKey.toBytes());
     return {
-        address: rawPublicKey,
-        publicKey: rawPublicKey,
+        address: publicKey.toBase58(),
+        publicKey: new Uint8Array(publicKey.toBytes()),
         privateKey: secretKey,
     };
 }
