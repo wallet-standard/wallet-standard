@@ -1,4 +1,4 @@
-import { CONTENT_PORT_NAME, createChannel, createPortTransport } from '../messages';
+import { CONTENT_PORT_NAME, createPortTransport, createRPC } from '../messages';
 import { deriveEthereumAccount, deriveSolanaAccount, generateMnemonic } from './wallet';
 
 chrome.runtime.onInstalled.addListener((details) => {
@@ -11,24 +11,22 @@ chrome.runtime.onInstalled.addListener((details) => {
 chrome.runtime.onConnect.addListener((port) => {
     if (port.name === CONTENT_PORT_NAME) {
         const transport = createPortTransport(port);
+        const rpc = createRPC(transport);
 
-        const channel = createChannel(transport);
-
-        const unsubscribe = channel.onMessage('connect', async (_params, sendResponse) => {
+        rpc.exposeMethod('connect', async () => {
             const { mnemonic } = await chrome.storage.local.get('mnemonic');
             const ethereumAccount = deriveEthereumAccount(mnemonic);
             const solanaAccount = deriveSolanaAccount(mnemonic);
 
             // TODO: Open popup and allow user to select accounts.
-            const response = [
+            return [
                 { chain: 'ethereum', publicKey: ethereumAccount.publicKey },
                 { chain: 'solana', publicKey: solanaAccount.publicKey },
             ];
-            sendResponse(response);
         });
 
         port.onDisconnect.addListener(() => {
-            unsubscribe();
+            rpc.end();
         });
     }
 });

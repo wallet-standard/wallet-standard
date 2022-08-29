@@ -12,10 +12,10 @@ import type {
 import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import * as ethers from 'ethers';
 
-import type { Channel } from '../messages';
+import type { RPC } from '../messages';
 
 declare const window: {
-    _channel: Channel;
+    _rpc: RPC;
 };
 
 export type EthereumChain = typeof CHAIN_ETHEREUM;
@@ -154,7 +154,7 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
     }
 
     #request(method: string, params?: any[]) {
-        return window._channel.sendMessage(method, params);
+        return window._rpc.callMethod(method, params);
     }
 
     async connect<
