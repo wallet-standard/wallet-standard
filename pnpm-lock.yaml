@@ -12,6 +12,7 @@ importers:
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-react: ^7.30.1
       eslint-plugin-react-hooks: ^4.6.0
+      eslint-plugin-require-extensions: ^0.1.1
       gh-pages: ^4.0.0
       pnpm: ^7.9.3
       prettier: ^2.7.1
@@ -27,6 +28,7 @@ importers:
       eslint-plugin-prettier: 4.2.1_i2cojdczqdiurzgttlwdgf764e
       eslint-plugin-react: 7.30.1_eslint@8.22.0
       eslint-plugin-react-hooks: 4.6.0_eslint@8.22.0
+      eslint-plugin-require-extensions: 0.1.1_eslint@8.22.0
       gh-pages: 4.0.0
       pnpm: 7.9.3
       prettier: 2.7.1
@@ -5808,6 +5810,15 @@ packages:
       resolve: 2.0.0-next.4
       semver: 6.3.0
       string.prototype.matchall: 4.0.7
+    dev: true
+
+  /eslint-plugin-require-extensions/0.1.1_eslint@8.22.0:
+    resolution: {integrity: sha512-qSF0vPCxFck0ady5QmPc57ehGbJkqNBXFaBOrGD6XoLFckLdxxraNVj9P4JOxa9AefIhsLJVe3YMGBhrg4bG0A==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      eslint: '*'
+    dependencies:
+      eslint: 8.22.0
     dev: true
 
   /eslint-scope/5.1.1:
