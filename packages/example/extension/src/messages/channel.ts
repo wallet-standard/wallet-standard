@@ -1,33 +1,31 @@
+import jayson from 'jayson';
+
+import { parse, stringify } from './serialization';
 import type { Transport } from './transport';
+
+type ResponseCallback = (result: any) => void;
+
+type Callback = (params: any[], sendResponse: ResponseCallback) => void;
+
+type UnsubscribeFn = () => void;
 
 export interface Channel {
     sendMessage: (method: string, params?: any[]) => Promise<any>;
-    onMessage: (method: string, listener: (params: any[], sendResponse: (result: any) => void) => void) => () => void;
+    onMessage: (method: string, listener: Callback) => UnsubscribeFn;
 }
 
-function isRequest(data: any) {
-    return typeof data.method !== 'undefined';
-}
-
-export function createChannel(transport: Transport) {
-    let id = 0;
-
+export function createChannel(transport: Transport): Channel {
     function sendMessage(method: string, params: any[] = []) {
         return new Promise((resolve) => {
-            const request = {
-                id: id++,
-                method,
-                params,
-            };
+            const request = jayson.Utils.request(method, params);
 
             const handleResponse = (dataOrEvent: any) => {
-                const data = dataOrEvent instanceof MessageEvent ? dataOrEvent.data : dataOrEvent;
+                const wireResponse = dataOrEvent instanceof MessageEvent ? dataOrEvent.data : dataOrEvent;
+                const response = parse(wireResponse);
 
-                if (isRequest(data)) {
+                if (!jayson.Utils.Response.isValidResponse(response)) {
                     return;
                 }
-
-                const response = data;
 
                 if (response.id !== request.id) {
                     return;
@@ -39,30 +37,28 @@ export function createChannel(transport: Transport) {
             };
             transport.addListener(handleResponse);
 
-            transport.write(request);
+            const wireRequest = stringify(request);
+            transport.write(wireRequest);
         });
     }
 
-    function onMessage(method: string, listener: (params: any[], sendResponse: (result: any) => void) => void) {
+    function onMessage(method: string, listener: Callback) {
         const handleRequest = (dataOrEvent: any) => {
-            const data = dataOrEvent instanceof MessageEvent ? dataOrEvent.data : dataOrEvent;
+            const wireRequest = dataOrEvent instanceof MessageEvent ? dataOrEvent.data : dataOrEvent;
+            const request = parse(wireRequest);
 
-            if (!isRequest(data)) {
+            if (!jayson.Utils.Request.isValidRequest(request)) {
                 return;
             }
-
-            const request = data;
 
             if (request.method !== method) {
                 return;
             }
 
             listener(request.params, (result) => {
-                const response = {
-                    id: request.id,
-                    result,
-                };
-                transport.write(response);
+                const response = jayson.Utils.response(null, result, request.id);
+                const wireResponse = stringify(response);
+                transport.write(wireResponse);
             });
         };
 

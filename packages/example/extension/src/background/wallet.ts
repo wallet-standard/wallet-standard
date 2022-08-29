@@ -27,10 +27,11 @@ export function deriveEthereumAccount(mnemonic: Mnemonic): Account {
 export function deriveSolanaAccount(mnemonic: Mnemonic): Account {
     const seed = bip39.mnemonicToSeedSync(mnemonic, '');
     const path = "m/44'/501'/0'/0'";
-    const keypair = Keypair.fromSeed(derivePath(path, seed.toString('hex')).key);
+    const { publicKey, secretKey } = Keypair.fromSeed(derivePath(path, seed.toString('hex')).key);
+    const rawPublicKey = new Uint8Array(publicKey.toBytes());
     return {
-        address: keypair.publicKey.toBytes(),
-        publicKey: keypair.publicKey.toBytes(),
-        privateKey: keypair.secretKey,
+        address: rawPublicKey,
+        publicKey: rawPublicKey,
+        privateKey: secretKey,
     };
 }

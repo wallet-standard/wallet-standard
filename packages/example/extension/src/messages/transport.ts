@@ -1,6 +1,8 @@
+type Callback = (...args: any[]) => void;
+
 export interface Transport {
-    addListener: (listener: (...args: any[]) => void) => void;
-    removeListener: (listener: (...args: any[]) => void) => void;
+    addListener: (listener: Callback) => void;
+    removeListener: (listener: Callback) => void;
     write: (data: any) => void;
 }
 

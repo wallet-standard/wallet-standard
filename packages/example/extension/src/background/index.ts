@@ -1,4 +1,4 @@
-import { CONTENT_PORT_NAME, createChannel, createPortTransport, serializeMessage } from '../messages';
+import { CONTENT_PORT_NAME, createChannel, createPortTransport } from '../messages';
 import { deriveEthereumAccount, deriveSolanaAccount, generateMnemonic } from './wallet';
 
 chrome.runtime.onInstalled.addListener((details) => {
@@ -21,8 +21,8 @@ chrome.runtime.onConnect.addListener((port) => {
 
             // TODO: Open popup and allow user to select accounts.
             const response = [
-                { chain: 'ethereum', publicKey: serializeMessage(ethereumAccount.publicKey) },
-                { chain: 'solana', publicKey: serializeMessage(solanaAccount.publicKey) },
+                { chain: 'ethereum', publicKey: ethereumAccount.publicKey },
+                { chain: 'solana', publicKey: solanaAccount.publicKey },
             ];
             sendResponse(response);
         });

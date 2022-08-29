@@ -12,7 +12,6 @@ import type {
 import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 
 import type { Channel } from '../messages';
-import { deserializeMessage } from '../messages';
 
 declare const window: {
     _channel: Channel;
@@ -170,11 +169,8 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
             throw new Error('The user rejected the request.');
         }
 
-        this.#accounts = accounts.map((account: { chain: string; publicKey: string }) => {
-            const { chain, publicKey: wirePublicKey } = account;
-
-            const publicKey = deserializeMessage(wirePublicKey);
-
+        this.#accounts = accounts.map((account: { chain: string; publicKey: Uint8Array }) => {
+            const { chain, publicKey } = account;
             switch (chain) {
                 case 'ethereum':
                     return new EthereumWalletAccount(publicKey);
