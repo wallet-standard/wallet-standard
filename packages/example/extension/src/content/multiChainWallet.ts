@@ -14,10 +14,6 @@ import * as ethers from 'ethers';
 
 import type { RPC } from '../messages';
 
-declare const window: {
-    _rpc: RPC;
-};
-
 export type EthereumChain = typeof CHAIN_ETHEREUM;
 
 export type EthereumWalletAccountFeature = SignTransactionFeature;
@@ -121,6 +117,8 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
         [E in WalletEventNames<MultiChainWalletAccount>]?: WalletEvents<MultiChainWalletAccount>[E][];
     } = {};
 
+    #rpc: RPC;
+
     get version() {
         return '1.0.0' as const;
     }
@@ -153,8 +151,8 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
         return this.#hasMoreAccounts;
     }
 
-    #request(method: string, params?: any[]) {
-        return window._rpc.callMethod(method, params);
+    constructor(rpc: RPC) {
+        this.#rpc = rpc;
     }
 
     async connect<
@@ -163,7 +161,7 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
         ExtensionName extends WalletAccountExtensionName<MultiChainWalletAccount>,
         Input extends ConnectInput<MultiChainWalletAccount, Chain, FeatureName, ExtensionName>
     >(input?: Input): Promise<ConnectOutput<MultiChainWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
-        const accounts = await this.#request('connect');
+        const accounts = await this.#rpc.callMethod('connect');
 
         if (accounts === null) {
             // TODO: Use custom errors.
