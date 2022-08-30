@@ -3,6 +3,9 @@
     "name": "MultiChain Wallet",
     "description": "A multi-chain wallet",
     "version": "0.0.0",
+    "action": {
+        "default_popup": "ui/popup.html"
+    },
     "background": {
         "service_worker": "background/index.ts",
         "type": "module"

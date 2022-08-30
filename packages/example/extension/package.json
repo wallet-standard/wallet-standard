@@ -24,6 +24,8 @@
         "jayson": "^4.0.0",
         "process": "^0.11.10",
         "querystring-es3": "^0.2.1",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
         "stream-browserify": "^3.0.0",
         "stream-http": "^3.2.0",
         "url": "^0.11.0"
@@ -33,6 +35,8 @@
         "@parcel/runtime-webextension": "2.7.0",
         "@parcel/transformer-raw": "2.7.0",
         "@parcel/transformer-webextension": "2.7.0",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
         "@wallet-standard/parcel-packager-webextension": "workspace:^",
         "parcel": "^2.3.2",
         "shx": "^0.3.4"
