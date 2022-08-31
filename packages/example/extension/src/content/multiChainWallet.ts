@@ -164,19 +164,18 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
         const accounts = await this.#rpc.callMethod('connect');
 
         if (accounts === null) {
-            // TODO: Use custom errors.
             throw new Error('The user rejected the request.');
         }
 
-        this.#accounts = accounts.map((account: { chain: string; publicKey: Uint8Array }) => {
-            const { chain, publicKey } = account;
-            switch (chain) {
+        this.#accounts = accounts.map((account: { network: string; publicKey: Uint8Array }) => {
+            const { network, publicKey } = account;
+            switch (network) {
                 case 'ethereum':
                     return new EthereumWalletAccount(publicKey);
                 case 'solana':
                     return new SolanaWalletAccount(publicKey);
                 default:
-                    throw new Error(`Unknown chain: '${chain}'`);
+                    throw new Error(`Unknown network: '${network}'`);
             }
         });
 

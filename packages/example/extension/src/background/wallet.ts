@@ -1,36 +1,61 @@
-import { Keypair } from '@solana/web3.js';
+import { Keypair as SolKeypair } from '@solana/web3.js';
 import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
-import * as ethers from 'ethers';
+import { Wallet as EthWallet, utils as ethUtils } from 'ethers';
+
+// SLIP-44.
+// See: https://github.com/satoshilabs/slips/blob/master/slip-0044.md#registered-coin-types.
+const BIP44_COIN_TYPE_ETH = 60;
+const BIP44_COIN_TYPE_SOL = 501;
 
 export type Mnemonic = string;
 
-export interface Account {
-    address: string;
+export interface Keypair {
     publicKey: Uint8Array;
     privateKey: Uint8Array;
 }
 
+export type Network = 'ethereum' | 'solana';
+
+export interface Account {
+    network: Network;
+    publicKey: Uint8Array;
+}
+
+/**
+ * Generates a BIP-39 mnemonic.
+ */
 export function generateMnemonic(): Mnemonic {
     return bip39.generateMnemonic();
 }
 
-export function deriveEthereumAccount(mnemonic: Mnemonic): Account {
-    const { address, publicKey, privateKey } = ethers.Wallet.fromMnemonic(mnemonic);
+function deriveEthereumKeypair(mnemonic: Mnemonic, index = 0): Keypair {
+    const path = `m/44'/${BIP44_COIN_TYPE_ETH}'/0'/${index}'`;
+    const { publicKey, privateKey } = EthWallet.fromMnemonic(mnemonic, path);
     return {
-        address,
-        publicKey: ethers.utils.arrayify(publicKey),
-        privateKey: ethers.utils.arrayify(privateKey),
+        publicKey: ethUtils.arrayify(publicKey),
+        privateKey: ethUtils.arrayify(privateKey),
     };
 }
 
-export function deriveSolanaAccount(mnemonic: Mnemonic): Account {
+function deriveSolanaKeypair(mnemonic: Mnemonic, index = 0): Keypair {
     const seed = bip39.mnemonicToSeedSync(mnemonic, '');
-    const path = "m/44'/501'/0'/0'";
-    const { publicKey, secretKey } = Keypair.fromSeed(derivePath(path, seed.toString('hex')).key);
+    const path = `m/44'/${BIP44_COIN_TYPE_SOL}'/0'/${index}'`;
+    const { publicKey, secretKey } = SolKeypair.fromSeed(derivePath(path, seed.toString('hex')).key);
     return {
-        address: publicKey.toBase58(),
         publicKey: new Uint8Array(publicKey.toBytes()),
         privateKey: secretKey,
     };
+}
+
+/**
+ * Returns the list of accounts in the wallet.
+ */
+export function getAccounts(mnemonic: Mnemonic): Account[] {
+    const ethereumKeypair = deriveEthereumKeypair(mnemonic);
+    const solanaKeypair = deriveSolanaKeypair(mnemonic);
+    return [
+        { network: 'ethereum', publicKey: ethereumKeypair.publicKey },
+        { network: 'solana', publicKey: solanaKeypair.publicKey },
+    ];
 }
