@@ -1,4 +1,4 @@
-import { CONTENT_PORT_NAME, createPortTransport, createRPC } from '../messages';
+import { CONTENT_PORT_NAME, POPUP_PORT_NAME, createPortTransport, createRPC } from '../messages';
 import { getMnemonic, setMnemonic } from './storage';
 import { generateMnemonic, getAccounts } from './wallet';
 
@@ -10,6 +10,20 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === POPUP_PORT_NAME) {
+        const transport = createPortTransport(port);
+        const rpc = createRPC(transport);
+
+        rpc.exposeMethod('getAccounts', async () => {
+            const mnemonic = await getMnemonic();
+            return getAccounts(mnemonic);
+        });
+
+        port.onDisconnect.addListener(() => {
+            rpc.end();
+        });
+    }
+
     if (port.name === CONTENT_PORT_NAME) {
         const transport = createPortTransport(port);
         const rpc = createRPC(transport);

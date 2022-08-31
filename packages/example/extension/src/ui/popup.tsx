@@ -3,11 +3,14 @@ import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 
 import { App } from './App';
+import { AppContext } from './context';
 
 const Root: FC = () => {
     return (
         <StrictMode>
-            <App />
+            <AppContext>
+                <App />
+            </AppContext>
         </StrictMode>
     );
 };
