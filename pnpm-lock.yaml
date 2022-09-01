@@ -114,6 +114,25 @@ importers:
     devDependencies:
       shx: 0.3.4
 
+  packages/example/dapp:
+    specifiers:
+      '@types/react': ^18.0.0
+      '@types/react-dom': ^18.0.0
+      parcel: ^2.3.2
+      process: ^0.11.10
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      shx: ^0.3.4
+    dependencies:
+      process: 0.11.10
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    devDependencies:
+      '@types/react': 18.0.17
+      '@types/react-dom': 18.0.6
+      parcel: 2.7.0
+      shx: 0.3.4
+
   packages/example/extension:
     specifiers:
       '@parcel/config-default': 2.7.0
