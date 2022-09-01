@@ -5,10 +5,11 @@
     "author": "Exodus Maintainers <maintainers@exodus.io>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
+    "source": "src/manifest.json",
     "scripts": {
         "clean": "shx mkdir -p .parcel-cache dist lib && shx rm -rf .parcel-cache dist lib",
-        "start": "parcel src/manifest.json --host localhost",
-        "build": "parcel build src/manifest.json"
+        "start": "parcel --host localhost --port 3000",
+        "build": "parcel build"
     },
     "dependencies": {
         "@solana/web3.js": "^1.51.0",
