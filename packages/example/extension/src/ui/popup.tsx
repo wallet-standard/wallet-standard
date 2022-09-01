@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import React, { StrictMode } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { AppContext } from './context';
 import { ApproveConnection } from './pages/ApproveConnection';
@@ -21,4 +21,6 @@ const Root: FC = () => {
 };
 
 const rootNode = document.getElementById('root');
-ReactDOM.render(<Root />, rootNode);
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(rootNode!);
+root.render(<Root />);
