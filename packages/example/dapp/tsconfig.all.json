@@ -2,6 +2,9 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
+            "path": "../../core/standard/tsconfig.all.json"
+        },
+        {
             "path": "./tsconfig.base.json"
         }
     ]

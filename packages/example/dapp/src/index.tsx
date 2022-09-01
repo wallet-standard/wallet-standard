@@ -3,7 +3,10 @@ import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { AppContext } from './context';
+import { initialize } from './initialize';
 import { Home } from './pages/Home';
+
+initialize();
 
 const Root: FC = () => {
     return (
