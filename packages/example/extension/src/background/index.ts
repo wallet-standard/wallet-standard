@@ -1,6 +1,13 @@
+import type { RPC } from '../messages';
+import { asyncState } from '../utils/asyncState';
+import { openPopup } from '../utils/popup';
 import { CONTENT_PORT_NAME, POPUP_PORT_NAME, createPortTransport, createRPC } from '../messages';
 import { getMnemonic, setMnemonic } from './storage';
 import { generateMnemonic, getAccounts } from './wallet';
+
+// This allows the background process to communicate with the popup in response
+// to content script requests.
+const asyncPopupRPC = asyncState<RPC>();
 
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
@@ -20,8 +27,11 @@ chrome.runtime.onConnect.addListener((port) => {
         });
 
         port.onDisconnect.addListener(() => {
+            asyncPopupRPC.reset();
             rpc.end();
         });
+
+        asyncPopupRPC.set(rpc);
     }
 
     if (port.name === CONTENT_PORT_NAME) {
@@ -29,9 +39,16 @@ chrome.runtime.onConnect.addListener((port) => {
         const rpc = createRPC(transport);
 
         rpc.exposeMethod('connect', async () => {
-            // TODO: Open popup and allow user to select accounts.
-            const mnemonic = await getMnemonic();
-            return getAccounts(mnemonic);
+            const { closePopup, popupClosed } = await openPopup();
+
+            const popupRPC = await asyncPopupRPC.get();
+            const connectResult = popupRPC.callMethod('connect');
+
+            const response = await Promise.race([connectResult, popupClosed]);
+
+            closePopup();
+
+            return response;
         });
 
         port.onDisconnect.addListener(() => {
