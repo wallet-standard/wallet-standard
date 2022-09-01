@@ -1,25 +1,18 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { WalletAccountWithChainAndFeatures } from './types.js';
-
-/**
- * TODO: docs
- * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
- */
-export declare const decryptMethod: AsyncMapFunction<DecryptInput, DecryptOutput>;
 
 /** TODO: docs */
-export type DecryptMethod = typeof decryptMethod;
+export type DecryptMethod<A extends WalletAccount> = AsyncMapFunction<DecryptInput<A>, DecryptOutput<A>>;
 
 /** TODO: docs */
-export interface DecryptFeature {
+export type DecryptFeature<A extends WalletAccount> = {
     /** Namespace for the feature. */
     decrypt: {
         /** Version of the feature API. */
         version: '1.0.0';
 
         /** List of ciphers supported for decryption. */
-        ciphers: string[];
+        ciphers: ReadonlyArray<string>;
 
         /**
          * Decrypt ciphertexts using the account's secret key.
@@ -28,20 +21,14 @@ export interface DecryptFeature {
          *
          * @return Outputs of decryption.
          */
-        decrypt: DecryptMethod;
+        decrypt: DecryptMethod<A>;
     };
-}
+};
 
 /** Input for decryption. */
-export interface DecryptInput<Chain extends string = string> {
-    /** Account to use. */
-    account: WalletAccountWithChainAndFeatures<Chain, { decrypt: true }>;
-
-    /** Chain to use. */
-    chain: Chain;
-
+export type DecryptInput<A extends WalletAccount> = {
     /** Cipher to use for decryption. */
-    cipher: string; // TODO: determine if this needs to be inferred from DecryptFeature
+    cipher: string;
 
     /** Public key to derive a shared key to decrypt the data using. */
     publicKey: Uint8Array;
@@ -54,10 +41,10 @@ export interface DecryptInput<Chain extends string = string> {
 
     /** Multiple of padding bytes to use for decryption, defaulting to 0. */
     padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
-}
+};
 
 /** Output of decryption. */
-export interface DecryptOutput {
+export type DecryptOutput<A extends WalletAccount> = {
     /** Cleartext that was decrypted. */
     cleartext: Uint8Array;
-}
+};

@@ -14,7 +14,7 @@ export interface WalletsNavigator<W extends Wallet = Wallet> extends Navigator {
 export type NavigatorWallets<W extends Wallet = Wallet> = Wallets<W> | WalletsCommand<W>[];
 
 /** Global `window.navigator.wallets` object API. */
-export interface Wallets<W extends Wallet = Wallet> {
+export type Wallets<W extends Wallet = Wallet> = {
     /**
      * TODO: docs
      *
@@ -36,7 +36,7 @@ export interface Wallets<W extends Wallet = Wallet> {
      * TODO: docs
      */
     on<E extends WalletsEventNames<W> = WalletsEventNames<W>>(event: E, listener: WalletsEvents<W>[E]): () => void;
-}
+};
 
 // TODO: `register` is the only command wallets need
 /** Global `window.navigator.wallets` command array item. */
@@ -46,7 +46,7 @@ export type WalletsCommand<W extends Wallet = Wallet> =
     | WalletsCommandOn<W>;
 
 /** Register wallets. This emits a `register` event. */
-export interface WalletsCommandRegister<W extends Wallet = Wallet> {
+export type WalletsCommandRegister<W extends Wallet = Wallet> = {
     /** TODO: docs */
     method: 'register';
 
@@ -56,19 +56,19 @@ export interface WalletsCommandRegister<W extends Wallet = Wallet> {
     // TODO: consider making this optional
     /** Function that will be called with a function to unregister the wallets. */
     callback: (unregister: () => void) => void;
-}
+};
 
 /** Get the wallets that have been registered. */
-export interface WalletsCommandGet<W extends Wallet = Wallet> {
+export type WalletsCommandGet<W extends Wallet = Wallet> = {
     /** TODO: docs */
     method: 'get';
 
     /** Function that will be called with all wallets that have been registered. */
     callback: (wallets: W[]) => void;
-}
+};
 
 /** Add an event listener to subscribe to events. */
-export interface WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEventNames<W> = WalletsEventNames<W>> {
+export type WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEventNames<W> = WalletsEventNames<W>> = {
     /** TODO: docs */
     method: 'on';
 
@@ -80,10 +80,10 @@ export interface WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEv
 
     /** Function that will be called with a function to remove the event listener and unsubscribe. */
     callback: (off: () => void) => void;
-}
+};
 
 /** Events emitted by the global `wallets` object. */
-export interface WalletsEvents<W extends Wallet = Wallet> {
+export type WalletsEvents<W extends Wallet = Wallet> = {
     /**
      * Emitted when wallets are registered.
      *
@@ -97,7 +97,7 @@ export interface WalletsEvents<W extends Wallet = Wallet> {
      * @param wallets Wallets that were unregistered.
      */
     unregister(wallets: W[]): void;
-}
+};
 
 /** TODO: docs */
 export type WalletsEventNames<W extends Wallet = Wallet> = keyof WalletsEvents<W>;

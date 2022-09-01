@@ -1,46 +1,39 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { WalletAccountWithChainAndFeatures } from './types.js';
-
-/**
- * TODO: docs
- * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
- */
-export declare const signTransactionMethod: AsyncMapFunction<SignTransactionInput, SignTransactionOutput>;
 
 /** TODO: docs */
-export type SignTransactionMethod = typeof signTransactionMethod;
+export type SignTransactionMethod<A extends WalletAccount> = AsyncMapFunction<
+    SignTransactionInput<A>,
+    SignTransactionOutput<A>
+>;
 
 /** TODO: docs */
-export interface SignTransactionFeature {
+export type SignTransactionFeature<A extends WalletAccount> = {
     /** Namespace for the feature. */
     signTransaction: {
         /** Version of the feature API. */
         version: '1.0.0';
 
         /** Sign transactions using the account's secret key. */
-        signTransaction: SignTransactionMethod;
+        signTransaction: SignTransactionMethod<A>;
     };
-}
+};
 
 /** Input for signing a transaction. */
-export interface SignTransactionInput<Chain extends string = string> {
-    /** Account to use. */
-    account: WalletAccountWithChainAndFeatures<Chain, { signTransaction: true }>;
-
+export type SignTransactionInput<A extends WalletAccount> = {
     /** Chain to use. */
-    chain: Chain;
+    chain: A['chains'][number];
 
     /** Serialized transactions, as raw bytes. */
     transaction: Uint8Array;
-}
+};
 
 /** Output of signing a transaction. */
-export interface SignTransactionOutput {
+export type SignTransactionOutput<A extends WalletAccount> = {
     /**
      * Signed, serialized transactions, as raw bytes.
      * Returning transactions rather than signatures allows multisig wallets, program wallets, and other wallets that
      * use meta-transactions to return a modified, signed transaction.
      */
     signedTransaction: Uint8Array;
-}
+};

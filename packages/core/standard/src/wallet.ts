@@ -1,15 +1,11 @@
 import type { PropertyNames, UnionToIntersection } from '@wallet-standard/types';
 
-export interface WalletInterface {
-    name: string;
-}
-
 /** TODO: docs */
 export interface Wallet {
     /**
-     * Version of the Wallet Standard API.
+     * Version of the Wallet API.
      * If this changes, the wallet must emit a change event.
-     * */
+     */
     version: '1.0.0';
 
     /**
@@ -26,40 +22,8 @@ export interface Wallet {
      */
     icon: string;
 
-    /**
-     * Chains supported by the wallet.
-     * If this changes, the wallet must emit a change event.
-     */
-    chains: { [name: string]: unknown };
-
-    /**
-     * Standard features supported by the wallet.
-     * If this changes, the wallet must emit a change event.
-     */
-    features: { [name: string]: unknown };
-
-    /**
-     * Nonstandard extensions supported by the wallet.
-     * If this changes, the wallet must emit a change event.
-     */
-    extensions: { [name: string]: unknown };
-
-    /**
-     * List of accounts the app is authorized to use.
-     * This can be set by the wallet so the app can use authorized accounts on the initial page load.
-     * If this changes, the wallet must emit a change event.
-     */
-    accounts: WalletAccount<this>[];
-
-    // TODO: think about extracting to features
-    /**
-     * Connect to accounts in the wallet.
-     *
-     * @param input Input for connecting.
-     *
-     * @return Output of connecting.
-     */
-    connect(input?: ConnectInput<this>): Promise<ConnectOutput<this>>;
+    /** TODO: docs */
+    interfaces: Record<string, WalletInterface>;
 
     /**
      * Add an event listener to subscribe to events.
@@ -72,27 +36,96 @@ export interface Wallet {
     on<E extends WalletEventNames<this>>(event: E, listener: WalletEvents<this>[E]): () => void;
 }
 
-/** An account in the wallet that the app has been authorized to use. */
-export interface WalletAccount<W extends Wallet = Wallet> {
+// TODO: test if this can be extended with custom events
+/** Events emitted by wallets. */
+export type WalletEvents<W extends Wallet> = {
     /**
-     * Address of the account, corresponding with the public key.
-     * This may be the same as the public key on some chains (e.g. Solana), or different on others (e.g. Ethereum).
+     * Emitted when properties of the wallet have changed.
+     *
+     * @param properties Names of the properties that changed.
      */
-    address: Uint8Array;
+    change(properties: PropertyNames<W>[]): void;
+};
+
+/** TODO: docs */
+export type WalletEventNames<W extends Wallet> = keyof WalletEvents<W>;
+
+/** TODO: docs */
+export interface WalletInterface {
+    /**
+     * Chains supported by the interface.
+     * If this changes, the interface must emit a change event.
+     */
+    chains: ReadonlyArray<string>;
+
+    // FIXME: no way to detect all available account features here
+    /**
+     * Standard features supported by the interface.
+     * If this changes, the interface must emit a change event.
+     */
+    features: Record<string, unknown>;
+
+    // FIXME: no way to detect all available account extensions here
+    /**
+     * Nonstandard extensions supported by the interface.
+     * If this changes, the interface must emit a change event.
+     */
+    extensions: Record<string, unknown>;
+
+    /**
+     * List of accounts the app is authorized to use.
+     * This can be set by the wallet so the app can use authorized accounts on the initial page load.
+     * If this changes, the interface must emit a change event.
+     */
+    accounts: WalletAccount[];
+
+    /** TODO: docs */
+    accountFeatures: ReadonlyArray<keyof UnionToIntersection<this['accounts'][number]['features']>>;
+
+    /** TODO: docs */
+    accountExtensions: ReadonlyArray<keyof UnionToIntersection<this['accounts'][number]['extensions']>>;
+
+    /**
+     * Add an event listener to subscribe to events.
+     *
+     * @param event    Event name to listen for.
+     * @param listener Function that will be called when the event is emitted.
+     *
+     * @return Function to remove the event listener and unsubscribe.
+     */
+    on<E extends WalletInterfaceEventNames<this>>(event: E, listener: WalletInterfaceEvents<this>[E]): () => void;
+}
+
+// TODO: test if this can be extended with custom events
+/** Events emitted by wallets. */
+export type WalletInterfaceEvents<I extends WalletInterface> = {
+    /**
+     * Emitted when properties of the wallet have changed.
+     *
+     * @param properties Names of the properties that changed.
+     */
+    change(properties: PropertyNames<I>[]): void;
+};
+
+/** TODO: docs */
+export type WalletInterfaceEventNames<I extends WalletInterface> = keyof WalletInterfaceEvents<I>;
+
+/** An account in the wallet that the app has been authorized to use. */
+export interface WalletAccount {
+    /** Address of the account, corresponding with the public key. */
+    address: string;
 
     /** Public key of the account, corresponding with the secret key to sign, encrypt, or decrypt using. */
     publicKey: Uint8Array;
 
-    // TODO: think about separating chain and network -- single chain per account, multiple networks
-    // TODO: this won't work on wallets though, which has an array of chains
-    /** Chain to sign, simulate, and send transactions using. */
-    chains: { [name in keyof W['chains']]?: boolean };
+    /** Chains supported by the account. */
+    chains: ReadonlyArray<string>;
 
-    /** List of standard features supported by the account. */
-    features: { [name in keyof W['features']]?: boolean };
+    /** Standard features supported by the account. */
+    features: Record<string, unknown>;
 
-    /** List of nonstandard extensions supported by the account. */
-    extensions: { [name in keyof W['extensions']]?: boolean };
+    /** Nonstandard extensions supported by the account. */
+    extensions: Record<string, unknown>;
 
     /** Optional user-friendly descriptive label or name for the account, to be displayed by apps. */
     label?: string;
@@ -102,66 +135,28 @@ export interface WalletAccount<W extends Wallet = Wallet> {
      * Must be a data URL containing a base64-encoded SVG or PNG image. // TODO: is base64 actually needed? should other types be allowed?
      */
     icon?: string;
-}
 
-/** Input for connecting. */
-export interface ConnectInput<W extends Wallet = Wallet> {
     /**
-     * Set to true to request the authorized accounts without prompting the user.
-     * The wallet should return only the accounts that the app is already authorized to connect to.
+     * Add an event listener to subscribe to events.
+     *
+     * @param event    Event name to listen for.
+     * @param listener Function that will be called when the event is emitted.
+     *
+     * @return Function to remove the event listener and unsubscribe.
      */
-    silent?: boolean;
-
-    /** Chain to sign, simulate, and send transactions using. */
-    chains?: { [name in keyof W['chains']]?: boolean };
-
-    /** List of standard features supported by the account. */
-    features?: { [name in keyof W['features']]?: boolean };
-
-    /** List of nonstandard extensions supported by the account. */
-    extensions?: { [name in keyof W['extensions']]?: boolean };
-}
-
-/** Output of connecting. */
-export interface ConnectOutput<W extends Wallet = Wallet> {
-    /** List of accounts in the wallet that the app has been authorized to use. */
-    accounts: W['accounts'];
+    on<E extends WalletAccountEventNames<this>>(event: E, listener: WalletAccountEvents<this>[E]): () => void;
 }
 
 // TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
-export interface WalletEvents<W extends Wallet = Wallet> {
+export type WalletAccountEvents<A extends WalletAccount> = {
     /**
      * Emitted when properties of the wallet have changed.
      *
      * @param properties Names of the properties that changed.
      */
-    change(properties: WalletPropertyNames<W>[]): void;
-}
+    change(properties: PropertyNames<A>[]): void;
+};
 
 /** TODO: docs */
-export type WalletEventNames<W extends Wallet = Wallet> = keyof WalletEvents<W>;
-
-/** TODO: docs */
-export type WalletPropertyNames<W extends Wallet = Wallet> = PropertyNames<W>;
-
-/** TODO: docs */
-export type WalletProperties<W extends Wallet = Wallet> = Pick<W, WalletPropertyNames<W>>;
-
-/** TODO: docs */
-export type WalletChains<W extends Wallet = Wallet> = UnionToIntersection<W['chains']>;
-
-/** TODO: docs */
-export type WalletChainName<W extends Wallet = Wallet> = keyof WalletChains<W>;
-
-/** TODO: docs */
-export type WalletFeatures<W extends Wallet = Wallet> = UnionToIntersection<W['features']>;
-
-/** TODO: docs */
-export type WalletFeatureName<W extends Wallet = Wallet> = keyof WalletFeatures<W>;
-
-/** TODO: docs */
-export type WalletExtensions<W extends Wallet = Wallet> = UnionToIntersection<W['extensions']>;
-
-/** TODO: docs */
-export type WalletExtensionName<W extends Wallet = Wallet> = keyof WalletExtensions<W>;
+export type WalletAccountEventNames<I extends WalletAccount> = keyof WalletAccountEvents<I>;

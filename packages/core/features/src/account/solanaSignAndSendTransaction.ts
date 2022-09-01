@@ -1,23 +1,16 @@
+import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { WalletAccountWithChainAndFeatures } from './types.js';
 
-/**
- * TODO: docs
- * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
- */
-export declare const solanaSignAndSendTransactionMethod: AsyncMapFunction<
-    SolanaSignAndSendTransactionInput,
-    SolanaSignAndSendTransactionOutput
+/** TODO: docs */
+export type SolanaSignAndSendTransactionMethod<A extends WalletAccount> = AsyncMapFunction<
+    SolanaSignAndSendTransactionInput<A>,
+    SolanaSignAndSendTransactionOutput<A>
 >;
 
 /** TODO: docs */
-export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransactionMethod;
-
-// TODO: consider namespacing/renaming to solanaSignAndSendTransaction
-/** TODO: docs */
-export interface SolanaFeature {
+export type SolanaSignAndSendTransactionFeature<A extends WalletAccount> = {
     /** Namespace for the feature. */
-    solana: {
+    solanaSignAndSendTransaction: {
         // TODO: think about feature versions more
         /** Version of the feature API. */
         version: '1.0.0';
@@ -29,37 +22,34 @@ export interface SolanaFeature {
          *
          * @return Outputs of signing and sending transactions.
          */
-        signAndSendTransaction: SolanaSignAndSendTransactionMethod;
+        solanaSignAndSendTransaction: SolanaSignAndSendTransactionMethod<A>;
     };
-}
+};
 
 /** Input for signing and sending transactions. */
-export interface SolanaSignAndSendTransactionInput<Chain extends string = string> {
-    /** Account to use. */
-    account: WalletAccountWithChainAndFeatures<Chain, { solana: true }>;
-
+export type SolanaSignAndSendTransactionInput<A extends WalletAccount> = {
     /** Chain to use. */
-    chain: Chain;
+    chain: A['chains'][number];
 
     /** Serialized transaction, as raw bytes. */
     transaction: Uint8Array;
 
     /** TODO: docs */
-    options?: SolanaSignAndSendTransactionOptions;
-}
+    options?: SolanaSignAndSendTransactionOptions<A>;
+};
 
 /** Output of signing and sending transactions. */
-export interface SolanaSignAndSendTransactionOutput {
+export type SolanaSignAndSendTransactionOutput<A extends WalletAccount> = {
     /** Transaction signature, as raw bytes. */
     signature: Uint8Array;
-}
+};
 
 /** Commitment level for preflight and confirmation of transactions. */
 export type SolanaSignAndSendTransactionCommitment = 'processed' | 'confirmed' | 'finalized';
 
 // TODO: figure out what options are actually needed
 /** Options for signing and sending transactions. */
-export interface SolanaSignAndSendTransactionOptions {
+export type SolanaSignAndSendTransactionOptions<A extends WalletAccount> = {
     /** Desired commitment level. If provided, confirm the transaction after sending. */
     commitment?: SolanaSignAndSendTransactionCommitment;
     /** Preflight commitment level. */
@@ -70,4 +60,4 @@ export interface SolanaSignAndSendTransactionOptions {
     maxRetries?: number;
     /** The minimum slot that the request can be evaluated at. */
     minContextSlot?: number;
-}
+};

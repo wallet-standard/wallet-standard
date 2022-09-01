@@ -4,9 +4,9 @@
         //        {
         //            "path": "./packages/core/app/tsconfig.all.json"
         //        },
-        //        {
-        //            "path": "./packages/core/features/tsconfig.all.json"
-        //        },
+        {
+            "path": "./packages/core/features/tsconfig.all.json"
+        },
         //        {
         //            "path": "./packages/core/react/tsconfig.all.json"
         //        },

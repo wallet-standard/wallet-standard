@@ -32,7 +32,8 @@
     "overrides": [
         {
             "files": [
-                "packages/example/**/*"
+                "packages/example/**/*",
+                "**/*.test.ts"
             ],
             "rules": {
                 "require-extensions/require-extensions": "off"

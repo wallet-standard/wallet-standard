@@ -1,25 +1,18 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { WalletAccountWithChainAndFeatures } from './types.js';
-
-/**
- * TODO: docs
- * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
- */
-export declare const encryptMethod: AsyncMapFunction<EncryptInput, EncryptOutput>;
 
 /** TODO: docs */
-export type EncryptMethod = typeof encryptMethod;
+export type EncryptMethod<A extends WalletAccount> = AsyncMapFunction<EncryptInput<A>, EncryptOutput<A>>;
 
 /** TODO: docs */
-export interface EncryptFeature {
+export type EncryptFeature<A extends WalletAccount> = {
     /** Namespace for the feature. */
     encrypt: {
         /** Version of the feature API. */
         version: '1.0.0';
 
         /** List of ciphers supported for encryption. */
-        ciphers: string[];
+        ciphers: ReadonlyArray<string>;
 
         /**
          * Encrypt cleartexts using the account's secret key.
@@ -28,20 +21,14 @@ export interface EncryptFeature {
          *
          * @return Outputs of encryption.
          */
-        encrypt: EncryptMethod;
+        encrypt: EncryptMethod<A>;
     };
-}
+};
 
 /** Input for encryption. */
-export interface EncryptInput<Chain extends string = string> {
-    /** Account to use. */
-    account: WalletAccountWithChainAndFeatures<Chain, { encrypt: true }>;
-
-    /** Chain to use. */
-    chain: Chain;
-
+export type EncryptInput<A extends WalletAccount> = {
     /** Cipher to use for encryption. */
-    cipher: string; // TODO: determine if this needs to be inferred from EncryptFeature
+    cipher: string;
 
     /** Public key to derive a shared key to encrypt the data using. */
     publicKey: Uint8Array;
@@ -51,13 +38,13 @@ export interface EncryptInput<Chain extends string = string> {
 
     /** Multiple of padding bytes to use for encryption, defaulting to 0. */
     padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
-}
+};
 
 /** Output of encryption. */
-export interface EncryptOutput {
+export type EncryptOutput<A extends WalletAccount> = {
     /** Ciphertext that was encrypted. */
     ciphertext: Uint8Array;
 
     /** Nonce that was used for encryption. */
     nonce: Uint8Array;
-}
+};
