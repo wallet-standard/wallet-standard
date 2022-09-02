@@ -7,7 +7,7 @@ import type {
     WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
-} from '../src';
+} from '..';
 
 class GlowWallet implements Wallet {
     version = '1.0.0' as const;

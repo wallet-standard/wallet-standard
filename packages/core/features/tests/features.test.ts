@@ -8,7 +8,7 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import type { SignMessageFeature, SignTransactionFeature } from '../src';
+import type { SignMessageFeature, SignTransactionFeature } from '..';
 
 class GlowWallet implements Wallet {
     version = '1.0.0' as const;
