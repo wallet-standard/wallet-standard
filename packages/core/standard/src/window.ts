@@ -43,7 +43,7 @@ export interface Wallets {
 export type WalletsCommand = WalletsCommandRegister | WalletsCommandGet | WalletsCommandOn;
 
 /** Register wallets. This emits a `register` event. */
-export type WalletsCommandRegister = {
+export interface WalletsCommandRegister {
     /** TODO: docs */
     method: 'register';
 
@@ -53,19 +53,19 @@ export type WalletsCommandRegister = {
     // TODO: consider making this optional
     /** Function that will be called with a function to unregister the wallets. */
     callback: (unregister: () => void) => void;
-};
+}
 
 /** Get the wallets that have been registered. */
-export type WalletsCommandGet = {
+export interface WalletsCommandGet {
     /** TODO: docs */
     method: 'get';
 
     /** Function that will be called with all wallets that have been registered. */
     callback: (wallets: ReadonlyArray<Wallet>) => void;
-};
+}
 
 /** Add an event listener to subscribe to events. */
-export type WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEventNames = WalletsEventNames> = {
+export interface WalletsCommandOn<E extends WalletsEventNames = WalletsEventNames> {
     /** TODO: docs */
     method: 'on';
 
@@ -77,10 +77,10 @@ export type WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEventNa
 
     /** Function that will be called with a function to remove the event listener and unsubscribe. */
     callback: (off: () => void) => void;
-};
+}
 
 /** Events emitted by the global `wallets` object. */
-export type WalletsEvents = {
+export interface WalletsEvents {
     /**
      * Emitted when wallets are registered.
      *
@@ -94,7 +94,7 @@ export type WalletsEvents = {
      * @param wallets Wallets that were unregistered.
      */
     unregister(wallets: ReadonlyArray<Wallet>): void;
-};
+}
 
 /** TODO: docs */
 export type WalletsEventNames = keyof WalletsEvents;
