@@ -1,57 +1,54 @@
 import type { Wallet } from './wallet.js';
 
 /** Global `window` containing a `navigator.wallets` object. */
-export interface WalletsWindow<W extends Wallet = Wallet> extends Window {
-    navigator: WalletsNavigator<W>;
+export interface WalletsWindow extends Window {
+    navigator: WalletsNavigator;
 }
 
 /** Global `window.navigator` containing a `wallets` object. */
-export interface WalletsNavigator<W extends Wallet = Wallet> extends Navigator {
-    wallets?: NavigatorWallets<W>;
+export interface WalletsNavigator extends Navigator {
+    wallets?: NavigatorWallets;
 }
 
 /** Global `window.navigator.wallets` object or command array. */
-export type NavigatorWallets<W extends Wallet = Wallet> = Wallets<W> | WalletsCommand<W>[];
+export type NavigatorWallets = Wallets | ReadonlyArray<WalletsCommand>;
 
 /** Global `window.navigator.wallets` object API. */
-export type Wallets<W extends Wallet = Wallet> = {
+export interface Wallets {
     /**
      * TODO: docs
      *
      * @param commands TODO: docs
      */
-    push(...commands: WalletsCommand<W>[]): void;
+    push(...commands: ReadonlyArray<WalletsCommand>): void;
 
     /**
      * TODO: docs
      */
-    register(wallets: W[]): () => void;
+    register(wallets: ReadonlyArray<Wallet>): () => void;
 
     /**
      * TODO: docs
      */
-    get(): W[];
+    get(): ReadonlyArray<Wallet>;
 
     /**
      * TODO: docs
      */
-    on<E extends WalletsEventNames<W> = WalletsEventNames<W>>(event: E, listener: WalletsEvents<W>[E]): () => void;
-};
+    on<E extends WalletsEventNames = WalletsEventNames>(event: E, listener: WalletsEvents[E]): () => void;
+}
 
 // TODO: `register` is the only command wallets need
 /** Global `window.navigator.wallets` command array item. */
-export type WalletsCommand<W extends Wallet = Wallet> =
-    | WalletsCommandRegister<W>
-    | WalletsCommandGet<W>
-    | WalletsCommandOn<W>;
+export type WalletsCommand = WalletsCommandRegister | WalletsCommandGet | WalletsCommandOn;
 
 /** Register wallets. This emits a `register` event. */
-export type WalletsCommandRegister<W extends Wallet = Wallet> = {
+export type WalletsCommandRegister = {
     /** TODO: docs */
     method: 'register';
 
     /** Wallets to register. */
-    wallets: W[];
+    wallets: ReadonlyArray<Wallet>;
 
     // TODO: consider making this optional
     /** Function that will be called with a function to unregister the wallets. */
@@ -59,16 +56,16 @@ export type WalletsCommandRegister<W extends Wallet = Wallet> = {
 };
 
 /** Get the wallets that have been registered. */
-export type WalletsCommandGet<W extends Wallet = Wallet> = {
+export type WalletsCommandGet = {
     /** TODO: docs */
     method: 'get';
 
     /** Function that will be called with all wallets that have been registered. */
-    callback: (wallets: W[]) => void;
+    callback: (wallets: ReadonlyArray<Wallet>) => void;
 };
 
 /** Add an event listener to subscribe to events. */
-export type WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEventNames<W> = WalletsEventNames<W>> = {
+export type WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEventNames = WalletsEventNames> = {
     /** TODO: docs */
     method: 'on';
 
@@ -76,28 +73,28 @@ export type WalletsCommandOn<W extends Wallet = Wallet, E extends WalletsEventNa
     event: E;
 
     /** Function that will be called when the event is emitted. */
-    listener: WalletsEvents<W>[E];
+    listener: WalletsEvents[E];
 
     /** Function that will be called with a function to remove the event listener and unsubscribe. */
     callback: (off: () => void) => void;
 };
 
 /** Events emitted by the global `wallets` object. */
-export type WalletsEvents<W extends Wallet = Wallet> = {
+export type WalletsEvents = {
     /**
      * Emitted when wallets are registered.
      *
      * @param wallets Wallets that were registered.
      */
-    register(wallets: W[]): void;
+    register(wallets: ReadonlyArray<Wallet>): void;
 
     /**
      * Emitted when wallets are unregistered.
      *
      * @param wallets Wallets that were unregistered.
      */
-    unregister(wallets: W[]): void;
+    unregister(wallets: ReadonlyArray<Wallet>): void;
 };
 
 /** TODO: docs */
-export type WalletsEventNames<W extends Wallet = Wallet> = keyof WalletsEvents<W>;
+export type WalletsEventNames = keyof WalletsEvents;
