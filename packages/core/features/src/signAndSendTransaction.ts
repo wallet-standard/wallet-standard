@@ -1,14 +1,21 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
+import type { SignTransactionInput } from './signTransaction.js';
 
-/** TODO: docs */
-export type SignAndSendTransactionMethod<A extends WalletAccount> = AsyncMapFunction<
-    SignAndSendTransactionInput<A>,
-    SignAndSendTransactionOutput<A>
+/**
+ * TODO: docs
+ * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
+ */
+export declare const signAndSendTransactionMethod: AsyncMapFunction<
+    SignAndSendTransactionInput,
+    SignAndSendTransactionOutput
 >;
 
 /** TODO: docs */
-export type SignAndSendTransactionFeature<A extends WalletAccount> = {
+export type SignAndSendTransactionMethod = typeof signAndSendTransactionMethod;
+
+/** TODO: docs */
+export type SignAndSendTransactionFeature = {
     /** Namespace for the feature. */
     signAndSendTransaction: {
         /** Version of the feature API. */
@@ -21,21 +28,15 @@ export type SignAndSendTransactionFeature<A extends WalletAccount> = {
          *
          * @return Outputs of signing and sending transactions.
          */
-        signAndSendTransaction: SignAndSendTransactionMethod<A>;
+        signAndSendTransaction: SignAndSendTransactionMethod;
     };
 };
 
 /** Input for signing and sending transactions. */
-export type SignAndSendTransactionInput<A extends WalletAccount> = {
-    /** Chain to use. */
-    chain: A['chains'][number];
-
-    /** Serialized transaction, as raw bytes. */
-    transaction: Uint8Array;
-};
+export interface SignAndSendTransactionInput extends SignTransactionInput {}
 
 /** Output of signing and sending transactions. */
-export type SignAndSendTransactionOutput<A extends WalletAccount> = {
+export interface SignAndSendTransactionOutput {
     /** Transaction signature, as raw bytes. */
     signature: Uint8Array;
-};
+}

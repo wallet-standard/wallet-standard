@@ -1,11 +1,17 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
-/** TODO: docs */
-export type DecryptMethod<A extends WalletAccount> = AsyncMapFunction<DecryptInput<A>, DecryptOutput<A>>;
+/**
+ * TODO: docs
+ * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
+ */
+export declare const decryptMethod: AsyncMapFunction<DecryptInput, DecryptOutput>;
 
 /** TODO: docs */
-export type DecryptFeature<A extends WalletAccount> = {
+export type DecryptMethod = typeof decryptMethod;
+
+/** TODO: docs */
+export type DecryptFeature = {
     /** Namespace for the feature. */
     decrypt: {
         /** Version of the feature API. */
@@ -21,12 +27,15 @@ export type DecryptFeature<A extends WalletAccount> = {
          *
          * @return Outputs of decryption.
          */
-        decrypt: DecryptMethod<A>;
+        decrypt: DecryptMethod;
     };
 };
 
 /** Input for decryption. */
-export type DecryptInput<A extends WalletAccount> = {
+export interface DecryptInput {
+    /** Account to use. */
+    account: WalletAccount;
+
     /** Cipher to use for decryption. */
     cipher: string;
 
@@ -41,10 +50,10 @@ export type DecryptInput<A extends WalletAccount> = {
 
     /** Multiple of padding bytes to use for decryption, defaulting to 0. */
     padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
-};
+}
 
 /** Output of decryption. */
-export type DecryptOutput<A extends WalletAccount> = {
+export interface DecryptOutput {
     /** Cleartext that was decrypted. */
     cleartext: Uint8Array;
-};
+}

@@ -1,11 +1,17 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
-/** TODO: docs */
-export type EncryptMethod<A extends WalletAccount> = AsyncMapFunction<EncryptInput<A>, EncryptOutput<A>>;
+/**
+ * TODO: docs
+ * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
+ */
+export declare const encryptMethod: AsyncMapFunction<EncryptInput, EncryptOutput>;
 
 /** TODO: docs */
-export type EncryptFeature<A extends WalletAccount> = {
+export type EncryptMethod = typeof encryptMethod;
+
+/** TODO: docs */
+export type EncryptFeature = {
     /** Namespace for the feature. */
     encrypt: {
         /** Version of the feature API. */
@@ -21,12 +27,15 @@ export type EncryptFeature<A extends WalletAccount> = {
          *
          * @return Outputs of encryption.
          */
-        encrypt: EncryptMethod<A>;
+        encrypt: EncryptMethod;
     };
 };
 
 /** Input for encryption. */
-export type EncryptInput<A extends WalletAccount> = {
+export interface EncryptInput {
+    /** Account to use. */
+    account: WalletAccount;
+
     /** Cipher to use for encryption. */
     cipher: string;
 
@@ -38,13 +47,13 @@ export type EncryptInput<A extends WalletAccount> = {
 
     /** Multiple of padding bytes to use for encryption, defaulting to 0. */
     padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
-};
+}
 
 /** Output of encryption. */
-export type EncryptOutput<A extends WalletAccount> = {
+export interface EncryptOutput {
     /** Ciphertext that was encrypted. */
     ciphertext: Uint8Array;
 
     /** Nonce that was used for encryption. */
     nonce: Uint8Array;
-};
+}
