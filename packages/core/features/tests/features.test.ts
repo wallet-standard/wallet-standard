@@ -10,27 +10,31 @@ import type {
 } from '@wallet-standard/standard';
 import type { SignMessageFeature, SignTransactionFeature } from '..';
 
+type GlowFeature = {
+    'glow:': {
+        signIn(): void;
+    };
+};
+
 class GlowWallet implements Wallet {
     version = '1.0.0' as const;
     name = 'Glow';
-    icon = 'glow.svg';
-    chains = ['solana:mainnet', 'solana:devnet'];
-    features: SignTransactionFeature & SignMessageFeature = {
-        signTransaction: {
+    icon = `data:image/png;base64,` as const;
+    chains = ['solana:mainnet', 'solana:devnet'] as const;
+    features: SignTransactionFeature & SignMessageFeature & GlowFeature = {
+        'standard:signTransaction': {
             version: '1.0.0',
             async signTransaction(...inputs) {
                 return [] as any;
             },
         },
-        signMessage: {
+        'standard:signMessage': {
             version: '1.0.0',
             async signMessage(...inputs) {
                 return [] as any;
             },
         },
-    };
-    extensions = {
-        glow: {
+        'glow:': {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             signIn() {},
         },
@@ -41,7 +45,7 @@ class GlowWallet implements Wallet {
         return { accounts: this.accounts };
     }
 
-    on<E extends WalletEventNames<this>>(event: E, listener: WalletEvents<this>[E]): () => void {
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         return () => {};
     }
@@ -50,11 +54,10 @@ class GlowWallet implements Wallet {
 class GlowSolanaWalletAccount implements WalletAccount {
     address = '';
     publicKey = new Uint8Array();
-    chains = ['solana:mainnet', 'solana:devnet', 'solana:testnet', 'solana:localnet'];
-    features = ['signMessage', 'signTransaction'];
-    extensions = [];
+    chains = ['solana:mainnet', 'solana:devnet', 'solana:testnet', 'solana:localnet'] as const;
+    features = ['standard:signMessage', 'standard:signTransaction'] as const;
 
-    on<E extends WalletAccountEventNames<this>>(event: E, listener: WalletAccountEvents<this>[E]): () => void {
+    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         return () => {};
     }
@@ -65,14 +68,14 @@ const wallet = new GlowWallet();
 await wallet.connect();
 const account = wallet.accounts[0]!;
 
-const [{ signedTransaction }] = await wallet.features.signTransaction.signTransaction({
+const [{ signedTransaction }] = await wallet.features['standard:signTransaction'].signTransaction({
     account,
     chain: 'solana',
     transaction: new Uint8Array(),
 });
-const [{ signedMessage, signature }] = await wallet.features.signMessage.signMessage({
+const [{ signedMessage, signature }] = await wallet.features['standard:signMessage'].signMessage({
     account,
     message: new Uint8Array(),
 });
 
-wallet.extensions.glow.signIn();
+wallet.features['glow:'].signIn();
