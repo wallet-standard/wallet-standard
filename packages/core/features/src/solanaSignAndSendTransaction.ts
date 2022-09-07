@@ -16,7 +16,7 @@ export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransac
 /** TODO: docs */
 export type SolanaSignAndSendTransactionFeature = {
     /** Namespace for the feature. */
-    solanaSignAndSendTransaction: {
+    'standard:solanaSignAndSendTransaction': {
         // TODO: think about feature versions more
         /** Version of the feature API. */
         version: '1.0.0';

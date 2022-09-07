@@ -13,10 +13,11 @@ export type EncryptMethod = typeof encryptMethod;
 /** TODO: docs */
 export type EncryptFeature = {
     /** Namespace for the feature. */
-    encrypt: {
+    'standard:encrypt': {
         /** Version of the feature API. */
         version: '1.0.0';
 
+        // TODO: consider declaring cipher string types
         /** List of ciphers supported for encryption. */
         ciphers: ReadonlyArray<string>;
 

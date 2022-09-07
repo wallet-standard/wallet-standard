@@ -13,7 +13,7 @@ export type DecryptMethod = typeof decryptMethod;
 /** TODO: docs */
 export type DecryptFeature = {
     /** Namespace for the feature. */
-    decrypt: {
+    'standard:decrypt': {
         /** Version of the feature API. */
         version: '1.0.0';
 

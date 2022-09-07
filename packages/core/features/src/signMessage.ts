@@ -13,7 +13,7 @@ export type SignMessageMethod = typeof signMessageMethod;
 /** TODO: docs */
 export type SignMessageFeature = {
     /** Namespace for the feature. */
-    signMessage: {
+    'standard:signMessage': {
         /** Version of the feature API. */
         version: '1.0.0';
 

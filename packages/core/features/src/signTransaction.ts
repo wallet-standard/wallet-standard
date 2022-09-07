@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/standard';
+import type { IdentifierString, WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
 /**
@@ -13,7 +13,7 @@ export type SignTransactionMethod = typeof signTransactionMethod;
 /** TODO: docs */
 export type SignTransactionFeature = {
     /** Namespace for the feature. */
-    signTransaction: {
+    'standard:signTransaction': {
         /** Version of the feature API. */
         version: '1.0.0';
 
@@ -28,7 +28,7 @@ export interface SignTransactionInput {
     account: WalletAccount;
 
     /** Chain to use. */
-    chain: string;
+    chain: IdentifierString;
 
     /** Serialized transactions, as raw bytes. */
     transaction: Uint8Array;

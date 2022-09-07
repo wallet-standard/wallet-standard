@@ -1,4 +1,3 @@
-import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 import type { SignTransactionInput } from './signTransaction.js';
 
@@ -17,7 +16,7 @@ export type SignAndSendTransactionMethod = typeof signAndSendTransactionMethod;
 /** TODO: docs */
 export type SignAndSendTransactionFeature = {
     /** Namespace for the feature. */
-    signAndSendTransaction: {
+    'standard:signAndSendTransaction': {
         /** Version of the feature API. */
         version: '1.0.0';
 
