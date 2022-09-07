@@ -1,8 +1,10 @@
-import type { PropertyNames, UnionToIntersection } from '@wallet-standard/types';
+import type { PropertyNames } from '@wallet-standard/types';
 import type { WalletAccount } from './account.js';
+import type { IdentifierArray, IdentifierRecord } from './identifier.js';
 
 /** TODO: docs */
 export interface Wallet {
+    // TODO: consider declaring version types
     /**
      * Version of the Wallet API.
      * If this changes, the wallet must emit a change event.
@@ -16,33 +18,28 @@ export interface Wallet {
      */
     name: string;
 
+    // TODO: is base64 actually needed? should other types be allowed?
     /**
      * Icon of the wallet, to be displayed by apps.
-     * Must be a data URL containing a base64-encoded SVG or PNG image. // TODO: is base64 actually needed? should other types be allowed?
+     * Must be a data URI containing a base64-encoded SVG or PNG image.
      * If this changes, the wallet must emit a change event.
      */
-    icon: string;
+    icon: `data:${'image/svg+xml' | 'image/png'};base64,${string}`;
 
+    // TODO: consider adding chain type
     /**
      * Chains supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
-    chains: ReadonlyArray<string>;
+    chains: IdentifierArray;
 
     /**
-     * Standard features supported by the wallet.
+     * Features supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
-    features: Record<string, unknown>;
+    features: IdentifierRecord<unknown>;
 
     /**
-     * Nonstandard extensions supported by the wallet.
-     * If this changes, the wallet must emit a change event.
-     */
-    extensions: Record<string, unknown>;
-
-    /**
-     * TODO: docs
      * List of accounts the app is authorized to use.
      * This can be set by the wallet so the app can use authorized accounts on the initial page load.
      * If this changes, the wallet must emit a change event.
@@ -66,22 +63,22 @@ export interface Wallet {
      *
      * @return Function to remove the event listener and unsubscribe.
      */
-    on<E extends WalletEventNames<this>>(event: E, listener: WalletEvents<this>[E]): () => void;
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void;
 }
 
 // TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
-export interface WalletEvents<W extends Wallet> {
+export interface WalletEvents {
     /**
      * Emitted when properties of the wallet have changed.
      *
      * @param properties Names of the properties that changed.
      */
-    change(properties: PropertyNames<W>[]): void;
+    'standard:change'(properties: PropertyNames<Wallet>[]): void;
 }
 
 /** TODO: docs */
-export type WalletEventNames<W extends Wallet> = keyof WalletEvents<W>;
+export type WalletEventNames = keyof WalletEvents;
 
 /** Input for connecting. */
 export interface ConnectInput {
@@ -92,13 +89,10 @@ export interface ConnectInput {
     silent?: boolean;
 
     /** TODO: docs */
-    chains?: ReadonlyArray<string>;
+    chains?: IdentifierArray;
 
     /** TODO: docs */
-    features?: ReadonlyArray<string>;
-
-    /** TODO: docs */
-    extensions?: ReadonlyArray<string>;
+    features?: IdentifierArray;
 }
 
 /** Output of connecting. */

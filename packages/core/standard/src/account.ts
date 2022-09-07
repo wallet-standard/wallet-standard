@@ -1,4 +1,5 @@
 import type { PropertyNames } from '@wallet-standard/types';
+import type { IdentifierArray } from './identifier.js';
 
 /** An account in the wallet that the app has been authorized to use. */
 export interface WalletAccount {
@@ -9,13 +10,10 @@ export interface WalletAccount {
     publicKey: Uint8Array;
 
     /** Chains supported by the account. */
-    chains: ReadonlyArray<string>;
+    chains: IdentifierArray;
 
-    /** Standard features supported by the account. */
-    features: ReadonlyArray<string>;
-
-    /** Nonstandard extensions supported by the account. */
-    extensions: ReadonlyArray<string>;
+    /** Features supported by the account. */
+    features: IdentifierArray;
 
     /** Optional user-friendly descriptive label or name for the account, to be displayed by apps. */
     label?: string;
@@ -34,19 +32,19 @@ export interface WalletAccount {
      *
      * @return Function to remove the event listener and unsubscribe.
      */
-    on<E extends WalletAccountEventNames<this>>(event: E, listener: WalletAccountEvents<this>[E]): () => void;
+    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void;
 }
 
 // TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
-export type WalletAccountEvents<A extends WalletAccount> = {
+export interface WalletAccountEvents {
     /**
      * Emitted when properties of the wallet have changed.
      *
      * @param properties Names of the properties that changed.
      */
-    change(properties: PropertyNames<A>[]): void;
-};
+    'standard:change'(properties: PropertyNames<WalletAccount>[]): void;
+}
 
 /** TODO: docs */
-export type WalletAccountEventNames<A extends WalletAccount> = keyof WalletAccountEvents<A>;
+export type WalletAccountEventNames = keyof WalletAccountEvents;
