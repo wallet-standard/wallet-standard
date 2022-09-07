@@ -70,7 +70,7 @@ const account = wallet.accounts[0]!;
 
 const [{ signedTransaction }] = await wallet.features['standard:signTransaction'].signTransaction({
     account,
-    chain: 'solana',
+    chain: 'solana:devnet',
     transaction: new Uint8Array(),
 });
 const [{ signedMessage, signature }] = await wallet.features['standard:signMessage'].signMessage({
