@@ -11,7 +11,7 @@ export interface WalletsNavigator extends Navigator {
 }
 
 /** Global `window.navigator.wallets` object or command array. */
-export type NavigatorWallets = Wallets | ReadonlyArray<WalletsCommand>;
+export type NavigatorWallets = Wallets | WalletsCommand[];
 
 /** Global `window.navigator.wallets` object API. */
 export interface Wallets {
