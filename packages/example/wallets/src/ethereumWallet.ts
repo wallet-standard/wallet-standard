@@ -16,6 +16,7 @@ import type {
     SignTransactionOutput,
 } from '@wallet-standard/features';
 import type { Wallet, WalletAccount } from '@wallet-standard/standard';
+import { IdentifierArray } from '@wallet-standard/standard';
 import type { UnionToIntersection } from '@wallet-standard/types';
 import { CHAIN_ETHEREUM, CIPHER_x25519_xsalsa20_poly1305, pick } from '@wallet-standard/util';
 import ethers from 'ethers';
@@ -36,7 +37,7 @@ export class EthereumWallet extends AbstractWallet<EthereumWalletAccount> implem
     }
 
     constructor() {
-        super([new SignerEthereumWalletAccount({ chain: CHAIN_ETHEREUM })]);
+        super([new SignerEthereumWalletAccount({ chains: [CHAIN_ETHEREUM] })]);
     }
 }
 
@@ -52,24 +53,24 @@ export type EthereumWalletAccountFeature =
     | DecryptFeature;
 
 export class SignerEthereumWalletAccount implements WalletAccount {
-    #chain: string;
+    #chains: IdentifierArray;
     #features: EthereumWalletAccountFeature;
     #wallet: ethers.Wallet;
     #signingKey: ethers.utils.SigningKey;
-    #address: Uint8Array;
+    #address: string;
     #publicKey: Uint8Array;
     #secretKey: Uint8Array;
 
     get address() {
-        return this.#address.slice();
+        return this.#address;
     }
 
     get publicKey() {
         return this.#publicKey.slice();
     }
 
-    get chain() {
-        return this.#chain;
+    get chains() {
+        return this.#chains.slice();
     }
 
     get features() {
@@ -77,16 +78,16 @@ export class SignerEthereumWalletAccount implements WalletAccount {
     }
 
     constructor({
-        chain,
+        chains,
         features,
     }: {
-        chain: EthereumWalletChain;
+        chains: EthereumWalletChain[];
         features?: ReadonlyArray<keyof UnionToIntersection<EthereumWalletAccountFeature>>;
     }) {
-        this.#chain = chain;
+        this.#chains = chains;
         this.#features = features ? pick(this.#allFeatures, ...features) : this.#allFeatures;
         this.#wallet = ethers.Wallet.createRandom();
-        this.#address = ethers.utils.arrayify(this.#wallet.address);
+        this.#address = this.#wallet.address;
         this.#publicKey = ethers.utils.arrayify(this.#wallet.publicKey);
         this.#secretKey = ethers.utils.arrayify(this.#wallet.privateKey);
         this.#signingKey = new ethers.utils.SigningKey(this.#wallet.privateKey);

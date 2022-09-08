@@ -1,15 +1,12 @@
 import type {
-    ConnectedAccount,
     ConnectInput,
     ConnectOutput,
+    IdentifierArray,
     Wallet,
     WalletAccount,
-    WalletAccountExtensionName,
-    WalletAccountFeatureName,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import { IdentifierArray, IdentifierString } from '@wallet-standard/standard/src';
 import { bytesEqual, pick } from '@wallet-standard/util';
 
 export abstract class AbstractWallet implements Wallet {

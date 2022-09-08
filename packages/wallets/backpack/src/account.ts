@@ -18,15 +18,15 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
     }
 
     get publicKey() {
-        return this.#publicKey;
+        return this.#publicKey.slice();
     }
 
     get chains() {
-        return [...this.#chains];
+        return this.#chains.slice();
     }
 
     get features() {
-        return [...this.#features];
+        return this.#features.slice();
     }
 
     constructor(address: string, publicKey: Uint8Array, chains: ReadonlyArray<SolanaChain>, features: IdentifierArray) {
