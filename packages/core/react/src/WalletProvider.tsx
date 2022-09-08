@@ -1,4 +1,4 @@
-import type { Wallet, WalletAccount } from '@wallet-standard/standard';
+import type { Wallet } from '@wallet-standard/standard';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getWalletProperties, WalletContext } from './useWallet.js';
@@ -11,9 +11,10 @@ export interface WalletProviderProps {
 
 /** TODO: docs */
 export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: WalletProviderProps) => {
-    const [wallet, setWallet] = useState<Wallet<WalletAccount>>();
-    const [{ version, name, icon, chains, features, extensions, accounts, hasMoreAccounts }, setWalletProperties] =
-        useState(getWalletProperties(wallet));
+    const [wallet, setWallet] = useState<Wallet>();
+    const [{ version, name, icon, chains, features, accounts }, setWalletProperties] = useState(
+        getWalletProperties(wallet)
+    );
 
     // If the window is closing or reloading, ignore events from the wallet
     const isUnloading = useRef(false);
@@ -29,7 +30,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
     // When the wallet changes, set properties and listen for changes
     useEffect(() => {
         setWalletProperties(getWalletProperties(wallet));
-        if (wallet) return wallet.on('change', () => setWalletProperties(getWalletProperties(wallet)));
+        if (wallet) return wallet.on('standard:change', () => setWalletProperties(getWalletProperties(wallet)));
     }, [wallet]);
 
     // Handle errors
@@ -45,7 +46,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
     // Connect to the wallet
     const [connecting, setConnecting] = useState(false);
     const connectPromise = useRef<any>();
-    const connect = useCallback<Wallet<WalletAccount>['connect']>(
+    const connect = useCallback<Wallet['connect']>(
         async (input) => {
             if (!wallet) throw handleError(new Error());
             // If already connecting, wait for that promise to resolve
@@ -88,9 +89,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children, onError }: W
                 icon,
                 chains,
                 features,
-                extensions,
                 accounts,
-                hasMoreAccounts,
             }}
         >
             {children}
