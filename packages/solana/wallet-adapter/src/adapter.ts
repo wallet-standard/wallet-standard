@@ -16,39 +16,41 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import type { SignMessageFeature, SignTransactionFeature, SolanaFeature } from '@wallet-standard/features';
+import type {
+    SignMessageFeature,
+    SignTransactionFeature,
+    SolanaSignAndSendTransactionFeature,
+} from '@wallet-standard/features';
 import { getCommitment } from '@wallet-standard/solana-web3.js';
 import type { Wallet, WalletAccount, WalletPropertyNames } from '@wallet-standard/standard';
 import { encode } from 'bs58';
 
 /** TODO: docs */
-export interface StandardWalletAdapterAccount extends WalletAccount {
-    features: SolanaFeature & (SignTransactionFeature | SignMessageFeature);
+export interface StandardWalletAdapterWallet extends Wallet {
+    features: SolanaSignAndSendTransactionFeature & (SignTransactionFeature | SignMessageFeature);
 }
 
 /** TODO: docs */
-export function isStandardWalletAdapterCompatibleWallet(
-    wallet: Wallet<WalletAccount>
-): wallet is Wallet<StandardWalletAdapterAccount> {
-    return wallet.features.includes('solana');
+export function isStandardWalletAdapterCompatibleWallet(wallet: Wallet): wallet is StandardWalletAdapterWallet {
+    return 'standard:solanaSignAndSendTransaction' in wallet.features;
 }
 
 /** TODO: docs */
 export interface StandardWalletAdapterConfig {
-    wallet: Wallet<StandardWalletAdapterAccount>;
+    wallet: StandardWalletAdapterWallet;
     // TODO: add chain to this config? can filter accounts by it on `connect`
 }
 
 /** TODO: docs */
 export type StandardAdapter = WalletAdapter & {
-    wallet: Wallet<StandardWalletAdapterAccount>;
+    wallet: StandardWalletAdapterWallet;
     standard: true;
 };
 
 /** TODO: docs */
 export class StandardWalletAdapter extends BaseWalletAdapter implements StandardAdapter {
-    readonly #wallet: Wallet<StandardWalletAdapterAccount>;
-    #account: StandardWalletAdapterAccount | null;
+    readonly #wallet: StandardWalletAdapterWallet;
+    #account: WalletAccount | null;
     #publicKey: PublicKey | null;
     #connecting: boolean;
     #off: (() => void) | undefined;
@@ -81,7 +83,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         return this.#readyState;
     }
 
-    get wallet(): Wallet<StandardWalletAdapterAccount> {
+    get wallet(): StandardWalletAdapterWallet {
         return this.#wallet;
     }
 
@@ -125,7 +127,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                 throw new WalletPublicKeyError(error?.message, error);
             }
 
-            this.#off = this.#wallet.on('change', this.#change);
+            this.#off = this.#wallet.on('standard:change', this.#change);
             this.#connect(account, publicKey);
             this.emit('connect', publicKey);
         } catch (error: any) {
@@ -141,9 +143,9 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.emit('disconnect');
     }
 
-    #connect(account: StandardWalletAdapterAccount, publicKey: PublicKey): void;
+    #connect(account: WalletAccount, publicKey: PublicKey): void;
     #connect(account: null, publicKey: null): void;
-    #connect(account: StandardWalletAdapterAccount | null, publicKey: PublicKey | null) {
+    #connect(account: WalletAccount | null, publicKey: PublicKey | null) {
         this.#account = account;
         this.#publicKey = publicKey;
 
@@ -172,7 +174,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.#connect(null, null);
     }
 
-    #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
+    #change = (properties: WalletPropertyNames) => {
         // If the adapter isn't connected or the change doesn't include accounts, do nothing.
         if (!this.#account || !this.#publicKey || properties.includes('accounts')) return;
 

@@ -78,10 +78,6 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return { ...solana, ...signTransactionFeature, ...signMessageFeature };
     }
 
-    get extensions() {
-        return {};
-    }
-
     get endpoint() {
         return this.#endpoint;
     }
@@ -208,16 +204,8 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
         return features;
     }
 
-    get extensions() {
-        return [];
-    }
-
     get accounts() {
         return this.#account ? [this.#account] : [];
-    }
-
-    get hasMoreAccounts() {
-        return false;
     }
 
     get endpoint() {
@@ -248,11 +236,9 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
     >(
         input?: Input
     ): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
-        const { chains, addresses, features, extensions, silent } = input || {};
+        const { chains, addresses, features, silent } = input || {};
 
-        // FIXME: features, extensions
-
-        if (extensions?.length) throw new Error('extensions not supported');
+        // FIXME: features
 
         if (!silent && !this.#adapter.connected) {
             await this.#adapter.connect();
@@ -266,10 +252,7 @@ export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWall
 
         this.#connect();
 
-        return {
-            accounts: this.accounts as any, // FIXME
-            hasMoreAccounts: false,
-        };
+        return { accounts: this.accounts as any }; // FIXME
     }
 
     on<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
