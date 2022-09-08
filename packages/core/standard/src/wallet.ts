@@ -66,6 +66,12 @@ export interface Wallet {
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void;
 }
 
+/** TODO: docs */
+export type WalletPropertyNames = ReadonlyArray<NonNullable<PropertyNames<Wallet>>>;
+
+/** TODO: docs */
+export type WalletProperties = Pick<Wallet, WalletPropertyNames[number]>;
+
 // TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
 export interface WalletEvents {
@@ -74,7 +80,7 @@ export interface WalletEvents {
      *
      * @param properties Names of the properties that changed.
      */
-    'standard:change'(properties: PropertyNames<Wallet>[]): void;
+    'standard:change'(properties: WalletPropertyNames): void;
 }
 
 /** TODO: docs */
