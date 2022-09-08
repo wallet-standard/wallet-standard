@@ -3,13 +3,19 @@ import type { WalletAccount } from './account.js';
 import type { IdentifierArray, IdentifierRecord } from './identifier.js';
 
 /** TODO: docs */
+export type WalletVersion = '1.0.0';
+
+// TODO: is base64 actually needed? should other types be allowed?
+/** TODO: docs */
+export type WalletIcon = `data:${'image/svg+xml' | 'image/png'};base64,${string}`;
+
+/** TODO: docs */
 export interface Wallet {
-    // TODO: consider declaring version types
     /**
      * Version of the Wallet API.
      * If this changes, the wallet must emit a change event.
      */
-    version: '1.0.0';
+    version: WalletVersion;
 
     /**
      * Name of the wallet, to be displayed by apps.
@@ -18,13 +24,12 @@ export interface Wallet {
      */
     name: string;
 
-    // TODO: is base64 actually needed? should other types be allowed?
     /**
      * Icon of the wallet, to be displayed by apps.
      * Must be a data URI containing a base64-encoded SVG or PNG image.
      * If this changes, the wallet must emit a change event.
      */
-    icon: `data:${'image/svg+xml' | 'image/png'};base64,${string}`;
+    icon: WalletIcon;
 
     // TODO: consider adding chain type
     /**
