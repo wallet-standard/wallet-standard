@@ -76,10 +76,6 @@ export class SignerEthereumWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    get extensions() {
-        return {};
-    }
-
     constructor({
         chain,
         features,

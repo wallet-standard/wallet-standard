@@ -85,10 +85,6 @@ export class SignerSolanaWalletAccount implements WalletAccount {
         return { ...this.#features };
     }
 
-    get extensions() {
-        return {};
-    }
-
     constructor({
         chain,
         features,
@@ -238,10 +234,6 @@ export class LedgerSolanaWalletAccount implements WalletAccount {
 
     get features() {
         return { ...this.#features };
-    }
-
-    get extensions() {
-        return {};
     }
 
     constructor({
