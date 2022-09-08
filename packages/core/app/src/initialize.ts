@@ -9,24 +9,24 @@ import type {
 } from '@wallet-standard/standard';
 
 /** TODO: docs */
-export function initialize<Account extends WalletAccount>(): Wallets<Account> {
-    if (typeof window === 'undefined') return create<Account>();
+export function initialize(): Wallets {
+    if (typeof window === 'undefined') return create();
 
-    const commands = ((window as WalletsWindow<Account>).navigator.wallets ||= []);
+    const commands = ((window as WalletsWindow).navigator.wallets ||= []);
     // If it's already initialized, don't recreate it, just return it.
     if (!Array.isArray(commands)) return commands;
 
-    const wallets = create<Account>();
+    const wallets = create();
     Object.defineProperty(window.navigator, 'wallets', { value: wallets });
     wallets.push(...commands);
     return wallets;
 }
 
-function create<Account extends WalletAccount>(): Wallets<Account> {
-    const registered: Wallet<Account>[] = [];
-    const listeners: { [E in WalletsEventNames<Account>]?: WalletsEvents<Account>[E][] } = {};
+function create(): Wallets {
+    const registered: Wallet[] = [];
+    const listeners: { [E in WalletsEventNames]?: WalletsEvents[E][] } = {};
 
-    function register(wallets: ReadonlyArray<Wallet<Account>>): () => void {
+    function register(wallets: ReadonlyArray<Wallet>): () => void {
         registered.push(...wallets);
         listeners['register']?.forEach((listener) => listener(wallets));
         // Return a function that unregisters the registered wallets.
@@ -41,15 +41,12 @@ function create<Account extends WalletAccount>(): Wallets<Account> {
         };
     }
 
-    function get(): ReadonlyArray<Wallet<Account>> {
+    function get(): ReadonlyArray<Wallet> {
         // Return a copy so the registered wallets can't be referenced or mutated.
         return registered.slice();
     }
 
-    function on<E extends WalletsEventNames<Account> = WalletsEventNames<Account>>(
-        event: E,
-        listener: WalletsEvents<Account>[E]
-    ): () => void {
+    function on<E extends WalletsEventNames>(event: E, listener: WalletsEvents[E]): () => void {
         listeners[event]?.push(listener) || (listeners[event] = [listener]);
         // Return a function that removes the event listener.
         return function off(): void {
@@ -57,7 +54,7 @@ function create<Account extends WalletAccount>(): Wallets<Account> {
         };
     }
 
-    function push(...commands: WalletsCommand<Account>[]): void {
+    function push(...commands: ReadonlyArray<WalletsCommand>): void {
         for (const command of commands) {
             switch (command.method) {
                 case 'get':
