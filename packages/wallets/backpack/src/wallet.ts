@@ -12,7 +12,13 @@ import type {
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
 } from '@wallet-standard/features';
-import type { Wallet, WalletEventNames, WalletEvents, WalletPropertyName } from '@wallet-standard/standard';
+import type {
+    Wallet,
+    WalletAccount,
+    WalletEventNames,
+    WalletEvents,
+    WalletPropertyName,
+} from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
 import {
     CHAIN_SOLANA_DEVNET,
@@ -20,6 +26,7 @@ import {
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
 } from '@wallet-standard/util';
+import { bytesEqual } from '@wallet-standard/util/src';
 import { decode } from 'bs58';
 import { BackpackSolanaWalletAccount } from './account.js';
 import type { BackpackWindow } from './backpack.js';
@@ -227,20 +234,46 @@ export class BackpackSolanaWallet implements Wallet {
                 }),
             });
         } else if (inputs.length > 1) {
-            // FIXME: transactions can have different accounts and chains
-            const signedTransactions = await window.backpack.signAllTransactions(
-                transactions,
-                new PublicKey(account.publicKey)
-            );
+            // Group the transactions by the account that will be signing, noting the order of the transactions.
+            const groups = new Map<WalletAccount, [number, Transaction][]>();
+            for (const [i, input] of inputs.entries()) {
+                let group = groups.get(input.account);
+                if (!group) {
+                    group = [];
+                    groups.set(input.account, group);
+                }
+                group.push([i, Transaction.from(input.transaction)]);
+            }
 
-            outputs.push(
-                ...signedTransactions.map((signedTransaction) => ({
-                    signedTransaction: signedTransaction.serialize({
+            // For each account, call `signAllTransactions` with the transactions, preserving their order in the output.
+            for (const [account, group] of groups.entries()) {
+                // Unzip the indexes and transactions.
+                const [indexes, transactions] = group.reduce(
+                    ([indexes, transactions], [index, transaction]) => {
+                        indexes.push(index);
+                        transactions.push(transaction);
+                        return [indexes, transactions];
+                    },
+                    [<number[]>[], <Transaction[]>[]]
+                );
+
+                const signedTransactions = await window.backpack.signAllTransactions(
+                    transactions,
+                    new PublicKey(account.publicKey)
+                );
+
+                const rawTransactions = signedTransactions.map((signedTransaction) =>
+                    signedTransaction.serialize({
                         requireAllSignatures: false,
                         verifySignatures: false,
-                    }),
-                }))
-            );
+                    })
+                );
+
+                for (const [i, index] of indexes.entries()) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    outputs[index] = { signedTransaction: rawTransactions[i]! };
+                }
+            }
         }
 
         return outputs as any;
