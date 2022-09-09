@@ -163,7 +163,7 @@ Wallets need a way for accounts to be securely enumerated, and inform dapps when
 
 Wallet names and icons should be provided by the wallet.
 
-Image files should be encoded with data URLs to avoid extra HTTP load.
+Image files should be encoded with data URIs to avoid extra HTTP load.
 
 ### Errors should be predictable
 
