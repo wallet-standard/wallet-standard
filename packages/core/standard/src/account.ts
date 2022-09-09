@@ -1,5 +1,6 @@
 import type { PropertyNames } from '@wallet-standard/types';
 import type { IdentifierArray } from './identifier.js';
+import type { IconString } from './types.js';
 
 /** An account in the wallet that the app has been authorized to use. */
 export interface WalletAccount {
@@ -20,9 +21,9 @@ export interface WalletAccount {
 
     /**
      * Optional user-friendly icon for the account, to be displayed by apps.
-     * Must be a data URL containing a base64-encoded SVG or PNG image. // TODO: is base64 actually needed? should other types be allowed?
+     * Must be a data URI containing a base64-encoded SVG or PNG image.
      */
-    icon?: string;
+    icon?: IconString;
 
     /**
      * Add an event listener to subscribe to events.

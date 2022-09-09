@@ -1,13 +1,10 @@
 import type { PropertyNames } from '@wallet-standard/types';
 import type { WalletAccount } from './account.js';
 import type { IdentifierArray, IdentifierRecord } from './identifier.js';
+import type { IconString } from './types.js';
 
 /** TODO: docs */
 export type WalletVersion = '1.0.0';
-
-// TODO: is base64 actually needed? should other types be allowed?
-/** TODO: docs */
-export type WalletIcon = `data:${'image/svg+xml' | 'image/png'};base64,${string}`;
 
 /** TODO: docs */
 export interface Wallet {
@@ -29,7 +26,7 @@ export interface Wallet {
      * Must be a data URI containing a base64-encoded SVG or PNG image.
      * If this changes, the wallet must emit a change event.
      */
-    icon: WalletIcon;
+    icon: IconString;
 
     // TODO: consider adding chain type
     /**
