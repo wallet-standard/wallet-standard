@@ -3,6 +3,23 @@ import type { FC } from 'react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const Disconnected: FC = () => {
+    return <Link to="/connect">Connect Wallet</Link>;
+};
+
+const Connected: FC = () => {
+    const { accounts } = useWallet();
+
+    return (
+        <ul>
+            {accounts.map((account, index) => (
+                // TODO: `address` will be a string in the next update of the standard.
+                <li key={index}>{account.address.toString()}</li>
+            ))}
+        </ul>
+    );
+};
+
 export const Home: FC = () => {
     const { wallet } = useWallet();
 
@@ -11,7 +28,7 @@ export const Home: FC = () => {
     return (
         <div>
             <h1>dApp Example</h1>
-            {!isConnected && <Link to="/connect">Connect Wallet</Link>}
+            {isConnected ? <Connected /> : <Disconnected />}
         </div>
     );
 };
