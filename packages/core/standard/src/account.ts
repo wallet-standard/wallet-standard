@@ -37,10 +37,10 @@ export interface WalletAccount {
 }
 
 /** TODO: docs */
-export type WalletAccountPropertyNames = ReadonlyArray<NonNullable<PropertyNames<WalletAccount>>>;
+export type WalletAccountPropertyName = NonNullable<PropertyNames<WalletAccount>>;
 
 /** TODO: docs */
-export type WalletAccountProperties = Pick<WalletAccount, WalletAccountPropertyNames[number]>;
+export type WalletAccountProperties = Pick<WalletAccount, WalletAccountPropertyName>;
 
 // TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
@@ -50,7 +50,7 @@ export interface WalletAccountEvents {
      *
      * @param properties Names of the properties that changed.
      */
-    'standard:change'(properties: WalletAccountPropertyNames): void;
+    'standard:change'(properties: ReadonlyArray<WalletAccountPropertyName>): void;
 }
 
 /** TODO: docs */

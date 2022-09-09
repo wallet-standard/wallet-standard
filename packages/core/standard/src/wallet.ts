@@ -60,10 +60,10 @@ export interface Wallet {
 }
 
 /** TODO: docs */
-export type WalletPropertyNames = ReadonlyArray<NonNullable<PropertyNames<Wallet>>>;
+export type WalletPropertyName = NonNullable<PropertyNames<Wallet>>;
 
 /** TODO: docs */
-export type WalletProperties = Pick<Wallet, WalletPropertyNames[number]>;
+export type WalletProperties = Pick<Wallet, WalletPropertyName>;
 
 // TODO: test if this can be extended with custom events
 /** Events emitted by wallets. */
