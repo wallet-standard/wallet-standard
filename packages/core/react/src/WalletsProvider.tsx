@@ -9,7 +9,7 @@ export interface WalletsProviderProps {
 }
 
 /** TODO: docs */
-export const WalletsProvider: FC<WalletsProviderProps> = ({ children }: WalletsProviderProps) => {
+export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
     // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
     const [wallets, setWallets] = useState(() => initialize().get());
 

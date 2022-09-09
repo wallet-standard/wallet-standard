@@ -6,7 +6,7 @@ import { ConnectContext } from './useConnect.js';
 import { useWallet } from './useWallet.js';
 
 /** TODO: docs */
-export interface WalletProviderProps {
+export interface ConnectProviderProps {
     children: NonNullable<ReactNode>;
     onError?: (error: Error) => void;
 }
@@ -17,7 +17,7 @@ export function hasConnectFeature(features: IdentifierRecord<unknown>): features
 }
 
 /** TODO: docs */
-export const ConnectProvider: FC<WalletProviderProps> = ({ children, onError }: WalletProviderProps) => {
+export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError }) => {
     const { features } = useWallet();
 
     // If the window is closing or reloading, ignore errors.

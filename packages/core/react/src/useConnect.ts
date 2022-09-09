@@ -19,6 +19,6 @@ const DEFAULT_CONNECT_CONTEXT = createDefaultContext('Connect', DEFAULT_CONNECT_
 export const ConnectContext = createContext(DEFAULT_CONNECT_CONTEXT);
 
 /** TODO: docs */
-export function useWallet(): ConnectContextState {
+export function useConnect(): ConnectContextState {
     return useContext(ConnectContext);
 }
