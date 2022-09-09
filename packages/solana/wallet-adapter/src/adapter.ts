@@ -22,7 +22,7 @@ import type {
     SolanaSignAndSendTransactionFeature,
 } from '@wallet-standard/features';
 import { getCommitment } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletAccount, WalletPropertyNames } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletPropertyName } from '@wallet-standard/standard';
 import { encode } from 'bs58';
 
 /** TODO: docs */
@@ -174,7 +174,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.#connect(null, null);
     }
 
-    #change = (properties: WalletPropertyNames) => {
+    #change = (properties: ReadonlyArray<WalletPropertyName>) => {
         // If the adapter isn't connected or the change doesn't include accounts, do nothing.
         if (!this.#account || !this.#publicKey || properties.includes('accounts')) return;
 
