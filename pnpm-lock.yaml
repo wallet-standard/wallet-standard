@@ -118,6 +118,7 @@ importers:
     specifiers:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
+      '@wallet-standard/react': workspace:^
       '@wallet-standard/standard': workspace:^
       parcel: ^2.3.2
       process: ^0.11.10
@@ -126,6 +127,7 @@ importers:
       react-router-dom: '6'
       shx: ^0.3.4
     dependencies:
+      '@wallet-standard/react': link:../../core/react
       '@wallet-standard/standard': link:../../core/standard
       process: 0.11.10
       react: 18.2.0

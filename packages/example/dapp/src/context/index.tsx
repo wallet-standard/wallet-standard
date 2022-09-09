@@ -1,6 +1,11 @@
+import { WalletProvider, WalletsProvider } from '@wallet-standard/react';
 import type { FC, ReactNode } from 'react';
 import React from 'react';
 
 export const AppContext: FC<{ children: NonNullable<ReactNode> }> = ({ children }) => {
-    return <>{children}</>;
+    return (
+        <WalletsProvider>
+            <WalletProvider>{children}</WalletProvider>
+        </WalletsProvider>
+    );
 };
