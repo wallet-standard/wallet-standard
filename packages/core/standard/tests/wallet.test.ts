@@ -51,6 +51,7 @@ class GlowSolanaWalletAccount implements WalletAccount {
 
 const wallet = new GlowWallet();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const account = wallet.accounts[0]!;
 
 await wallet.features['standard:connect'].connect();

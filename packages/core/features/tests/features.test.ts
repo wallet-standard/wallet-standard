@@ -1,6 +1,4 @@
 import type {
-    ConnectInput,
-    ConnectOutput,
     Wallet,
     WalletAccount,
     WalletAccountEventNames,
@@ -8,7 +6,7 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import type { SignMessageFeature, SignTransactionFeature } from '..';
+import type { ConnectFeature, SignMessageFeature, SignTransactionFeature } from '..';
 
 type GlowFeature = {
     'glow:': {
@@ -21,7 +19,11 @@ class GlowWallet implements Wallet {
     name = 'Glow';
     icon = `data:image/png;base64,` as const;
     chains = ['solana:mainnet', 'solana:devnet'] as const;
-    features: SignTransactionFeature & SignMessageFeature & GlowFeature = {
+    features: ConnectFeature & SignTransactionFeature & SignMessageFeature & GlowFeature = {
+        'standard:connect': {
+            version: '1.0.0',
+            connect: async () => ({ accounts: this.accounts }),
+        },
         'standard:signTransaction': {
             version: '1.0.0',
             async signTransaction(...inputs) {
@@ -40,10 +42,6 @@ class GlowWallet implements Wallet {
         },
     };
     accounts = [new GlowSolanaWalletAccount()];
-
-    async connect(input?: ConnectInput): Promise<ConnectOutput> {
-        return { accounts: this.accounts };
-    }
 
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -65,8 +63,9 @@ class GlowSolanaWalletAccount implements WalletAccount {
 
 const wallet = new GlowWallet();
 
-await wallet.connect();
-const account = wallet.accounts[0]!;
+const { accounts } = await wallet.features['standard:connect'].connect();
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const account = accounts[0]!;
 
 const [{ signedTransaction }] = await wallet.features['standard:signTransaction'].signTransaction({
     account,

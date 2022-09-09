@@ -129,6 +129,7 @@ export class BackpackSolanaWallet implements Wallet {
         if (address) {
             const account = this.#account;
             if (!account || account.address !== address || !account.chains.includes(chain)) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const publicKey = window.backpack.publicKey!.toBytes();
                 this.#account = new BackpackSolanaWalletAccount(
                     address,

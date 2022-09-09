@@ -1,6 +1,4 @@
 import type {
-    ConnectInput,
-    ConnectOutput,
     Wallet,
     WalletAccount,
     WalletAccountEventNames,
@@ -52,9 +50,6 @@ class FooWallet implements Wallet {
         },
     };
     accounts = [new FooWalletAccount()];
-    async connect(input: ConnectInput): Promise<ConnectOutput> {
-        throw new Error('Method not implemented.');
-    }
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
         throw new Error('Method not implemented.');
     }
@@ -74,7 +69,7 @@ declare const window: WalletsWindow;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const wallet = wallets.get()[0]!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const account = (await wallet.connect({ chains: ['foo:mainnet'] })).accounts[0]!;
+    const account = wallet.accounts[0]!;
 
     if ('foo:signTransaction' in wallet.features) {
         (wallet as Wallet & { features: FooSignTransactionFeature }).features['foo:signTransaction'].signTransaction();

@@ -1,24 +1,24 @@
 import { initialize } from '@wallet-standard/app';
 import type { WalletsWindow } from '@wallet-standard/standard';
-import type { EthereumWalletAccount } from './ethereumWallet.js';
 import { EthereumWallet } from './ethereumWallet.js';
 import type { MultiChainWalletAccount } from './multiChainWallet.js';
 import { MultiChainWallet } from './multiChainWallet.js';
-import type { SolanaWalletAccount } from './solanaWallet.js';
 import { SolanaWallet } from './solanaWallet.js';
 
 (function () {
     // The dapp hasn't loaded yet, so the first wallet to load gets or creates a queue, and registers itself on the window
-    ((window as WalletsWindow<SolanaWalletAccount>).navigator.wallets ||= []).push({
+    ((window as WalletsWindow).navigator.wallets ||= []).push({
         method: 'register',
         wallets: [new SolanaWallet()],
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         callback() {},
     });
 
     // The second wallet does the same thing
-    ((window as WalletsWindow<EthereumWalletAccount>).navigator.wallets ||= []).push({
+    ((window as WalletsWindow).navigator.wallets ||= []).push({
         method: 'register',
         wallets: [new EthereumWallet()],
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         callback() {},
     });
 
@@ -50,9 +50,10 @@ import { SolanaWallet } from './solanaWallet.js';
     // ... time passes, other wallets load ...
 
     // The third wallet to load registers itself on the window
-    ((window as WalletsWindow<MultiChainWalletAccount>).navigator.wallets ||= []).push({
+    ((window as WalletsWindow).navigator.wallets ||= []).push({
         method: 'register',
         wallets: [new MultiChainWallet()],
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         callback() {},
     });
 
