@@ -1,12 +1,17 @@
 import type {
-    Wallet,
     WalletAccount,
     WalletAccountEventNames,
     WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import type { ConnectFeature, SignMessageFeature, SignTransactionFeature } from '..';
+import type {
+    ConnectFeature,
+    SignMessageFeature,
+    SignTransactionFeature,
+    StandardFeatures,
+    WalletWithFeatures,
+} from '..';
 
 type GlowFeature = {
     'glow:': {
@@ -14,7 +19,7 @@ type GlowFeature = {
     };
 };
 
-class GlowWallet implements Wallet {
+class GlowWallet implements WalletWithFeatures<StandardFeatures & GlowFeature> {
     version = '1.0.0' as const;
     name = 'Glow';
     icon = `data:image/png;base64,` as const;
@@ -61,20 +66,33 @@ class GlowSolanaWalletAccount implements WalletAccount {
     }
 }
 
-const wallet = new GlowWallet();
+const wallet: WalletWithFeatures<StandardFeatures & GlowFeature> = new GlowWallet();
 
-const { accounts } = await wallet.features['standard:connect'].connect();
+let accounts: ReadonlyArray<WalletAccount>;
+if ('standard:connect' in wallet.features) {
+    ({ accounts } = await wallet.features['standard:connect'].connect());
+} else {
+    ({ accounts } = wallet);
+}
+
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const account = accounts[0]!;
 
-const [{ signedTransaction }] = await wallet.features['standard:signTransaction'].signTransaction({
-    account,
-    chain: 'solana:devnet',
-    transaction: new Uint8Array(),
-});
-const [{ signedMessage, signature }] = await wallet.features['standard:signMessage'].signMessage({
-    account,
-    message: new Uint8Array(),
-});
+if ('standard:signTransaction' in wallet.features) {
+    const [{ signedTransaction }] = await wallet.features['standard:signTransaction'].signTransaction({
+        account,
+        chain: 'solana:devnet',
+        transaction: new Uint8Array(),
+    });
+}
 
-wallet.features['glow:'].signIn();
+if ('standard:signMessage' in wallet.features) {
+    const [{ signedMessage, signature }] = await wallet.features['standard:signMessage'].signMessage({
+        account,
+        message: new Uint8Array(),
+    });
+}
+
+if ('glow:' in wallet.features) {
+    wallet.features['glow:'].signIn();
+}

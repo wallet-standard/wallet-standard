@@ -7,17 +7,23 @@ import type { SignMessageFeature } from './signMessage.js';
 import type { SignTransactionFeature } from './signTransaction.js';
 import type { SolanaSignAndSendTransactionFeature } from './solanaSignAndSendTransaction.js';
 
-export type WalletWithFeatures<Features extends IdentifierRecord<unknown>> = Wallet & { features: Features };
-
-export type WalletWithStandardFeatures = WalletWithFeatures<
+/** TODO: docs */
+export type StandardFeatures =
     | ConnectFeature
     | DecryptFeature
     | EncryptFeature
     | SignAndSendTransactionFeature
     | SignMessageFeature
     | SignTransactionFeature
-    | SolanaSignAndSendTransactionFeature
->;
+    | SolanaSignAndSendTransactionFeature;
+
+/** TODO: docs */
+export type WalletWithFeatures<Features extends IdentifierRecord<unknown>> = Omit<Wallet, 'features'> & {
+    features: Features;
+};
+
+/** TODO: docs */
+export type WalletWithStandardFeatures = WalletWithFeatures<StandardFeatures>;
 
 export * from './connect.js';
 export * from './decrypt.js';
