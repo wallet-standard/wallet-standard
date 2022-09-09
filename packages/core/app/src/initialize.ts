@@ -8,11 +8,13 @@ import type {
     WalletsWindow,
 } from '@wallet-standard/standard';
 
+declare const window: WalletsWindow;
+
 /** TODO: docs */
 export function initialize(): Wallets {
     if (typeof window === 'undefined') return create();
 
-    const commands = ((window as WalletsWindow).navigator.wallets ||= []);
+    const commands = (window.navigator.wallets ||= []);
     // If it's already initialized, don't recreate it, just return it.
     if (!Array.isArray(commands)) return commands;
 
