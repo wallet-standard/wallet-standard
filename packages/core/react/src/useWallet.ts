@@ -4,10 +4,8 @@ import { createDefaultContext, EMPTY_ARRAY, EMPTY_OBJECT, EMPTY_STRING } from '.
 
 /** TODO: docs */
 export interface WalletContextState extends WalletProperties {
-    wallet: Wallet | undefined;
-    setWallet(wallet: Wallet | undefined): void;
-    connect: Wallet['connect'];
-    connecting: boolean;
+    wallet: Wallet | null;
+    setWallet(wallet: Wallet | null): void;
 }
 
 const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties> = {
@@ -20,13 +18,9 @@ const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties> = {
 } as const;
 
 const DEFAULT_WALLET_STATE: Readonly<WalletContextState> = {
-    wallet: undefined,
+    wallet: null,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     setWallet() {},
-    connecting: false,
-    async connect() {
-        return { accounts: EMPTY_ARRAY };
-    },
     ...DEFAULT_WALLET_PROPERTIES,
 } as const;
 
@@ -41,7 +35,7 @@ export function useWallet(): WalletContextState {
 }
 
 /** @internal */
-export function getWalletProperties(wallet: Wallet | undefined): Readonly<WalletProperties> {
+export function getWalletProperties(wallet: Wallet | null): Readonly<WalletProperties> {
     return wallet
         ? {
               version: wallet.version,
