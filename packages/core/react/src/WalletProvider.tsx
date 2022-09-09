@@ -15,7 +15,7 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children }: WalletProv
         getWalletProperties(wallet)
     );
 
-    // When the wallet changes, set properties and listen for changes
+    // When the wallet changes, set properties and listen for changes.
     useEffect(() => {
         setWalletProperties(getWalletProperties(wallet));
         if (wallet) return wallet.on('standard:change', () => setWalletProperties(getWalletProperties(wallet)));

@@ -34,26 +34,26 @@ export const ConnectProvider: FC<WalletProviderProps> = ({ children, onError }: 
     // Handle errors, logging them by default.
     const handleError = useCallback(
         (error: Error) => {
-            // Call onError unless the window is unloading
+            // Call onError unless the window is unloading.
             if (!isUnloading.current) (onError || console.error)(error);
             return error;
         },
         [isUnloading, onError]
     );
 
-    // Connect to the wallet
+    // Connect to the wallet.
     const [connecting, setConnecting] = useState(false);
     const connectPromise = useRef<any>();
     const connect = useMemo<ConnectMethod | undefined>(
         () =>
             hasConnectFeature(features)
                 ? async (input) => {
-                      // If already connecting, wait for that promise to resolve
+                      // If already connecting, wait for that promise to resolve.
                       if (connectPromise.current) {
                           try {
                               await connectPromise.current;
                           } catch (error: any) {
-                              // Error will already have been handled below
+                              // Error will already have been handled below.
                           }
                       }
 
