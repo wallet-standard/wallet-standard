@@ -1,6 +1,9 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
+/** TODO: docs */
+export type DecryptVersion = '1.0.0';
+
 /**
  * TODO: docs
  * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
@@ -15,7 +18,7 @@ export type DecryptFeature = {
     /** Namespace for the feature. */
     'standard:decrypt': {
         /** Version of the feature API. */
-        version: '1.0.0';
+        version: DecryptVersion;
 
         /** List of ciphers supported for decryption. */
         ciphers: ReadonlyArray<string>;

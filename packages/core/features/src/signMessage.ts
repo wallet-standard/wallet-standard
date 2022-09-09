@@ -1,6 +1,9 @@
 import type { WalletAccount } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 
+/** TODO: docs */
+export type SignMessageVersion = '1.0.0';
+
 /**
  * TODO: docs
  * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
@@ -15,7 +18,7 @@ export type SignMessageFeature = {
     /** Namespace for the feature. */
     'standard:signMessage': {
         /** Version of the feature API. */
-        version: '1.0.0';
+        version: SignMessageVersion;
 
         /** Sign messages (arbitrary bytes) using the account's secret key. */
         signMessage: SignMessageMethod;

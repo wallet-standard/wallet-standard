@@ -1,6 +1,9 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
 import type { SignTransactionInput } from './signTransaction.js';
 
+/** TODO: docs */
+export type SignAndSendTransactionVersion = '1.0.0';
+
 /**
  * TODO: docs
  * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
@@ -18,7 +21,7 @@ export type SignAndSendTransactionFeature = {
     /** Namespace for the feature. */
     'standard:signAndSendTransaction': {
         /** Version of the feature API. */
-        version: '1.0.0';
+        version: SignAndSendTransactionVersion;
 
         /**
          * Sign transactions using the account's secret key and send them to the chain.
