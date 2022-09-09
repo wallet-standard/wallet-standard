@@ -1,6 +1,4 @@
 import type {
-    ConnectInput,
-    ConnectOutput,
     Wallet,
     WalletAccount,
     WalletAccountEventNames,
@@ -15,6 +13,9 @@ class GlowWallet implements Wallet {
     icon = `data:image/png;base64,` as const;
     chains = ['solana:mainnet', 'solana:devnet'] as const;
     features = {
+        'standard:connect': {
+            connect: async () => ({ accounts: this.accounts }),
+        },
         'standard:signTransaction': {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             signTransaction(account: WalletAccount, chain: string, transaction: Uint8Array) {},
@@ -29,10 +30,6 @@ class GlowWallet implements Wallet {
         },
     };
     accounts = [new GlowSolanaWalletAccount()];
-
-    async connect(input?: ConnectInput): Promise<ConnectOutput> {
-        return { accounts: this.accounts };
-    }
 
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -54,8 +51,9 @@ class GlowSolanaWalletAccount implements WalletAccount {
 
 const wallet = new GlowWallet();
 
-await wallet.connect();
 const account = wallet.accounts[0]!;
+
+await wallet.features['standard:connect'].connect();
 
 wallet.features['standard:signTransaction'].signTransaction(account, 'solana', new Uint8Array());
 wallet.features['standard:signMessage'].signMessage(account, new Uint8Array());
