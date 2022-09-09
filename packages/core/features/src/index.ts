@@ -1,4 +1,5 @@
 import type { IdentifierRecord, Wallet } from '@wallet-standard/standard';
+import type { ConnectFeature } from './connect.js';
 import type { DecryptFeature } from './decrypt.js';
 import type { EncryptFeature } from './encrypt.js';
 import type { SignAndSendTransactionFeature } from './signAndSendTransaction.js';
@@ -9,6 +10,7 @@ import type { SolanaSignAndSendTransactionFeature } from './solanaSignAndSendTra
 export type WalletWithFeatures<Features extends IdentifierRecord<unknown>> = Wallet & { features: Features };
 
 export type WalletWithStandardFeatures = WalletWithFeatures<
+    | ConnectFeature
     | DecryptFeature
     | EncryptFeature
     | SignAndSendTransactionFeature
@@ -17,6 +19,7 @@ export type WalletWithStandardFeatures = WalletWithFeatures<
     | SolanaSignAndSendTransactionFeature
 >;
 
+export * from './connect.js';
 export * from './decrypt.js';
 export * from './encrypt.js';
 export * from './signAndSendTransaction.js';

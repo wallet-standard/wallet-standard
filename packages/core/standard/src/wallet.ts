@@ -52,15 +52,6 @@ export interface Wallet {
     accounts: ReadonlyArray<WalletAccount>;
 
     /**
-     * Connect to accounts in the wallet.
-     *
-     * @param input Input for connecting.
-     *
-     * @return Output of connecting.
-     */
-    connect(input?: ConnectInput): Promise<ConnectOutput>;
-
-    /**
      * Add an event listener to subscribe to events.
      *
      * @param event    Event name to listen for.
@@ -85,29 +76,8 @@ export interface WalletEvents {
      *
      * @param properties Names of the properties that changed.
      */
-    'standard:change'(properties: WalletPropertyNames): void;
+    'standard:change'(properties: ReadonlyArray<WalletPropertyName>): void;
 }
 
 /** TODO: docs */
 export type WalletEventNames = keyof WalletEvents;
-
-/** Input for connecting. */
-export interface ConnectInput {
-    /**
-     * Set to true to request the authorized accounts without prompting the user.
-     * The wallet should return only the accounts that the app is already authorized to connect to.
-     */
-    silent?: boolean;
-
-    /** TODO: docs */
-    chains?: IdentifierArray;
-
-    /** TODO: docs */
-    features?: IdentifierArray;
-}
-
-/** Output of connecting. */
-export interface ConnectOutput {
-    /** List of accounts in the wallet that the app has been authorized to use. */
-    accounts: ReadonlyArray<WalletAccount>;
-}
