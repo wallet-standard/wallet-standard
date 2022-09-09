@@ -36,9 +36,9 @@
         //        },
         {
             "path": "./packages/solana/web3.js/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/wallets/backpack/tsconfig.all.json"
         }
-        //        {
-        //            "path": "./packages/wallets/backpack/tsconfig.all.json"
-        //        }
     ]
 }

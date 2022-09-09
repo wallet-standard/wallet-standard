@@ -1,5 +1,7 @@
 import { clusterApiUrl, PublicKey, Transaction } from '@solana/web3.js';
 import type {
+    ConnectFeature,
+    ConnectMethod,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
@@ -10,10 +12,9 @@ import type {
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
 } from '@wallet-standard/features';
-import type { ConnectInput, ConnectOutput, Wallet, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import type { Wallet, WalletEventNames, WalletEvents, WalletPropertyName } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
 import {
-    bytesEqual,
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
@@ -31,12 +32,7 @@ export class BackpackSolanaWallet implements Wallet {
     readonly #version = '1.0.0' as const;
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
-    readonly #chains = [
-        CHAIN_SOLANA_DEVNET,
-        CHAIN_SOLANA_LOCALNET,
-        CHAIN_SOLANA_MAINNET,
-        CHAIN_SOLANA_TESTNET,
-    ] as const;
+    #chain: SolanaChain = CHAIN_SOLANA_MAINNET;
     #account: BackpackSolanaWalletAccount | undefined;
 
     get version() {
@@ -52,11 +48,15 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     get chains() {
-        return this.#chains;
+        return [this.#chain];
     }
 
-    get features(): SolanaSignAndSendTransactionFeature & SignTransactionFeature & SignMessageFeature {
+    get features(): ConnectFeature & SolanaSignAndSendTransactionFeature & SignTransactionFeature & SignMessageFeature {
         return {
+            'standard:connect': {
+                version: '1.0.0',
+                connect: this.#connect,
+            },
             'standard:solanaSignAndSendTransaction': {
                 version: '1.0.0',
                 solanaSignAndSendTransaction: this.#signAndSendTransaction,
@@ -77,24 +77,11 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     constructor() {
-        window.backpack.on('connect', this.#connect);
-        window.backpack.on('disconnect', this.#disconnect);
-        window.backpack.on('connectionDidChange', this.#reconnect);
+        window.backpack.on('connect', this.#connected);
+        window.backpack.on('disconnect', this.#disconnected);
+        window.backpack.on('connectionDidChange', this.#reconnected);
 
-        this.#connect();
-    }
-
-    async connect(input?: ConnectInput): Promise<ConnectOutput> {
-        // TODO: determine if any of these need to be used
-        const { chains, features, silent } = input || {};
-
-        if (!silent && !window.backpack.isConnected) {
-            await window.backpack.connect();
-        }
-
-        this.#connect();
-
-        return { accounts: this.accounts };
+        this.#connected();
     }
 
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
@@ -111,9 +98,8 @@ export class BackpackSolanaWallet implements Wallet {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
-    #connect = () => {
-        const address = window.backpack.publicKey?.toBase58();
-        if (!address) return;
+    #connected = () => {
+        const changes: WalletPropertyName[] = [];
 
         let chain: SolanaChain;
         const endpoint = window.backpack.connection.rpcEndpoint;
@@ -127,28 +113,54 @@ export class BackpackSolanaWallet implements Wallet {
             chain = CHAIN_SOLANA_MAINNET;
         }
 
-        const publicKey = window.backpack.publicKey!.toBytes();
+        if (chain !== this.#chain) {
+            this.#chain = chain;
+            changes.push('chains');
+        }
 
-        const account = this.#account;
-        if (!account || account.chain !== chain || !bytesEqual(account.publicKey, publicKey)) {
-            this.#account = new BackpackSolanaWalletAccount(publicKey, chain);
-            this.#emit('standard:change', ['accounts']);
+        const address = window.backpack.publicKey?.toBase58();
+        if (address) {
+            const account = this.#account;
+            if (!account || account.address !== address || !account.chains.includes(chain)) {
+                const publicKey = window.backpack.publicKey!.toBytes();
+                this.#account = new BackpackSolanaWalletAccount(
+                    address,
+                    publicKey,
+                    [chain],
+                    ['standard:solanaSignAndSendTransaction', 'standard:signTransaction', 'standard:signMessage']
+                );
+                changes.push('accounts');
+            }
+        }
+
+        if (changes.length) {
+            this.#emit('standard:change', changes);
         }
     };
 
-    #disconnect = () => {
+    #disconnected = () => {
         if (this.#account) {
             this.#account = undefined;
             this.#emit('standard:change', ['accounts']);
         }
     };
 
-    #reconnect = () => {
+    #reconnected = () => {
         if (window.backpack.publicKey) {
-            this.#connect();
+            this.#connected();
         } else {
-            this.#disconnect();
+            this.#disconnected();
         }
+    };
+
+    #connect: ConnectMethod = async (input) => {
+        if (!input?.silent && !window.backpack.isConnected) {
+            await window.backpack.connect();
+        }
+
+        this.#connected();
+
+        return { accounts: this.accounts };
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
@@ -215,13 +227,10 @@ export class BackpackSolanaWallet implements Wallet {
                 }),
             });
         } else if (inputs.length > 1) {
-            const transactions = inputs.map(({ account, transaction }) => [
-                account.publicKey,
-                Transaction.from(transaction),
-            ]);
+            // FIXME: transactions can have different accounts and chains
             const signedTransactions = await window.backpack.signAllTransactions(
                 transactions,
-                new PublicKey(this.publicKey)
+                new PublicKey(account.publicKey)
             );
 
             outputs.push(
