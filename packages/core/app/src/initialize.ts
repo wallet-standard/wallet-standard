@@ -1,6 +1,5 @@
 import type {
     Wallet,
-    WalletAccount,
     Wallets,
     WalletsCommand,
     WalletsEventNames,

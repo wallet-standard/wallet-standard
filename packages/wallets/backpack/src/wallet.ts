@@ -26,7 +26,6 @@ import {
     CHAIN_SOLANA_MAINNET,
     CHAIN_SOLANA_TESTNET,
 } from '@wallet-standard/util';
-import { bytesEqual } from '@wallet-standard/util/src';
 import { decode } from 'bs58';
 import { BackpackSolanaWalletAccount } from './account.js';
 import type { BackpackWindow } from './backpack.js';

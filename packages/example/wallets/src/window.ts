@@ -1,7 +1,6 @@
 import { initialize } from '@wallet-standard/app';
 import type { WalletsWindow } from '@wallet-standard/standard';
 import { EthereumWallet } from './ethereumWallet.js';
-import type { MultiChainWalletAccount } from './multiChainWallet.js';
 import { MultiChainWallet } from './multiChainWallet.js';
 import { SolanaWallet } from './solanaWallet.js';
 

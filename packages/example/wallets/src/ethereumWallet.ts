@@ -15,8 +15,7 @@ import type {
     SignTransactionMethod,
     SignTransactionOutput,
 } from '@wallet-standard/features';
-import type { Wallet, WalletAccount } from '@wallet-standard/standard';
-import type { IdentifierArray } from '@wallet-standard/standard';
+import type { IdentifierArray, Wallet, WalletAccount } from '@wallet-standard/standard';
 import type { UnionToIntersection } from '@wallet-standard/types';
 import { CHAIN_ETHEREUM, CIPHER_x25519_xsalsa20_poly1305, pick } from '@wallet-standard/util';
 import ethers from 'ethers';
