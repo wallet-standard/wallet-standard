@@ -1,0 +1,28 @@
+{
+    "private": true,
+    "name": "@wallet-standard/example-dapp",
+    "version": "0.1.0",
+    "author": "Exodus Maintainers <maintainers@exodus.io>",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
+    "license": "Apache-2.0",
+    "source": "src/index.html",
+    "scripts": {
+        "clean": "shx mkdir -p .parcel-cache dist lib && shx rm -rf .parcel-cache dist lib",
+        "start": "parcel --host localhost --port 3001",
+        "build": "parcel build"
+    },
+    "dependencies": {
+        "@wallet-standard/react": "workspace:^",
+        "@wallet-standard/standard": "workspace:^",
+        "process": "^0.11.10",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "6"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "parcel": "^2.3.2",
+        "shx": "^0.3.4"
+    }
+}

@@ -179,6 +179,8 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
             }
         });
 
+        this.#emit('change', ['accounts']);
+
         return {
             accounts: this.accounts as any,
             hasMoreAccounts: false,
@@ -191,6 +193,14 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
     ): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
+    }
+
+    #emit<E extends WalletEventNames<MultiChainWalletAccount>>(
+        event: E,
+        ...args: Parameters<WalletEvents<MultiChainWalletAccount>[E]>
+    ): void {
+        // eslint-disable-next-line prefer-spread
+        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
     #off<E extends WalletEventNames<MultiChainWalletAccount>>(
