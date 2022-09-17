@@ -1,47 +1,26 @@
-import type {
-    ConfirmOptions,
-    Connection,
-    PublicKey,
-    SendOptions,
-    Signer,
-    Transaction,
-    TransactionSignature,
-} from '@solana/web3.js';
+import type { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
-export interface BackpackWindow extends Window {
-    backpack: Backpack;
+export interface SolflareWindow extends Window {
+    solflare: Solflare;
 }
 
-export interface BackpackEvents {
+export interface SolflareEvents {
     connect(): void;
     disconnect(): void;
     connectionDidChange(): void;
 }
 
-export interface Backpack {
+export interface Solflare {
     isConnected: boolean;
     publicKey: PublicKey | undefined;
-    connection: Connection;
+    connection: Connection | undefined;
     connect(): Promise<void>;
     disconnect(): Promise<void>;
-    sendAndConfirm(
-        tx: Transaction,
-        signers?: Signer[],
-        options?: ConfirmOptions,
-        connection?: Connection,
-        publicKey?: PublicKey
-    ): Promise<TransactionSignature>;
-    send(
-        tx: Transaction,
-        signers?: Signer[],
-        options?: SendOptions,
-        connection?: Connection,
-        publicKey?: PublicKey
-    ): Promise<TransactionSignature>;
     signTransaction(tx: Transaction, publicKey?: PublicKey): Promise<Transaction>;
     signAllTransactions(txs: Array<Transaction>, publicKey?: PublicKey): Promise<Array<Transaction>>;
     signMessage(msg: Uint8Array, publicKey?: PublicKey): Promise<Uint8Array>;
 
-    on<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context: any): void;
-    off<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context: any): void;
+    on<E extends keyof SolflareEvents>(event: E, listener: SolflareEvents[E], context: any): void;
+    off<E extends keyof SolflareEvents>(event: E, listener: SolflareEvents[E], context: any): void;
+    once<E extends keyof SolflareEvents>(event: E, listener: SolflareEvents[E], context: any): void;
 }

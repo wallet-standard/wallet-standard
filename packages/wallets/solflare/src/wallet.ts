@@ -29,12 +29,12 @@ import {
     CHAIN_SOLANA_TESTNET,
 } from '@wallet-standard/util';
 import { decode } from 'bs58';
-import type { BackpackWindow } from './solflare.js';
+import type { SolflareWindow } from './solflare.js';
 import { icon } from './icon.js';
 
-declare const window: BackpackWindow;
+declare const window: SolflareWindow;
 
-export class BackpackSolanaWalletAccount implements WalletAccount {
+export class SolflareSolanaWalletAccount implements WalletAccount {
     readonly #publicKey: Uint8Array;
     readonly #chain: SolanaChain;
 
@@ -85,8 +85,9 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
             const transaction = Transaction.from(input.transaction);
             const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = input.options || {};
 
+            // TODO: sign and send transaction
             const signature = commitment
-                ? await window.backpack.sendAndConfirm(
+                ? await window.solflare.sendAndConfirm(
                       transaction,
                       [],
                       {
@@ -99,7 +100,7 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
                       undefined,
                       new PublicKey(this.publicKey)
                   )
-                : await window.backpack.send(
+                : await window.solflare.send(
                       transaction,
                       [],
                       {
@@ -128,7 +129,7 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const transaction = Transaction.from(inputs[0]!.transaction);
-            const signedTransaction = await window.backpack.signTransaction(transaction, new PublicKey(this.publicKey));
+            const signedTransaction = await window.solflare.signTransaction(transaction, new PublicKey(this.publicKey));
 
             outputs.push({
                 signedTransaction: signedTransaction.serialize({
@@ -138,7 +139,7 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
             });
         } else if (inputs.length > 1) {
             const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
-            const signedTransactions = await window.backpack.signAllTransactions(
+            const signedTransactions = await window.solflare.signAllTransactions(
                 transactions,
                 new PublicKey(this.publicKey)
             );
@@ -162,7 +163,7 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const signedMessage = inputs[0]!.message;
-            const signature = await window.backpack.signMessage(signedMessage, new PublicKey(this.publicKey));
+            const signature = await window.solflare.signMessage(signedMessage, new PublicKey(this.publicKey));
 
             outputs.push({ signedMessage, signature });
         } else if (inputs.length > 1) {
@@ -175,18 +176,18 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
     };
 }
 
-export class BackpackSolanaWallet implements Wallet<BackpackSolanaWalletAccount> {
+export class SolflareSolanaWallet implements Wallet<SolflareSolanaWalletAccount> {
     #listeners: {
-        [E in WalletEventNames<BackpackSolanaWalletAccount>]?: WalletEvents<BackpackSolanaWalletAccount>[E][];
+        [E in WalletEventNames<SolflareSolanaWalletAccount>]?: WalletEvents<SolflareSolanaWalletAccount>[E][];
     } = {};
-    #account: BackpackSolanaWalletAccount | undefined;
+    #account: SolflareSolanaWalletAccount | undefined;
 
     get version() {
         return '1.0.0' as const;
     }
 
     get name() {
-        return 'Backpack';
+        return 'Solflare';
     }
 
     get icon() {
@@ -214,24 +215,24 @@ export class BackpackSolanaWallet implements Wallet<BackpackSolanaWalletAccount>
     }
 
     constructor() {
-        window.backpack.on('connect', this._connect, this);
-        window.backpack.on('disconnect', this._disconnect, this);
-        window.backpack.on('connectionDidChange', this._reconnect, this);
+        window.solflare.on('connect', this._connect, this);
+        window.solflare.on('disconnect', this._disconnect, this);
+        window.solflare.on('connectionDidChange', this._reconnect, this);
 
         this._connect();
     }
 
     async connect<
-        Chain extends BackpackSolanaWalletAccount['chain'],
-        FeatureName extends WalletAccountFeatureName<BackpackSolanaWalletAccount>,
-        ExtensionName extends WalletAccountExtensionName<BackpackSolanaWalletAccount>,
-        Input extends ConnectInput<BackpackSolanaWalletAccount, Chain, FeatureName, ExtensionName>
-    >(input?: Input): Promise<ConnectOutput<BackpackSolanaWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
+        Chain extends SolflareSolanaWalletAccount['chain'],
+        FeatureName extends WalletAccountFeatureName<SolflareSolanaWalletAccount>,
+        ExtensionName extends WalletAccountExtensionName<SolflareSolanaWalletAccount>,
+        Input extends ConnectInput<SolflareSolanaWalletAccount, Chain, FeatureName, ExtensionName>
+    >(input?: Input): Promise<ConnectOutput<SolflareSolanaWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
         // TODO: determine if any of these need to be used
         const { chains, features, extensions, addresses, silent } = input || {};
 
-        if (!silent && !window.backpack.isConnected) {
-            await window.backpack.connect();
+        if (!silent && !window.solflare.isConnected) {
+            await window.solflare.connect();
         }
 
         this._connect();
@@ -242,35 +243,35 @@ export class BackpackSolanaWallet implements Wallet<BackpackSolanaWalletAccount>
         };
     }
 
-    on<E extends WalletEventNames<BackpackSolanaWalletAccount>>(
+    on<E extends WalletEventNames<SolflareSolanaWalletAccount>>(
         event: E,
-        listener: WalletEvents<BackpackSolanaWalletAccount>[E]
+        listener: WalletEvents<SolflareSolanaWalletAccount>[E]
     ): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
     }
 
-    #emit<E extends WalletEventNames<BackpackSolanaWalletAccount>>(
+    #emit<E extends WalletEventNames<SolflareSolanaWalletAccount>>(
         event: E,
-        ...args: Parameters<WalletEvents<BackpackSolanaWalletAccount>[E]>
+        ...args: Parameters<WalletEvents<SolflareSolanaWalletAccount>[E]>
     ): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventNames<BackpackSolanaWalletAccount>>(
+    #off<E extends WalletEventNames<SolflareSolanaWalletAccount>>(
         event: E,
-        listener: WalletEvents<BackpackSolanaWalletAccount>[E]
+        listener: WalletEvents<SolflareSolanaWalletAccount>[E]
     ): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
     private _connect(): void {
-        const publicKey = window.backpack.publicKey?.toBytes();
+        const publicKey = window.solflare.publicKey?.toBytes();
         if (!publicKey) return;
 
         let chain: SolanaChain;
-        const endpoint = window.backpack.connection.rpcEndpoint;
+        const endpoint = window.solflare.connection?.rpcEndpoint;
         if (endpoint === clusterApiUrl('devnet')) {
             chain = CHAIN_SOLANA_DEVNET;
         } else if (endpoint === clusterApiUrl('testnet')) {
@@ -283,7 +284,7 @@ export class BackpackSolanaWallet implements Wallet<BackpackSolanaWalletAccount>
 
         const account = this.#account;
         if (!account || account.chain !== chain || !bytesEqual(account.publicKey, publicKey)) {
-            this.#account = new BackpackSolanaWalletAccount(publicKey, chain);
+            this.#account = new SolflareSolanaWalletAccount(publicKey, chain);
             this.#emit('change', ['accounts', 'chains']);
         }
     }
@@ -296,7 +297,7 @@ export class BackpackSolanaWallet implements Wallet<BackpackSolanaWalletAccount>
     }
 
     private _reconnect(): void {
-        if (window.backpack.publicKey) {
+        if (window.solflare.publicKey) {
             this._connect();
         } else {
             this._disconnect();
