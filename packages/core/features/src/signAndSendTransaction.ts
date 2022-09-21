@@ -1,3 +1,4 @@
+import type { IdentifierString } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
 import type { SignTransactionInput } from './signTransaction.js';
 
@@ -35,7 +36,10 @@ export type SignAndSendTransactionFeature = {
 };
 
 /** Input for signing and sending transactions. */
-export interface SignAndSendTransactionInput extends SignTransactionInput {}
+export interface SignAndSendTransactionInput extends SignTransactionInput {
+    /** Chain to use. */
+    chain: IdentifierString;
+}
 
 /** Output of signing and sending transactions. */
 export interface SignAndSendTransactionOutput {

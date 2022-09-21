@@ -5,6 +5,7 @@ import type { EncryptFeature } from './encrypt.js';
 import type { SignAndSendTransactionFeature } from './signAndSendTransaction.js';
 import type { SignMessageFeature } from './signMessage.js';
 import type { SignTransactionFeature } from './signTransaction.js';
+import type { SolanaSignTransactionFeature } from './solanaSignTransaction.js';
 import type { SolanaSignAndSendTransactionFeature } from './solanaSignAndSendTransaction.js';
 
 /** TODO: docs */
@@ -15,6 +16,7 @@ export type StandardFeatures =
     | SignAndSendTransactionFeature
     | SignMessageFeature
     | SignTransactionFeature
+    | SolanaSignTransactionFeature
     | SolanaSignAndSendTransactionFeature;
 
 /** TODO: docs */
@@ -31,4 +33,5 @@ export * from './encrypt.js';
 export * from './signAndSendTransaction.js';
 export * from './signMessage.js';
 export * from './signTransaction.js';
+export * from './solanaSignTransaction.js';
 export * from './solanaSignAndSendTransaction.js';

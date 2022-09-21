@@ -30,11 +30,11 @@ export interface SignTransactionInput {
     /** Account to use. */
     account: WalletAccount;
 
-    /** Chain to use. */
-    chain: IdentifierString;
-
     /** Serialized transactions, as raw bytes. */
     transaction: Uint8Array;
+
+    /** Chain to use. */
+    chain?: IdentifierString;
 }
 
 /** Output of signing a transaction. */
