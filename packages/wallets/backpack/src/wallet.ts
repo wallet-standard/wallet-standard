@@ -1,17 +1,18 @@
-import { clusterApiUrl, PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
-    SignTransactionFeature,
-    SignTransactionMethod,
-    SignTransactionOutput,
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
+    SolanaSignTransactionFeature,
+    SolanaSignTransactionMethod,
+    SolanaSignTransactionOutput,
 } from '@wallet-standard/features';
+import { getChainForEndpoint } from '@wallet-standard/solana-web3.js';
 import type {
     Wallet,
     WalletAccount,
@@ -20,12 +21,7 @@ import type {
     WalletPropertyName,
 } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
-import {
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_LOCALNET,
-    CHAIN_SOLANA_MAINNET,
-    CHAIN_SOLANA_TESTNET,
-} from '@wallet-standard/util';
+import { bytesEqual, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { BackpackSolanaWalletAccount } from './account.js';
 import type { BackpackWindow } from './backpack.js';
@@ -57,7 +53,10 @@ export class BackpackSolanaWallet implements Wallet {
         return [this.#chain];
     }
 
-    get features(): ConnectFeature & SolanaSignAndSendTransactionFeature & SignTransactionFeature & SignMessageFeature {
+    get features(): ConnectFeature &
+        SolanaSignAndSendTransactionFeature &
+        SolanaSignTransactionFeature &
+        SignMessageFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
@@ -67,9 +66,9 @@ export class BackpackSolanaWallet implements Wallet {
                 version: '1.0.0',
                 solanaSignAndSendTransaction: this.#signAndSendTransaction,
             },
-            'standard:signTransaction': {
+            'standard:solanaSignTransaction': {
                 version: '1.0.0',
-                signTransaction: this.#signTransaction,
+                solanaSignTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
                 version: '1.0.0',
@@ -105,43 +104,38 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     #connected = () => {
-        const changes: WalletPropertyName[] = [];
+        const properties: WalletPropertyName[] = [];
 
-        let chain: SolanaChain;
-        const endpoint = window.backpack.connection.rpcEndpoint;
-        if (endpoint === clusterApiUrl('devnet')) {
-            chain = CHAIN_SOLANA_DEVNET;
-        } else if (endpoint === clusterApiUrl('testnet')) {
-            chain = CHAIN_SOLANA_TESTNET;
-        } else if (/^https?:\/\/localhost[:/]/.test(endpoint)) {
-            chain = CHAIN_SOLANA_LOCALNET;
-        } else {
-            chain = CHAIN_SOLANA_MAINNET;
-        }
-
+        const chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
         if (chain !== this.#chain) {
             this.#chain = chain;
-            changes.push('chains');
+            properties.push('chains');
         }
 
         const address = window.backpack.publicKey?.toBase58();
         if (address) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const publicKey = window.backpack.publicKey!.toBytes();
+
             const account = this.#account;
-            if (!account || account.address !== address || !account.chains.includes(chain)) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const publicKey = window.backpack.publicKey!.toBytes();
+            if (
+                !account ||
+                account.address !== address ||
+                !bytesEqual(account.publicKey, publicKey) ||
+                !account.chains.includes(chain)
+            ) {
                 this.#account = new BackpackSolanaWalletAccount(
                     address,
                     publicKey,
                     [chain],
-                    ['standard:solanaSignAndSendTransaction', 'standard:signTransaction', 'standard:signMessage']
+                    ['standard:solanaSignAndSendTransaction', 'standard:solanaSignTransaction', 'standard:signMessage']
                 );
-                changes.push('accounts');
+                properties.push('accounts');
             }
         }
 
-        if (changes.length) {
-            this.#emit('standard:change', changes);
+        if (properties.length) {
+            this.#emit('standard:change', properties);
         }
     };
 
@@ -217,8 +211,8 @@ export class BackpackSolanaWallet implements Wallet {
         return outputs as any;
     };
 
-    #signTransaction: SignTransactionMethod = async (...inputs) => {
-        const outputs: SignTransactionOutput[] = [];
+    #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
+        const outputs: SolanaSignTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
