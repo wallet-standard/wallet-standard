@@ -177,6 +177,8 @@ export class BackpackSolanaWallet implements Wallet {
             const publicKey = new PublicKey(input.account.publicKey);
             const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = input.options || {};
 
+            // TODO: input.account.chain could require a different connection than window.backpack.connection
+
             const signature = commitment
                 ? await window.backpack.sendAndConfirm(
                       transaction,
