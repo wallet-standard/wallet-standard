@@ -34,8 +34,8 @@ export class BackpackSolanaWallet implements Wallet {
     readonly #version = '1.0.0' as const;
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
-    #chain: SolanaChain = CHAIN_SOLANA_MAINNET;
-    #account: BackpackSolanaWalletAccount | undefined;
+    #chain: SolanaChain;
+    #account: BackpackSolanaWalletAccount | null;
 
     get version() {
         return this.#version;
@@ -82,6 +82,9 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     constructor() {
+        this.#chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
+        this.#account = null;
+
         window.backpack.on('connect', this.#connected);
         window.backpack.on('disconnect', this.#disconnected);
         window.backpack.on('connectionDidChange', this.#reconnected);
@@ -141,7 +144,7 @@ export class BackpackSolanaWallet implements Wallet {
 
     #disconnected = () => {
         if (this.#account) {
-            this.#account = undefined;
+            this.#account = null;
             this.#emit('standard:change', ['accounts']);
         }
     };
