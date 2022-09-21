@@ -7,6 +7,18 @@ import {
     CHAIN_SOLANA_TESTNET,
 } from '@wallet-standard/util';
 
+export function getChainForEndpoint(endpoint: string): SolanaChain {
+    if (endpoint === clusterApiUrl('devnet')) {
+        return CHAIN_SOLANA_DEVNET;
+    } else if (endpoint === clusterApiUrl('testnet')) {
+        return CHAIN_SOLANA_TESTNET;
+    } else if (/^https?:\/\/localhost[:/]/.test(endpoint)) {
+        return CHAIN_SOLANA_LOCALNET;
+    } else {
+        return CHAIN_SOLANA_MAINNET;
+    }
+}
+
 export function getEndpointForChain(chain: SolanaChain, endpoint?: string): string {
     if (!endpoint) {
         if (chain === CHAIN_SOLANA_MAINNET) {
