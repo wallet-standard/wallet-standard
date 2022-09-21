@@ -81,3 +81,19 @@ export abstract class AbstractWallet implements Wallet {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }
+
+export abstract class PossiblyLedgerWalletAccount extends AbstractWalletAccount {
+    abstract readonly ledger: boolean;
+}
+
+export class SignerWalletAccount extends PossiblyLedgerWalletAccount {
+    get ledger() {
+        return false;
+    }
+}
+
+export class LedgerWalletAccount extends PossiblyLedgerWalletAccount {
+    get ledger() {
+        return true;
+    }
+}

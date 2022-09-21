@@ -1,7 +1,6 @@
 import { initialize } from '@wallet-standard/app';
 import type { WalletsWindow } from '@wallet-standard/standard';
 import { EthereumWallet } from './ethereumWallet.js';
-import { MultiChainWallet } from './multiChainWallet.js';
 import { SolanaWallet } from './solanaWallet.js';
 
 declare const window: WalletsWindow;
@@ -11,14 +10,6 @@ declare const window: WalletsWindow;
     (window.navigator.wallets ||= []).push({
         method: 'register',
         wallets: [new SolanaWallet()],
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        callback() {},
-    });
-
-    // The second wallet does the same thing
-    (window.navigator.wallets ||= []).push({
-        method: 'register',
-        wallets: [new EthereumWallet()],
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         callback() {},
     });
@@ -50,10 +41,10 @@ declare const window: WalletsWindow;
 
     // ... time passes, other wallets load ...
 
-    // The third wallet to load registers itself on the window
+    // The second wallet to load registers itself on the window
     (window.navigator.wallets ||= []).push({
         method: 'register',
-        wallets: [new MultiChainWallet()],
+        wallets: [new EthereumWallet()],
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         callback() {},
     });
