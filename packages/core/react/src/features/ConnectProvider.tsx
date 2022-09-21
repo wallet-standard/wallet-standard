@@ -2,8 +2,8 @@ import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
 import type { IdentifierRecord } from '@wallet-standard/standard';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ConnectContext } from './useConnect.js';
 import { useWallet } from '../useWallet.js';
+import { ConnectContext } from './useConnect.js';
 
 /** TODO: docs */
 export interface ConnectProviderProps {

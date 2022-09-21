@@ -5,8 +5,8 @@ import type { EncryptFeature } from './encrypt.js';
 import type { SignAndSendTransactionFeature } from './signAndSendTransaction.js';
 import type { SignMessageFeature } from './signMessage.js';
 import type { SignTransactionFeature } from './signTransaction.js';
-import type { SolanaSignTransactionFeature } from './solanaSignTransaction.js';
 import type { SolanaSignAndSendTransactionFeature } from './solanaSignAndSendTransaction.js';
+import type { SolanaSignTransactionFeature } from './solanaSignTransaction.js';
 
 /** TODO: docs */
 export type StandardFeatures =
