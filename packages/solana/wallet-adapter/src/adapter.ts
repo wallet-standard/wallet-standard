@@ -179,8 +179,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         // If the adapter isn't connected or the change doesn't include accounts, do nothing.
         if (!this.#account || !this.#publicKey || properties.includes('accounts')) return;
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const account = this.#wallet.accounts[0]!;
+        const account = this.#wallet.accounts[0];
         // If there's no connected account, disconnect the adapter.
         if (!account) {
             this.#disconnected();
