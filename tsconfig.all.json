@@ -19,21 +19,21 @@
         {
             "path": "./packages/core/util/tsconfig.all.json"
         },
-        //        {
-        //            "path": "./packages/example/react/tsconfig.all.json"
-        //        },
-        //        {
-        //            "path": "./packages/example/solana-wallet-adapter/tsconfig.all.json"
-        //        },
-        //        {
-        //            "path": "./packages/example/wallets/tsconfig.all.json"
-        //        },
-        //        {
-        //            "path": "./packages/solana/wallet-adapter/tsconfig.all.json"
-        //        },
-        //        {
-        //            "path": "./packages/solana/wallet-adapter-react/tsconfig.all.json"
-        //        },
+        {
+            "path": "./packages/example/react/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/example/solana-wallet-adapter/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/example/wallets/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/solana/wallet-adapter/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/solana/wallet-adapter-react/tsconfig.all.json"
+        },
         {
             "path": "./packages/solana/web3.js/tsconfig.all.json"
         },
