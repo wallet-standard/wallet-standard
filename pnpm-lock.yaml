@@ -291,12 +291,14 @@ importers:
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
       bs58: ^4.0.1
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-web3.js': link:../../solana/web3.js
       '@wallet-standard/standard': link:../../core/standard
       '@wallet-standard/util': link:../../core/util
     devDependencies:
