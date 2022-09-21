@@ -11,6 +11,9 @@
             "path": "../../core/util/tsconfig.all.json"
         },
         {
+            "path": "../../solana/web3.js/tsconfig.all.json"
+        },
+        {
             "path": "./tsconfig.cjs.json"
         },
         {

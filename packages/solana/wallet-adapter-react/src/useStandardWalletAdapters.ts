@@ -1,7 +1,6 @@
 import type { Adapter } from '@solana/wallet-adapter-base';
 import { initialize } from '@wallet-standard/app';
 import { isStandardWalletAdapterCompatibleWallet, StandardWalletAdapter } from '@wallet-standard/solana-wallet-adapter';
-import type { WalletAccount } from '@wallet-standard/standard';
 import { useEffect, useState } from 'react';
 
 export function useStandardWalletAdapters(wallets: Adapter[]): Adapter[] {
@@ -10,7 +9,7 @@ export function useStandardWalletAdapters(wallets: Adapter[]): Adapter[] {
 
     useEffect(() => {
         // Initialize the `window.navigator.wallets` interface.
-        const wallets = initialize<WalletAccount>();
+        const wallets = initialize();
         // Get wallets that have been registered already that can be wrapped as adapters.
         const filtered = wallets.get().filter(isStandardWalletAdapterCompatibleWallet);
 

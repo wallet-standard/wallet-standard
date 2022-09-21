@@ -1,4 +1,9 @@
+import type { IdentifierString } from '@wallet-standard/standard';
 import type { AsyncMapFunction } from '@wallet-standard/types';
+import type { SignTransactionInput } from './signTransaction.js';
+
+/** TODO: docs */
+export type SignAndSendTransactionVersion = '1.0.0';
 
 /**
  * TODO: docs
@@ -13,11 +18,11 @@ export declare const signAndSendTransactionMethod: AsyncMapFunction<
 export type SignAndSendTransactionMethod = typeof signAndSendTransactionMethod;
 
 /** TODO: docs */
-export type SignAndSendTransactionFeature = Readonly<{
+export type SignAndSendTransactionFeature = {
     /** Namespace for the feature. */
-    signAndSendTransaction: {
+    'standard:signAndSendTransaction': {
         /** Version of the feature API. */
-        version: '1.0.0';
+        version: SignAndSendTransactionVersion;
 
         /**
          * Sign transactions using the account's secret key and send them to the chain.
@@ -28,16 +33,16 @@ export type SignAndSendTransactionFeature = Readonly<{
          */
         signAndSendTransaction: SignAndSendTransactionMethod;
     };
-}>;
+};
 
 /** Input for signing and sending transactions. */
-export type SignAndSendTransactionInput = Readonly<{
-    /** Serialized transaction, as raw bytes. */
-    transaction: Uint8Array;
-}>;
+export interface SignAndSendTransactionInput extends SignTransactionInput {
+    /** Chain to use. */
+    chain: IdentifierString;
+}
 
 /** Output of signing and sending transactions. */
-export type SignAndSendTransactionOutput = Readonly<{
+export interface SignAndSendTransactionOutput {
     /** Transaction signature, as raw bytes. */
     signature: Uint8Array;
-}>;
+}

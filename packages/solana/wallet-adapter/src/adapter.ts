@@ -16,38 +16,42 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import type { SignMessageFeature, SignTransactionFeature, SolanaFeature } from '@wallet-standard/features';
-import { getCommitment } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletAccount, WalletPropertyNames } from '@wallet-standard/standard';
+import type {
+    ConnectFeature,
+    SignMessageFeature,
+    SolanaSignAndSendTransactionFeature,
+    SolanaSignTransactionFeature,
+    WalletWithFeatures,
+} from '@wallet-standard/features';
+import { getChainForEndpoint, getCommitment } from '@wallet-standard/solana-web3.js';
+import type { Wallet, WalletAccount, WalletPropertyName } from '@wallet-standard/standard';
 import { encode } from 'bs58';
 
 /** TODO: docs */
-export interface StandardWalletAdapterAccount extends WalletAccount {
-    features: SolanaFeature & (SignTransactionFeature | SignMessageFeature);
-}
+export type StandardWalletAdapterWallet = WalletWithFeatures<
+    ConnectFeature & SolanaSignAndSendTransactionFeature & (SolanaSignTransactionFeature | SignMessageFeature)
+>;
 
 /** TODO: docs */
-export function isStandardWalletAdapterCompatibleWallet(
-    wallet: Wallet<WalletAccount>
-): wallet is Wallet<StandardWalletAdapterAccount> {
-    return wallet.features.includes('solana');
+export function isStandardWalletAdapterCompatibleWallet(wallet: Wallet): wallet is StandardWalletAdapterWallet {
+    return 'standard:connect' in wallet.features && 'standard:solanaSignAndSendTransaction' in wallet.features;
 }
 
 /** TODO: docs */
 export interface StandardWalletAdapterConfig {
-    wallet: Wallet<StandardWalletAdapterAccount>;
+    wallet: StandardWalletAdapterWallet;
 }
 
 /** TODO: docs */
 export type StandardAdapter = WalletAdapter & {
-    wallet: Wallet<StandardWalletAdapterAccount>;
+    wallet: StandardWalletAdapterWallet;
     standard: true;
 };
 
 /** TODO: docs */
 export class StandardWalletAdapter extends BaseWalletAdapter implements StandardAdapter {
-    readonly #wallet: Wallet<StandardWalletAdapterAccount>;
-    #account: StandardWalletAdapterAccount | null;
+    readonly #wallet: StandardWalletAdapterWallet;
+    #account: WalletAccount | null;
     #publicKey: PublicKey | null;
     #connecting: boolean;
     #off: (() => void) | undefined;
@@ -80,7 +84,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         return this.#readyState;
     }
 
-    get wallet(): Wallet<StandardWalletAdapterAccount> {
+    get wallet(): StandardWalletAdapterWallet {
         return this.#wallet;
     }
 
@@ -105,7 +109,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
 
             if (!this.#wallet.accounts.length) {
                 try {
-                    await this.#wallet.connect();
+                    await this.#wallet.features['standard:connect'].connect();
                 } catch (error: any) {
                     throw new WalletConnectionError(error?.message, error);
                 }
@@ -115,6 +119,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const account = this.#wallet.accounts[0]!;
 
+            // TODO: account selection?
+
             let publicKey: PublicKey;
             try {
                 publicKey = new PublicKey(account.publicKey);
@@ -122,8 +128,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                 throw new WalletPublicKeyError(error?.message, error);
             }
 
-            this.#off = this.#wallet.on('change', this.#change);
-            this.#connect(account, publicKey);
+            this.#off = this.#wallet.on('standard:change', this.#changed);
+            this.#connected(account, publicKey);
             this.emit('connect', publicKey);
         } catch (error: any) {
             this.emit('error', error);
@@ -134,17 +140,17 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     }
 
     async disconnect(): Promise<void> {
-        this.#disconnect();
+        this.#disconnected();
         this.emit('disconnect');
     }
 
-    #connect(account: StandardWalletAdapterAccount, publicKey: PublicKey): void;
-    #connect(account: null, publicKey: null): void;
-    #connect(account: StandardWalletAdapterAccount | null, publicKey: PublicKey | null) {
+    #connected(account: WalletAccount, publicKey: PublicKey): void;
+    #connected(account: null, publicKey: null): void;
+    #connected(account: WalletAccount | null, publicKey: PublicKey | null) {
         this.#account = account;
         this.#publicKey = publicKey;
 
-        if (account && 'signTransaction' in account.features) {
+        if (account && 'standard:solanaSignTransaction' in account.features) {
             this.signTransaction = this.#signTransaction;
             this.signAllTransactions = this.#signAllTransactions;
         } else {
@@ -152,32 +158,31 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             this.signAllTransactions = undefined;
         }
 
-        if (account && 'signMessage' in account.features) {
+        if (account && 'standard:signMessage' in account.features) {
             this.signMessage = this.#signMessage;
         } else {
             this.signMessage = undefined;
         }
     }
 
-    #disconnect(): void {
+    #disconnected(): void {
         const off = this.#off;
         if (off) {
             this.#off = undefined;
             off();
         }
 
-        this.#connect(null, null);
+        this.#connected(null, null);
     }
 
-    #change = (properties: WalletPropertyNames<StandardWalletAdapterAccount>[]) => {
+    #changed = (properties: ReadonlyArray<WalletPropertyName>) => {
         // If the adapter isn't connected or the change doesn't include accounts, do nothing.
         if (!this.#account || !this.#publicKey || properties.includes('accounts')) return;
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const account = this.#wallet.accounts[0]!;
+        const account = this.#wallet.accounts[0];
         // If there's no connected account, disconnect the adapter.
         if (!account) {
-            this.#disconnect();
+            this.#disconnected();
             this.emit('error', new WalletDisconnectedError());
             this.emit('disconnect');
             return;
@@ -191,14 +196,14 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         try {
             publicKey = new PublicKey(account.publicKey);
         } catch (error: any) {
-            this.#disconnect();
-            this.emit('error', new WalletDisconnectedError(error?.message));
+            this.#disconnected();
+            this.emit('error', new WalletPublicKeyError(error?.message));
             this.emit('disconnect');
             return;
         }
 
         // Change the adapter's account and public key and emit an event.
-        this.#connect(account, publicKey);
+        this.#connected(account, publicKey);
         this.emit('connect', publicKey);
     };
 
@@ -210,7 +215,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         try {
             if (!this.#account) throw new WalletNotConnectedError();
 
-            // TODO: check if this.#wallet.accounts[0].chain matches connection
+            const chain = getChainForEndpoint(connection.rpcEndpoint);
+            if (!this.#account.chains.includes(chain)) throw new WalletSendTransactionError();
 
             try {
                 const { signers, ...sendOptions } = options;
@@ -219,7 +225,11 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
 
                 signers?.length && transaction.partialSign(...signers);
 
-                const [{ signature }] = await this.#account.features.solana.signAndSendTransaction({
+                const [{ signature }] = await this.#wallet.features[
+                    'standard:solanaSignAndSendTransaction'
+                ].solanaSignAndSendTransaction({
+                    account: this.#account,
+                    chain,
                     transaction: transaction.serialize({
                         requireAllSignatures: false,
                         verifySignatures: false,
@@ -246,11 +256,15 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     signTransaction: ((transaction: Transaction) => Promise<Transaction>) | undefined;
     async #signTransaction(transaction: Transaction): Promise<Transaction> {
         try {
-            if (!this.#account) throw new WalletNotConnectedError();
-            if (!('signTransaction' in this.#account.features)) throw new WalletConfigError();
+            if (!('standard:solanaSignTransaction' in this.#wallet.features)) throw new WalletConfigError();
+            const account = this.#account;
+            if (!account?.features.includes('standard:solanaSignTransaction')) throw new WalletSignTransactionError();
 
             try {
-                const [{ signedTransaction }] = await this.#account.features.signTransaction.signTransaction({
+                const [{ signedTransaction }] = await this.#wallet.features[
+                    'standard:solanaSignTransaction'
+                ].solanaSignTransaction({
+                    account,
                     transaction: transaction.serialize({
                         requireAllSignatures: false,
                         verifySignatures: false,
@@ -270,12 +284,16 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     signAllTransactions: ((transaction: Transaction[]) => Promise<Transaction[]>) | undefined;
     async #signAllTransactions(transactions: Transaction[]): Promise<Transaction[]> {
         try {
-            if (!this.#account) throw new WalletNotConnectedError();
-            if (!('signTransaction' in this.#account.features)) throw new WalletConfigError();
+            if (!('standard:solanaSignTransaction' in this.#wallet.features)) throw new WalletConfigError();
+            const account = this.#account;
+            if (!account?.features.includes('standard:solanaSignTransaction')) throw new WalletSignTransactionError();
 
             try {
-                const signedTransactions = await this.#account.features.signTransaction.signTransaction(
+                const signedTransactions = await this.#wallet.features[
+                    'standard:solanaSignTransaction'
+                ].solanaSignTransaction(
                     ...transactions.map((transaction) => ({
+                        account,
                         transaction: transaction.serialize({
                             requireAllSignatures: false,
                             verifySignatures: false,
@@ -296,11 +314,15 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     signMessage: ((message: Uint8Array) => Promise<Uint8Array>) | undefined;
     async #signMessage(message: Uint8Array): Promise<Uint8Array> {
         try {
-            if (!this.#account) throw new WalletNotConnectedError();
-            if (!('signMessage' in this.#account.features)) throw new WalletConfigError();
+            if (!('standard:signMessage' in this.#wallet.features)) throw new WalletConfigError();
+            const account = this.#account;
+            if (!account?.features.includes('standard:signMessage')) throw new WalletSignMessageError();
 
             try {
-                const [{ signature }] = await this.#account.features.signMessage.signMessage({ message });
+                const [{ signature }] = await this.#wallet.features['standard:signMessage'].signMessage({
+                    account,
+                    message,
+                });
                 return signature;
             } catch (error: any) {
                 throw new WalletSignMessageError(error?.message, error);

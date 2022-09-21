@@ -1,25 +1,37 @@
-import type { UnionToIntersection } from '@wallet-standard/types';
-import type { DecryptFeature } from './decrypt';
-import type { EncryptFeature } from './encrypt';
-import type { SignAndSendTransactionFeature } from './signAndSendTransaction';
-import type { SignMessageFeature } from './signMessage';
-import type { SignTransactionFeature } from './signTransaction';
-import type { SolanaFeature } from './solana';
-
-export * from './decrypt';
-export * from './encrypt';
-export * from './signAndSendTransaction';
-export * from './signMessage';
-export * from './signTransaction';
-export * from './solana';
+import type { IdentifierRecord, Wallet } from '@wallet-standard/standard';
+import type { ConnectFeature } from './connect.js';
+import type { DecryptFeature } from './decrypt.js';
+import type { EncryptFeature } from './encrypt.js';
+import type { SignAndSendTransactionFeature } from './signAndSendTransaction.js';
+import type { SignMessageFeature } from './signMessage.js';
+import type { SignTransactionFeature } from './signTransaction.js';
+import type { SolanaSignAndSendTransactionFeature } from './solanaSignAndSendTransaction.js';
+import type { SolanaSignTransactionFeature } from './solanaSignTransaction.js';
 
 /** TODO: docs */
-export type Feature =
-    | SignTransactionFeature
+export type StandardFeatures =
+    | ConnectFeature
+    | DecryptFeature
+    | EncryptFeature
     | SignAndSendTransactionFeature
     | SignMessageFeature
-    | EncryptFeature
-    | DecryptFeature
-    | SolanaFeature;
+    | SignTransactionFeature
+    | SolanaSignTransactionFeature
+    | SolanaSignAndSendTransactionFeature;
 
-export type FeatureName = keyof UnionToIntersection<Feature>;
+/** TODO: docs */
+export type WalletWithFeatures<Features extends IdentifierRecord<unknown>> = Omit<Wallet, 'features'> & {
+    features: Features;
+};
+
+/** TODO: docs */
+export type WalletWithStandardFeatures = WalletWithFeatures<StandardFeatures>;
+
+export * from './connect.js';
+export * from './decrypt.js';
+export * from './encrypt.js';
+export * from './signAndSendTransaction.js';
+export * from './signMessage.js';
+export * from './signTransaction.js';
+export * from './solanaSignTransaction.js';
+export * from './solanaSignAndSendTransaction.js';

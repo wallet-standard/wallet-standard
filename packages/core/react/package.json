@@ -23,10 +23,12 @@
         "access": "public"
     },
     "scripts": {
-        "clean": "shx mkdir -p lib && shx rm -rf lib"
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/features": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
         "react": "^18.0.0",
         "react-dom": "^18.0.0"

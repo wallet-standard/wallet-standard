@@ -1,36 +1,26 @@
-import type { Wallet, WalletAccount, WalletProperties } from '@wallet-standard/standard';
+import type { Wallet, WalletProperties } from '@wallet-standard/standard';
 import { createContext, useContext } from 'react';
-import { createDefaultContext, EMPTY_ARRAY, EMPTY_STRING } from './context';
+import { createDefaultContext, EMPTY_ARRAY, EMPTY_OBJECT, EMPTY_STRING } from './context.js';
 
 /** TODO: docs */
-export interface WalletContextState<Account extends WalletAccount> extends WalletProperties<Account> {
-    wallet: Wallet<Account> | undefined;
-    setWallet(wallet: Wallet<Account> | undefined): void;
-    connect: Wallet<Account>['connect'];
-    connecting: boolean;
+export interface WalletContextState extends WalletProperties {
+    wallet: Wallet | null;
+    setWallet(wallet: Wallet | null): void;
 }
 
-const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties<WalletAccount>> = {
+const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties> = {
     version: '1.0.0',
     name: EMPTY_STRING,
-    icon: EMPTY_STRING,
+    icon: `data:image/png;base64,`,
     chains: EMPTY_ARRAY,
-    features: EMPTY_ARRAY,
-    extensions: EMPTY_ARRAY,
+    features: EMPTY_OBJECT,
     accounts: EMPTY_ARRAY,
-    hasMoreAccounts: false,
 } as const;
 
-const DEFAULT_WALLET_STATE: Readonly<WalletContextState<WalletAccount>> = {
-    wallet: undefined,
+const DEFAULT_WALLET_STATE: Readonly<WalletContextState> = {
+    wallet: null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setWallet() {},
-    connecting: false,
-    async connect() {
-        return {
-            accounts: EMPTY_ARRAY,
-            hasMoreAccounts: false,
-        };
-    },
     ...DEFAULT_WALLET_PROPERTIES,
 } as const;
 
@@ -40,14 +30,12 @@ const DEFAULT_WALLET_CONTEXT = createDefaultContext('Wallet', DEFAULT_WALLET_STA
 export const WalletContext = createContext(DEFAULT_WALLET_CONTEXT);
 
 /** TODO: docs */
-export function useWallet<Account extends WalletAccount>(): WalletContextState<Account> {
-    return useContext(WalletContext) as WalletContextState<Account>;
+export function useWallet(): WalletContextState {
+    return useContext(WalletContext);
 }
 
 /** @internal */
-export function getWalletProperties(
-    wallet: Wallet<WalletAccount> | undefined
-): Readonly<WalletProperties<WalletAccount>> {
+export function getWalletProperties(wallet: Wallet | null): Readonly<WalletProperties> {
     return wallet
         ? {
               version: wallet.version,
@@ -55,9 +43,7 @@ export function getWalletProperties(
               icon: wallet.icon,
               chains: wallet.chains,
               features: wallet.features,
-              extensions: wallet.extensions,
               accounts: wallet.accounts,
-              hasMoreAccounts: wallet.hasMoreAccounts,
           }
         : DEFAULT_WALLET_PROPERTIES;
 }

@@ -1,8 +1,7 @@
 import type { WalletsWindow } from '@wallet-standard/standard';
-import type { BackpackSolanaWalletAccount } from './wallet';
-import { BackpackSolanaWallet } from './wallet';
+import { BackpackSolanaWallet } from './wallet.js';
 
-declare const window: WalletsWindow<BackpackSolanaWalletAccount>;
+declare const window: WalletsWindow;
 
 export function register(): void {
     window.navigator.wallets = window.navigator.wallets || [];

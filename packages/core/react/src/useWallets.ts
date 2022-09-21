@@ -1,13 +1,13 @@
-import type { Wallet, WalletAccount } from '@wallet-standard/standard';
+import type { Wallet } from '@wallet-standard/standard';
 import { createContext, useContext } from 'react';
-import { createDefaultContext, EMPTY_ARRAY } from './context';
+import { createDefaultContext, EMPTY_ARRAY } from './context.js';
 
 /** TODO: docs */
-export interface WalletsContextState<Account extends WalletAccount> {
-    wallets: ReadonlyArray<Wallet<Account>>;
+export interface WalletsContextState {
+    wallets: ReadonlyArray<Wallet>;
 }
 
-const DEFAULT_WALLETS_STATE: Readonly<WalletsContextState<WalletAccount>> = { wallets: EMPTY_ARRAY } as const;
+const DEFAULT_WALLETS_STATE: Readonly<WalletsContextState> = { wallets: EMPTY_ARRAY } as const;
 
 const DEFAULT_WALLETS_CONTEXT = createDefaultContext('Wallets', DEFAULT_WALLETS_STATE);
 
@@ -15,6 +15,6 @@ const DEFAULT_WALLETS_CONTEXT = createDefaultContext('Wallets', DEFAULT_WALLETS_
 export const WalletsContext = createContext(DEFAULT_WALLETS_CONTEXT);
 
 /** TODO: docs */
-export function useWallets<Account extends WalletAccount>(): WalletsContextState<Account> {
-    return useContext(WalletsContext) as WalletsContextState<Account>;
+export function useWallets(): WalletsContextState {
+    return useContext(WalletsContext);
 }

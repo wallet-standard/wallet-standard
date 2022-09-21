@@ -5,6 +5,9 @@
             "path": "../app/tsconfig.all.json"
         },
         {
+            "path": "../features/tsconfig.all.json"
+        },
+        {
             "path": "../standard/tsconfig.all.json"
         },
         {

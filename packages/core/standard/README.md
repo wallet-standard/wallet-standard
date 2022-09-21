@@ -54,7 +54,7 @@ It should be impossible for conflicts between individual wallet browser extensio
 
 ### `window.navigator.wallets` is the namespace of the global interface
 
-`window.ethereum` has traditionally been used by injected wallets like Metamask. This convention causes multiple wallets to conflict for access to a global variable.
+`window.ethereum` has traditionally been used by injected wallets like MetaMask. This convention causes multiple wallets to conflict for access to a global variable.
 
 Browser extension wallets have adapted to this by using `Object.defineProperty(window, 'ethereum', { writable: false, ... })` to race to be the first to claim it.
 
@@ -163,7 +163,7 @@ Wallets need a way for accounts to be securely enumerated, and inform dapps when
 
 Wallet names and icons should be provided by the wallet.
 
-Image files should be encoded with data URLs to avoid extra HTTP load.
+Image files should be encoded with data URIs to avoid extra HTTP load.
 
 ### Errors should be predictable
 
