@@ -8,12 +8,12 @@ import type {
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
-    SignTransactionFeature,
-    SignTransactionMethod,
-    SignTransactionOutput,
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
+    SolanaSignTransactionFeature,
+    SolanaSignTransactionMethod,
+    SolanaSignTransactionOutput,
     WalletWithStandardFeatures,
 } from '@wallet-standard/features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
@@ -37,7 +37,6 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     readonly #address: string;
     readonly #publicKey: Uint8Array;
     readonly #chains: ReadonlyArray<SolanaChain>;
-    readonly #endpoint: string | undefined;
 
     get address() {
         return this.#address;
@@ -54,10 +53,10 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
     get features() {
         const features: (keyof (ConnectFeature &
             SolanaSignAndSendTransactionFeature &
-            SignTransactionFeature &
+            SolanaSignTransactionFeature &
             SignMessageFeature))[] = ['standard:connect', 'standard:solanaSignAndSendTransaction'];
         if ('signTransaction' in this.#adapter) {
-            features.push('standard:signTransaction');
+            features.push('standard:solanaSignTransaction');
         }
         if ('signMessage' in this.#adapter) {
             features.push('standard:signMessage');
@@ -65,30 +64,16 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return features;
     }
 
-    get endpoint() {
-        return this.#endpoint;
-    }
-
-    constructor(adapter: Adapter, address: string, publicKey: Uint8Array, chains: SolanaChain[], endpoint?: string) {
+    constructor(adapter: Adapter, address: string, publicKey: Uint8Array, chains: SolanaChain[]) {
         this.#adapter = adapter;
         this.#address = address;
         this.#publicKey = publicKey;
         this.#chains = chains;
-        this.#endpoint = endpoint;
     }
 
     on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
-        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
-        return (): void => this.#off(event, listener);
-    }
-
-    #emit<E extends WalletAccountEventNames>(event: E, ...args: Parameters<WalletAccountEvents[E]>): void {
-        // eslint-disable-next-line prefer-spread
-        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
-    }
-
-    #off<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): void {
-        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        return () => {};
     }
 }
 
@@ -120,7 +105,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
 
     get features(): ConnectFeature &
         SolanaSignAndSendTransactionFeature &
-        Partial<SignTransactionFeature & SignMessageFeature> {
+        Partial<SolanaSignTransactionFeature & SignMessageFeature> {
         const features: ConnectFeature & SolanaSignAndSendTransactionFeature = {
             'standard:connect': {
                 version: '1.0.0',
@@ -132,12 +117,12 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             },
         };
 
-        let signTransactionFeature: SignTransactionFeature | undefined;
+        let signTransactionFeature: SolanaSignTransactionFeature | undefined;
         if ('signTransaction' in this.#adapter) {
             signTransactionFeature = {
-                'standard:signTransaction': {
+                'standard:solanaSignTransaction': {
                     version: '1.0.0',
-                    signTransaction: this.#signTransaction,
+                    solanaSignTransaction: this.#signTransaction,
                 },
             };
         }
@@ -201,17 +186,10 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             if (
                 !account ||
                 account.address !== address ||
-                account.endpoint !== this.#endpoint ||
                 account.chains.includes(this.#chain) ||
                 !bytesEqual(account.publicKey, publicKey)
             ) {
-                this.#account = new SolanaWalletAdapterWalletAccount(
-                    this.#adapter,
-                    address,
-                    publicKey,
-                    [this.#chain],
-                    this.#endpoint
-                );
+                this.#account = new SolanaWalletAdapterWalletAccount(this.#adapter, address, publicKey, [this.#chain]);
                 this.#emit('standard:change', ['accounts']);
             }
         }
@@ -224,24 +202,14 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
         }
     }
 
-    #connect: ConnectMethod = async (input) => {
-        const { chains, features, silent } = input || {};
-
-        // FIXME: features
-
+    #connect: ConnectMethod = async ({ silent } = {}) => {
         if (!silent && !this.#adapter.connected) {
             await this.#adapter.connect();
         }
 
-        if (chains?.length) {
-            if (chains.length > 1) throw new Error('multiple chains not supported');
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.#chain = chains[0]!;
-        }
-
         this.#connected();
 
-        return { accounts: this.accounts as any }; // FIXME
+        return { accounts: this.accounts };
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
@@ -251,7 +219,8 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const input = inputs[0]!;
             const transaction = Transaction.from(input.transaction);
-            const endpoint = getEndpointForChain(this.#chain, this.#endpoint);
+            // FIXME: input.chain may not be a SolanaChain
+            const endpoint = getEndpointForChain(input.chain as SolanaChain, this.#endpoint);
 
             const signature = await sendAndConfirmTransaction(
                 transaction,
@@ -272,9 +241,9 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
         return outputs as any;
     };
 
-    #signTransaction: SignTransactionMethod = async (...inputs) => {
+    #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#adapter)) throw new Error('signTransaction not implemented by adapter');
-        const outputs: SignTransactionOutput[] = [];
+        const outputs: SolanaSignTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
