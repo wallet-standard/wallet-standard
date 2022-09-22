@@ -24,6 +24,7 @@ export type SignAndSendTransactionFeature = {
         /** Version of the feature API. */
         version: SignAndSendTransactionVersion;
 
+        // TODO: decide if signAndSendTransaction makes sense for multiple transactions
         /**
          * Sign transactions using the account's secret key and send them to the chain.
          *
