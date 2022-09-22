@@ -1,7 +1,8 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { GlowWalletAdapter } from '@solana/wallet-adapter-glow';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { GlowWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import { useStandardWalletAdapters } from '@wallet-standard/solana-wallet-adapter-react';
 import type { FC, ReactNode } from 'react';
