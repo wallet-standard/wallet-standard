@@ -14,18 +14,20 @@ import type {
 } from '@wallet-standard/features';
 import { getChainForEndpoint } from '@wallet-standard/solana-web3.js';
 import type {
+    IdentifierArray,
     Wallet,
     WalletAccount,
+    WalletAccountEventNames,
+    WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
     WalletPropertyName,
 } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
-import { bytesEqual, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
+import { bytesEqual } from '@wallet-standard/util';
 import { decode } from 'bs58';
-import { BackpackSolanaWalletAccount } from './account.js';
-import type { BackpackWindow } from './backpack.js';
 import { icon } from './icon.js';
+import type { BackpackWindow } from './window.js';
 
 declare const window: BackpackWindow;
 
@@ -297,4 +299,49 @@ export class BackpackSolanaWallet implements Wallet {
 
         return outputs as any;
     };
+}
+
+export class BackpackSolanaWalletAccount implements WalletAccount {
+    readonly #listeners: { [E in WalletAccountEventNames]?: WalletAccountEvents[E][] } = {};
+    readonly #address: string;
+    readonly #publicKey: Uint8Array;
+    readonly #chains: ReadonlyArray<SolanaChain>;
+    readonly #features: IdentifierArray;
+
+    get address() {
+        return this.#address;
+    }
+
+    get publicKey() {
+        return this.#publicKey.slice();
+    }
+
+    get chains() {
+        return this.#chains.slice();
+    }
+
+    get features() {
+        return this.#features.slice();
+    }
+
+    constructor(address: string, publicKey: Uint8Array, chains: ReadonlyArray<SolanaChain>, features: IdentifierArray) {
+        this.#address = address;
+        this.#publicKey = publicKey;
+        this.#chains = chains;
+        this.#features = features;
+    }
+
+    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
+        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
+        return (): void => this.#off(event, listener);
+    }
+
+    #emit<E extends WalletAccountEventNames>(event: E, ...args: Parameters<WalletAccountEvents[E]>): void {
+        // eslint-disable-next-line prefer-spread
+        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
+    }
+
+    #off<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): void {
+        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
+    }
 }
