@@ -1,8 +1,7 @@
 import type { WalletsWindow } from '@wallet-standard/standard';
-import type { GlowSolanaWalletAccount } from './wallet';
-import { GlowSolanaWallet } from './wallet';
+import { GlowSolanaWallet } from './wallet.js';
 
-declare const window: WalletsWindow<GlowSolanaWalletAccount>;
+declare const window: WalletsWindow;
 
 export function register(): void {
     window.navigator.wallets = window.navigator.wallets || [];

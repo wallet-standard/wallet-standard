@@ -1,108 +1,172 @@
 import type { SolanaWindow } from '@glow-xyz/glow-client';
 import { Network } from '@glow-xyz/glow-client';
-import type { PublicKey, TransactionSignature } from '@solana/web3.js';
+import type { TransactionSignature } from '@solana/web3.js';
 import { Transaction } from '@solana/web3.js';
 import type {
+    ConnectFeature,
+    ConnectMethod,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
-    SignTransactionFeature,
-    SignTransactionMethod,
-    SignTransactionOutput,
-    SolanaFeature,
+    SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
+    SolanaSignTransactionFeature,
+    SolanaSignTransactionMethod,
+    SolanaSignTransactionOutput,
 } from '@wallet-standard/features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type {
-    ConnectInput,
-    ConnectOutput,
+    IdentifierArray,
     Wallet,
     WalletAccount,
-    WalletAccountExtensionName,
-    WalletAccountFeatureName,
+    WalletAccountEventNames,
+    WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import type { SolanaChain } from '@wallet-standard/util';
-import { bytesEqual, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
-import { CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET } from '@wallet-standard/util/src';
+import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';
+import { bytesEqual, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
-import { icon } from './icon';
+import { icon } from './icon.js';
 
 declare const window: SolanaWindow;
 
-function getNetworkForChain(chain: SolanaChain): Network {
-    switch (chain) {
-        case CHAIN_SOLANA_MAINNET:
-            return Network.Mainnet;
-        case CHAIN_SOLANA_DEVNET:
-            return Network.Devnet;
-        case CHAIN_SOLANA_LOCALNET:
-            return Network.Localnet;
-        // TODO: testnet?
-        default:
-            return Network.Mainnet;
-    }
-}
+export class GlowSolanaWallet implements Wallet {
+    readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    readonly #version = '1.0.0' as const;
+    readonly #name = 'Glow' as const;
+    readonly #icon = icon;
+    readonly #chains = [CHAIN_SOLANA_MAINNET, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET] as const;
+    #account: GlowSolanaWalletAccount | null;
 
-export class GlowSolanaWalletAccount implements WalletAccount {
-    readonly #publicKey: Uint8Array;
-    readonly #chain: SolanaChain;
-
-    get address() {
-        return this.publicKey;
+    get version() {
+        return this.#version;
     }
 
-    get publicKey() {
-        return this.#publicKey;
+    get name() {
+        return this.#name;
     }
 
-    get chain() {
-        return this.#chain;
+    get icon() {
+        return this.#icon;
     }
 
-    get features(): SolanaFeature & SignTransactionFeature & SignMessageFeature {
+    get chains(): ReadonlyArray<SupportedChain> {
+        return this.#chains.slice();
+    }
+
+    get features(): ConnectFeature &
+        SolanaSignAndSendTransactionFeature &
+        SolanaSignTransactionFeature &
+        SignMessageFeature {
         return {
-            solana: {
+            'standard:connect': {
                 version: '1.0.0',
-                signAndSendTransaction: this.#signAndSendTransaction,
+                connect: this.#connect,
             },
-            signTransaction: {
+            'standard:solanaSignAndSendTransaction': {
                 version: '1.0.0',
-                signTransaction: this.#signTransaction,
+                solanaSignAndSendTransaction: this.#signAndSendTransaction,
             },
-            signMessage: {
+            'standard:solanaSignTransaction': {
+                version: '1.0.0',
+                solanaSignTransaction: this.#signTransaction,
+            },
+            'standard:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
             },
         };
     }
 
-    get extensions() {
-        return {};
+    get accounts() {
+        return this.#account ? [this.#account] : [];
     }
 
-    constructor(publicKey: Uint8Array, chain: SolanaChain) {
-        this.#publicKey = publicKey;
-        this.#chain = chain;
+    constructor() {
+        this.#account = null;
+
+        window.glow.on('connect', this.#connected, this);
+        window.glow.on('disconnect', this.#disconnected, this);
+        window.glow.on('accountChanged', this.#reconnected, this);
+
+        this.#connected();
     }
+
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
+        return (): void => this.#off(event, listener);
+    }
+
+    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
+        // eslint-disable-next-line prefer-spread
+        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
+    }
+
+    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
+    }
+
+    #connected = () => {
+        const address = window.glowSolana.publicKey?.toBase58();
+        if (address) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const publicKey = window.glowSolana.publicKey!.toBytes();
+
+            const account = this.#account;
+            if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
+                this.#account = new GlowSolanaWalletAccount(address, publicKey, this.#chains, [
+                    'standard:solanaSignAndSendTransaction',
+                    'standard:solanaSignTransaction',
+                    'standard:signMessage',
+                ]);
+                this.#emit('standard:change', ['accounts']);
+            }
+        }
+    };
+
+    #disconnected = () => {
+        if (this.#account) {
+            this.#account = null;
+            this.#emit('standard:change', ['accounts']);
+        }
+    };
+
+    #reconnected = () => {
+        if (window.glowSolana.publicKey) {
+            this.#connected();
+        } else {
+            this.#disconnected();
+        }
+    };
+
+    #connect: ConnectMethod = async ({ silent } = {}) => {
+        await window.glow.connect(silent ? { onlyIfTrusted: true } : undefined);
+
+        this.#connected();
+
+        return { accounts: this.accounts };
+    };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
+        if (!this.#account) throw new Error('not connected');
+
         const outputs: SolanaSignAndSendTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const input = inputs[0]!;
-            const transactionBase64 = Buffer.from(input.transaction).toString('base64');
-            const { commitment } = input.options || {};
+            const { transaction, account, chain, options } = inputs[0]!;
+            const { commitment } = options || {};
+            if (account !== this.#account) throw new Error('invalid account');
+            if (!this.#chains.includes(chain as SupportedChain)) throw new Error('invalid chain');
 
             const glowSignAndSendTransaction = async () => {
                 const { signature } = await window.glow.signAndSendTransaction({
-                    transactionBase64,
-                    network: getNetworkForChain(this.#chain),
-                    waitForConfirmation: commitment === 'confirmed',
+                    transactionBase64: Buffer.from(transaction).toString('base64'),
+                    network: getNetworkForChain(chain as SupportedChain),
+                    waitForConfirmation: options === 'confirmed',
                 });
 
                 return signature;
@@ -112,13 +176,10 @@ export class GlowSolanaWalletAccount implements WalletAccount {
             if (commitment === 'confirmed') {
                 signature = await glowSignAndSendTransaction();
             } else {
-                const transaction = Transaction.from(input.transaction);
-                const endpoint = getEndpointForChain(this.#chain);
-
                 signature = await sendAndConfirmTransaction(
-                    transaction,
-                    endpoint,
-                    input.options,
+                    Transaction.from(transaction),
+                    getEndpointForChain(chain as SupportedChain),
+                    options,
                     glowSignAndSendTransaction
                 );
             }
@@ -133,30 +194,55 @@ export class GlowSolanaWalletAccount implements WalletAccount {
         return outputs as any;
     };
 
-    #signTransaction: SignTransactionMethod = async (...inputs) => {
-        const outputs: SignTransactionOutput[] = [];
+    #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
+        if (!this.#account) throw new Error('not connected');
+
+        const outputs: SolanaSignTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const transactionBase64 = Buffer.from(inputs[0]!.transaction).toString('base64');
-            const { signedTransactionBase64 } = await window.glow.signTransaction({
-                transactionBase64,
-                network: getNetworkForChain(this.#chain),
-            });
+            const { transaction, account, chain } = inputs[0]!;
+            if (account !== this.#account) throw new Error('invalid account');
+            if (chain && !this.#chains.includes(chain as SupportedChain)) throw new Error('invalid chain');
+
+            const signedTransaction = await window.glowSolana.signTransaction(
+                Transaction.from(transaction),
+                chain && getNetworkForChain(chain as SupportedChain)
+            );
 
             outputs.push({
-                signedTransaction: new Uint8Array(Buffer.from(signedTransactionBase64, 'base64')),
+                signedTransaction: signedTransaction.serialize({
+                    requireAllSignatures: false,
+                    verifySignatures: false,
+                }),
             });
         } else if (inputs.length > 1) {
-            const transactionsBase64 = inputs.map(({ transaction }) => Buffer.from(transaction).toString('base64'));
-            const { signedTransactionsBase64 } = await window.glow.signAllTransactions({
-                transactionsBase64,
-                network: getNetworkForChain(this.#chain),
-            });
+            let chain: SupportedChain | undefined = undefined;
+            for (const input of inputs) {
+                if (input.account !== this.#account) throw new Error('invalid account');
+                if (input.chain) {
+                    if (!this.chains.includes(input.chain as SupportedChain)) throw new Error('invalid chain');
+                    if (chain) {
+                        if (input.chain !== chain) throw new Error('conflicting chain');
+                    } else {
+                        chain = input.chain as SupportedChain;
+                    }
+                }
+            }
+
+            const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
+
+            const signedTransactions = await window.glowSolana.signAllTransactions(
+                transactions,
+                chain && getNetworkForChain(chain)
+            );
 
             outputs.push(
-                ...signedTransactionsBase64.map((signedTransactionBase64) => ({
-                    signedTransaction: new Uint8Array(Buffer.from(signedTransactionBase64, 'base64')),
+                ...signedTransactions.map((signedTransaction) => ({
+                    signedTransaction: signedTransaction.serialize({
+                        requireAllSignatures: false,
+                        verifySignatures: false,
+                    }),
                 }))
             );
         }
@@ -165,17 +251,22 @@ export class GlowSolanaWalletAccount implements WalletAccount {
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
+        if (!this.#account) throw new Error('not connected');
+
         const outputs: SignMessageOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const signedMessage = inputs[0]!.message;
-            const messageBase64 = Buffer.from(signedMessage).toString('base64');
-            const { signedMessageBase64 } = await window.glow.signMessage({ messageBase64 });
+            const { message, account } = inputs[0]!;
+            if (account !== this.#account) throw new Error('invalid account');
+
+            const { signedMessageBase64 } = await window.glow.signMessage({
+                messageBase64: Buffer.from(message).toString('base64'),
+            });
 
             const signature = new Uint8Array(Buffer.from(signedMessageBase64, 'base64'));
 
-            outputs.push({ signedMessage, signature });
+            outputs.push({ signedMessage: message, signature });
         } else if (inputs.length > 1) {
             for (const input of inputs) {
                 outputs.push(...(await this.#signMessage(input)));
@@ -186,118 +277,67 @@ export class GlowSolanaWalletAccount implements WalletAccount {
     };
 }
 
-export class GlowSolanaWallet implements Wallet<GlowSolanaWalletAccount> {
-    #listeners: {
-        [E in WalletEventNames<GlowSolanaWalletAccount>]?: WalletEvents<GlowSolanaWalletAccount>[E][];
-    } = {};
-    #account: GlowSolanaWalletAccount | undefined;
+export class GlowSolanaWalletAccount implements WalletAccount {
+    readonly #listeners: { [E in WalletAccountEventNames]?: WalletAccountEvents[E][] } = {};
+    readonly #address: string;
+    readonly #publicKey: Uint8Array;
+    readonly #chains: ReadonlyArray<SupportedChain>;
+    readonly #features: IdentifierArray;
 
-    get version() {
-        return '1.0.0' as const;
+    get address() {
+        return this.#address;
     }
 
-    get name() {
-        return 'Glow';
-    }
-
-    get icon() {
-        return icon;
+    get publicKey() {
+        return this.#publicKey.slice();
     }
 
     get chains() {
-        return [CHAIN_SOLANA_MAINNET, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET] as const;
+        return this.#chains.slice();
     }
 
     get features() {
-        return ['solana' as const, 'signTransaction' as const, 'signMessage' as const];
+        return this.#features.slice();
     }
 
-    get extensions() {
-        return [] as const;
+    constructor(
+        address: string,
+        publicKey: Uint8Array,
+        chains: ReadonlyArray<SupportedChain>,
+        features: IdentifierArray
+    ) {
+        this.#address = address;
+        this.#publicKey = publicKey;
+        this.#chains = chains;
+        this.#features = features;
     }
 
-    get accounts() {
-        // TODO:
-        return this.#account ? [this.#account] : [];
-    }
-
-    get hasMoreAccounts() {
-        return false;
-    }
-
-    constructor() {
-        window.glow.on('connect', this._connect, this);
-        window.glow.on('disconnect', this._disconnect, this);
-        window.glow.on('accountChanged', this._reconnect, this);
-
-        this._connect();
-    }
-
-    async connect<
-        Chain extends GlowSolanaWalletAccount['chain'],
-        FeatureName extends WalletAccountFeatureName<GlowSolanaWalletAccount>,
-        ExtensionName extends WalletAccountExtensionName<GlowSolanaWalletAccount>,
-        Input extends ConnectInput<GlowSolanaWalletAccount, Chain, FeatureName, ExtensionName>
-    >(input?: Input): Promise<ConnectOutput<GlowSolanaWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
-        // TODO: determine if any of these need to be used
-        const { chains, features, extensions, addresses, silent } = input || {};
-
-        // FIXME: chain used to connect
-
-        await window.glow.connect(silent ? { onlyIfTrusted: true } : undefined);
-
-        this._connect();
-
-        return {
-            accounts: this.accounts as any,
-            hasMoreAccounts: false,
-        };
-    }
-
-    on<E extends WalletEventNames<GlowSolanaWalletAccount>>(
-        event: E,
-        listener: WalletEvents<GlowSolanaWalletAccount>[E]
-    ): () => void {
+    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
     }
 
-    #emit<E extends WalletEventNames<GlowSolanaWalletAccount>>(
-        event: E,
-        ...args: Parameters<WalletEvents<GlowSolanaWalletAccount>[E]>
-    ): void {
+    #emit<E extends WalletAccountEventNames>(event: E, ...args: Parameters<WalletAccountEvents[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventNames<GlowSolanaWalletAccount>>(
-        event: E,
-        listener: WalletEvents<GlowSolanaWalletAccount>[E]
-    ): void {
+    #off<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
+}
 
-    private _connect(publicKey: PublicKey): void {
-        const bytes = publicKey.toBytes();
-        const account = this.#account;
-        if (!account || !bytesEqual(account.publicKey, bytes)) {
-            this.#account = new GlowSolanaWalletAccount(bytes, this.#chain); // FIXME: #chain doesn't exist on this
-            this.#emit('change', ['accounts', 'chains']);
-        }
-    }
+type SupportedChain = Exclude<SolanaChain, typeof CHAIN_SOLANA_TESTNET>;
 
-    private _disconnect(): void {
-        if (this.#account) {
-            this.#account = undefined;
-            this.#emit('change', ['accounts', 'chains']);
-        }
-    }
-
-    private _reconnect(): void {
-        if (window.glow.publicKey) {
-            this._connect();
-        } else {
-            this._disconnect();
-        }
+function getNetworkForChain(chain: SupportedChain): Network {
+    switch (chain) {
+        case CHAIN_SOLANA_MAINNET:
+            return Network.Mainnet;
+        case CHAIN_SOLANA_DEVNET:
+            return Network.Devnet;
+        case CHAIN_SOLANA_LOCALNET:
+            return Network.Localnet;
+        default:
+            return Network.Mainnet;
     }
 }
