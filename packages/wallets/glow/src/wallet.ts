@@ -25,11 +25,17 @@ import {
 } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
-import type { SolanaWindow } from './glow.js';
+import type { SolanaWindow, GlowAdapter } from './glow.js';
 import { Network } from './glow.js';
 import { icon } from './icon.js';
 
 declare const window: SolanaWindow;
+
+export type GlowSolanaFeature = {
+    'glow:': {
+        signIn: GlowAdapter['signIn'];
+    };
+};
 
 export class GlowSolanaWallet implements Wallet {
     readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
@@ -58,7 +64,8 @@ export class GlowSolanaWallet implements Wallet {
     get features(): ConnectFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
-        SignMessageFeature {
+        SignMessageFeature &
+        GlowSolanaFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
@@ -75,6 +82,11 @@ export class GlowSolanaWallet implements Wallet {
             'standard:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
+            },
+            'glow:': {
+                signIn() {
+                    return window.glow.signIn();
+                },
             },
         };
     }
