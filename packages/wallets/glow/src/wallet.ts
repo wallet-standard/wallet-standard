@@ -1,5 +1,3 @@
-import type { SolanaWindow } from '@glow-xyz/glow-client';
-import { Network } from '@glow-xyz/glow-client';
 import type { TransactionSignature } from '@solana/web3.js';
 import { Transaction } from '@solana/web3.js';
 import type {
@@ -29,6 +27,8 @@ import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';
 import { bytesEqual, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
+import type { SolanaWindow } from './glow.js';
+import { Network } from './glow.js';
 import { icon } from './icon.js';
 
 declare const window: SolanaWindow;
