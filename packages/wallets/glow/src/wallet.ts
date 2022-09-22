@@ -33,7 +33,7 @@ declare const window: SolanaWindow;
 
 export type GlowSolanaFeature = {
     'glow:': {
-        signIn: GlowAdapter['signIn'];
+        glow: GlowAdapter;
     };
 };
 
@@ -84,8 +84,8 @@ export class GlowSolanaWallet implements Wallet {
                 signMessage: this.#signMessage,
             },
             'glow:': {
-                signIn() {
-                    return window.glow.signIn();
+                get glow() {
+                    return window.glow;
                 },
             },
         };
