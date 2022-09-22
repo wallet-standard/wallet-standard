@@ -22,7 +22,7 @@ import type {
     WalletPropertyName,
 } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
-import { bytesEqual } from '@wallet-standard/util';
+import { ReadonlyWalletAccount, bytesEqual } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
 import type { BackpackWindow } from './window.js';
@@ -35,7 +35,7 @@ export class BackpackSolanaWallet implements Wallet {
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
     #chain: SolanaChain;
-    #account: BackpackSolanaWalletAccount | null;
+    #account: ReadonlyWalletAccount | null;
 
     get version() {
         return this.#version;
@@ -127,7 +127,7 @@ export class BackpackSolanaWallet implements Wallet {
                 !bytesEqual(account.publicKey, publicKey) ||
                 !account.chains.includes(chain)
             ) {
-                this.#account = new BackpackSolanaWalletAccount(
+                this.#account = new ReadonlyWalletAccount(
                     address,
                     publicKey,
                     [chain],
@@ -297,34 +297,4 @@ export class BackpackSolanaWallet implements Wallet {
 
         return outputs as any;
     };
-}
-
-export class BackpackSolanaWalletAccount implements WalletAccount {
-    readonly #address: string;
-    readonly #publicKey: Uint8Array;
-    readonly #chains: ReadonlyArray<SolanaChain>;
-    readonly #features: IdentifierArray;
-
-    get address() {
-        return this.#address;
-    }
-
-    get publicKey() {
-        return this.#publicKey.slice();
-    }
-
-    get chains() {
-        return this.#chains.slice();
-    }
-
-    get features() {
-        return this.#features.slice();
-    }
-
-    constructor(address: string, publicKey: Uint8Array, chains: ReadonlyArray<SolanaChain>, features: IdentifierArray) {
-        this.#address = address;
-        this.#publicKey = publicKey;
-        this.#chains = chains;
-        this.#features = features;
-    }
 }

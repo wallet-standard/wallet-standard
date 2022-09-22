@@ -16,7 +16,13 @@ import type {
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type { IdentifierArray, Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';
-import { bytesEqual, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
+import {
+    ReadonlyWalletAccount,
+    bytesEqual,
+    CHAIN_SOLANA_DEVNET,
+    CHAIN_SOLANA_LOCALNET,
+    CHAIN_SOLANA_MAINNET,
+} from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
 import type { SolanaWindow } from './glow.js';
@@ -31,7 +37,7 @@ export class GlowSolanaWallet implements Wallet {
     readonly #name = 'Glow' as const;
     readonly #icon = icon;
     readonly #chains = [CHAIN_SOLANA_MAINNET, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET] as const;
-    #account: GlowSolanaWalletAccount | null;
+    #account: ReadonlyWalletAccount | null;
 
     get version() {
         return this.#version;
@@ -109,7 +115,7 @@ export class GlowSolanaWallet implements Wallet {
 
             const account = this.#account;
             if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
-                this.#account = new GlowSolanaWalletAccount(address, publicKey, this.#chains, [
+                this.#account = new ReadonlyWalletAccount(address, publicKey, this.#chains, [
                     'standard:solanaSignAndSendTransaction',
                     'standard:solanaSignTransaction',
                     'standard:signMessage',
@@ -267,41 +273,6 @@ export class GlowSolanaWallet implements Wallet {
 
         return outputs as any;
     };
-}
-
-export class GlowSolanaWalletAccount implements WalletAccount {
-    readonly #address: string;
-    readonly #publicKey: Uint8Array;
-    readonly #chains: ReadonlyArray<SupportedChain>;
-    readonly #features: IdentifierArray;
-
-    get address() {
-        return this.#address;
-    }
-
-    get publicKey() {
-        return this.#publicKey.slice();
-    }
-
-    get chains() {
-        return this.#chains.slice();
-    }
-
-    get features() {
-        return this.#features.slice();
-    }
-
-    constructor(
-        address: string,
-        publicKey: Uint8Array,
-        chains: ReadonlyArray<SupportedChain>,
-        features: IdentifierArray
-    ) {
-        this.#address = address;
-        this.#publicKey = publicKey;
-        this.#chains = chains;
-        this.#features = features;
-    }
 }
 
 type SupportedChain = Exclude<SolanaChain, typeof CHAIN_SOLANA_TESTNET>;
