@@ -55,13 +55,13 @@ export class BackpackSolanaWallet implements Wallet {
                 version: '1.0.0',
                 connect: this.#connect,
             },
-            'standard:solanaSignAndSendTransaction': {
+            'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                solanaSignAndSendTransaction: this.#signAndSendTransaction,
+                signAndSendTransaction: this.#signAndSendTransaction,
             },
-            'standard:solanaSignTransaction': {
+            'solana:signTransaction': {
                 version: '1.0.0',
-                solanaSignTransaction: this.#signTransaction,
+                signTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
                 version: '1.0.0',
@@ -124,7 +124,7 @@ export class BackpackSolanaWallet implements Wallet {
                     address,
                     publicKey,
                     [chain],
-                    ['standard:solanaSignAndSendTransaction', 'standard:solanaSignTransaction', 'standard:signMessage']
+                    ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage']
                 );
                 properties.push('accounts');
             }

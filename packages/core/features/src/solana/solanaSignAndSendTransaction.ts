@@ -1,5 +1,6 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from './signAndSendTransaction.js';
+import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from '../standard/signAndSendTransaction.js';
+import { SolanaSignTransactionOptions, SolanaTransactionCommitment } from './solanaSignTransaction.js';
 
 /** TODO: docs */
 export type SolanaSignAndSendTransactionVersion = '1.0.0';
@@ -19,7 +20,7 @@ export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransac
 /** TODO: docs */
 export type SolanaSignAndSendTransactionFeature = {
     /** Namespace for the feature. */
-    'standard:solanaSignAndSendTransaction': {
+    'solana:signAndSendTransaction': {
         // TODO: think about feature versions more
         /** Version of the feature API. */
         version: SolanaSignAndSendTransactionVersion;
@@ -31,7 +32,7 @@ export type SolanaSignAndSendTransactionFeature = {
          *
          * @return Outputs of signing and sending transactions.
          */
-        solanaSignAndSendTransaction: SolanaSignAndSendTransactionMethod;
+        signAndSendTransaction: SolanaSignAndSendTransactionMethod;
     };
 };
 
@@ -44,20 +45,13 @@ export interface SolanaSignAndSendTransactionInput extends SignAndSendTransactio
 /** Output of signing and sending transactions. */
 export interface SolanaSignAndSendTransactionOutput extends SignAndSendTransactionOutput {}
 
-/** Commitment level for preflight and confirmation of transactions. */
-export type SolanaSignAndSendTransactionCommitment = 'processed' | 'confirmed' | 'finalized';
-
 // TODO: figure out what options are actually needed
 /** Options for signing and sending transactions. */
-export type SolanaSignAndSendTransactionOptions = {
+export type SolanaSignAndSendTransactionOptions = SolanaSignTransactionOptions & {
     /** Desired commitment level. If provided, confirm the transaction after sending. */
-    commitment?: SolanaSignAndSendTransactionCommitment;
-    /** Preflight commitment level. */
-    preflightCommitment?: SolanaSignAndSendTransactionCommitment;
+    commitment?: SolanaTransactionCommitment;
     /** Disable transaction verification at the RPC. */
     skipPreflight?: boolean;
     /** Maximum number of times for the RPC node to retry sending the transaction to the leader. */
     maxRetries?: number;
-    /** The minimum slot that the request can be evaluated at. */
-    minContextSlot?: number;
 };

@@ -78,3 +78,8 @@ export interface WalletEvents {
 
 /** TODO: docs */
 export type WalletEventNames = keyof WalletEvents;
+
+/** TODO: docs */
+export type WalletWithFeatures<Features extends IdentifierRecord<unknown>> = Omit<Wallet, 'features'> & {
+    features: Features;
+};

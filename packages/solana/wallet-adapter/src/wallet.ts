@@ -45,9 +45,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         const features: (keyof (ConnectFeature &
             SolanaSignAndSendTransactionFeature &
             SolanaSignTransactionFeature &
-            SignMessageFeature))[] = ['standard:connect', 'standard:solanaSignAndSendTransaction'];
+            SignMessageFeature))[] = ['standard:connect', 'solana:signAndSendTransaction'];
         if ('signTransaction' in this.#adapter) {
-            features.push('standard:solanaSignTransaction');
+            features.push('solana:signTransaction');
         }
         if ('signMessage' in this.#adapter) {
             features.push('standard:signMessage');
@@ -97,18 +97,18 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
                 version: '1.0.0',
                 connect: this.#connect,
             },
-            'standard:solanaSignAndSendTransaction': {
+            'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                solanaSignAndSendTransaction: this.#signAndSendTransaction,
+                signAndSendTransaction: this.#signAndSendTransaction,
             },
         };
 
         let signTransactionFeature: SolanaSignTransactionFeature | undefined;
         if ('signTransaction' in this.#adapter) {
             signTransactionFeature = {
-                'standard:solanaSignTransaction': {
+                'solana:signTransaction': {
                     version: '1.0.0',
-                    solanaSignTransaction: this.#signTransaction,
+                    signTransaction: this.#signTransaction,
                 },
             };
         }
