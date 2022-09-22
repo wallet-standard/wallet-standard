@@ -1,11 +1,4 @@
-import type {
-    Wallet,
-    WalletAccount,
-    WalletAccountEventNames,
-    WalletAccountEvents,
-    WalletEventNames,
-    WalletEvents,
-} from '..';
+import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '..';
 
 class GlowWallet implements Wallet {
     version = '1.0.0' as const;
@@ -42,11 +35,6 @@ class GlowSolanaWalletAccount implements WalletAccount {
     publicKey = new Uint8Array();
     chains = ['solana:mainnet', 'solana:devnet', 'solana:testnet', 'solana:localnet'] as const;
     features = ['standard:signMessage', 'standard:signTransaction'] as const;
-
-    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return () => {};
-    }
 }
 
 const wallet = new GlowWallet();

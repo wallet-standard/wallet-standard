@@ -1,10 +1,4 @@
-import type {
-    WalletAccount,
-    WalletAccountEventNames,
-    WalletAccountEvents,
-    WalletEventNames,
-    WalletEvents,
-} from '@wallet-standard/standard';
+import type { WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type {
     ConnectFeature,
     SignMessageFeature,
@@ -59,11 +53,6 @@ class GlowSolanaWalletAccount implements WalletAccount {
     publicKey = new Uint8Array();
     chains = ['solana:mainnet', 'solana:devnet', 'solana:testnet', 'solana:localnet'] as const;
     features = ['standard:signMessage', 'standard:signTransaction'] as const;
-
-    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return () => {};
-    }
 }
 
 const wallet: WalletWithFeatures<StandardFeatures & GlowFeature> = new GlowWallet();

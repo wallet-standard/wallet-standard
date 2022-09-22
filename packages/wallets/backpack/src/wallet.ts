@@ -17,8 +17,6 @@ import type {
     IdentifierArray,
     Wallet,
     WalletAccount,
-    WalletAccountEventNames,
-    WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
     WalletPropertyName,
@@ -302,7 +300,6 @@ export class BackpackSolanaWallet implements Wallet {
 }
 
 export class BackpackSolanaWalletAccount implements WalletAccount {
-    readonly #listeners: { [E in WalletAccountEventNames]?: WalletAccountEvents[E][] } = {};
     readonly #address: string;
     readonly #publicKey: Uint8Array;
     readonly #chains: ReadonlyArray<SolanaChain>;
@@ -329,19 +326,5 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
         this.#publicKey = publicKey;
         this.#chains = chains;
         this.#features = features;
-    }
-
-    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
-        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
-        return (): void => this.#off(event, listener);
-    }
-
-    #emit<E extends WalletAccountEventNames>(event: E, ...args: Parameters<WalletAccountEvents[E]>): void {
-        // eslint-disable-next-line prefer-spread
-        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
-    }
-
-    #off<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): void {
-        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }

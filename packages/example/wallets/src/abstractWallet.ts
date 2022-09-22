@@ -4,8 +4,6 @@ import type {
     IdentifierRecord,
     Wallet,
     WalletAccount,
-    WalletAccountEventNames,
-    WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
@@ -37,11 +35,6 @@ export abstract class AbstractWalletAccount implements WalletAccount {
         this.#publicKey = publicKey;
         this.#chains = chains;
         this.#features = features;
-    }
-
-    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]) {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return () => {};
     }
 }
 

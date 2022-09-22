@@ -1,12 +1,4 @@
-import type {
-    Wallet,
-    WalletAccount,
-    WalletAccountEventNames,
-    WalletAccountEvents,
-    WalletEventNames,
-    WalletEvents,
-    WalletsWindow,
-} from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletEventNames, WalletEvents, WalletsWindow } from '@wallet-standard/standard';
 import { initialize } from '..';
 
 type FooSignTransactionFeature = {
@@ -29,9 +21,6 @@ class FooWalletAccount implements WalletAccount {
         'foo:signTransaction',
         'foo:signMessage',
     ] as const;
-    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
-        throw new Error('Method not implemented.');
-    }
 }
 
 class FooWallet implements Wallet {

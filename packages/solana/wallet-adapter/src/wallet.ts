@@ -17,22 +17,13 @@ import type {
     WalletWithStandardFeatures,
 } from '@wallet-standard/features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type {
-    IconString,
-    Wallet,
-    WalletAccount,
-    WalletAccountEventNames,
-    WalletAccountEvents,
-    WalletEventNames,
-    WalletEvents,
-} from '@wallet-standard/standard';
+import type { IconString, Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
 import { bytesEqual } from '@wallet-standard/util';
 import { decode } from 'bs58';
 
 /** TODO: docs */
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
-    readonly #listeners: { [E in WalletAccountEventNames]?: WalletAccountEvents[E][] } = {};
     readonly #adapter: Adapter;
     readonly #address: string;
     readonly #publicKey: Uint8Array;
@@ -69,11 +60,6 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         this.#address = address;
         this.#publicKey = publicKey;
         this.#chains = chains;
-    }
-
-    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return () => {};
     }
 }
 

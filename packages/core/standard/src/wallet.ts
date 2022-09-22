@@ -12,41 +12,41 @@ export interface Wallet {
      * Version of the Wallet API.
      * If this changes, the wallet must emit a change event.
      */
-    version: WalletVersion;
+    readonly version: WalletVersion;
 
     /**
      * Name of the wallet, to be displayed by apps.
      * Must be canonical to the wallet extension.
      * If this changes, the wallet must emit a change event.
      */
-    name: string;
+    readonly name: string;
 
     /**
      * Icon of the wallet, to be displayed by apps.
      * Must be a data URI containing a base64-encoded SVG or PNG image.
      * If this changes, the wallet must emit a change event.
      */
-    icon: IconString;
+    readonly icon: IconString;
 
     // TODO: consider adding chain type
     /**
      * Chains supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
-    chains: IdentifierArray;
+    readonly chains: IdentifierArray;
 
     /**
      * Features supported by the wallet.
      * If this changes, the wallet must emit a change event.
      */
-    features: IdentifierRecord<unknown>;
+    readonly features: IdentifierRecord<unknown>;
 
     /**
      * List of accounts the app is authorized to use.
      * This can be set by the wallet so the app can use authorized accounts on the initial page load.
      * If this changes, the wallet must emit a change event.
      */
-    accounts: ReadonlyArray<WalletAccount>;
+    readonly accounts: ReadonlyArray<WalletAccount>;
 
     /**
      * Add an event listener to subscribe to events.
@@ -73,7 +73,7 @@ export interface WalletEvents {
      *
      * @param properties Names of the properties that changed.
      */
-    'standard:change'(properties: ReadonlyArray<WalletPropertyName>): void;
+    'standard:change'(properties: ReadonlyArray<'chains' | 'features' | 'accounts'>): void;
 }
 
 /** TODO: docs */

@@ -14,15 +14,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type {
-    IdentifierArray,
-    Wallet,
-    WalletAccount,
-    WalletAccountEventNames,
-    WalletAccountEvents,
-    WalletEventNames,
-    WalletEvents,
-} from '@wallet-standard/standard';
+import type { IdentifierArray, Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';
 import { bytesEqual, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import { decode } from 'bs58';
@@ -278,7 +270,6 @@ export class GlowSolanaWallet implements Wallet {
 }
 
 export class GlowSolanaWalletAccount implements WalletAccount {
-    readonly #listeners: { [E in WalletAccountEventNames]?: WalletAccountEvents[E][] } = {};
     readonly #address: string;
     readonly #publicKey: Uint8Array;
     readonly #chains: ReadonlyArray<SupportedChain>;
@@ -310,20 +301,6 @@ export class GlowSolanaWalletAccount implements WalletAccount {
         this.#publicKey = publicKey;
         this.#chains = chains;
         this.#features = features;
-    }
-
-    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
-        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
-        return (): void => this.#off(event, listener);
-    }
-
-    #emit<E extends WalletAccountEventNames>(event: E, ...args: Parameters<WalletAccountEvents[E]>): void {
-        // eslint-disable-next-line prefer-spread
-        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
-    }
-
-    #off<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): void {
-        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }
 
