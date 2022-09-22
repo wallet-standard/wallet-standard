@@ -107,7 +107,7 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     #connected = () => {
-        const properties: WalletPropertyName[] = [];
+        const properties: ('chains' | 'accounts')[] = [];
 
         const chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
         if (chain !== this.#chain) {
