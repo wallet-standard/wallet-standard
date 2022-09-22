@@ -24,6 +24,9 @@ export type SolanaSignTransactionFeature = {
         /** Version of the feature API. */
         version: SolanaSignTransactionVersion;
 
+        /** TODO: docs */
+        supportedTransactionVersions: ReadonlyArray<SolanaTransactionVersion>;
+
         /**
          * Sign transactions using the account's secret key.
          *
@@ -34,6 +37,9 @@ export type SolanaSignTransactionFeature = {
         solanaSignTransaction: SolanaSignTransactionMethod;
     };
 };
+
+/** TODO: docs */
+export type SolanaTransactionVersion = 'legacy' | 0;
 
 /** Input for signing and sending transactions. */
 export interface SolanaSignTransactionInput extends SignTransactionInput {
