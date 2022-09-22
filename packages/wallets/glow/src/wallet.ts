@@ -14,20 +14,20 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type { IdentifierArray, Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import type { Wallet, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';
 import {
-    ReadonlyWalletAccount,
     bytesEqual,
     CHAIN_SOLANA_DEVNET,
     CHAIN_SOLANA_LOCALNET,
     CHAIN_SOLANA_MAINNET,
+    ReadonlyWalletAccount,
 } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
-import type { SolanaWindow, GlowAdapter } from './glow.js';
-import { Network } from './glow.js';
 import { icon } from './icon.js';
+import type { GlowAdapter, SolanaWindow } from './window.js';
+import { Network } from './window.js';
 
 declare const window: SolanaWindow;
 
