@@ -11,10 +11,11 @@
         "build": "parcel build src/index.html"
     },
     "dependencies": {
-        "@solana/wallet-adapter-base": "^0.9.11",
-        "@solana/wallet-adapter-react": "^0.15.15",
-        "@solana/wallet-adapter-react-ui": "^0.9.12",
-        "@solana/wallet-adapter-wallets": "^0.18.1",
+        "@solana/wallet-adapter-base": "^0.9.17",
+        "@solana/wallet-adapter-react": "^0.15.19",
+        "@solana/wallet-adapter-react-ui": "^0.9.17",
+        "@solana/wallet-adapter-glow": "^0.1.12",
+        "@solana/wallet-adapter-phantom": "^0.9.16",
         "@solana/web3.js": "^1.51.0",
         "@wallet-standard/solana-wallet-adapter-react": "workspace:^",
         "bs58": "^4.0.0",
