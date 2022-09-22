@@ -1,0 +1,24 @@
+{
+    "private": true,
+    "name": "@wallet-standard/parcel-packager-webextension",
+    "version": "0.1.0",
+    "author": "Exodus Maintainers <maintainers@exodus.io>",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
+    "license": "MIT",
+    "source": "src/WebExtensionPackager.js",
+    "main": "lib/WebExtensionPackager.js",
+    "engines": {
+        "node": ">=12.0.0",
+        "parcel": "^2.7.0"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p .parcel-cache dist lib && shx rm -rf .parcel-cache dist lib",
+        "build": "parcel build"
+    },
+    "dependencies": {
+        "@parcel/plugin": "2.7.0",
+        "@parcel/utils": "2.7.0",
+        "nullthrows": "^1.1.1",
+        "parcel": "^2.3.2"
+    }
+}
