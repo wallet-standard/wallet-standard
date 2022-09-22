@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/features": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
         "react": "^18.0.0",
         "react-dom": "^18.0.0"

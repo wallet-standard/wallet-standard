@@ -1,4 +1,5 @@
-import { PublicKey, Transaction } from '@solana/web3.js';
+import type { TransactionSignature } from '@solana/web3.js';
+import { Transaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
@@ -12,7 +13,7 @@ import type {
     SolanaSignTransactionMethod,
     SolanaSignTransactionOutput,
 } from '@wallet-standard/features';
-import { getChainForEndpoint } from '@wallet-standard/solana-web3.js';
+import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type {
     IdentifierArray,
     Wallet,
@@ -21,23 +22,24 @@ import type {
     WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
-    WalletPropertyName,
 } from '@wallet-standard/standard';
-import type { SolanaChain } from '@wallet-standard/util';
-import { bytesEqual } from '@wallet-standard/util';
+import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';
+import { bytesEqual, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import { decode } from 'bs58';
+import { Buffer } from 'buffer';
+import type { SolanaWindow } from './glow.js';
+import { Network } from './glow.js';
 import { icon } from './icon.js';
-import type { BackpackWindow } from './window.js';
 
-declare const window: BackpackWindow;
+declare const window: SolanaWindow;
 
-export class BackpackSolanaWallet implements Wallet {
+export class GlowSolanaWallet implements Wallet {
     readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
     readonly #version = '1.0.0' as const;
-    readonly #name = 'Backpack' as const;
+    readonly #name = 'Glow' as const;
     readonly #icon = icon;
-    #chain: SolanaChain;
-    #account: BackpackSolanaWalletAccount | null;
+    readonly #chains = [CHAIN_SOLANA_MAINNET, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET] as const;
+    #account: GlowSolanaWalletAccount | null;
 
     get version() {
         return this.#version;
@@ -51,8 +53,8 @@ export class BackpackSolanaWallet implements Wallet {
         return this.#icon;
     }
 
-    get chains() {
-        return [this.#chain];
+    get chains(): ReadonlyArray<SupportedChain> {
+        return this.#chains.slice();
     }
 
     get features(): ConnectFeature &
@@ -84,12 +86,11 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     constructor() {
-        this.#chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
         this.#account = null;
 
-        window.backpack.on('connect', this.#connected);
-        window.backpack.on('disconnect', this.#disconnected);
-        window.backpack.on('connectionDidChange', this.#reconnected);
+        window.glow.on('connect', this.#connected, this);
+        window.glow.on('disconnect', this.#disconnected, this);
+        window.glow.on('accountChanged', this.#reconnected, this);
 
         this.#connected();
     }
@@ -109,38 +110,20 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     #connected = () => {
-        const properties: WalletPropertyName[] = [];
-
-        const chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
-        if (chain !== this.#chain) {
-            this.#chain = chain;
-            properties.push('chains');
-        }
-
-        const address = window.backpack.publicKey?.toBase58();
+        const address = window.glowSolana.publicKey?.toBase58();
         if (address) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const publicKey = window.backpack.publicKey!.toBytes();
+            const publicKey = window.glowSolana.publicKey!.toBytes();
 
             const account = this.#account;
-            if (
-                !account ||
-                account.address !== address ||
-                !bytesEqual(account.publicKey, publicKey) ||
-                !account.chains.includes(chain)
-            ) {
-                this.#account = new BackpackSolanaWalletAccount(
-                    address,
-                    publicKey,
-                    [chain],
-                    ['standard:solanaSignAndSendTransaction', 'standard:solanaSignTransaction', 'standard:signMessage']
-                );
-                properties.push('accounts');
+            if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
+                this.#account = new GlowSolanaWalletAccount(address, publicKey, this.#chains, [
+                    'standard:solanaSignAndSendTransaction',
+                    'standard:solanaSignTransaction',
+                    'standard:signMessage',
+                ]);
+                this.#emit('standard:change', ['accounts']);
             }
-        }
-
-        if (properties.length) {
-            this.#emit('standard:change', properties);
         }
     };
 
@@ -152,17 +135,15 @@ export class BackpackSolanaWallet implements Wallet {
     };
 
     #reconnected = () => {
-        if (window.backpack.publicKey) {
+        if (window.glowSolana.publicKey) {
             this.#connected();
         } else {
             this.#disconnected();
         }
     };
 
-    #connect: ConnectMethod = async (input) => {
-        if (!input?.silent && !window.backpack.isConnected) {
-            await window.backpack.connect();
-        }
+    #connect: ConnectMethod = async ({ silent } = {}) => {
+        await window.glow.connect(silent ? { onlyIfTrusted: true } : undefined);
 
         this.#connected();
 
@@ -170,43 +151,38 @@ export class BackpackSolanaWallet implements Wallet {
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
+        if (!this.#account) throw new Error('not connected');
+
         const outputs: SolanaSignAndSendTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const input = inputs[0]!;
-            const transaction = Transaction.from(input.transaction);
-            const publicKey = new PublicKey(input.account.publicKey);
-            const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = input.options || {};
+            const { transaction, account, chain, options } = inputs[0]!;
+            const { commitment } = options || {};
+            if (account !== this.#account) throw new Error('invalid account');
+            if (!this.#chains.includes(chain as SupportedChain)) throw new Error('invalid chain');
 
-            // TODO: input.account.chain could require a different connection than window.backpack.connection
+            const glowSignAndSendTransaction = async () => {
+                const { signature } = await window.glow.signAndSendTransaction({
+                    transactionBase64: Buffer.from(transaction).toString('base64'),
+                    network: getNetworkForChain(chain as SupportedChain),
+                    waitForConfirmation: options === 'confirmed',
+                });
 
-            const signature = commitment
-                ? await window.backpack.sendAndConfirm(
-                      transaction,
-                      [],
-                      {
-                          commitment,
-                          preflightCommitment,
-                          skipPreflight,
-                          maxRetries,
-                          minContextSlot,
-                      },
-                      undefined,
-                      publicKey
-                  )
-                : await window.backpack.send(
-                      transaction,
-                      [],
-                      {
-                          preflightCommitment,
-                          skipPreflight,
-                          maxRetries,
-                          minContextSlot,
-                      },
-                      undefined,
-                      publicKey
-                  );
+                return signature;
+            };
+
+            let signature: TransactionSignature;
+            if (commitment === 'confirmed') {
+                signature = await glowSignAndSendTransaction();
+            } else {
+                signature = await sendAndConfirmTransaction(
+                    Transaction.from(transaction),
+                    getEndpointForChain(chain as SupportedChain),
+                    options,
+                    glowSignAndSendTransaction
+                );
+            }
 
             outputs.push({ signature: decode(signature) });
         } else if (inputs.length > 1) {
@@ -219,14 +195,20 @@ export class BackpackSolanaWallet implements Wallet {
     };
 
     #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
+        if (!this.#account) throw new Error('not connected');
+
         const outputs: SolanaSignTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const input = inputs[0]!;
-            const transaction = Transaction.from(input.transaction);
-            const publicKey = new PublicKey(input.account.publicKey);
-            const signedTransaction = await window.backpack.signTransaction(transaction, publicKey);
+            const { transaction, account, chain } = inputs[0]!;
+            if (account !== this.#account) throw new Error('invalid account');
+            if (chain && !this.#chains.includes(chain as SupportedChain)) throw new Error('invalid chain');
+
+            const signedTransaction = await window.glowSolana.signTransaction(
+                Transaction.from(transaction),
+                chain && getNetworkForChain(chain as SupportedChain)
+            );
 
             outputs.push({
                 signedTransaction: signedTransaction.serialize({
@@ -235,62 +217,56 @@ export class BackpackSolanaWallet implements Wallet {
                 }),
             });
         } else if (inputs.length > 1) {
-            // Group the transactions by the account that will be signing, noting the order of the transactions.
-            const groups = new Map<WalletAccount, [number, Transaction][]>();
-            for (const [i, input] of inputs.entries()) {
-                let group = groups.get(input.account);
-                if (!group) {
-                    group = [];
-                    groups.set(input.account, group);
+            let chain: SupportedChain | undefined = undefined;
+            for (const input of inputs) {
+                if (input.account !== this.#account) throw new Error('invalid account');
+                if (input.chain) {
+                    if (!this.chains.includes(input.chain as SupportedChain)) throw new Error('invalid chain');
+                    if (chain) {
+                        if (input.chain !== chain) throw new Error('conflicting chain');
+                    } else {
+                        chain = input.chain as SupportedChain;
+                    }
                 }
-                group.push([i, Transaction.from(input.transaction)]);
             }
 
-            // For each account, call `signAllTransactions` with the transactions, preserving their order in the output.
-            for (const [account, group] of groups.entries()) {
-                // Unzip the indexes and transactions.
-                const [indexes, transactions] = group.reduce(
-                    ([indexes, transactions], [index, transaction]) => {
-                        indexes.push(index);
-                        transactions.push(transaction);
-                        return [indexes, transactions];
-                    },
-                    [<number[]>[], <Transaction[]>[]]
-                );
+            const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
 
-                const signedTransactions = await window.backpack.signAllTransactions(
-                    transactions,
-                    new PublicKey(account.publicKey)
-                );
+            const signedTransactions = await window.glowSolana.signAllTransactions(
+                transactions,
+                chain && getNetworkForChain(chain)
+            );
 
-                const rawTransactions = signedTransactions.map((signedTransaction) =>
-                    signedTransaction.serialize({
+            outputs.push(
+                ...signedTransactions.map((signedTransaction) => ({
+                    signedTransaction: signedTransaction.serialize({
                         requireAllSignatures: false,
                         verifySignatures: false,
-                    })
-                );
-
-                for (const [i, index] of indexes.entries()) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    outputs[index] = { signedTransaction: rawTransactions[i]! };
-                }
-            }
+                    }),
+                }))
+            );
         }
 
         return outputs as any;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
+        if (!this.#account) throw new Error('not connected');
+
         const outputs: SignMessageOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const input = inputs[0]!;
-            const publicKey = new PublicKey(input.account.publicKey);
-            const signedMessage = input.message;
-            const signature = await window.backpack.signMessage(signedMessage, publicKey);
+            const { message, account } = inputs[0]!;
+            if (account !== this.#account) throw new Error('invalid account');
 
-            outputs.push({ signedMessage, signature });
+            const { signedMessageBase64 } = await window.glow.signMessage({
+                messageBase64: Buffer.from(message).toString('base64'),
+            });
+
+            const signature = new Uint8Array(Buffer.from(signedMessageBase64, 'base64'));
+
+            outputs.push({ signedMessage: message, signature });
         } else if (inputs.length > 1) {
             for (const input of inputs) {
                 outputs.push(...(await this.#signMessage(input)));
@@ -301,11 +277,11 @@ export class BackpackSolanaWallet implements Wallet {
     };
 }
 
-export class BackpackSolanaWalletAccount implements WalletAccount {
+export class GlowSolanaWalletAccount implements WalletAccount {
     readonly #listeners: { [E in WalletAccountEventNames]?: WalletAccountEvents[E][] } = {};
     readonly #address: string;
     readonly #publicKey: Uint8Array;
-    readonly #chains: ReadonlyArray<SolanaChain>;
+    readonly #chains: ReadonlyArray<SupportedChain>;
     readonly #features: IdentifierArray;
 
     get address() {
@@ -324,7 +300,12 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
         return this.#features.slice();
     }
 
-    constructor(address: string, publicKey: Uint8Array, chains: ReadonlyArray<SolanaChain>, features: IdentifierArray) {
+    constructor(
+        address: string,
+        publicKey: Uint8Array,
+        chains: ReadonlyArray<SupportedChain>,
+        features: IdentifierArray
+    ) {
         this.#address = address;
         this.#publicKey = publicKey;
         this.#chains = chains;
@@ -343,5 +324,20 @@ export class BackpackSolanaWalletAccount implements WalletAccount {
 
     #off<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
+    }
+}
+
+type SupportedChain = Exclude<SolanaChain, typeof CHAIN_SOLANA_TESTNET>;
+
+function getNetworkForChain(chain: SupportedChain): Network {
+    switch (chain) {
+        case CHAIN_SOLANA_MAINNET:
+            return Network.Mainnet;
+        case CHAIN_SOLANA_DEVNET:
+            return Network.Devnet;
+        case CHAIN_SOLANA_LOCALNET:
+            return Network.Localnet;
+        default:
+            return Network.Mainnet;
     }
 }

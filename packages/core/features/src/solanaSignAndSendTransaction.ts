@@ -1,6 +1,9 @@
 import type { AsyncMapFunction } from '@wallet-standard/types';
 import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from './signAndSendTransaction.js';
 
+/** TODO: docs */
+export type SolanaSignAndSendTransactionVersion = '1.0.0';
+
 /**
  * TODO: docs
  * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
@@ -13,14 +16,13 @@ export declare const solanaSignAndSendTransactionMethod: AsyncMapFunction<
 /** TODO: docs */
 export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransactionMethod;
 
-// TODO: consider namespacing/renaming to solanaSignAndSendTransaction
 /** TODO: docs */
-export type SolanaFeature = Readonly<{
+export type SolanaSignAndSendTransactionFeature = {
     /** Namespace for the feature. */
-    solana: {
+    'standard:solanaSignAndSendTransaction': {
         // TODO: think about feature versions more
         /** Version of the feature API. */
-        version: '1.0.0';
+        version: SolanaSignAndSendTransactionVersion;
 
         /**
          * Sign transactions using the account's secret key and send them to the chain.
@@ -29,16 +31,18 @@ export type SolanaFeature = Readonly<{
          *
          * @return Outputs of signing and sending transactions.
          */
-        signAndSendTransaction: SolanaSignAndSendTransactionMethod;
+        solanaSignAndSendTransaction: SolanaSignAndSendTransactionMethod;
     };
-}>;
+};
 
 /** Input for signing and sending transactions. */
-export type SolanaSignAndSendTransactionInput = SignAndSendTransactionInput &
-    Readonly<{
-        /** TODO: docs */
-        options?: SolanaSignAndSendTransactionOptions;
-    }>;
+export interface SolanaSignAndSendTransactionInput extends SignAndSendTransactionInput {
+    /** TODO: docs */
+    options?: SolanaSignAndSendTransactionOptions;
+}
+
+/** Output of signing and sending transactions. */
+export interface SolanaSignAndSendTransactionOutput extends SignAndSendTransactionOutput {}
 
 /** Commitment level for preflight and confirmation of transactions. */
 export type SolanaSignAndSendTransactionCommitment = 'processed' | 'confirmed' | 'finalized';
@@ -57,6 +61,3 @@ export type SolanaSignAndSendTransactionOptions = {
     /** The minimum slot that the request can be evaluated at. */
     minContextSlot?: number;
 };
-
-/** Output of signing and sending transactions. */
-export type SolanaSignAndSendTransactionOutput = SignAndSendTransactionOutput;

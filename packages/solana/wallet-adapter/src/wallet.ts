@@ -3,24 +3,26 @@ import { WalletReadyState } from '@solana/wallet-adapter-base';
 import { Transaction } from '@solana/web3.js';
 import { initialize } from '@wallet-standard/app';
 import type {
+    ConnectFeature,
+    ConnectMethod,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
-    SignTransactionFeature,
-    SignTransactionMethod,
-    SignTransactionOutput,
-    SolanaFeature,
+    SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
+    SolanaSignTransactionFeature,
+    SolanaSignTransactionMethod,
+    SolanaSignTransactionOutput,
+    WalletWithStandardFeatures,
 } from '@wallet-standard/features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type {
-    ConnectInput,
-    ConnectOutput,
+    IconString,
     Wallet,
     WalletAccount,
-    WalletAccountExtensionName,
-    WalletAccountFeatureName,
+    WalletAccountEventNames,
+    WalletAccountEvents,
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
@@ -30,37 +32,97 @@ import { decode } from 'bs58';
 
 /** TODO: docs */
 export class SolanaWalletAdapterWalletAccount implements WalletAccount {
+    readonly #listeners: { [E in WalletAccountEventNames]?: WalletAccountEvents[E][] } = {};
     readonly #adapter: Adapter;
+    readonly #address: string;
     readonly #publicKey: Uint8Array;
-    readonly #chain: SolanaChain;
-    readonly #endpoint: string | undefined;
+    readonly #chains: ReadonlyArray<SolanaChain>;
 
     get address() {
-        return this.publicKey;
+        return this.#address;
     }
 
     get publicKey() {
         return this.#publicKey.slice();
     }
 
-    get chain() {
-        return this.#chain;
+    get chains() {
+        return this.#chains.slice();
     }
 
-    get features(): SolanaFeature & Partial<SignTransactionFeature & SignMessageFeature> {
-        const solana: SolanaFeature = {
-            solana: {
+    get features() {
+        const features: (keyof (ConnectFeature &
+            SolanaSignAndSendTransactionFeature &
+            SolanaSignTransactionFeature &
+            SignMessageFeature))[] = ['standard:connect', 'standard:solanaSignAndSendTransaction'];
+        if ('signTransaction' in this.#adapter) {
+            features.push('standard:solanaSignTransaction');
+        }
+        if ('signMessage' in this.#adapter) {
+            features.push('standard:signMessage');
+        }
+        return features;
+    }
+
+    constructor(adapter: Adapter, address: string, publicKey: Uint8Array, chains: SolanaChain[]) {
+        this.#adapter = adapter;
+        this.#address = address;
+        this.#publicKey = publicKey;
+        this.#chains = chains;
+    }
+
+    on<E extends WalletAccountEventNames>(event: E, listener: WalletAccountEvents[E]): () => void {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        return () => {};
+    }
+}
+
+/** TODO: docs */
+export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
+    #listeners: {
+        [E in WalletEventNames]?: WalletEvents[E][];
+    } = {};
+    #adapter: Adapter;
+    #chain: SolanaChain;
+    #endpoint: string | undefined;
+    #account: SolanaWalletAdapterWalletAccount | undefined;
+
+    get version() {
+        return '1.0.0' as const;
+    }
+
+    get name() {
+        return this.#adapter.name;
+    }
+
+    get icon() {
+        return this.#adapter.icon as IconString;
+    }
+
+    get chains() {
+        return [this.#chain];
+    }
+
+    get features(): ConnectFeature &
+        SolanaSignAndSendTransactionFeature &
+        Partial<SolanaSignTransactionFeature & SignMessageFeature> {
+        const features: ConnectFeature & SolanaSignAndSendTransactionFeature = {
+            'standard:connect': {
                 version: '1.0.0',
-                signAndSendTransaction: this.#signAndSendTransaction,
+                connect: this.#connect,
+            },
+            'standard:solanaSignAndSendTransaction': {
+                version: '1.0.0',
+                solanaSignAndSendTransaction: this.#signAndSendTransaction,
             },
         };
 
-        let signTransactionFeature: SignTransactionFeature | undefined;
+        let signTransactionFeature: SolanaSignTransactionFeature | undefined;
         if ('signTransaction' in this.#adapter) {
             signTransactionFeature = {
-                signTransaction: {
+                'standard:solanaSignTransaction': {
                     version: '1.0.0',
-                    signTransaction: this.#signTransaction,
+                    solanaSignTransaction: this.#signTransaction,
                 },
             };
         }
@@ -68,30 +130,88 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         let signMessageFeature: SignMessageFeature | undefined;
         if ('signMessage' in this.#adapter) {
             signMessageFeature = {
-                signMessage: {
+                'standard:signMessage': {
                     version: '1.0.0',
                     signMessage: this.#signMessage,
                 },
             };
         }
 
-        return { ...solana, ...signTransactionFeature, ...signMessageFeature };
+        return { ...features, ...signTransactionFeature, ...signMessageFeature };
     }
 
-    get extensions() {
-        return {};
+    get accounts() {
+        return this.#account ? [this.#account] : [];
     }
 
     get endpoint() {
         return this.#endpoint;
     }
 
-    constructor(adapter: Adapter, publicKey: Uint8Array, chain: SolanaChain, endpoint?: string) {
+    constructor(adapter: Adapter, chain: SolanaChain, endpoint?: string) {
         this.#adapter = adapter;
-        this.#publicKey = publicKey;
         this.#chain = chain;
         this.#endpoint = endpoint;
+
+        adapter.on('connect', this.#connected, this);
+        adapter.on('disconnect', this.#disconnected, this);
+
+        this.#connected();
     }
+
+    destroy(): void {
+        this.#adapter.off('connect', this.#connected, this);
+        this.#adapter.off('disconnect', this.#disconnected, this);
+    }
+
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
+        return (): void => this.#off(event, listener);
+    }
+
+    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
+        // eslint-disable-next-line prefer-spread
+        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
+    }
+
+    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
+    }
+
+    #connected(): void {
+        const publicKey = this.#adapter.publicKey?.toBytes();
+        if (publicKey) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const address = this.#adapter.publicKey!.toBase58();
+            const account = this.#account;
+            if (
+                !account ||
+                account.address !== address ||
+                account.chains.includes(this.#chain) ||
+                !bytesEqual(account.publicKey, publicKey)
+            ) {
+                this.#account = new SolanaWalletAdapterWalletAccount(this.#adapter, address, publicKey, [this.#chain]);
+                this.#emit('standard:change', ['accounts']);
+            }
+        }
+    }
+
+    #disconnected(): void {
+        if (this.#account) {
+            this.#account = undefined;
+            this.#emit('standard:change', ['accounts']);
+        }
+    }
+
+    #connect: ConnectMethod = async ({ silent } = {}) => {
+        if (!silent && !this.#adapter.connected) {
+            await this.#adapter.connect();
+        }
+
+        this.#connected();
+
+        return { accounts: this.accounts };
+    };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
         const outputs: SolanaSignAndSendTransactionOutput[] = [];
@@ -100,7 +220,8 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const input = inputs[0]!;
             const transaction = Transaction.from(input.transaction);
-            const endpoint = getEndpointForChain(this.#chain, this.#endpoint);
+            // FIXME: input.chain may not be a SolanaChain
+            const endpoint = getEndpointForChain(input.chain as SolanaChain, this.#endpoint);
 
             const signature = await sendAndConfirmTransaction(
                 transaction,
@@ -121,9 +242,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         return outputs as any;
     };
 
-    #signTransaction: SignTransactionMethod = async (...inputs) => {
+    #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
         if (!('signTransaction' in this.#adapter)) throw new Error('signTransaction not implemented by adapter');
-        const outputs: SignTransactionOutput[] = [];
+        const outputs: SolanaSignTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -172,166 +293,13 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 }
 
 /** TODO: docs */
-export class SolanaWalletAdapterWallet implements Wallet<SolanaWalletAdapterWalletAccount> {
-    #listeners: {
-        [E in WalletEventNames<SolanaWalletAdapterWalletAccount>]?: WalletEvents<SolanaWalletAdapterWalletAccount>[E][];
-    } = {};
-    #adapter: Adapter;
-    #chain: SolanaChain;
-    #endpoint: string | undefined;
-    #account: SolanaWalletAdapterWalletAccount | undefined;
-
-    get version() {
-        return '1.0.0' as const;
-    }
-
-    get name() {
-        return this.#adapter.name;
-    }
-
-    get icon() {
-        return this.#adapter.icon;
-    }
-
-    get chains() {
-        return [this.#chain];
-    }
-
-    get features() {
-        const features: WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>[] = ['solana'];
-        if ('signTransaction' in this.#adapter) {
-            features.push('signTransaction');
-        }
-        if ('signMessage' in this.#adapter) {
-            features.push('signMessage');
-        }
-        return features;
-    }
-
-    get extensions() {
-        return [];
-    }
-
-    get accounts() {
-        return this.#account ? [this.#account] : [];
-    }
-
-    get hasMoreAccounts() {
-        return false;
-    }
-
-    get endpoint() {
-        return this.#endpoint;
-    }
-
-    constructor(adapter: Adapter, chain: SolanaChain, endpoint?: string) {
-        this.#adapter = adapter;
-        this.#chain = chain;
-        this.#endpoint = endpoint;
-
-        adapter.on('connect', this.#connect, this);
-        adapter.on('disconnect', this.#disconnect, this);
-
-        this.#connect();
-    }
-
-    destroy(): void {
-        this.#adapter.off('connect', this.#connect, this);
-        this.#adapter.off('disconnect', this.#disconnect, this);
-    }
-
-    async connect<
-        Chain extends SolanaWalletAdapterWalletAccount['chain'],
-        FeatureName extends WalletAccountFeatureName<SolanaWalletAdapterWalletAccount>,
-        ExtensionName extends WalletAccountExtensionName<SolanaWalletAdapterWalletAccount>,
-        Input extends ConnectInput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName>
-    >(
-        input?: Input
-    ): Promise<ConnectOutput<SolanaWalletAdapterWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
-        const { chains, addresses, features, extensions, silent } = input || {};
-
-        // FIXME: features, extensions
-
-        if (extensions?.length) throw new Error('extensions not supported');
-
-        if (!silent && !this.#adapter.connected) {
-            await this.#adapter.connect();
-        }
-
-        if (chains?.length) {
-            if (chains.length > 1) throw new Error('multiple chains not supported');
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.#chain = chains[0]!;
-        }
-
-        this.#connect();
-
-        return {
-            accounts: this.accounts as any, // FIXME
-            hasMoreAccounts: false,
-        };
-    }
-
-    on<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
-        event: E,
-        listener: WalletEvents<SolanaWalletAdapterWalletAccount>[E]
-    ): () => void {
-        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
-        return (): void => this.#off(event, listener);
-    }
-
-    #emit<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
-        event: E,
-        ...args: Parameters<WalletEvents<SolanaWalletAdapterWalletAccount>[E]>
-    ): void {
-        // eslint-disable-next-line prefer-spread
-        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
-    }
-
-    #off<E extends WalletEventNames<SolanaWalletAdapterWalletAccount>>(
-        event: E,
-        listener: WalletEvents<SolanaWalletAdapterWalletAccount>[E]
-    ): void {
-        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
-    }
-
-    #connect(): void {
-        const publicKey = this.#adapter.publicKey?.toBytes();
-        if (publicKey) {
-            const account = this.#account;
-            if (
-                !account ||
-                account.chain !== this.#chain ||
-                account.endpoint !== this.#endpoint ||
-                !bytesEqual(account.publicKey, publicKey)
-            ) {
-                this.#account = new SolanaWalletAdapterWalletAccount(
-                    this.#adapter,
-                    publicKey,
-                    this.#chain,
-                    this.#endpoint
-                );
-                this.#emit('change', ['accounts']);
-            }
-        }
-    }
-
-    #disconnect(): void {
-        if (this.#account) {
-            this.#account = undefined;
-            this.#emit('change', ['accounts']);
-        }
-    }
-}
-
-/** TODO: docs */
 export function registerWalletAdapter(
     adapter: Adapter,
     chain: SolanaChain,
     endpoint?: string,
-    match: (wallet: Wallet<SolanaWalletAdapterWalletAccount>) => boolean = (wallet) => wallet.name === adapter.name
+    match: (wallet: Wallet) => boolean = (wallet) => wallet.name === adapter.name
 ): () => void {
-    const wallets = initialize<SolanaWalletAdapterWalletAccount>();
+    const wallets = initialize();
     const destructors: (() => void)[] = [];
 
     function destroy(): void {

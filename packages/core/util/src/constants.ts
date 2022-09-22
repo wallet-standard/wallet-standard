@@ -11,6 +11,14 @@ export const CHAIN_SOLANA_TESTNET = 'solana:testnet';
 export const CHAIN_SOLANA_LOCALNET = 'solana:localnet';
 
 /** TODO: docs */
+export const SOLANA_CHAINS = [
+    CHAIN_SOLANA_MAINNET,
+    CHAIN_SOLANA_DEVNET,
+    CHAIN_SOLANA_TESTNET,
+    CHAIN_SOLANA_LOCALNET,
+] as const;
+
+/** TODO: docs */
 export type SolanaChain =
     | typeof CHAIN_SOLANA_MAINNET
     | typeof CHAIN_SOLANA_DEVNET
@@ -19,6 +27,9 @@ export type SolanaChain =
 
 /** Ethereum (mainnet) */
 export const CHAIN_ETHEREUM = 'ethereum:1';
+
+/** TODO: docs */
+export const ETHEREUM_CHAINS = [CHAIN_ETHEREUM] as const;
 
 /** TODO: docs */
 export type EthereumChain = typeof CHAIN_ETHEREUM;

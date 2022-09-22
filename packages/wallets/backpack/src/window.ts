@@ -42,6 +42,6 @@ export interface Backpack {
     signAllTransactions(txs: Array<Transaction>, publicKey?: PublicKey): Promise<Array<Transaction>>;
     signMessage(msg: Uint8Array, publicKey?: PublicKey): Promise<Uint8Array>;
 
-    on<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context: any): void;
-    off<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context: any): void;
+    on<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context?: any): void;
+    off<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context?: any): void;
 }
