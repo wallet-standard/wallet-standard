@@ -50,11 +50,13 @@ export type StandardAdapter = WalletAdapter & {
 
 /** TODO: docs */
 export class StandardWalletAdapter extends BaseWalletAdapter implements StandardAdapter {
-    readonly #wallet: StandardWalletAdapterWallet;
+    readonly supportedTransactionVersions = null;
+
     #account: WalletAccount | null;
     #publicKey: PublicKey | null;
     #connecting: boolean;
     #off: (() => void) | undefined;
+    readonly #wallet: StandardWalletAdapterWallet;
     readonly #readyState: WalletReadyState =
         typeof window === 'undefined' || typeof document === 'undefined'
             ? WalletReadyState.Unsupported
