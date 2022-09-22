@@ -33,6 +33,7 @@ export interface SignTransactionInput {
     /** Serialized transactions, as raw bytes. */
     transaction: Uint8Array;
 
+    // TODO: decide if chain argument makes sense for multiple transactions
     /** Chain to use. */
     chain?: IdentifierString;
 }

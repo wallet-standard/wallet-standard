@@ -181,6 +181,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
     #connected(): void {
         const publicKey = this.#adapter.publicKey?.toBytes();
         if (publicKey) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const address = this.#adapter.publicKey!.toBase58();
             const account = this.#account;
             if (
