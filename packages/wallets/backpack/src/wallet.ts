@@ -19,8 +19,15 @@ import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
 import type { BackpackWindow } from './window.js';
+import { Backpack } from './window.js';
 
 declare const window: BackpackWindow;
+
+export type BackpackSolanaFeature = {
+    'backpack:': {
+        backpack: Backpack;
+    };
+};
 
 export class BackpackSolanaWallet implements Wallet {
     readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
@@ -49,7 +56,8 @@ export class BackpackSolanaWallet implements Wallet {
     get features(): ConnectFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
-        SignMessageFeature {
+        SignMessageFeature &
+        BackpackSolanaFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
@@ -66,6 +74,11 @@ export class BackpackSolanaWallet implements Wallet {
             'standard:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
+            },
+            'backpack:': {
+                get backpack() {
+                    return window.backpack;
+                },
             },
         };
     }
