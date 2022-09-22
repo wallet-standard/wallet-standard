@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { Connect } from './pages/Connect';
 import { Home } from './pages/Home';

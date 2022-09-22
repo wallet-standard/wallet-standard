@@ -13,16 +13,9 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/features';
 import { getChainForEndpoint } from '@wallet-standard/solana-web3.js';
-import type {
-    IdentifierArray,
-    Wallet,
-    WalletAccount,
-    WalletEventNames,
-    WalletEvents,
-    WalletPropertyName,
-} from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
-import { ReadonlyWalletAccount, bytesEqual } from '@wallet-standard/util';
+import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
 import type { BackpackWindow } from './window.js';

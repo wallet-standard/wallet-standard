@@ -1,7 +1,7 @@
 import assert from 'assert';
 import nullthrows from 'nullthrows';
 import { Packager } from '@parcel/plugin';
-import { replaceURLReferences, relativeBundlePath } from '@parcel/utils';
+import { relativeBundlePath, replaceURLReferences } from '@parcel/utils';
 
 export default new Packager({
     async package({ bundle, bundleGraph, options }) {

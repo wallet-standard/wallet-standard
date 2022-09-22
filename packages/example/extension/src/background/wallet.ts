@@ -1,7 +1,7 @@
 import { Keypair as SolKeypair } from '@solana/web3.js';
 import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
-import { Wallet as EthWallet, utils as ethUtils } from 'ethers';
+import { utils as ethUtils, Wallet as EthWallet } from 'ethers';
 
 // SLIP-44.
 // See: https://github.com/satoshilabs/slips/blob/master/slip-0044.md#registered-coin-types.

@@ -1,7 +1,7 @@
 import type { RPC } from '../messages';
+import { CONTENT_PORT_NAME, createPortTransport, createRPC, POPUP_PORT_NAME } from '../messages';
 import { asyncState } from '../utils/asyncState';
 import { openPopup } from '../utils/popup';
-import { CONTENT_PORT_NAME, POPUP_PORT_NAME, createPortTransport, createRPC } from '../messages';
 import { getMnemonic, setMnemonic } from './storage';
 import { generateMnemonic, getAccounts } from './wallet';
 
