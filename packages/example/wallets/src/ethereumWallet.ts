@@ -104,7 +104,7 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
             outputs.push({ signature: ethers.utils.arrayify(hash) });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SignTransactionMethod = async (...inputs) => {
@@ -131,7 +131,7 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
             outputs.push({ signedTransaction: ethers.utils.arrayify(signedTransaction) });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -160,6 +160,6 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
             });
         }
 
-        return outputs as any;
+        return outputs;
     };
 }

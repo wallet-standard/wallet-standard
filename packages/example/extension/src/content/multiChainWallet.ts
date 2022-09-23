@@ -55,7 +55,7 @@ export class EthereumWalletAccount implements WalletAccount {
 
         // TODO
 
-        return outputs as any;
+        return outputs;
     };
 }
 
@@ -100,7 +100,7 @@ export class SolanaWalletAccount implements WalletAccount {
 
         // TODO
 
-        return outputs as any;
+        return outputs;
     };
 }
 

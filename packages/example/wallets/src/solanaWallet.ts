@@ -155,7 +155,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ signature: decode(signature) });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SignTransactionMethod = async (...inputs) => {
@@ -186,7 +186,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ signedTransaction: parsedTransaction.serialize({ requireAllSignatures: false }) });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -207,7 +207,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #encrypt: EncryptMethod = async (...inputs) => {
@@ -226,7 +226,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ ciphertext, nonce });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #decrypt: DecryptMethod = async (...inputs) => {
@@ -245,6 +245,6 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ cleartext });
         }
 
-        return outputs as any;
+        return outputs;
     };
 }
