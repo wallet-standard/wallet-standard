@@ -226,9 +226,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
 
                 signers?.length && transaction.partialSign(...signers);
 
-                const [{ signature }] = await this.#wallet.features[
-                    'solana:signAndSendTransaction'
-                ].signAndSendTransaction({
+                const signatures = await this.#wallet.features['solana:signAndSendTransaction'].signAndSendTransaction({
                     account: this.#account,
                     chain,
                     transaction: transaction.serialize({
@@ -243,7 +241,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                     },
                 });
 
-                return encode(signature);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                return encode(signatures[0]!.signature);
             } catch (error: any) {
                 if (error instanceof WalletError) throw error;
                 throw new WalletSendTransactionError(error?.message, error);
@@ -262,7 +261,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             if (!account?.features.includes('solana:signTransaction')) throw new WalletSignTransactionError();
 
             try {
-                const [{ signedTransaction }] = await this.#wallet.features['solana:signTransaction'].signTransaction({
+                const signedTransactions = await this.#wallet.features['solana:signTransaction'].signTransaction({
                     account,
                     transaction: transaction.serialize({
                         requireAllSignatures: false,
@@ -270,7 +269,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                     }),
                 });
 
-                return Transaction.from(signedTransaction);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                return Transaction.from(signedTransactions[0]!.signedTransaction);
             } catch (error: any) {
                 throw new WalletSignTransactionError(error?.message, error);
             }
@@ -316,11 +316,13 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             if (!account?.features.includes('standard:signMessage')) throw new WalletSignMessageError();
 
             try {
-                const [{ signature }] = await this.#wallet.features['standard:signMessage'].signMessage({
+                const signedMessages = await this.#wallet.features['standard:signMessage'].signMessage({
                     account,
                     message,
                 });
-                return signature;
+
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                return signedMessages[0]!.signature;
             } catch (error: any) {
                 throw new WalletSignMessageError(error?.message, error);
             }
