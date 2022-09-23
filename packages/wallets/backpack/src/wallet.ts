@@ -19,7 +19,7 @@ import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
 import type { BackpackWindow } from './window.js';
-import { Backpack } from './window.js';
+import type { Backpack } from './window.js';
 
 declare const window: BackpackWindow;
 

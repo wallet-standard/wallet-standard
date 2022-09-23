@@ -1,5 +1,5 @@
 import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from '../standard/signAndSendTransaction.js';
-import { SolanaSignTransactionOptions, SolanaTransactionCommitment } from './solanaSignTransaction.js';
+import type { SolanaSignTransactionOptions, SolanaTransactionCommitment } from './solanaSignTransaction.js';
 
 /** TODO: docs */
 export type SolanaSignAndSendTransactionFeature = {
