@@ -9,9 +9,9 @@ export function useStandardWalletAdapters(wallets: Adapter[]): Adapter[] {
 
     useEffect(() => {
         // Initialize the `window.navigator.wallets` interface.
-        const wallets = initialize();
+        const { get, on } = initialize();
         // Get wallets that have been registered already that can be wrapped as adapters.
-        const filtered = wallets.get().filter(isStandardWalletAdapterCompatibleWallet);
+        const filtered = get().filter(isStandardWalletAdapterCompatibleWallet);
 
         // Add an adapter for standard wallets that have been registered already.
         if (filtered.length) {
@@ -24,7 +24,7 @@ export function useStandardWalletAdapters(wallets: Adapter[]): Adapter[] {
 
         const destructors = [
             // Add an event listener to add adapters for standard wallets that are registered after this point.
-            wallets.on('register', (registered) => {
+            on('register', (...registered) => {
                 const filtered = registered.filter(isStandardWalletAdapterCompatibleWallet);
                 if (filtered.length) {
                     setAdapters((adapters) => [
@@ -35,7 +35,7 @@ export function useStandardWalletAdapters(wallets: Adapter[]): Adapter[] {
                 }
             }),
             // Add an event listener to remove any adapters for wallets that are unregistered after this point.
-            wallets.on('unregister', (unregistered) => {
+            on('unregister', (...unregistered) => {
                 const filtered = unregistered.filter(isStandardWalletAdapterCompatibleWallet);
                 if (filtered.length) {
                     setAdapters((adapters) =>
