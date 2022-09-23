@@ -34,6 +34,14 @@ function create(): Wallets {
     }
 
     function register(...wallets: ReadonlyArray<Wallet>): () => void {
+        // Filter out wallets that have already been registered.
+        // This prevents the same wallet from being registered twice, but it also prevents wallets from being
+        // unregistered by reusing a reference to the wallet to obtain the unregister function for it.
+        wallets = wallets.filter((wallet) => !registered.includes(wallet));
+        // If there are no new wallets to register, just return a no-op unregister function.
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        if (!wallets.length) return () => {};
+
         registered.push(...wallets);
         listeners['register']?.forEach((listener) => listener(...wallets));
         // Return a function that unregisters the registered wallets.
