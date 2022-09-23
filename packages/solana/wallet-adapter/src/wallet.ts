@@ -225,7 +225,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
@@ -257,7 +257,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             );
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -274,7 +274,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             throw new Error('signMessage for multiple messages not implemented');
         }
 
-        return outputs as any;
+        return outputs;
     };
 }
 

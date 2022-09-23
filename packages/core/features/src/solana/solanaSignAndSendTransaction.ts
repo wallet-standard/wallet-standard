@@ -1,21 +1,5 @@
-import type { AsyncMapFunction } from '@wallet-standard/types';
 import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from '../standard/signAndSendTransaction.js';
-import { SolanaSignTransactionOptions, SolanaTransactionCommitment } from './solanaSignTransaction.js';
-
-/** TODO: docs */
-export type SolanaSignAndSendTransactionVersion = '1.0.0';
-
-/**
- * TODO: docs
- * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
- */
-export declare const solanaSignAndSendTransactionMethod: AsyncMapFunction<
-    SolanaSignAndSendTransactionInput,
-    SolanaSignAndSendTransactionOutput
->;
-
-/** TODO: docs */
-export type SolanaSignAndSendTransactionMethod = typeof solanaSignAndSendTransactionMethod;
+import type { SolanaSignTransactionOptions, SolanaTransactionCommitment } from './solanaSignTransaction.js';
 
 /** TODO: docs */
 export type SolanaSignAndSendTransactionFeature = {
@@ -35,6 +19,14 @@ export type SolanaSignAndSendTransactionFeature = {
         signAndSendTransaction: SolanaSignAndSendTransactionMethod;
     };
 };
+
+/** TODO: docs */
+export type SolanaSignAndSendTransactionVersion = '1.0.0';
+
+/** TODO: docs */
+export type SolanaSignAndSendTransactionMethod = (
+    ...inputs: SolanaSignAndSendTransactionInput[]
+) => Promise<SolanaSignAndSendTransactionOutput[]>;
 
 /** Input for signing and sending transactions. */
 export interface SolanaSignAndSendTransactionInput extends SignAndSendTransactionInput {

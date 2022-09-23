@@ -19,7 +19,7 @@ import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
 import type { BackpackWindow } from './window.js';
-import { Backpack } from './window.js';
+import type { Backpack } from './window.js';
 
 declare const window: BackpackWindow;
 
@@ -219,7 +219,7 @@ export class BackpackSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
@@ -281,7 +281,7 @@ export class BackpackSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -301,6 +301,6 @@ export class BackpackSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 }

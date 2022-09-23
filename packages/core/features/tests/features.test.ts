@@ -62,7 +62,7 @@ if ('standard:connect' in wallet.features) {
 const account = accounts[0]!;
 
 if ('standard:signTransaction' in wallet.features) {
-    const [{ signedTransaction }] = await wallet.features['standard:signTransaction'].signTransaction({
+    await wallet.features['standard:signTransaction'].signTransaction({
         account,
         chain: 'solana:devnet',
         transaction: new Uint8Array(),
@@ -70,7 +70,7 @@ if ('standard:signTransaction' in wallet.features) {
 }
 
 if ('standard:signMessage' in wallet.features) {
-    const [{ signedMessage, signature }] = await wallet.features['standard:signMessage'].signMessage({
+    await wallet.features['standard:signMessage'].signMessage({
         account,
         message: new Uint8Array(),
     });
