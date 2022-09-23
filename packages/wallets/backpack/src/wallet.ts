@@ -18,8 +18,7 @@ import type { SolanaChain } from '@wallet-standard/util';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
-import type { BackpackWindow } from './window.js';
-import type { Backpack } from './window.js';
+import type { Backpack, BackpackWindow } from './window.js';
 
 declare const window: BackpackWindow;
 
