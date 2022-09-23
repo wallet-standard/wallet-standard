@@ -32,7 +32,7 @@
         "@types/node": "^18.6.4",
         "@typescript-eslint/eslint-plugin": "^5.32.0",
         "@typescript-eslint/parser": "^5.32.0",
-        "eslint": "^8.23.1",
+        "eslint": "8.22.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-react": "^7.30.1",
@@ -44,5 +44,11 @@
         "shx": "^0.3.4",
         "typedoc": "^0.23.10",
         "typescript": "^4.7.4"
+    },
+    "resolutions": {
+        "eslint": "8.22.0"
+    },
+    "overrides": {
+        "eslint": "8.22.0"
     }
 }
