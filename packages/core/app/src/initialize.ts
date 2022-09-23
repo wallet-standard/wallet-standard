@@ -1,7 +1,7 @@
 import type {
     Wallet,
     Wallets,
-    WalletsCommand,
+    WalletsCallback,
     WalletsEventNames,
     WalletsEvents,
     WalletsWindow,
@@ -13,13 +13,13 @@ declare const window: WalletsWindow;
 export function initialize(): Wallets {
     if (typeof window === 'undefined') return create();
 
-    const commands = (window.navigator.wallets ||= []);
+    const callbacks = (window.navigator.wallets ||= []);
     // If it's already initialized, don't recreate it, just return it.
-    if (!Array.isArray(commands)) return commands;
+    if (!Array.isArray(callbacks)) return callbacks;
 
     const wallets = create();
     Object.defineProperty(window.navigator, 'wallets', { value: wallets });
-    wallets.push(...commands);
+    wallets.push(...callbacks);
     return wallets;
 }
 
@@ -27,9 +27,15 @@ function create(): Wallets {
     const registered: Wallet[] = [];
     const listeners: { [E in WalletsEventNames]?: WalletsEvents[E][] } = {};
 
-    function register(wallets: ReadonlyArray<Wallet>): () => void {
+    function push(...callbacks: ReadonlyArray<WalletsCallback>): void {
+        for (const callback of callbacks) {
+            callback({ register });
+        }
+    }
+
+    function register(...wallets: ReadonlyArray<Wallet>): () => void {
         registered.push(...wallets);
-        listeners['register']?.forEach((listener) => listener(wallets));
+        listeners['register']?.forEach((listener) => listener(...wallets));
         // Return a function that unregisters the registered wallets.
         return function unregister(): void {
             wallets
@@ -38,7 +44,7 @@ function create(): Wallets {
                 .sort()
                 .reverse()
                 .forEach((index) => registered.splice(index, 1));
-            listeners['unregister']?.forEach((listener) => listener(wallets));
+            listeners['unregister']?.forEach((listener) => listener(...wallets));
         };
     }
 
@@ -55,37 +61,5 @@ function create(): Wallets {
         };
     }
 
-    function push(...commands: ReadonlyArray<WalletsCommand>): void {
-        for (const command of commands) {
-            switch (command.method) {
-                case 'get':
-                    {
-                        const { callback } = command;
-                        callback(get());
-                    }
-                    break;
-                case 'register':
-                    {
-                        const { wallets, callback } = command;
-                        callback(register(wallets));
-                    }
-                    break;
-                case 'on':
-                    {
-                        const { event, listener, callback } = command;
-                        callback(on(event, listener));
-                    }
-                    break;
-                default:
-                    console.warn(
-                        `\`window.navigator.wallets.push(...)\` called with unknown command \`${JSON.stringify(
-                            command
-                        )}\``
-                    );
-                    break;
-            }
-        }
-    }
-
-    return { push, get, register, on };
+    return { push, register, get, on };
 }

@@ -285,7 +285,7 @@ export function registerWalletAdapter(
     endpoint?: string,
     match: (wallet: Wallet) => boolean = (wallet) => wallet.name === adapter.name
 ): () => void {
-    const wallets = initialize();
+    const { register, get, on } = initialize();
     const destructors: (() => void)[] = [];
 
     function destroy(): void {
@@ -295,7 +295,7 @@ export function registerWalletAdapter(
 
     function setup(): boolean {
         // If the adapter is unsupported, or a standard wallet that matches it has already been registered, do nothing.
-        if (adapter.readyState === WalletReadyState.Unsupported || wallets.get().some(match)) return true;
+        if (adapter.readyState === WalletReadyState.Unsupported || get().some(match)) return true;
 
         // If the adapter isn't ready, try again later.
         const ready =
@@ -304,10 +304,10 @@ export function registerWalletAdapter(
             const wallet = new SolanaWalletAdapterWallet(adapter, chain, endpoint);
             destructors.push(() => wallet.destroy());
             // Register the adapter wrapped as a standard wallet, and receive a function to unregister the adapter.
-            destructors.push(wallets.register([wallet]));
+            destructors.push(register(wallet));
             // Whenever a standard wallet is registered ...
             destructors.push(
-                wallets.on('register', (wallets) => {
+                on('register', (...wallets) => {
                     // ... check if it matches the adapter.
                     if (wallets.some(match)) {
                         // If it does, remove the event listener and unregister the adapter.
