@@ -1,4 +1,3 @@
-import type { PropertyNames } from '@wallet-standard/types';
 import type { WalletAccount } from './account.js';
 import type { IdentifierArray, IdentifierRecord } from './identifier.js';
 import type { IconString } from './types.js';
@@ -60,7 +59,11 @@ export interface Wallet {
 }
 
 /** TODO: docs */
-export type WalletPropertyName = NonNullable<PropertyNames<Wallet>>;
+export type WalletPropertyName = NonNullable<
+    {
+        [K in keyof Wallet]: Wallet[K] extends (...args: any) => any ? never : K;
+    }[keyof Wallet]
+>;
 
 /** TODO: docs */
 export type WalletProperties = Pick<Wallet, WalletPropertyName>;
