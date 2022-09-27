@@ -26,12 +26,12 @@ export type SolanaSignTransactionFeature = {
 export type SolanaSignTransactionVersion = '1.0.0';
 
 /** TODO: docs */
+export type SolanaTransactionVersion = 'legacy' | 0;
+
+/** TODO: docs */
 export type SolanaSignTransactionMethod = (
     ...inputs: SolanaSignTransactionInput[]
 ) => Promise<SolanaSignTransactionOutput[]>;
-
-/** TODO: docs */
-export type SolanaTransactionVersion = 'legacy' | 0;
 
 /** Input for signing and sending transactions. */
 export interface SolanaSignTransactionInput extends SignTransactionInput {
