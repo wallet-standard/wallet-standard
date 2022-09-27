@@ -1,33 +1,33 @@
 import { clusterApiUrl } from '@solana/web3.js';
-import type { SolanaChain } from '@wallet-standard/util';
+import type { SolanaChain } from '@wallet-standard/solana-chains';
 import {
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_LOCALNET,
-    CHAIN_SOLANA_MAINNET,
-    CHAIN_SOLANA_TESTNET,
-} from '@wallet-standard/util';
+    SOLANA_DEVNET_CHAIN,
+    SOLANA_LOCALNET_CHAIN,
+    SOLANA_MAINNET_CHAIN,
+    SOLANA_TESTNET_CHAIN,
+} from '@wallet-standard/solana-chains';
 
 export function getChainForEndpoint(endpoint: string): SolanaChain {
     if (endpoint === clusterApiUrl('devnet')) {
-        return CHAIN_SOLANA_DEVNET;
+        return SOLANA_DEVNET_CHAIN;
     } else if (endpoint === clusterApiUrl('testnet')) {
-        return CHAIN_SOLANA_TESTNET;
+        return SOLANA_TESTNET_CHAIN;
     } else if (/^https?:\/\/localhost[:/]/.test(endpoint)) {
-        return CHAIN_SOLANA_LOCALNET;
+        return SOLANA_LOCALNET_CHAIN;
     } else {
-        return CHAIN_SOLANA_MAINNET;
+        return SOLANA_MAINNET_CHAIN;
     }
 }
 
 export function getEndpointForChain(chain: SolanaChain, endpoint?: string): string {
     if (!endpoint) {
-        if (chain === CHAIN_SOLANA_MAINNET) {
+        if (chain === SOLANA_MAINNET_CHAIN) {
             endpoint = clusterApiUrl('mainnet-beta');
-        } else if (chain === CHAIN_SOLANA_DEVNET) {
+        } else if (chain === SOLANA_DEVNET_CHAIN) {
             endpoint = clusterApiUrl('devnet');
-        } else if (chain === CHAIN_SOLANA_TESTNET) {
+        } else if (chain === SOLANA_TESTNET_CHAIN) {
             endpoint = clusterApiUrl('testnet');
-        } else if (chain === CHAIN_SOLANA_LOCALNET) {
+        } else if (chain === SOLANA_LOCALNET_CHAIN) {
             endpoint = 'http://localhost:8899';
         } else {
             endpoint = clusterApiUrl('mainnet-beta');

@@ -14,6 +14,7 @@
     "dependencies": {
         "@solana/web3.js": "^1.51.0",
         "@wallet-standard/features": "workspace:^",
+        "@wallet-standard/solana-chains": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
         "@wallet-standard/util": "workspace:^",
         "bip39": "^3.0.4",

@@ -32,6 +32,7 @@
     },
     "dependencies": {
         "@wallet-standard/features": "workspace:^",
+        "@wallet-standard/solana-chains": "workspace:^",
         "@wallet-standard/solana-features": "workspace:^",
         "@wallet-standard/solana-web3.js": "workspace:^",
         "@wallet-standard/standard": "workspace:^",

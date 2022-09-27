@@ -137,6 +137,7 @@ importers:
       '@types/react-dom': ^18.0.0
       '@wallet-standard/features': workspace:^
       '@wallet-standard/parcel-packager-webextension': workspace:^
+      '@wallet-standard/solana-chains': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
       bip39: ^3.0.4
@@ -158,6 +159,7 @@ importers:
     dependencies:
       '@solana/web3.js': 1.63.0
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-chains': link:../../solana/chains
       '@wallet-standard/standard': link:../../core/standard
       '@wallet-standard/util': link:../../core/util
       bip39: 3.0.4
@@ -195,9 +197,9 @@ importers:
       '@types/react-dom': ^18.0.0
       '@wallet-standard/app': workspace:^
       '@wallet-standard/react': workspace:^
+      '@wallet-standard/solana-chains': workspace:^
       '@wallet-standard/solana-wallet-adapter': workspace:^
       '@wallet-standard/standard': workspace:^
-      '@wallet-standard/util': workspace:^
       parcel: ^2.3.2
       process: ^0.11.10
       react: ^18.0.0
@@ -210,9 +212,9 @@ importers:
       '@solana/web3.js': 1.63.0
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/react': link:../../core/react
+      '@wallet-standard/solana-chains': link:../../solana/chains
       '@wallet-standard/solana-wallet-adapter': link:../../solana/wallet-adapter
       '@wallet-standard/standard': link:../../core/standard
-      '@wallet-standard/util': link:../../core/util
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
@@ -274,6 +276,7 @@ importers:
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/app': workspace:^
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-chains': workspace:^
       '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
@@ -286,6 +289,7 @@ importers:
       '@solana/web3.js': 1.63.0
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-chains': link:../../solana/chains
       '@wallet-standard/solana-features': link:../../solana/features
       '@wallet-standard/solana-web3.js': link:../../solana/web3.js
       '@wallet-standard/standard': link:../../core/standard
@@ -296,6 +300,12 @@ importers:
     devDependencies:
       '@types/bs58': 4.0.1
       '@types/node-fetch': 2.6.2
+      shx: 0.3.4
+
+  packages/solana/chains:
+    specifiers:
+      shx: ^0.3.4
+    devDependencies:
       shx: 0.3.4
 
   packages/solana/features:
@@ -317,6 +327,7 @@ importers:
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/app': workspace:^
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-chains': workspace:^
       '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
@@ -327,6 +338,7 @@ importers:
       '@solana/wallet-adapter-base': 0.9.17_@solana+web3.js@1.63.0
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-chains': link:../chains
       '@wallet-standard/solana-features': link:../features
       '@wallet-standard/solana-web3.js': link:../web3.js
       '@wallet-standard/standard': link:../../core/standard
@@ -370,16 +382,16 @@ importers:
       '@solana/web3.js': ^1.51.0
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-chains': workspace:^
       '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/standard': workspace:^
-      '@wallet-standard/util': workspace:^
       bs58: ^4.0.1
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-chains': link:../chains
       '@wallet-standard/solana-features': link:../features
       '@wallet-standard/standard': link:../../core/standard
-      '@wallet-standard/util': link:../../core/util
     devDependencies:
       '@solana/web3.js': 1.63.0
       '@types/node-fetch': 2.6.2
@@ -404,6 +416,7 @@ importers:
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-chains': workspace:^
       '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
@@ -412,6 +425,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-chains': link:../../solana/chains
       '@wallet-standard/solana-features': link:../../solana/features
       '@wallet-standard/solana-web3.js': link:../../solana/web3.js
       '@wallet-standard/standard': link:../../core/standard
@@ -428,6 +442,7 @@ importers:
       '@solana/web3.js': ^1.51.0
       '@types/bs58': ^4.0.1
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-chains': workspace:^
       '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
@@ -438,6 +453,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-chains': link:../../solana/chains
       '@wallet-standard/solana-features': link:../../solana/features
       '@wallet-standard/solana-web3.js': link:../../solana/web3.js
       '@wallet-standard/standard': link:../../core/standard

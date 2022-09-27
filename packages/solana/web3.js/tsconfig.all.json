@@ -8,7 +8,7 @@
             "path": "../../core/standard/tsconfig.all.json"
         },
         {
-            "path": "../../core/util/tsconfig.all.json"
+            "path": "../chains/tsconfig.all.json"
         },
         {
             "path": "../features/tsconfig.all.json"

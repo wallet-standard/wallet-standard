@@ -7,6 +7,8 @@ import type {
     SignMessageMethod,
     SignMessageOutput,
 } from '@wallet-standard/features';
+import type { SOLANA_TESTNET_CHAIN, SolanaChain } from '@wallet-standard/solana-chains';
+import { SOLANA_DEVNET_CHAIN, SOLANA_LOCALNET_CHAIN, SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
@@ -17,14 +19,7 @@ import type {
 } from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type { Wallet, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
-import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';
-import {
-    bytesEqual,
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_LOCALNET,
-    CHAIN_SOLANA_MAINNET,
-    ReadonlyWalletAccount,
-} from '@wallet-standard/util';
+import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
 import { icon } from './icon.js';
@@ -44,7 +39,7 @@ export class GlowSolanaWallet implements Wallet {
     readonly #version = '1.0.0' as const;
     readonly #name = 'Glow' as const;
     readonly #icon = icon;
-    readonly #chains = [CHAIN_SOLANA_MAINNET, CHAIN_SOLANA_DEVNET, CHAIN_SOLANA_LOCALNET] as const;
+    readonly #chains = [SOLANA_MAINNET_CHAIN, SOLANA_DEVNET_CHAIN, SOLANA_LOCALNET_CHAIN] as const;
     #account: ReadonlyWalletAccount | null;
 
     get version() {
@@ -291,15 +286,15 @@ export class GlowSolanaWallet implements Wallet {
     };
 }
 
-type SupportedChain = Exclude<SolanaChain, typeof CHAIN_SOLANA_TESTNET>;
+type SupportedChain = Exclude<SolanaChain, typeof SOLANA_TESTNET_CHAIN>;
 
 function getNetworkForChain(chain: SupportedChain): Network {
     switch (chain) {
-        case CHAIN_SOLANA_MAINNET:
+        case SOLANA_MAINNET_CHAIN:
             return Network.Mainnet;
-        case CHAIN_SOLANA_DEVNET:
+        case SOLANA_DEVNET_CHAIN:
             return Network.Devnet;
-        case CHAIN_SOLANA_LOCALNET:
+        case SOLANA_LOCALNET_CHAIN:
             return Network.Localnet;
         default:
             return Network.Mainnet;

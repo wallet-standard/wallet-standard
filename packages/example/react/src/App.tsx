@@ -1,8 +1,8 @@
 import { GlowWalletAdapter } from '@solana/wallet-adapter-glow';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { useWallets, WalletProvider, WalletsProvider } from '@wallet-standard/react';
+import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
 import { registerWalletAdapter } from '@wallet-standard/solana-wallet-adapter';
-import { CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect } from 'react';
 
@@ -17,7 +17,7 @@ export const App: FC = () => {
 const Context: FC<{ children: NonNullable<ReactNode> }> = ({ children }) => {
     useEffect(() => {
         const adapters = [new PhantomWalletAdapter(), new GlowWalletAdapter()];
-        const destructors = adapters.map((adapter) => registerWalletAdapter(adapter, CHAIN_SOLANA_MAINNET));
+        const destructors = adapters.map((adapter) => registerWalletAdapter(adapter, SOLANA_MAINNET_CHAIN));
         return () => destructors.forEach((destroy) => destroy());
     }, []);
 

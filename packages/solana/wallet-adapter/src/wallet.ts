@@ -9,6 +9,7 @@ import type {
     SignMessageMethod,
     SignMessageOutput,
 } from '@wallet-standard/features';
+import type { SolanaChain } from '@wallet-standard/solana-chains';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
@@ -19,7 +20,6 @@ import type {
 } from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type { IconString, Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
-import type { SolanaChain } from '@wallet-standard/util';
 import { bytesEqual } from '@wallet-standard/util';
 import { decode } from 'bs58';
 

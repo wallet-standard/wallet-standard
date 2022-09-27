@@ -1,6 +1,6 @@
 {
-    "name": "@wallet-standard/solana-wallet-adapter",
-    "version": "0.1.0-alpha.2",
+    "name": "@wallet-standard/solana-chains",
+    "version": "0.1.0-alpha.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
@@ -26,25 +26,7 @@
         "clean": "shx mkdir -p lib && shx rm -rf lib",
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
-    "peerDependencies": {
-        "@solana/web3.js": "^1.51.0",
-        "bs58": "^4.0.1"
-    },
-    "dependencies": {
-        "@solana/wallet-adapter-base": "^0.9.17",
-        "@wallet-standard/app": "workspace:^",
-        "@wallet-standard/features": "workspace:^",
-        "@wallet-standard/solana-chains": "workspace:^",
-        "@wallet-standard/solana-features": "workspace:^",
-        "@wallet-standard/solana-web3.js": "workspace:^",
-        "@wallet-standard/standard": "workspace:^",
-        "@wallet-standard/util": "workspace:^"
-    },
     "devDependencies": {
-        "@solana/web3.js": "^1.51.0",
-        "@types/bs58": "^4.0.1",
-        "@types/node-fetch": "^2.6.2",
-        "bs58": "^4.0.1",
         "shx": "^0.3.4"
     }
 }

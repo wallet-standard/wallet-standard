@@ -14,6 +14,9 @@
             "path": "../../core/util/tsconfig.all.json"
         },
         {
+            "path": "../../solana/chains/tsconfig.all.json"
+        },
+        {
             "path": "../../solana/features/tsconfig.all.json"
         },
         {

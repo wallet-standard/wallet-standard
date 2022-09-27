@@ -1,4 +1,5 @@
 import type { SignTransactionFeature, SignTransactionMethod, SignTransactionOutput } from '@wallet-standard/features';
+import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
 import type {
     ConnectInput,
     ConnectOutput,
@@ -9,7 +10,7 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import { CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET } from '@wallet-standard/util';
+import { CHAIN_ETHEREUM } from '@wallet-standard/util';
 import { utils as ethUtils } from 'ethers';
 
 import type { RPC } from '../messages';
@@ -59,7 +60,7 @@ export class EthereumWalletAccount implements WalletAccount {
     };
 }
 
-export type SolanaChain = typeof CHAIN_SOLANA_MAINNET;
+export type SolanaChain = typeof SOLANA_MAINNET_CHAIN;
 
 export type SolanaWalletAccountFeature = SignTransactionFeature;
 
@@ -75,7 +76,7 @@ export class SolanaWalletAccount implements WalletAccount {
     }
 
     get chain() {
-        return CHAIN_SOLANA_MAINNET;
+        return SOLANA_MAINNET_CHAIN;
     }
 
     get features(): SolanaWalletAccountFeature {
@@ -132,7 +133,7 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
     }
 
     get chains() {
-        return [CHAIN_ETHEREUM, CHAIN_SOLANA_MAINNET];
+        return [CHAIN_ETHEREUM, SOLANA_MAINNET_CHAIN];
     }
 
     get features() {

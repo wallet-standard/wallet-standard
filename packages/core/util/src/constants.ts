@@ -1,30 +1,3 @@
-/** Solana Mainnet (beta), e.g. https://api.mainnet-beta.solana.com */
-export const CHAIN_SOLANA_MAINNET = 'solana:mainnet';
-
-/** Solana Devnet, e.g. https://api.devnet.solana.com */
-export const CHAIN_SOLANA_DEVNET = 'solana:devnet';
-
-/** Solana Testnet, e.g. https://api.testnet.solana.com */
-export const CHAIN_SOLANA_TESTNET = 'solana:testnet';
-
-/** Solana Localnet, e.g. http://localhost:8899 */
-export const CHAIN_SOLANA_LOCALNET = 'solana:localnet';
-
-/** TODO: docs */
-export const SOLANA_CHAINS = [
-    CHAIN_SOLANA_MAINNET,
-    CHAIN_SOLANA_DEVNET,
-    CHAIN_SOLANA_TESTNET,
-    CHAIN_SOLANA_LOCALNET,
-] as const;
-
-/** TODO: docs */
-export type SolanaChain =
-    | typeof CHAIN_SOLANA_MAINNET
-    | typeof CHAIN_SOLANA_DEVNET
-    | typeof CHAIN_SOLANA_TESTNET
-    | typeof CHAIN_SOLANA_LOCALNET;
-
 /** Ethereum (mainnet) */
 export const CHAIN_ETHEREUM = 'ethereum:1';
 

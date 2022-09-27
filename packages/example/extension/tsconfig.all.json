@@ -8,6 +8,9 @@
             "path": "../../core/standard/tsconfig.all.json"
         },
         {
+            "path": "../../solana/chains/tsconfig.all.json"
+        },
+        {
             "path": "../../core/util/tsconfig.all.json"
         },
         {
