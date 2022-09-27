@@ -29,7 +29,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
         destructors.push(on('unregister', () => setWallets(get())));
 
         return () => destructors.forEach((destroy) => destroy());
-    }, []);
+    }, [get, on]);
 
     return <WalletsContext.Provider value={{ wallets }}>{children}</WalletsContext.Provider>;
 };
