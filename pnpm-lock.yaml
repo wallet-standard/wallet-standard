@@ -274,6 +274,7 @@ importers:
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/app': workspace:^
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
@@ -285,6 +286,7 @@ importers:
       '@solana/web3.js': 1.63.0
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-features': link:../../solana/features
       '@wallet-standard/solana-web3.js': link:../../solana/web3.js
       '@wallet-standard/standard': link:../../core/standard
       '@wallet-standard/util': link:../../core/util
@@ -296,6 +298,17 @@ importers:
       '@types/node-fetch': 2.6.2
       shx: 0.3.4
 
+  packages/solana/features:
+    specifiers:
+      '@wallet-standard/features': workspace:^
+      '@wallet-standard/standard': workspace:^
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/standard': link:../../core/standard
+    devDependencies:
+      shx: 0.3.4
+
   packages/solana/wallet-adapter:
     specifiers:
       '@solana/wallet-adapter-base': ^0.9.17
@@ -304,6 +317,7 @@ importers:
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/app': workspace:^
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
@@ -313,6 +327,7 @@ importers:
       '@solana/wallet-adapter-base': 0.9.17_@solana+web3.js@1.63.0
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-features': link:../features
       '@wallet-standard/solana-web3.js': link:../web3.js
       '@wallet-standard/standard': link:../../core/standard
       '@wallet-standard/util': link:../../core/util
@@ -355,12 +370,14 @@ importers:
       '@solana/web3.js': ^1.51.0
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
       bs58: ^4.0.1
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-features': link:../features
       '@wallet-standard/standard': link:../../core/standard
       '@wallet-standard/util': link:../../core/util
     devDependencies:
@@ -387,6 +404,7 @@ importers:
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
@@ -394,6 +412,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-features': link:../../solana/features
       '@wallet-standard/solana-web3.js': link:../../solana/web3.js
       '@wallet-standard/standard': link:../../core/standard
       '@wallet-standard/util': link:../../core/util
@@ -409,6 +428,7 @@ importers:
       '@solana/web3.js': ^1.51.0
       '@types/bs58': ^4.0.1
       '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-features': workspace:^
       '@wallet-standard/solana-web3.js': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
@@ -418,6 +438,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-features': link:../../solana/features
       '@wallet-standard/solana-web3.js': link:../../solana/web3.js
       '@wallet-standard/standard': link:../../core/standard
       '@wallet-standard/util': link:../../core/util

@@ -1,4 +1,4 @@
-import type { SignTransactionInput, SignTransactionOutput } from '../standard/signTransaction.js';
+import type { SignTransactionInput, SignTransactionOutput } from '@wallet-standard/features';
 
 /** TODO: docs */
 export type SolanaSignTransactionFeature = {

@@ -13,11 +13,13 @@ import type {
     SignMessageOutput,
     SignTransactionMethod,
     SignTransactionOutput,
+} from '@wallet-standard/features';
+import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
     SolanaSignTransactionFeature,
-} from '@wallet-standard/features';
+} from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type { Wallet } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';

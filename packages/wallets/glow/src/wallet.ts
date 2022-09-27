@@ -6,13 +6,15 @@ import type {
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
+} from '@wallet-standard/features';
+import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
     SolanaSignTransactionFeature,
     SolanaSignTransactionMethod,
     SolanaSignTransactionOutput,
-} from '@wallet-standard/features';
+} from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type { Wallet, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type { CHAIN_SOLANA_TESTNET, SolanaChain } from '@wallet-standard/util';

@@ -1,4 +1,4 @@
-import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from '../standard/signAndSendTransaction.js';
+import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from '@wallet-standard/features';
 import type {
     SolanaSignTransactionOptions,
     SolanaTransactionCommitment,

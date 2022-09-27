@@ -8,14 +8,15 @@ import type {
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
+} from '@wallet-standard/features';
+import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
     SolanaSignTransactionFeature,
     SolanaSignTransactionMethod,
     SolanaSignTransactionOutput,
-    WalletWithStandardFeatures,
-} from '@wallet-standard/features';
+} from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
 import type { IconString, Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import type { SolanaChain } from '@wallet-standard/util';
@@ -64,7 +65,7 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
 }
 
 /** TODO: docs */
-export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
+export class SolanaWalletAdapterWallet implements Wallet {
     #listeners: {
         [E in WalletEventNames]?: WalletEvents[E][];
     } = {};

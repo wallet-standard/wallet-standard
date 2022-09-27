@@ -1,6 +1,6 @@
 import type { SendOptions, Transaction, TransactionSignature } from '@solana/web3.js';
 import { Connection } from '@solana/web3.js';
-import type { SolanaSignAndSendTransactionOptions } from '@wallet-standard/features';
+import type { SolanaSignAndSendTransactionOptions } from '@wallet-standard/solana-features';
 
 export async function sendAndConfirmTransaction(
     transaction: Transaction,

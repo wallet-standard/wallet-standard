@@ -16,12 +16,11 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction } from '@solana/web3.js';
+import type { ConnectFeature, SignMessageFeature } from '@wallet-standard/features';
 import type {
-    ConnectFeature,
-    SignMessageFeature,
     SolanaSignAndSendTransactionFeature,
     SolanaSignTransactionFeature,
-} from '@wallet-standard/features';
+} from '@wallet-standard/solana-features';
 import { getChainForEndpoint, getCommitment } from '@wallet-standard/solana-web3.js';
 import type { Wallet, WalletAccount, WalletPropertyName, WalletWithFeatures } from '@wallet-standard/standard';
 import { encode } from 'bs58';

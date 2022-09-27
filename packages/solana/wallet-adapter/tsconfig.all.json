@@ -14,6 +14,9 @@
             "path": "../../core/util/tsconfig.all.json"
         },
         {
+            "path": "../features/tsconfig.all.json"
+        },
+        {
             "path": "../web3.js/tsconfig.all.json"
         },
         {
