@@ -26,9 +26,6 @@
         "clean": "shx mkdir -p lib && shx rm -rf lib",
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
-    "dependencies": {
-        "@wallet-standard/types": "workspace:^"
-    },
     "devDependencies": {
         "shx": "^0.3.4"
     }

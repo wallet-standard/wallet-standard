@@ -47,12 +47,7 @@ class FooWallet implements Wallet {
 declare const window: WalletsWindow;
 
 (async function () {
-    (window.navigator.wallets ||= []).push({
-        method: 'register',
-        wallets: [new FooWallet()],
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        callback() {},
-    });
+    (window.navigator.wallets ||= []).push(({ register }) => register(new FooWallet()));
 
     const wallets = initialize();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

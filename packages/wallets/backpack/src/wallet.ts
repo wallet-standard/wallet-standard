@@ -18,9 +18,15 @@ import type { SolanaChain } from '@wallet-standard/util';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
-import type { BackpackWindow } from './window.js';
+import type { Backpack, BackpackWindow } from './window.js';
 
 declare const window: BackpackWindow;
+
+export type BackpackSolanaFeature = {
+    'backpack:': {
+        backpack: Backpack;
+    };
+};
 
 export class BackpackSolanaWallet implements Wallet {
     readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
@@ -49,23 +55,29 @@ export class BackpackSolanaWallet implements Wallet {
     get features(): ConnectFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
-        SignMessageFeature {
+        SignMessageFeature &
+        BackpackSolanaFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
             },
-            'standard:solanaSignAndSendTransaction': {
+            'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                solanaSignAndSendTransaction: this.#signAndSendTransaction,
+                signAndSendTransaction: this.#signAndSendTransaction,
             },
-            'standard:solanaSignTransaction': {
+            'solana:signTransaction': {
                 version: '1.0.0',
-                solanaSignTransaction: this.#signTransaction,
+                signTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
+            },
+            'backpack:': {
+                get backpack() {
+                    return window.backpack;
+                },
             },
         };
     }
@@ -124,7 +136,7 @@ export class BackpackSolanaWallet implements Wallet {
                     address,
                     publicKey,
                     [chain],
-                    ['standard:solanaSignAndSendTransaction', 'standard:solanaSignTransaction', 'standard:signMessage']
+                    ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage']
                 );
                 properties.push('accounts');
             }
@@ -206,7 +218,7 @@ export class BackpackSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
@@ -268,7 +280,7 @@ export class BackpackSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -288,6 +300,6 @@ export class BackpackSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 }

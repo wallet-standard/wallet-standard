@@ -32,7 +32,6 @@
         "@wallet-standard/features": "workspace:^",
         "@wallet-standard/solana-web3.js": "workspace:^",
         "@wallet-standard/standard": "workspace:^",
-        "@wallet-standard/types": "workspace:^",
         "@wallet-standard/util": "workspace:^",
         "@solana/web3.js": "^1.51.0",
         "bs58": "^4.0.1",

@@ -45,9 +45,9 @@ export class SolanaWalletAdapterWalletAccount implements WalletAccount {
         const features: (keyof (ConnectFeature &
             SolanaSignAndSendTransactionFeature &
             SolanaSignTransactionFeature &
-            SignMessageFeature))[] = ['standard:connect', 'standard:solanaSignAndSendTransaction'];
+            SignMessageFeature))[] = ['standard:connect', 'solana:signAndSendTransaction'];
         if ('signTransaction' in this.#adapter) {
-            features.push('standard:solanaSignTransaction');
+            features.push('solana:signTransaction');
         }
         if ('signMessage' in this.#adapter) {
             features.push('standard:signMessage');
@@ -97,18 +97,18 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
                 version: '1.0.0',
                 connect: this.#connect,
             },
-            'standard:solanaSignAndSendTransaction': {
+            'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                solanaSignAndSendTransaction: this.#signAndSendTransaction,
+                signAndSendTransaction: this.#signAndSendTransaction,
             },
         };
 
         let signTransactionFeature: SolanaSignTransactionFeature | undefined;
         if ('signTransaction' in this.#adapter) {
             signTransactionFeature = {
-                'standard:solanaSignTransaction': {
+                'solana:signTransaction': {
                     version: '1.0.0',
-                    solanaSignTransaction: this.#signTransaction,
+                    signTransaction: this.#signTransaction,
                 },
             };
         }
@@ -225,7 +225,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
@@ -257,7 +257,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             );
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -274,7 +274,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             throw new Error('signMessage for multiple messages not implemented');
         }
 
-        return outputs as any;
+        return outputs;
     };
 }
 
@@ -285,7 +285,7 @@ export function registerWalletAdapter(
     endpoint?: string,
     match: (wallet: Wallet) => boolean = (wallet) => wallet.name === adapter.name
 ): () => void {
-    const wallets = initialize();
+    const { register, get, on } = initialize();
     const destructors: (() => void)[] = [];
 
     function destroy(): void {
@@ -295,7 +295,7 @@ export function registerWalletAdapter(
 
     function setup(): boolean {
         // If the adapter is unsupported, or a standard wallet that matches it has already been registered, do nothing.
-        if (adapter.readyState === WalletReadyState.Unsupported || wallets.get().some(match)) return true;
+        if (adapter.readyState === WalletReadyState.Unsupported || get().some(match)) return true;
 
         // If the adapter isn't ready, try again later.
         const ready =
@@ -304,10 +304,10 @@ export function registerWalletAdapter(
             const wallet = new SolanaWalletAdapterWallet(adapter, chain, endpoint);
             destructors.push(() => wallet.destroy());
             // Register the adapter wrapped as a standard wallet, and receive a function to unregister the adapter.
-            destructors.push(wallets.register([wallet]));
+            destructors.push(register(wallet));
             // Whenever a standard wallet is registered ...
             destructors.push(
-                wallets.on('register', (wallets) => {
+                on('register', (...wallets) => {
                     // ... check if it matches the adapter.
                     if (wallets.some(match)) {
                         // If it does, remove the event listener and unregister the adapter.

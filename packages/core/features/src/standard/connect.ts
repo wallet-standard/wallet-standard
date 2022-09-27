@@ -1,12 +1,6 @@
 import type { IdentifierArray, WalletAccount } from '@wallet-standard/standard';
 
 /** TODO: docs */
-export type ConnectVersion = '1.0.0';
-
-/** TODO: docs */
-export type ConnectMethod = (input?: ConnectInput) => Promise<ConnectOutput>;
-
-/** TODO: docs */
 export type ConnectFeature = {
     /** Namespace for the feature. */
     'standard:connect': {
@@ -23,6 +17,12 @@ export type ConnectFeature = {
         connect: ConnectMethod;
     };
 };
+
+/** TODO: docs */
+export type ConnectVersion = '1.0.0';
+
+/** TODO: docs */
+export type ConnectMethod = (input?: ConnectInput) => Promise<ConnectOutput>;
 
 /** Input for connecting. */
 export interface ConnectInput {

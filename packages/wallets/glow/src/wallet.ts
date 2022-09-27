@@ -33,7 +33,7 @@ declare const window: SolanaWindow;
 
 export type GlowSolanaFeature = {
     'glow:': {
-        signIn: GlowAdapter['signIn'];
+        glow: GlowAdapter;
     };
 };
 
@@ -71,21 +71,21 @@ export class GlowSolanaWallet implements Wallet {
                 version: '1.0.0',
                 connect: this.#connect,
             },
-            'standard:solanaSignAndSendTransaction': {
+            'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                solanaSignAndSendTransaction: this.#signAndSendTransaction,
+                signAndSendTransaction: this.#signAndSendTransaction,
             },
-            'standard:solanaSignTransaction': {
+            'solana:signTransaction': {
                 version: '1.0.0',
-                solanaSignTransaction: this.#signTransaction,
+                signTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
             },
             'glow:': {
-                signIn() {
-                    return window.glow.signIn();
+                get glow() {
+                    return window.glow;
                 },
             },
         };
@@ -128,8 +128,8 @@ export class GlowSolanaWallet implements Wallet {
             const account = this.#account;
             if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
                 this.#account = new ReadonlyWalletAccount(address, publicKey, this.#chains, [
-                    'standard:solanaSignAndSendTransaction',
-                    'standard:solanaSignTransaction',
+                    'solana:signAndSendTransaction',
+                    'solana:signTransaction',
                     'standard:signMessage',
                 ]);
                 this.#emit('standard:change', ['accounts']);
@@ -201,7 +201,7 @@ export class GlowSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
@@ -257,7 +257,7 @@ export class GlowSolanaWallet implements Wallet {
             );
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -283,7 +283,7 @@ export class GlowSolanaWallet implements Wallet {
             }
         }
 
-        return outputs as any;
+        return outputs;
     };
 }
 

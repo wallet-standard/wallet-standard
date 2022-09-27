@@ -1,25 +1,9 @@
-import type { AsyncMapFunction } from '@wallet-standard/types';
-import type { SignTransactionInput, SignTransactionOutput } from './signTransaction.js';
-
-/** TODO: docs */
-export type SolanaSignTransactionVersion = '1.0.0';
-
-/**
- * TODO: docs
- * Instantiation expression -- https://github.com/microsoft/TypeScript/pull/47607
- */
-export declare const solanaSignTransactionMethod: AsyncMapFunction<
-    SolanaSignTransactionInput,
-    SolanaSignTransactionOutput
->;
-
-/** TODO: docs */
-export type SolanaSignTransactionMethod = typeof solanaSignTransactionMethod;
+import type { SignTransactionInput, SignTransactionOutput } from '../standard/signTransaction.js';
 
 /** TODO: docs */
 export type SolanaSignTransactionFeature = {
     /** Namespace for the feature. */
-    'standard:solanaSignTransaction': {
+    'solana:signTransaction': {
         // TODO: think about feature versions more
         /** Version of the feature API. */
         version: SolanaSignTransactionVersion;
@@ -34,9 +18,17 @@ export type SolanaSignTransactionFeature = {
          *
          * @return Outputs of signing transactions.
          */
-        solanaSignTransaction: SolanaSignTransactionMethod;
+        signTransaction: SolanaSignTransactionMethod;
     };
 };
+
+/** TODO: docs */
+export type SolanaSignTransactionVersion = '1.0.0';
+
+/** TODO: docs */
+export type SolanaSignTransactionMethod = (
+    ...inputs: SolanaSignTransactionInput[]
+) => Promise<SolanaSignTransactionOutput[]>;
 
 /** TODO: docs */
 export type SolanaTransactionVersion = 'legacy' | 0;
@@ -50,14 +42,14 @@ export interface SolanaSignTransactionInput extends SignTransactionInput {
 /** Output of signing and sending transactions. */
 export interface SolanaSignTransactionOutput extends SignTransactionOutput {}
 
-/** Commitment level for preflight of transactions. */
-export type SolanaSignTransactionCommitment = 'processed' | 'confirmed' | 'finalized';
-
 // TODO: figure out what options are actually needed
 /** Options for signing transactions. */
 export type SolanaSignTransactionOptions = {
     /** Preflight commitment level. */
-    preflightCommitment?: SolanaSignTransactionCommitment;
+    preflightCommitment?: SolanaTransactionCommitment;
     /** The minimum slot that the request can be evaluated at. */
     minContextSlot?: number;
 };
+
+/** Commitment level for transactions. */
+export type SolanaTransactionCommitment = 'processed' | 'confirmed' | 'finalized';

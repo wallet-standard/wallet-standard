@@ -69,13 +69,13 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 version: '1.0.0',
                 connect: this.#connect,
             },
-            'standard:solanaSignAndSendTransaction': {
+            'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                solanaSignAndSendTransaction: this.#signAndSendTransaction,
+                signAndSendTransaction: this.#signAndSendTransaction,
             },
-            'standard:solanaSignTransaction': {
+            'solana:signTransaction': {
                 version: '1.0.0',
-                solanaSignTransaction: this.#signTransaction,
+                signTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
                 version: '1.0.0',
@@ -102,15 +102,15 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
 
         super([
             new SignerWalletAccount(address, publicKey, SOLANA_CHAINS, [
-                'standard:solanaSignAndSendTransaction',
-                'standard:solanaSignTransaction',
+                'solana:signAndSendTransaction',
+                'solana:signTransaction',
                 'standard:signMessage',
                 'standard:encrypt',
                 'standard:decrypt',
             ]),
             new LedgerWalletAccount(encode(ledger.publicKey), ledger.publicKey, SOLANA_CHAINS, [
-                'standard:solanaSignAndSendTransaction',
-                'standard:solanaSignTransaction',
+                'solana:signAndSendTransaction',
+                'solana:signTransaction',
             ]),
         ]);
 
@@ -128,7 +128,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         const outputs: SolanaSignAndSendTransactionOutput[] = [];
         for (const { transaction, account, chain, options } of inputs) {
             if (!(account instanceof PossiblyLedgerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:solanaSignAndSendTransaction')) throw new Error('invalid feature');
+            if (!account.features.includes('solana:signAndSendTransaction')) throw new Error('invalid feature');
 
             if (!this.chains.includes(chain as SolanaChain)) throw new Error('invalid chain');
             const endpoint = getEndpointForChain(chain as SolanaChain);
@@ -155,14 +155,14 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ signature: decode(signature) });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signTransaction: SignTransactionMethod = async (...inputs) => {
         const outputs: SignTransactionOutput[] = [];
         for (const { transaction, account, chain } of inputs) {
             if (!(account instanceof PossiblyLedgerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:solanaSignTransaction')) throw new Error('invalid feature');
+            if (!account.features.includes('solana:signTransaction')) throw new Error('invalid feature');
 
             if (chain && !this.chains.includes(chain as SolanaChain)) throw new Error('invalid chain');
 
@@ -186,7 +186,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ signedTransaction: parsedTransaction.serialize({ requireAllSignatures: false }) });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #signMessage: SignMessageMethod = async (...inputs) => {
@@ -207,7 +207,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #encrypt: EncryptMethod = async (...inputs) => {
@@ -226,7 +226,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ ciphertext, nonce });
         }
 
-        return outputs as any;
+        return outputs;
     };
 
     #decrypt: DecryptMethod = async (...inputs) => {
@@ -245,6 +245,6 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             outputs.push({ cleartext });
         }
 
-        return outputs as any;
+        return outputs;
     };
 }
