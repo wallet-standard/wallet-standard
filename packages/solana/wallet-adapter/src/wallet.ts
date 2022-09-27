@@ -99,6 +99,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
+                supportedTransactionVersions: ['legacy'],
                 signAndSendTransaction: this.#signAndSendTransaction,
             },
         };
@@ -108,6 +109,7 @@ export class SolanaWalletAdapterWallet implements WalletWithStandardFeatures {
             signTransactionFeature = {
                 'solana:signTransaction': {
                     version: '1.0.0',
+                    supportedTransactionVersions: ['legacy'],
                     signTransaction: this.#signTransaction,
                 },
             };

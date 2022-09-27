@@ -1,5 +1,9 @@
 import type { SignAndSendTransactionInput, SignAndSendTransactionOutput } from '../standard/signAndSendTransaction.js';
-import type { SolanaSignTransactionOptions, SolanaTransactionCommitment } from './solanaSignTransaction.js';
+import type {
+    SolanaSignTransactionOptions,
+    SolanaTransactionCommitment,
+    SolanaTransactionVersion,
+} from './solanaSignTransaction.js';
 
 /** TODO: docs */
 export type SolanaSignAndSendTransactionFeature = {
@@ -8,6 +12,9 @@ export type SolanaSignAndSendTransactionFeature = {
         // TODO: think about feature versions more
         /** Version of the feature API. */
         version: SolanaSignAndSendTransactionVersion;
+
+        /** TODO: docs */
+        supportedTransactionVersions: ReadonlyArray<SolanaTransactionVersion>;
 
         /**
          * Sign transactions using the account's secret key and send them to the chain.
