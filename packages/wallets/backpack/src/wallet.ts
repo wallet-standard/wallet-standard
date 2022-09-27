@@ -64,10 +64,12 @@ export class BackpackSolanaWallet implements Wallet {
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
+                supportedTransactionVersions: ['legacy'],
                 signAndSendTransaction: this.#signAndSendTransaction,
             },
             'solana:signTransaction': {
                 version: '1.0.0',
+                supportedTransactionVersions: ['legacy'],
                 signTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
