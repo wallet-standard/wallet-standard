@@ -10,12 +10,13 @@ import type {
     WalletEventNames,
     WalletEvents,
 } from '@wallet-standard/standard';
-import { CHAIN_ETHEREUM } from '@wallet-standard/util';
 import { utils as ethUtils } from 'ethers';
 
 import type { RPC } from '../messages';
 
-export type EthereumChain = typeof CHAIN_ETHEREUM;
+export const ETHEREUM_CHAIN = 'ethereum:1';
+
+export type EthereumChain = typeof ETHEREUM_CHAIN;
 
 export type EthereumWalletAccountFeature = SignTransactionFeature;
 
@@ -31,7 +32,7 @@ export class EthereumWalletAccount implements WalletAccount {
     }
 
     get chain() {
-        return CHAIN_ETHEREUM;
+        return ETHEREUM_CHAIN;
     }
 
     get features(): EthereumWalletAccountFeature {
@@ -133,7 +134,7 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
     }
 
     get chains() {
-        return [CHAIN_ETHEREUM, SOLANA_MAINNET_CHAIN];
+        return [ETHEREUM_CHAIN, SOLANA_MAINNET_CHAIN];
     }
 
     get features() {

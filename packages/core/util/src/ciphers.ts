@@ -1,12 +1,4 @@
-/** Ethereum (mainnet) */
-export const CHAIN_ETHEREUM = 'ethereum:1';
-
-/** TODO: docs */
-export const ETHEREUM_CHAINS = [CHAIN_ETHEREUM] as const;
-
-/** TODO: docs */
-export type EthereumChain = typeof CHAIN_ETHEREUM;
-
+// TODO: think about moving this out of utils
 /**
  * Default encryption algorithm in NaCl.
  * Curve25519 scalar multiplication, Salsa20 secret-key encryption, and Poly1305 one-time authentication.
