@@ -13,8 +13,7 @@ const Connected: FC = () => {
     return (
         <ul>
             {accounts.map((account, index) => (
-                // TODO: `address` will be a string in the next update of the standard.
-                <li key={index}>{account.address.toString()}</li>
+                <li key={index}>{account.address}</li>
             ))}
         </ul>
     );
