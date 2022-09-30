@@ -20,25 +20,13 @@ export function hasConnectFeature(features: IdentifierRecord<unknown>): features
 export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError }) => {
     const { features } = useWallet();
 
-    // If the window is closing or reloading, ignore errors.
-    const isUnloading = useRef(false);
-    useEffect(() => {
-        function beforeUnload() {
-            isUnloading.current = true;
-        }
-
-        window.addEventListener('beforeunload', beforeUnload);
-        return () => window.removeEventListener('beforeunload', beforeUnload);
-    }, [isUnloading]);
-
     // Handle errors, logging them by default.
     const handleError = useCallback(
         (error: Error) => {
-            // Call onError unless the window is unloading.
-            if (!isUnloading.current) (onError || console.error)(error);
+            (onError || console.error)(error);
             return error;
         },
-        [isUnloading, onError]
+        [onError]
     );
 
     // Connect to the wallet.
