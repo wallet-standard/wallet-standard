@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/ethereum-chains": "workspace:^",
         "@wallet-standard/features": "workspace:^",
         "@wallet-standard/solana-chains": "workspace:^",
         "@wallet-standard/solana-features": "workspace:^",

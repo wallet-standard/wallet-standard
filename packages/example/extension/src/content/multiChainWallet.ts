@@ -1,3 +1,4 @@
+import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum-chains';
 import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
 import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
 import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
@@ -5,8 +6,6 @@ import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
 
 import type { RPC } from '../messages';
-
-export const ETHEREUM_CHAIN = 'ethereum:1';
 
 export class EthereumWalletAccount implements WalletAccount {
     readonly #publicKey: Uint8Array;
@@ -20,7 +19,7 @@ export class EthereumWalletAccount implements WalletAccount {
     }
 
     get chains() {
-        return [ETHEREUM_CHAIN] as const;
+        return [ETHEREUM_MAINNET_CHAIN] as const;
     }
 
     get features() {
@@ -82,7 +81,7 @@ export class MultiChainWallet implements Wallet {
     }
 
     get chains() {
-        return [ETHEREUM_CHAIN, SOLANA_MAINNET_CHAIN] as const;
+        return [ETHEREUM_MAINNET_CHAIN, SOLANA_MAINNET_CHAIN] as const;
     }
 
     get features(): ConnectFeature {
