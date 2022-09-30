@@ -20,6 +20,12 @@
             "path": "./packages/core/util/tsconfig.all.json"
         },
         {
+            "path": "./packages/example/dapp/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/example/extension/tsconfig.all.json"
+        },
+        {
             "path": "./packages/example/react/tsconfig.all.json"
         },
         {
