@@ -1,3 +1,5 @@
+import type { EthereumChain } from '@wallet-standard/ethereum-chains';
+import { ETHEREUM_CHAINS } from '@wallet-standard/ethereum-chains';
 import type {
     ConnectFeature,
     ConnectMethod,
@@ -14,10 +16,6 @@ import type {
 import type { Wallet } from '@wallet-standard/standard';
 import ethers from 'ethers';
 import { AbstractWallet, SignerWalletAccount } from './abstractWallet.js';
-
-export const ETHEREUM_CHAIN = 'ethereum:1';
-export const ETHEREUM_CHAINS = [ETHEREUM_CHAIN] as const;
-export type EthereumChain = typeof ETHEREUM_CHAIN;
 
 export class EthereumWallet extends AbstractWallet implements Wallet {
     protected declare _accounts: SignerWalletAccount[];
