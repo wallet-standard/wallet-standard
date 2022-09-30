@@ -69,5 +69,5 @@ function create(): Wallets {
         };
     }
 
-    return { push, register, get, on };
+    return Object.freeze({ push, register, get, on });
 }
