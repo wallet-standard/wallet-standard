@@ -1,10 +1,9 @@
 import type { WalletsWindow } from '@wallet-standard/standard';
 
 import { createRPC, createWindowTransport } from '../messages';
-import type { MultiChainWalletAccount } from './multiChainWallet';
 import { MultiChainWallet } from './multiChainWallet';
 
-declare const window: WalletsWindow<MultiChainWalletAccount>;
+declare const window: WalletsWindow;
 
 function register(): void {
     const transport = createWindowTransport(window);
@@ -13,11 +12,8 @@ function register(): void {
     const wallet = new MultiChainWallet(rpc);
 
     window.navigator.wallets = window.navigator.wallets || [];
-    window.navigator.wallets.push({
-        method: 'register',
-        wallets: [wallet],
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        callback() {},
+    window.navigator.wallets.push(({ register }) => {
+        register(wallet);
     });
 }
 

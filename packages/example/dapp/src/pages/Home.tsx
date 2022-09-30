@@ -3,6 +3,8 @@ import type { FC } from 'react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { useIsConnected } from '../hooks/useIsConnected';
+
 const Disconnected: FC = () => {
     return <Link to="/connect">Connect Wallet</Link>;
 };
@@ -20,9 +22,7 @@ const Connected: FC = () => {
 };
 
 export const Home: FC = () => {
-    const { wallet } = useWallet();
-
-    const isConnected = !!wallet?.accounts?.length;
+    const isConnected = useIsConnected();
 
     return (
         <div>
