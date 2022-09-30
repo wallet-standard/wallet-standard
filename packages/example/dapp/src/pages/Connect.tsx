@@ -1,27 +1,31 @@
-import { useWallet, useWallets } from '@wallet-standard/react';
+import { useConnect, useWallet, useWallets } from '@wallet-standard/react';
 import type { FC } from 'react';
 import React, { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 
+import { useIsConnected } from '../hooks/useIsConnected';
+
 export const Connect: FC = () => {
     const { wallets } = useWallets();
-    const { connect, setWallet, wallet } = useWallet();
+    const { setWallet, wallet } = useWallet();
+    const isConnected = useIsConnected();
+    const { connect } = useConnect();
 
     useEffect(() => {
         async function connectOrDeselect() {
             try {
-                await connect();
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                await connect!();
             } catch (err) {
-                setWallet(undefined);
+                setWallet(null);
             }
         }
 
-        if (wallet) {
+        if (wallet && !isConnected) {
             connectOrDeselect();
         }
-    }, [wallet, connect, setWallet]);
+    }, [wallet, isConnected, connect, setWallet]);
 
-    const isConnected = !!wallet?.accounts?.length;
     if (isConnected) {
         return <Navigate to="/" replace={true} />;
     }

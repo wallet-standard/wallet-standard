@@ -1,123 +1,71 @@
-import type { SignTransactionFeature, SignTransactionMethod, SignTransactionOutput } from '@wallet-standard/features';
+import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
 import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
-import type {
-    ConnectInput,
-    ConnectOutput,
-    Wallet,
-    WalletAccount,
-    WalletAccountExtensionName,
-    WalletAccountFeatureName,
-    WalletEventNames,
-    WalletEvents,
-} from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
 
 import type { RPC } from '../messages';
 
 export const ETHEREUM_CHAIN = 'ethereum:1';
 
-export type EthereumChain = typeof ETHEREUM_CHAIN;
-
-export type EthereumWalletAccountFeature = SignTransactionFeature;
-
 export class EthereumWalletAccount implements WalletAccount {
     readonly #publicKey: Uint8Array;
 
     get address() {
-        return ethUtils.arrayify(ethUtils.computeAddress(this.publicKey));
+        return ethUtils.computeAddress(this.publicKey);
     }
 
     get publicKey() {
-        return this.#publicKey;
+        return this.#publicKey.slice();
     }
 
-    get chain() {
-        return ETHEREUM_CHAIN;
+    get chains() {
+        return [ETHEREUM_CHAIN] as const;
     }
 
-    get features(): EthereumWalletAccountFeature {
-        return {
-            signTransaction: {
-                version: '1.0.0',
-                signTransaction: this.#signTransaction,
-            },
-        };
-    }
-
-    get extensions() {
-        return {};
+    get features() {
+        return ['standard:signTransaction'] as const;
     }
 
     constructor(publicKey: Uint8Array) {
         this.#publicKey = publicKey;
     }
-
-    #signTransaction: SignTransactionMethod = async (...inputs) => {
-        const outputs: SignTransactionOutput[] = [];
-
-        // TODO
-
-        return outputs;
-    };
 }
-
-export type SolanaChain = typeof SOLANA_MAINNET_CHAIN;
-
-export type SolanaWalletAccountFeature = SignTransactionFeature;
 
 export class SolanaWalletAccount implements WalletAccount {
     readonly #publicKey: Uint8Array;
 
     get address() {
-        return this.publicKey;
+        return bs58.encode(this.publicKey);
     }
 
     get publicKey() {
-        return this.#publicKey;
+        return this.#publicKey.slice();
     }
 
-    get chain() {
-        return SOLANA_MAINNET_CHAIN;
+    get chains() {
+        return [SOLANA_MAINNET_CHAIN] as const;
     }
 
-    get features(): SolanaWalletAccountFeature {
-        return {
-            signTransaction: {
-                version: '1.0.0',
-                signTransaction: this.#signTransaction,
-            },
-        };
-    }
-
-    get extensions() {
-        return {};
+    get features() {
+        return ['standard:signTransaction'] as const;
     }
 
     constructor(publicKey: Uint8Array) {
         this.#publicKey = publicKey;
     }
-
-    #signTransaction: SignTransactionMethod = async (...inputs) => {
-        const outputs: SignTransactionOutput[] = [];
-
-        // TODO
-
-        return outputs;
-    };
 }
 
 export type MultiChainWalletAccount = EthereumWalletAccount | SolanaWalletAccount;
 
-export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
+export class MultiChainWallet implements Wallet {
     #name = 'MultiChain Wallet';
-    #icon = '';
+    // TODO: Add image.
+    #icon = 'data:image/svg+xml;base64,' as const;
 
     #accounts: MultiChainWalletAccount[] = [];
-    #hasMoreAccounts = true;
 
-    #listeners: {
-        [E in WalletEventNames<MultiChainWalletAccount>]?: WalletEvents<MultiChainWalletAccount>[E][];
-    } = {};
+    readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
 
     #rpc: RPC;
 
@@ -134,35 +82,27 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
     }
 
     get chains() {
-        return [ETHEREUM_CHAIN, SOLANA_MAINNET_CHAIN];
+        return [ETHEREUM_CHAIN, SOLANA_MAINNET_CHAIN] as const;
     }
 
-    get features() {
-        return [];
-    }
-
-    get extensions() {
-        return [];
+    get features(): ConnectFeature {
+        return {
+            'standard:connect': {
+                version: '1.0.0',
+                connect: this.#connect,
+            },
+        };
     }
 
     get accounts() {
         return this.#accounts;
     }
 
-    get hasMoreAccounts() {
-        return this.#hasMoreAccounts;
-    }
-
     constructor(rpc: RPC) {
         this.#rpc = rpc;
     }
 
-    async connect<
-        Chain extends MultiChainWalletAccount['chain'],
-        FeatureName extends WalletAccountFeatureName<MultiChainWalletAccount>,
-        ExtensionName extends WalletAccountExtensionName<MultiChainWalletAccount>,
-        Input extends ConnectInput<MultiChainWalletAccount, Chain, FeatureName, ExtensionName>
-    >(input?: Input): Promise<ConnectOutput<MultiChainWalletAccount, Chain, FeatureName, ExtensionName, Input>> {
+    #connect: ConnectMethod = async (input) => {
         const accounts = await this.#rpc.callMethod('connect');
 
         if (accounts === null) {
@@ -181,34 +121,24 @@ export class MultiChainWallet implements Wallet<MultiChainWalletAccount> {
             }
         });
 
-        this.#emit('change', ['accounts']);
+        this.#emit('standard:change', ['accounts']);
 
         return {
-            accounts: this.accounts as any,
-            hasMoreAccounts: false,
+            accounts: this.accounts,
         };
-    }
+    };
 
-    on<E extends WalletEventNames<MultiChainWalletAccount>>(
-        event: E,
-        listener: WalletEvents<MultiChainWalletAccount>[E]
-    ): () => void {
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
     }
 
-    #emit<E extends WalletEventNames<MultiChainWalletAccount>>(
-        event: E,
-        ...args: Parameters<WalletEvents<MultiChainWalletAccount>[E]>
-    ): void {
+    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventNames<MultiChainWalletAccount>>(
-        event: E,
-        listener: WalletEvents<MultiChainWalletAccount>[E]
-    ): void {
+    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }
