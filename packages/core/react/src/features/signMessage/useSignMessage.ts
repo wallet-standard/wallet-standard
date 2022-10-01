@@ -1,0 +1,24 @@
+import type { SignMessageMethod } from '@wallet-standard/features';
+import { createContext, useContext } from 'react';
+import { createDefaultContext } from '../../context.js';
+
+/** TODO: docs */
+export interface SignMessageContextState {
+    signing: boolean;
+    signMessage: SignMessageMethod | undefined;
+}
+
+const DEFAULT_SIGN_MESSAGE_STATE: Readonly<SignMessageContextState> = {
+    signing: false,
+    signMessage: undefined,
+} as const;
+
+const DEFAULT_SIGN_MESSAGE_CONTEXT = createDefaultContext('SignMessage', DEFAULT_SIGN_MESSAGE_STATE);
+
+/** TODO: docs */
+export const SignMessageContext = createContext(DEFAULT_SIGN_MESSAGE_CONTEXT);
+
+/** TODO: docs */
+export function useSignMessage(): SignMessageContextState {
+    return useContext(SignMessageContext);
+}
