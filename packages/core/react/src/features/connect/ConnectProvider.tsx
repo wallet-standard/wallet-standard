@@ -36,6 +36,8 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
         () =>
             hasConnectFeature(features)
                 ? async (input) => {
+                      // FIXME: if called first with silent=true, promise.current will be set but waiting will be false
+
                       // If already waiting, wait for that promise to resolve.
                       if (promise.current) {
                           try {
