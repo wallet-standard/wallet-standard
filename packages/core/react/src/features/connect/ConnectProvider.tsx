@@ -1,5 +1,5 @@
 import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
-import type { IdentifierRecord } from '@wallet-standard/standard';
+import type { Wallet } from '@wallet-standard/standard';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -12,7 +12,7 @@ export interface ConnectProviderProps {
 }
 
 /** TODO: docs */
-export function hasConnectFeature(features: IdentifierRecord<unknown>): features is ConnectFeature {
+export function hasConnectFeature(features: Wallet['features']): features is ConnectFeature {
     return 'standard:connect' in features;
 }
 

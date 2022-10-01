@@ -1,5 +1,5 @@
 import type { SignTransactionFeature, SignTransactionMethod } from '@wallet-standard/features';
-import type { IdentifierRecord } from '@wallet-standard/standard';
+import type { Wallet } from '@wallet-standard/standard';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -12,7 +12,7 @@ export interface SignTransactionProviderProps {
 }
 
 /** TODO: docs */
-export function hasSignTransactionFeature(features: IdentifierRecord<unknown>): features is SignTransactionFeature {
+export function hasSignTransactionFeature(features: Wallet['features']): features is SignTransactionFeature {
     return 'standard:signTransaction' in features;
 }
 

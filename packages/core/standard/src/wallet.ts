@@ -83,6 +83,6 @@ export interface WalletEvents {
 export type WalletEventNames = keyof WalletEvents;
 
 /** TODO: docs */
-export type WalletWithFeatures<Features extends IdentifierRecord<unknown>> = Omit<Wallet, 'features'> & {
+export type WalletWithFeatures<Features extends Wallet['features']> = Omit<Wallet, 'features'> & {
     features: Features;
 };
