@@ -1,6 +1,6 @@
 import type { ConnectMethod } from '@wallet-standard/features';
 import { createContext, useContext } from 'react';
-import { createDefaultContext } from '../context.js';
+import { createDefaultContext } from '../../context.js';
 
 /** TODO: docs */
 export interface ConnectContextState {

@@ -1,2 +1,1 @@
-export * from './ConnectProvider.js';
-export * from './useConnect.js';
+export * from './connect/index.js';

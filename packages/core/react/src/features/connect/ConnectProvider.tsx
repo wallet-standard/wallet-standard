@@ -1,8 +1,8 @@
 import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
 import type { IdentifierRecord } from '@wallet-standard/standard';
 import type { FC, ReactNode } from 'react';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useWallet } from '../useWallet.js';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useWallet } from '../../useWallet.js';
 import { ConnectContext } from './useConnect.js';
 
 /** TODO: docs */
@@ -31,15 +31,15 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
 
     // Connect to the wallet.
     const [connecting, setConnecting] = useState(false);
-    const connectPromise = useRef<any>();
+    const promise = useRef<ReturnType<ConnectMethod>>();
     const connect = useMemo<ConnectMethod | undefined>(
         () =>
             hasConnectFeature(features)
                 ? async (input) => {
                       // If already connecting, wait for that promise to resolve.
-                      if (connectPromise.current) {
+                      if (promise.current) {
                           try {
-                              await connectPromise.current;
+                              await promise.current;
                           } catch (error: any) {
                               // Error will already have been handled below.
                           }
@@ -50,19 +50,19 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
                           setConnecting(true);
                       }
                       try {
-                          connectPromise.current = features['standard:connect'].connect(input);
-                          return await connectPromise.current;
+                          promise.current = features['standard:connect'].connect(input);
+                          return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
                       } finally {
                           if (loud) {
                               setConnecting(false);
                           }
-                          connectPromise.current = undefined;
+                          promise.current = undefined;
                       }
                   }
                 : undefined,
-        [features, connectPromise, handleError]
+        [features, promise, handleError]
     );
 
     return (
