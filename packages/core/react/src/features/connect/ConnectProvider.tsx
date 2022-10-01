@@ -30,13 +30,13 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
     );
 
     // Connect to the wallet.
-    const [connecting, setConnecting] = useState(false);
+    const [waiting, setWaiting] = useState(false);
     const promise = useRef<ReturnType<ConnectMethod>>();
     const connect = useMemo<ConnectMethod | undefined>(
         () =>
             hasConnectFeature(features)
                 ? async (input) => {
-                      // If already connecting, wait for that promise to resolve.
+                      // If already waiting, wait for that promise to resolve.
                       if (promise.current) {
                           try {
                               await promise.current;
@@ -47,7 +47,7 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
 
                       const loud = !input?.silent;
                       if (loud) {
-                          setConnecting(true);
+                          setWaiting(true);
                       }
                       try {
                           promise.current = features['standard:connect'].connect(input);
@@ -56,7 +56,7 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
                           throw handleError(error);
                       } finally {
                           if (loud) {
-                              setConnecting(false);
+                              setWaiting(false);
                           }
                           promise.current = undefined;
                       }
@@ -68,7 +68,7 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
     return (
         <ConnectContext.Provider
             value={{
-                connecting,
+                waiting,
                 connect,
             }}
         >

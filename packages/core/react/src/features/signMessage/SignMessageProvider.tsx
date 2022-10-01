@@ -30,13 +30,13 @@ export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, on
     );
 
     // Sign messages with the wallet.
-    const [signing, setSigning] = useState(false);
+    const [waiting, setWaiting] = useState(false);
     const promise = useRef<ReturnType<SignMessageMethod>>();
     const signMessage = useMemo<SignMessageMethod | undefined>(
         () =>
             hasSignMessageFeature(features)
                 ? async (...inputs) => {
-                      // If already signing, wait for that promise to resolve.
+                      // If already waiting, wait for that promise to resolve.
                       if (promise.current) {
                           try {
                               await promise.current;
@@ -45,14 +45,14 @@ export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, on
                           }
                       }
 
-                      setSigning(true);
+                      setWaiting(true);
                       try {
                           promise.current = features['standard:signMessage'].signMessage(...inputs);
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
                       } finally {
-                          setSigning(false);
+                          setWaiting(false);
                           promise.current = undefined;
                       }
                   }
@@ -63,7 +63,7 @@ export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, on
     return (
         <SignMessageContext.Provider
             value={{
-                signing,
+                waiting,
                 signMessage,
             }}
         >

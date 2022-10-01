@@ -4,12 +4,12 @@ import { createDefaultContext } from '../../context.js';
 
 /** TODO: docs */
 export interface ConnectContextState {
-    connecting: boolean;
+    waiting: boolean;
     connect: ConnectMethod | undefined;
 }
 
 const DEFAULT_CONNECT_STATE: Readonly<ConnectContextState> = {
-    connecting: false,
+    waiting: false,
     connect: undefined,
 } as const;
 

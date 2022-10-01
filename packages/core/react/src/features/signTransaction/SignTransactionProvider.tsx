@@ -30,13 +30,13 @@ export const SignTransactionProvider: FC<SignTransactionProviderProps> = ({ chil
     );
 
     // Sign transactions with the wallet.
-    const [signing, setSigning] = useState(false);
+    const [waiting, setWaiting] = useState(false);
     const promise = useRef<ReturnType<SignTransactionMethod>>();
     const signTransaction = useMemo<SignTransactionMethod | undefined>(
         () =>
             hasSignTransactionFeature(features)
                 ? async (...inputs) => {
-                      // If already signing, wait for that promise to resolve.
+                      // If already waiting, wait for that promise to resolve.
                       if (promise.current) {
                           try {
                               await promise.current;
@@ -45,14 +45,14 @@ export const SignTransactionProvider: FC<SignTransactionProviderProps> = ({ chil
                           }
                       }
 
-                      setSigning(true);
+                      setWaiting(true);
                       try {
                           promise.current = features['standard:signTransaction'].signTransaction(...inputs);
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
                       } finally {
-                          setSigning(false);
+                          setWaiting(false);
                           promise.current = undefined;
                       }
                   }
@@ -63,7 +63,7 @@ export const SignTransactionProvider: FC<SignTransactionProviderProps> = ({ chil
     return (
         <SignTransactionContext.Provider
             value={{
-                signing,
+                waiting,
                 signTransaction,
             }}
         >

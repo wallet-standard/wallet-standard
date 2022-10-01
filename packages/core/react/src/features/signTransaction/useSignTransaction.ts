@@ -4,12 +4,12 @@ import { createDefaultContext } from '../../context.js';
 
 /** TODO: docs */
 export interface SignTransactionContextState {
-    signing: boolean;
+    waiting: boolean;
     signTransaction: SignTransactionMethod | undefined;
 }
 
 const DEFAULT_SIGN_TRANSACTION_STATE: Readonly<SignTransactionContextState> = {
-    signing: false,
+    waiting: false,
     signTransaction: undefined,
 } as const;
 

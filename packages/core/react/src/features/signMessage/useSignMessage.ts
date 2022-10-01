@@ -4,12 +4,12 @@ import { createDefaultContext } from '../../context.js';
 
 /** TODO: docs */
 export interface SignMessageContextState {
-    signing: boolean;
+    waiting: boolean;
     signMessage: SignMessageMethod | undefined;
 }
 
 const DEFAULT_SIGN_MESSAGE_STATE: Readonly<SignMessageContextState> = {
-    signing: false,
+    waiting: false,
     signMessage: undefined,
 } as const;
 
