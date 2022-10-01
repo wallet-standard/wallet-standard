@@ -25,7 +25,7 @@ export const WalletStandardProvider: FC<WalletStandardProviderProps> = ({ childr
                     <ConnectProvider onError={onError}>
                         <SignAndSendTransactionProvider onError={onError}>
                             <SignTransactionProvider onError={onError}>
-                                <SignMessageProvider>{children}</SignMessageProvider>
+                                <SignMessageProvider onError={onError}>{children}</SignMessageProvider>
                             </SignTransactionProvider>
                         </SignAndSendTransactionProvider>
                     </ConnectProvider>
