@@ -136,12 +136,12 @@ export class BackpackSolanaWallet implements Wallet {
                 !bytesEqual(account.publicKey, publicKey) ||
                 !account.chains.includes(chain)
             ) {
-                this.#account = new ReadonlyWalletAccount(
+                this.#account = new ReadonlyWalletAccount({
                     address,
                     publicKey,
-                    [chain],
-                    ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage']
-                );
+                    chains: [chain],
+                    features: ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage'],
+                });
                 properties.push('accounts');
             }
         }

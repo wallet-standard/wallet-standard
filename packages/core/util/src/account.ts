@@ -1,10 +1,12 @@
-import type { IdentifierArray, WalletAccount } from '@wallet-standard/standard';
+import type { WalletAccount } from '@wallet-standard/standard';
 
 export class ReadonlyWalletAccount implements WalletAccount {
-    readonly #address: string;
-    readonly #publicKey: Uint8Array;
-    readonly #chains: IdentifierArray;
-    readonly #features: IdentifierArray;
+    readonly #address: WalletAccount['address'];
+    readonly #publicKey: WalletAccount['publicKey'];
+    readonly #chains: WalletAccount['chains'];
+    readonly #features: WalletAccount['features'];
+    readonly #label: WalletAccount['label'];
+    readonly #icon: WalletAccount['icon'];
 
     get address() {
         return this.#address;
@@ -22,10 +24,20 @@ export class ReadonlyWalletAccount implements WalletAccount {
         return this.#features.slice();
     }
 
-    constructor(address: string, publicKey: Uint8Array, chains: IdentifierArray, features: IdentifierArray) {
-        this.#address = address;
-        this.#publicKey = publicKey;
-        this.#chains = chains;
-        this.#features = features;
+    get label() {
+        return this.#label;
+    }
+
+    get icon() {
+        return this.#icon;
+    }
+
+    constructor(account: WalletAccount) {
+        this.#address = account.address;
+        this.#publicKey = account.publicKey;
+        this.#chains = account.chains;
+        this.#features = account.features;
+        this.#label = account.label;
+        this.#icon = account.icon;
     }
 }

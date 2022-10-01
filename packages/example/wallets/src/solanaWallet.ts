@@ -106,17 +106,24 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         const publicKey = keypair.publicKey.toBytes();
 
         super([
-            new SignerWalletAccount(address, publicKey, SOLANA_CHAINS, [
-                'solana:signAndSendTransaction',
-                'solana:signTransaction',
-                'standard:signMessage',
-                'standard:encrypt',
-                'standard:decrypt',
-            ]),
-            new LedgerWalletAccount(encode(ledger.publicKey), ledger.publicKey, SOLANA_CHAINS, [
-                'solana:signAndSendTransaction',
-                'solana:signTransaction',
-            ]),
+            new SignerWalletAccount({
+                address,
+                publicKey,
+                chains: SOLANA_CHAINS,
+                features: [
+                    'solana:signAndSendTransaction',
+                    'solana:signTransaction',
+                    'standard:signMessage',
+                    'standard:encrypt',
+                    'standard:decrypt',
+                ],
+            }),
+            new LedgerWalletAccount({
+                address: encode(ledger.publicKey),
+                publicKey: ledger.publicKey,
+                chains: SOLANA_CHAINS,
+                features: ['solana:signAndSendTransaction', 'solana:signTransaction'],
+            }),
         ]);
 
         this.#ledger = ledger;

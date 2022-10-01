@@ -126,11 +126,12 @@ export class GlowSolanaWallet implements Wallet {
 
             const account = this.#account;
             if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
-                this.#account = new ReadonlyWalletAccount(address, publicKey, this.#chains, [
-                    'solana:signAndSendTransaction',
-                    'solana:signTransaction',
-                    'standard:signMessage',
-                ]);
+                this.#account = new ReadonlyWalletAccount({
+                    address,
+                    publicKey,
+                    chains: this.#chains,
+                    features: ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage'],
+                });
                 this.#emit('standard:change', ['accounts']);
             }
         }

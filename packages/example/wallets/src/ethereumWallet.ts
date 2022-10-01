@@ -64,11 +64,12 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
         const publicKey = ethers.utils.arrayify(wallet.publicKey);
 
         super([
-            new SignerWalletAccount(address, publicKey, ETHEREUM_CHAINS, [
-                'standard:signAndSendTransaction',
-                'standard:signTransaction',
-                'standard:signMessage',
-            ]),
+            new SignerWalletAccount({
+                address,
+                publicKey,
+                chains: ETHEREUM_CHAINS,
+                features: ['standard:signAndSendTransaction', 'standard:signTransaction', 'standard:signMessage'],
+            }),
         ]);
 
         this.#keys = { [address]: { wallet } };
