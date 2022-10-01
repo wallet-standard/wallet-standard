@@ -19,6 +19,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
     useEffect(() => {
         const destructors: (() => void)[] = [];
 
+        // TODO: figure out if this can ever actually happen
         // Get and set the wallets that have been registered already, in case they changed since the state initializer.
         setWallets(get());
 
