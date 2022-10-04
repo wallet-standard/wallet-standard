@@ -101,7 +101,7 @@ export class MultiChainWallet implements Wallet {
         this.#rpc = rpc;
     }
 
-    #connect: ConnectMethod = async (input) => {
+    #connect: ConnectMethod = async ({ silent } = {}) => {
         const accounts = await this.#rpc.callMethod('connect');
 
         if (accounts === null) {
