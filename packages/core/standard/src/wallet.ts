@@ -75,7 +75,7 @@ export type WalletPropertyName = NonNullable<
 export type WalletProperties = Pick<Wallet, WalletPropertyName>;
 
 /** Events emitted by wallets. */
-export type WalletEvent = IdentifierRecord<(...args: any[]) => void> & {
+export type WalletEvent = IdentifierRecord<(...args: unknown[]) => void> & {
     /**
      * Emitted when properties of the wallet have changed.
      *
