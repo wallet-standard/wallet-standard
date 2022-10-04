@@ -44,7 +44,7 @@ export interface Wallet {
      * Events supported by the wallet.
      * If this changes, the wallet must emit a `standard:change` event.
      */
-    readonly events: readonly [...IdentifierArray, 'standard:change', ...IdentifierArray];
+    readonly events: IdentifierArray;
 
     /**
      * List of accounts the app is authorized to use.
