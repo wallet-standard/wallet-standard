@@ -171,8 +171,8 @@ export class BackpackSolanaWallet implements Wallet {
         }
     };
 
-    #connect: ConnectMethod = async (input) => {
-        if (!input?.silent && !window.backpack.isConnected) {
+    #connect: ConnectMethod = async ({ silent } = {}) => {
+        if (!silent && !window.backpack.isConnected) {
             await window.backpack.connect();
         }
 

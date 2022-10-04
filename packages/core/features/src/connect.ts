@@ -1,4 +1,4 @@
-import type { IdentifierArray, WalletAccount } from '@wallet-standard/standard';
+import type { WalletAccount } from '@wallet-standard/standard';
 
 /** TODO: docs */
 export type ConnectFeature = {
@@ -31,12 +31,6 @@ export interface ConnectInput {
      * The wallet should return only the accounts that the app is already authorized to connect to.
      */
     silent?: boolean;
-
-    /** TODO: docs */
-    chains?: IdentifierArray;
-
-    /** TODO: docs */
-    features?: IdentifierArray;
 }
 
 /** Output of connecting. */
