@@ -22,8 +22,7 @@ class GlowWallet implements Wallet {
             signIn() {},
         },
     };
-    // @ts-expect-error -- 'standard:change' is required
-    events = ['foo:bar'] as const;
+    events = ['standard:change'] as const;
     accounts = [new GlowSolanaWalletAccount()];
 
     on<E extends WalletEventName>(event: E, listener: WalletEvent[E]): () => void {
