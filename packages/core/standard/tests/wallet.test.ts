@@ -1,4 +1,4 @@
-import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '..';
+import type { Wallet, WalletAccount, WalletEventName, WalletEvent } from '..';
 
 class GlowWallet implements Wallet {
     version = '1.0.0' as const;
@@ -22,9 +22,11 @@ class GlowWallet implements Wallet {
             signIn() {},
         },
     };
+    // @ts-expect-error -- 'standard:change' is required
+    events = ['foo:bar'] as const;
     accounts = [new GlowSolanaWalletAccount()];
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+    on<E extends WalletEventName>(event: E, listener: WalletEvent[E]): () => void {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         return () => {};
     }

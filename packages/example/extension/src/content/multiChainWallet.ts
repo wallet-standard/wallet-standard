@@ -1,7 +1,7 @@
 import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum-chains';
 import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
 import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
-import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletEventName, WalletEvent } from '@wallet-standard/standard';
 import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
 
@@ -64,7 +64,7 @@ export class MultiChainWallet implements Wallet {
 
     #accounts: MultiChainWalletAccount[] = [];
 
-    readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    readonly #listeners: { [E in WalletEventName]?: WalletEvent[E][] } = {};
 
     #rpc: RPC;
 
@@ -91,6 +91,10 @@ export class MultiChainWallet implements Wallet {
                 connect: this.#connect,
             },
         };
+    }
+
+    get events() {
+        return ['standard:change'] as const;
     }
 
     get accounts() {
@@ -127,17 +131,17 @@ export class MultiChainWallet implements Wallet {
         };
     };
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+    on<E extends WalletEventName>(event: E, listener: WalletEvent[E]): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
     }
 
-    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
+    #emit<E extends WalletEventName>(event: E, ...args: Parameters<WalletEvent[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+    #off<E extends WalletEventName>(event: E, listener: WalletEvent[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }

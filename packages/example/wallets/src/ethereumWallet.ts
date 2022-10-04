@@ -58,6 +58,10 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
         };
     }
 
+    get events() {
+        return ['standard:change'] as const;
+    }
+
     constructor() {
         const wallet = ethers.Wallet.createRandom();
         const address = wallet.address;

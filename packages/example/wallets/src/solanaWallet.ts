@@ -99,6 +99,10 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         };
     }
 
+    get events() {
+        return ['standard:change'] as const;
+    }
+
     constructor() {
         const ledger = {} as SolanaLedgerApp;
         const keypair = Keypair.generate();

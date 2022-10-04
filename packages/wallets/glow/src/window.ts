@@ -7,13 +7,13 @@ export enum Network {
     Localnet = 'localnet',
 }
 
-export interface PhantomWalletEvents {
+export interface PhantomWalletEvent {
     connect(...args: unknown[]): unknown;
     disconnect(...args: unknown[]): unknown;
     accountChanged(publicKey: PublicKey | null): unknown;
 }
 
-export interface PhantomAdapter extends EventEmitter<PhantomWalletEvents> {
+export interface PhantomAdapter extends EventEmitter<PhantomWalletEvent> {
     // Properties
     publicKey?: { toBytes(): Uint8Array; toBase58(): string } | null;
     isConnected: boolean;
@@ -35,7 +35,7 @@ export interface PhantomAdapter extends EventEmitter<PhantomWalletEvents> {
     ): Promise<Transaction[]>;
 }
 
-export interface GlowAdapter extends EventEmitter<PhantomWalletEvents> {
+export interface GlowAdapter extends EventEmitter<PhantomWalletEvent> {
     signIn: () => Promise<{
         address: string;
         signatureBase64: string;

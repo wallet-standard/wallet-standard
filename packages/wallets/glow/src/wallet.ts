@@ -18,7 +18,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import type { Wallet, WalletEventName, WalletEvent } from '@wallet-standard/standard';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
@@ -35,11 +35,12 @@ export type GlowSolanaFeature = {
 };
 
 export class GlowSolanaWallet implements Wallet {
-    readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    readonly #listeners: { [E in WalletEventName]?: WalletEvent[E][] } = {};
     readonly #version = '1.0.0' as const;
     readonly #name = 'Glow' as const;
     readonly #icon = icon;
     readonly #chains = [SOLANA_MAINNET_CHAIN, SOLANA_DEVNET_CHAIN, SOLANA_LOCALNET_CHAIN] as const;
+    readonly #events = ['standard:change'] as const;
     #account: ReadonlyWalletAccount | null;
 
     get version() {
@@ -90,6 +91,10 @@ export class GlowSolanaWallet implements Wallet {
         };
     }
 
+    get events() {
+        return this.#events.slice();
+    }
+
     get accounts() {
         return this.#account ? [this.#account] : [];
     }
@@ -104,17 +109,17 @@ export class GlowSolanaWallet implements Wallet {
         this.#connected();
     }
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+    on<E extends WalletEventName>(event: E, listener: WalletEvent[E]): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
     }
 
-    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
+    #emit<E extends WalletEventName>(event: E, ...args: Parameters<WalletEvent[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+    #off<E extends WalletEventName>(event: E, listener: WalletEvent[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
