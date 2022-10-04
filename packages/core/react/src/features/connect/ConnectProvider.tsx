@@ -47,8 +47,8 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
                           }
                       }
 
-                      const loud = !input?.silent;
-                      if (loud) {
+                      const { silent } = input || {};
+                      if (!silent) {
                           setWaiting(true);
                       }
                       try {
@@ -57,7 +57,7 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
                       } catch (error: any) {
                           throw handleError(error);
                       } finally {
-                          if (loud) {
+                          if (!silent) {
                               setWaiting(false);
                           }
                           promise.current = undefined;
