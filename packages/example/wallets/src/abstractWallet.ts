@@ -1,8 +1,8 @@
-import type { Wallet, WalletEventName, WalletEvent } from '@wallet-standard/standard';
+import type { Wallet, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import { ReadonlyWalletAccount } from '@wallet-standard/util';
 
 export abstract class AbstractWallet implements Wallet {
-    #listeners: { [E in WalletEventName]?: WalletEvent[E][] } = {};
+    #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
 
     protected _accounts: ReadonlyWalletAccount[];
 
@@ -24,17 +24,17 @@ export abstract class AbstractWallet implements Wallet {
         this._accounts = accounts;
     }
 
-    on<E extends WalletEventName>(event: E, listener: WalletEvent[E]): () => void {
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
     }
 
-    protected _emit<E extends WalletEventName>(event: E, ...args: Parameters<WalletEvent[E]>): void {
+    protected _emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventName>(event: E, listener: WalletEvent[E]): void {
+    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }

@@ -16,7 +16,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import { getChainForEndpoint } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletAccount, WalletEventName, WalletEvent } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
@@ -31,7 +31,7 @@ export type BackpackSolanaFeature = {
 };
 
 export class BackpackSolanaWallet implements Wallet {
-    readonly #listeners: { [E in WalletEventName]?: WalletEvent[E][] } = {};
+    readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
     readonly #version = '1.0.0' as const;
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
@@ -106,17 +106,17 @@ export class BackpackSolanaWallet implements Wallet {
         this.#connected();
     }
 
-    on<E extends WalletEventName>(event: E, listener: WalletEvent[E]): () => void {
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
     }
 
-    #emit<E extends WalletEventName>(event: E, ...args: Parameters<WalletEvent[E]>): void {
+    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventName>(event: E, listener: WalletEvent[E]): void {
+    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 

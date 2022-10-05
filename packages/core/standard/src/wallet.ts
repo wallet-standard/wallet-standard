@@ -61,7 +61,7 @@ export interface Wallet {
      *
      * @return Function to remove the event listener and unsubscribe.
      */
-    on<E extends WalletEventName>(event: E, listener: WalletEvent[E]): () => void;
+    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void;
 }
 
 /** TODO: docs */
@@ -75,7 +75,7 @@ export type WalletPropertyName = NonNullable<
 export type WalletProperties = Pick<Wallet, WalletPropertyName>;
 
 /** Events emitted by wallets. */
-export type WalletEvent = IdentifierRecord<(...args: unknown[]) => void> & {
+export type WalletEvents = IdentifierRecord<(...args: unknown[]) => void> & {
     /**
      * Emitted when properties of the wallet have changed.
      *
@@ -85,7 +85,7 @@ export type WalletEvent = IdentifierRecord<(...args: unknown[]) => void> & {
 };
 
 /** TODO: docs */
-export type WalletEventName = keyof WalletEvent;
+export type WalletEventNames = keyof WalletEvents;
 
 /** TODO: docs */
 export type WalletWithFeatures<Features extends Wallet['features']> = Omit<Wallet, 'features'> & {
