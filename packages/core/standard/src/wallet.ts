@@ -1,6 +1,5 @@
 import type { WalletAccount } from './account.js';
-import type { IdentifierArray, IdentifierRecord, IdentifierString } from './identifier.js';
-import type { IconString } from './types.js';
+import type { IconString, IdentifierArray, IdentifierRecord } from './types.js';
 
 /** TODO: docs */
 export type WalletVersion = '1.0.0';

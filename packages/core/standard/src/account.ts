@@ -1,5 +1,4 @@
-import type { IdentifierArray } from './identifier.js';
-import type { IconString } from './types.js';
+import type { IconString, IdentifierArray } from './types.js';
 
 /** An account in the wallet that the app has been authorized to use. */
 export interface WalletAccount {
