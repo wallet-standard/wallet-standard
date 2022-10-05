@@ -22,6 +22,7 @@ class GlowWallet implements Wallet {
             signIn() {},
         },
     };
+    events = ['standard:change'] as const;
     accounts = [new GlowSolanaWalletAccount()];
 
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {

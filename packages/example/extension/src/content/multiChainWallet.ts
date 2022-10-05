@@ -93,6 +93,10 @@ export class MultiChainWallet implements Wallet {
         };
     }
 
+    get events() {
+        return ['standard:change'] as const;
+    }
+
     get accounts() {
         return this.#accounts;
     }

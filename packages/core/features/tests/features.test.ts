@@ -34,6 +34,7 @@ class GlowWallet implements WalletWithFeatures<StandardFeatures & GlowFeature> {
             signIn() {},
         },
     };
+    events = ['standard:change'] as const;
     accounts = [new GlowSolanaWalletAccount()];
 
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
@@ -50,6 +51,8 @@ class GlowSolanaWalletAccount implements WalletAccount {
 }
 
 const wallet: WalletWithFeatures<StandardFeatures & GlowFeature> = new GlowWallet();
+
+wallet.on('standard:change', (properties) => console.log(properties));
 
 let accounts: ReadonlyArray<WalletAccount>;
 if ('standard:connect' in wallet.features) {

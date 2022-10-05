@@ -35,6 +35,7 @@ export class BackpackSolanaWallet implements Wallet {
     readonly #version = '1.0.0' as const;
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
+    readonly #events = ['standard:change'] as const;
     #chain: SolanaChain;
     #account: ReadonlyWalletAccount | null;
 
@@ -84,6 +85,10 @@ export class BackpackSolanaWallet implements Wallet {
                 },
             },
         };
+    }
+
+    get events() {
+        return this.#events.slice();
     }
 
     get accounts() {

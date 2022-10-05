@@ -14,6 +14,7 @@ export abstract class AbstractWallet implements Wallet {
     abstract get icon(): Wallet['icon'];
     abstract get chains(): Wallet['chains'];
     abstract get features(): Wallet['features'];
+    abstract get events(): Wallet['events'];
 
     get accounts() {
         return this._accounts.slice();

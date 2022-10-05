@@ -14,6 +14,7 @@ const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties> = {
     icon: `data:image/png;base64,`,
     chains: EMPTY_ARRAY,
     features: EMPTY_OBJECT,
+    events: EMPTY_ARRAY,
     accounts: EMPTY_ARRAY,
 } as const;
 
@@ -43,6 +44,7 @@ export function getWalletProperties(wallet: Wallet | null): Readonly<WalletPrope
               icon: wallet.icon,
               chains: wallet.chains,
               features: wallet.features,
+              events: wallet.events,
               accounts: wallet.accounts,
           }
         : DEFAULT_WALLET_PROPERTIES;

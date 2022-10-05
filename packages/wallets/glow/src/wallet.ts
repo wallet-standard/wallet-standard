@@ -40,6 +40,7 @@ export class GlowSolanaWallet implements Wallet {
     readonly #name = 'Glow' as const;
     readonly #icon = icon;
     readonly #chains = [SOLANA_MAINNET_CHAIN, SOLANA_DEVNET_CHAIN, SOLANA_LOCALNET_CHAIN] as const;
+    readonly #events = ['standard:change'] as const;
     #account: ReadonlyWalletAccount | null;
 
     get version() {
@@ -88,6 +89,10 @@ export class GlowSolanaWallet implements Wallet {
                 },
             },
         };
+    }
+
+    get events() {
+        return this.#events.slice();
     }
 
     get accounts() {

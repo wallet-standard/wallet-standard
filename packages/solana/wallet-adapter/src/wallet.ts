@@ -19,48 +19,38 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type { IconString, Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
-import { bytesEqual } from '@wallet-standard/util';
+import type { IconString, Wallet, WalletEvents, WalletEventNames } from '@wallet-standard/standard';
+import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 
 /** TODO: docs */
-export class SolanaWalletAdapterWalletAccount implements WalletAccount {
+export class SolanaWalletAdapterWalletAccount extends ReadonlyWalletAccount {
     readonly #adapter: Adapter;
-    readonly #address: string;
-    readonly #publicKey: Uint8Array;
-    readonly #chains: ReadonlyArray<SolanaChain>;
 
-    get address() {
-        return this.#address;
-    }
-
-    get publicKey() {
-        return this.#publicKey.slice();
-    }
-
-    get chains() {
-        return this.#chains.slice();
-    }
-
-    get features() {
+    constructor({
+        adapter,
+        address,
+        publicKey,
+        chains,
+    }: {
+        adapter: Adapter;
+        address: string;
+        publicKey: Uint8Array;
+        chains: ReadonlyArray<SolanaChain>;
+    }) {
         const features: (keyof (ConnectFeature &
             SolanaSignAndSendTransactionFeature &
             SolanaSignTransactionFeature &
             SignMessageFeature))[] = ['standard:connect', 'solana:signAndSendTransaction'];
-        if ('signTransaction' in this.#adapter) {
+        if ('signTransaction' in adapter) {
             features.push('solana:signTransaction');
         }
-        if ('signMessage' in this.#adapter) {
+        if ('signMessage' in adapter) {
             features.push('standard:signMessage');
         }
-        return features;
-    }
 
-    constructor(adapter: Adapter, address: string, publicKey: Uint8Array, chains: SolanaChain[]) {
+        super({ address, publicKey, chains, features });
         this.#adapter = adapter;
-        this.#address = address;
-        this.#publicKey = publicKey;
-        this.#chains = chains;
     }
 }
 
@@ -69,6 +59,7 @@ export class SolanaWalletAdapterWallet implements Wallet {
     #listeners: {
         [E in WalletEventNames]?: WalletEvents[E][];
     } = {};
+    #events = ['standard:change'] as const;
     #adapter: Adapter;
     #chain: SolanaChain;
     #endpoint: string | undefined;
@@ -129,6 +120,10 @@ export class SolanaWalletAdapterWallet implements Wallet {
         return { ...features, ...signTransactionFeature, ...signMessageFeature };
     }
 
+    get events() {
+        return this.#events.slice();
+    }
+
     get accounts() {
         return this.#account ? [this.#account] : [];
     }
@@ -179,7 +174,12 @@ export class SolanaWalletAdapterWallet implements Wallet {
                 account.chains.includes(this.#chain) ||
                 !bytesEqual(account.publicKey, publicKey)
             ) {
-                this.#account = new SolanaWalletAdapterWalletAccount(this.#adapter, address, publicKey, [this.#chain]);
+                this.#account = new SolanaWalletAdapterWalletAccount({
+                    adapter: this.#adapter,
+                    address,
+                    publicKey,
+                    chains: [this.#chain],
+                });
                 this.#emit('standard:change', ['accounts']);
             }
         }
