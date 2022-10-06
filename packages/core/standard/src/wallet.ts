@@ -61,6 +61,8 @@ export interface Wallet {
      * @return Function to remove the event listener and unsubscribe.
      */
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void;
+
+    // TODO: think about unregister/destructor
 }
 
 /** TODO: docs */
