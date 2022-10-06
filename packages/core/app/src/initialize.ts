@@ -8,22 +8,22 @@ let initialized: InitializedWallets | undefined = undefined;
  * TODO: docs
  */
 export function initialize(): InitializedWallets {
-    // If it's already initialized by us, just return it.
+    // If it's already initialized by us, just return.
     if (initialized) return initialized;
-    // If we're not in a window (e.g. server-side rendering), initialize and return it.
+
+    // If we're not in a window (e.g. server-side rendering), initialize and return.
     if (typeof window === 'undefined') return (initialized = Object.freeze({ register, get, on }));
 
+    // Since we didn't initialize it, if it's not array, it was initialized externally, so throw an error.
     const wallets = (window.navigator.wallets ||= []);
+    if (!Array.isArray(wallets)) throw new Error('window.navigator.wallets was already initialized');
 
-    // If it's not initialized, initialize it and call all the wallet callbacks.
-    if (Array.isArray(wallets)) {
-        initialized = Object.freeze({ register, get, on });
-        Object.defineProperty(window.navigator, 'wallets', { value: Object.freeze({ push }) });
-        push(...wallets);
-    }
-    // If it's already initialized, and we didn't initialize it, throw an error.
-    else if (!initialized) throw new Error('window.navigator.wallets was already initialized');
+    // Initialize it and overwrite window.navigator.wallets with a non-writable API.
+    initialized = Object.freeze({ register, get, on });
+    Object.defineProperty(window.navigator, 'wallets', { value: Object.freeze({ push }) });
 
+    // Call all the wallet callbacks and return.
+    push(...wallets);
     return initialized;
 }
 
