@@ -52,6 +52,7 @@ export interface Wallet {
      */
     readonly accounts: ReadonlyArray<WalletAccount>;
 
+    // TODO: think about moving events to features
     /**
      * Add an event listener to subscribe to events.
      *
