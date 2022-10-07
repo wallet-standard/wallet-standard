@@ -329,6 +329,23 @@ importers:
       '@types/node-fetch': 2.6.2
       shx: 0.3.4
 
+  packages/solana/_:
+    specifiers:
+      '@wallet-standard/solana-chains': workspace:^
+      '@wallet-standard/solana-features': workspace:^
+      '@wallet-standard/solana-wallet-adapter': workspace:^
+      '@wallet-standard/solana-wallet-adapter-react': workspace:^
+      '@wallet-standard/solana-web3.js': workspace:^
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/solana-chains': link:../chains
+      '@wallet-standard/solana-features': link:../features
+      '@wallet-standard/solana-wallet-adapter': link:../wallet-adapter
+      '@wallet-standard/solana-wallet-adapter-react': link:../wallet-adapter-react
+      '@wallet-standard/solana-web3.js': link:../web3.js
+    devDependencies:
+      shx: 0.3.4
+
   packages/solana/chains:
     specifiers:
       shx: ^0.3.4

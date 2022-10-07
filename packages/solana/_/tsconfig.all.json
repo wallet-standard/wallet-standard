@@ -1,0 +1,26 @@
+{
+    "extends": "../../../tsconfig.root.json",
+    "references": [
+        {
+            "path": "../chains/tsconfig.all.json"
+        },
+        {
+            "path": "../features/tsconfig.all.json"
+        },
+        {
+            "path": "../wallet-adapter/tsconfig.all.json"
+        },
+        {
+            "path": "../wallet-adapter-react/tsconfig.all.json"
+        },
+        {
+            "path": "../web3.js/tsconfig.all.json"
+        },
+        {
+            "path": "./tsconfig.cjs.json"
+        },
+        {
+            "path": "./tsconfig.esm.json"
+        }
+    ]
+}
