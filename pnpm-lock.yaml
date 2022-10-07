@@ -41,6 +41,23 @@ importers:
       typedoc: 0.23.15_typescript@4.8.3
       typescript: 4.8.3
 
+  packages/core/_:
+    specifiers:
+      '@wallet-standard/app': workspace:^
+      '@wallet-standard/features': workspace:^
+      '@wallet-standard/react': workspace:^
+      '@wallet-standard/standard': workspace:^
+      '@wallet-standard/util': workspace:^
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/app': link:../app
+      '@wallet-standard/features': link:../features
+      '@wallet-standard/react': link:../react
+      '@wallet-standard/standard': link:../standard
+      '@wallet-standard/util': link:../util
+    devDependencies:
+      shx: 0.3.4
+
   packages/core/app:
     specifiers:
       '@wallet-standard/standard': workspace:^

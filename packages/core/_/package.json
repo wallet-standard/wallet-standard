@@ -1,0 +1,39 @@
+{
+    "name": "@wallet-standard/core",
+    "version": "0.1.0-alpha.0",
+    "author": "Solana Maintainers <maintainers@solana.foundation>",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
+    "license": "Apache-2.0",
+    "type": "module",
+    "sideEffects": false,
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
+    },
+    "dependencies": {
+        "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/features": "workspace:^",
+        "@wallet-standard/react": "workspace:^",
+        "@wallet-standard/standard": "workspace:^",
+        "@wallet-standard/util": "workspace:^"
+    },
+    "devDependencies": {
+        "shx": "^0.3.4"
+    }
+}
