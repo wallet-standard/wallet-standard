@@ -21,14 +21,17 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
         getWalletProperties(wallet)
     );
 
-    // When the wallet changes, set properties and listen for changes.
+    // When the wallet changes, set properties.
     useEffect(() => setWalletProperties(getWalletProperties(wallet)), [wallet]);
 
+    // When the features change, listen for property changes if the wallet supports it.
     useEffect(() => {
         if (hasEventsFeature(features)) {
-            features['standard:events'].on('change', () => setWalletProperties(getWalletProperties(wallet)));
+            features['standard:events'].on('change', (properties) =>
+                setWalletProperties((currentProperties) => ({ ...currentProperties, ...properties }))
+            );
         }
-    }, [wallet, features]);
+    }, [features]);
 
     return (
         <WalletContext.Provider
