@@ -16,23 +16,35 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import type { ConnectFeature, SignMessageFeature } from '@wallet-standard/features';
+import type {
+    ConnectFeature,
+    EventsChangeProperties,
+    EventsFeature,
+    SignMessageFeature,
+} from '@wallet-standard/features';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignTransactionFeature,
 } from '@wallet-standard/solana-features';
 import { getChainForEndpoint, getCommitment } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletAccount, WalletPropertyName, WalletWithFeatures } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletWithFeatures } from '@wallet-standard/standard';
 import { encode } from 'bs58';
 
 /** TODO: docs */
 export type StandardWalletAdapterWallet = WalletWithFeatures<
-    ConnectFeature & SolanaSignAndSendTransactionFeature & (SolanaSignTransactionFeature | SignMessageFeature)
+    ConnectFeature &
+        EventsFeature &
+        SolanaSignAndSendTransactionFeature &
+        (SolanaSignTransactionFeature | SignMessageFeature)
 >;
 
 /** TODO: docs */
 export function isStandardWalletAdapterCompatibleWallet(wallet: Wallet): wallet is StandardWalletAdapterWallet {
-    return 'standard:connect' in wallet.features && 'solana:signAndSendTransaction' in wallet.features;
+    return (
+        'standard:connect' in wallet.features &&
+        'standard:events' in wallet.features &&
+        'solana:signAndSendTransaction' in wallet.features
+    );
 }
 
 /** TODO: docs */
@@ -128,7 +140,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                 throw new WalletPublicKeyError(error?.message, error);
             }
 
-            this.#off = this.#wallet.on('standard:change', this.#changed);
+            this.#off = this.#wallet.features['standard:events'].on('change', this.#changed);
             this.#connected(account, publicKey);
             this.emit('connect', publicKey);
         } catch (error: any) {
@@ -175,9 +187,9 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.#connected(null, null);
     }
 
-    #changed = (properties: ReadonlyArray<WalletPropertyName>) => {
+    #changed = (properties: EventsChangeProperties) => {
         // If the adapter isn't connected or the change doesn't include accounts, do nothing.
-        if (!this.#account || !this.#publicKey || properties.includes('accounts')) return;
+        if (!this.#account || !this.#publicKey || !('accounts' in properties)) return;
 
         const account = this.#wallet.accounts[0];
         // If there's no connected account, disconnect the adapter.

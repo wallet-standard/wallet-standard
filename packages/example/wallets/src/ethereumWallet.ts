@@ -3,6 +3,7 @@ import { ETHEREUM_CHAINS } from '@wallet-standard/ethereum-chains';
 import type {
     ConnectFeature,
     ConnectMethod,
+    EventsFeature,
     SignAndSendTransactionFeature,
     SignAndSendTransactionMethod,
     SignAndSendTransactionOutput,
@@ -37,11 +38,19 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
         return ETHEREUM_CHAINS.slice();
     }
 
-    get features(): ConnectFeature & SignAndSendTransactionFeature & SignTransactionFeature & SignMessageFeature {
+    get features(): ConnectFeature &
+        EventsFeature &
+        SignAndSendTransactionFeature &
+        SignTransactionFeature &
+        SignMessageFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:events': {
+                version: '1.0.0',
+                on: this._on,
             },
             'standard:signAndSendTransaction': {
                 version: '1.0.0',
@@ -56,10 +65,6 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
                 signMessage: this.#signMessage,
             },
         };
-    }
-
-    get events() {
-        return ['standard:change'] as const;
     }
 
     constructor() {

@@ -1,8 +1,9 @@
-import type { Wallet, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import type { EventsListeners, EventsNames, EventsOnMethod } from '@wallet-standard/features';
+import type { Wallet } from '@wallet-standard/standard';
 import { ReadonlyWalletAccount } from '@wallet-standard/util';
 
 export abstract class AbstractWallet implements Wallet {
-    #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};
 
     protected _accounts: ReadonlyWalletAccount[];
 
@@ -14,7 +15,6 @@ export abstract class AbstractWallet implements Wallet {
     abstract get icon(): Wallet['icon'];
     abstract get chains(): Wallet['chains'];
     abstract get features(): Wallet['features'];
-    abstract get events(): Wallet['events'];
 
     get accounts() {
         return this._accounts.slice();
@@ -24,17 +24,17 @@ export abstract class AbstractWallet implements Wallet {
         this._accounts = accounts;
     }
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+    protected _on: EventsOnMethod = (event, listener) => {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
-        return (): void => this.#off(event, listener);
-    }
+        return (): void => this._off(event, listener);
+    };
 
-    protected _emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
+    protected _emit<E extends EventsNames>(event: E, ...args: Parameters<EventsListeners[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+    protected _off<E extends EventsNames>(event: E, listener: EventsListeners[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }

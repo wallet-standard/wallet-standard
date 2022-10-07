@@ -2,6 +2,11 @@ import { PublicKey, Transaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
+    EventsChangeProperties,
+    EventsFeature,
+    EventsListeners,
+    EventsNames,
+    EventsOnMethod,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
@@ -16,7 +21,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import { getChainForEndpoint } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
@@ -31,11 +36,10 @@ export type BackpackSolanaFeature = {
 };
 
 export class BackpackSolanaWallet implements Wallet {
-    readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    readonly #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};
     readonly #version = '1.0.0' as const;
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
-    readonly #events = ['standard:change'] as const;
     #chain: SolanaChain;
     #account: ReadonlyWalletAccount | null;
 
@@ -56,6 +60,7 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
         SignMessageFeature &
@@ -64,6 +69,10 @@ export class BackpackSolanaWallet implements Wallet {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:events': {
+                version: '1.0.0',
+                on: this.#on,
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
@@ -87,10 +96,6 @@ export class BackpackSolanaWallet implements Wallet {
         };
     }
 
-    get events() {
-        return this.#events.slice();
-    }
-
     get accounts() {
         return this.#account ? [this.#account] : [];
     }
@@ -106,27 +111,13 @@ export class BackpackSolanaWallet implements Wallet {
         this.#connected();
     }
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
-        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
-        return (): void => this.#off(event, listener);
-    }
-
-    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
-        // eslint-disable-next-line prefer-spread
-        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
-    }
-
-    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
-        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
-    }
-
     #connected = () => {
-        const properties: ('chains' | 'accounts')[] = [];
+        const properties: EventsChangeProperties = {};
 
         const chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
         if (chain !== this.#chain) {
             this.#chain = chain;
-            properties.push('chains');
+            properties.chains = this.chains;
         }
 
         const address = window.backpack.publicKey?.toBase58();
@@ -147,19 +138,19 @@ export class BackpackSolanaWallet implements Wallet {
                     chains: [chain],
                     features: ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage'],
                 });
-                properties.push('accounts');
+                properties.accounts = this.accounts;
             }
         }
 
-        if (properties.length) {
-            this.#emit('standard:change', properties);
+        if (Object.keys(properties).length) {
+            this.#emit('change', properties);
         }
     };
 
     #disconnected = () => {
         if (this.#account) {
             this.#account = null;
-            this.#emit('standard:change', ['accounts']);
+            this.#emit('change', { accounts: this.accounts });
         }
     };
 
@@ -180,6 +171,20 @@ export class BackpackSolanaWallet implements Wallet {
 
         return { accounts: this.accounts };
     };
+
+    #on: EventsOnMethod = (event, listener) => {
+        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
+        return (): void => this.#off(event, listener);
+    };
+
+    #emit<E extends EventsNames>(event: E, ...args: Parameters<EventsListeners[E]>): void {
+        // eslint-disable-next-line prefer-spread
+        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
+    }
+
+    #off<E extends EventsNames>(event: E, listener: EventsListeners[E]): void {
+        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
+    }
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
         const outputs: SolanaSignAndSendTransactionOutput[] = [];

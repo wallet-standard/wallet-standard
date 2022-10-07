@@ -1,5 +1,5 @@
-import type { WalletAccount, WalletEventNames, WalletEvents, WalletWithFeatures } from '@wallet-standard/standard';
-import type { ConnectFeature, SignMessageFeature, SignTransactionFeature, StandardFeatures } from '..';
+import type { WalletAccount, WalletWithFeatures } from '@wallet-standard/standard';
+import type { ConnectFeature, EventsFeature, SignMessageFeature, SignTransactionFeature, StandardFeatures } from '..';
 
 type GlowFeature = {
     'glow:': {
@@ -12,10 +12,15 @@ class GlowWallet implements WalletWithFeatures<StandardFeatures & GlowFeature> {
     name = 'Glow';
     icon = `data:image/png;base64,` as const;
     chains = ['solana:mainnet', 'solana:devnet'] as const;
-    features: ConnectFeature & SignTransactionFeature & SignMessageFeature & GlowFeature = {
+    features: ConnectFeature & EventsFeature & SignTransactionFeature & SignMessageFeature & GlowFeature = {
         'standard:connect': {
             version: '1.0.0',
             connect: async () => ({ accounts: this.accounts }),
+        },
+        'standard:events': {
+            version: '1.0.0',
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            on: (event, listener) => () => {},
         },
         'standard:signTransaction': {
             version: '1.0.0',
@@ -34,13 +39,7 @@ class GlowWallet implements WalletWithFeatures<StandardFeatures & GlowFeature> {
             signIn() {},
         },
     };
-    events = ['standard:change'] as const;
     accounts = [new GlowSolanaWalletAccount()];
-
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return () => {};
-    }
 }
 
 class GlowSolanaWalletAccount implements WalletAccount {
@@ -52,7 +51,9 @@ class GlowSolanaWalletAccount implements WalletAccount {
 
 const wallet: WalletWithFeatures<StandardFeatures & GlowFeature> = new GlowWallet();
 
-wallet.on('standard:change', (properties) => console.log(properties));
+if ('standard:events' in wallet.features) {
+    wallet.features['standard:events'].on('change', (properties) => console.log(properties));
+}
 
 let accounts: ReadonlyArray<WalletAccount>;
 if ('standard:connect' in wallet.features) {

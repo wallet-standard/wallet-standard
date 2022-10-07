@@ -5,6 +5,10 @@ import { initialize } from '@wallet-standard/app';
 import type {
     ConnectFeature,
     ConnectMethod,
+    EventsFeature,
+    EventsListeners,
+    EventsNames,
+    EventsOnMethod,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
@@ -19,7 +23,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type { IconString, Wallet, WalletEvents, WalletEventNames } from '@wallet-standard/standard';
+import type { IconString, Wallet } from '@wallet-standard/standard';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
 
@@ -39,6 +43,7 @@ export class SolanaWalletAdapterWalletAccount extends ReadonlyWalletAccount {
         chains: ReadonlyArray<SolanaChain>;
     }) {
         const features: (keyof (ConnectFeature &
+            EventsFeature &
             SolanaSignAndSendTransactionFeature &
             SolanaSignTransactionFeature &
             SignMessageFeature))[] = ['standard:connect', 'solana:signAndSendTransaction'];
@@ -57,9 +62,8 @@ export class SolanaWalletAdapterWalletAccount extends ReadonlyWalletAccount {
 /** TODO: docs */
 export class SolanaWalletAdapterWallet implements Wallet {
     #listeners: {
-        [E in WalletEventNames]?: WalletEvents[E][];
+        [E in EventsNames]?: EventsListeners[E][];
     } = {};
-    #events = ['standard:change'] as const;
     #adapter: Adapter;
     #chain: SolanaChain;
     #endpoint: string | undefined;
@@ -84,10 +88,14 @@ export class SolanaWalletAdapterWallet implements Wallet {
     get features(): ConnectFeature &
         SolanaSignAndSendTransactionFeature &
         Partial<SolanaSignTransactionFeature & SignMessageFeature> {
-        const features: ConnectFeature & SolanaSignAndSendTransactionFeature = {
+        const features: ConnectFeature & EventsFeature & SolanaSignAndSendTransactionFeature = {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:events': {
+                version: '1.0.0',
+                on: this.#on,
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
@@ -120,10 +128,6 @@ export class SolanaWalletAdapterWallet implements Wallet {
         return { ...features, ...signTransactionFeature, ...signMessageFeature };
     }
 
-    get events() {
-        return this.#events.slice();
-    }
-
     get accounts() {
         return this.#account ? [this.#account] : [];
     }
@@ -148,20 +152,6 @@ export class SolanaWalletAdapterWallet implements Wallet {
         this.#adapter.off('disconnect', this.#disconnected, this);
     }
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
-        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
-        return (): void => this.#off(event, listener);
-    }
-
-    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
-        // eslint-disable-next-line prefer-spread
-        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
-    }
-
-    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
-        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
-    }
-
     #connected(): void {
         const publicKey = this.#adapter.publicKey?.toBytes();
         if (publicKey) {
@@ -180,7 +170,7 @@ export class SolanaWalletAdapterWallet implements Wallet {
                     publicKey,
                     chains: [this.#chain],
                 });
-                this.#emit('standard:change', ['accounts']);
+                this.#emit('change', { accounts: this.accounts });
             }
         }
     }
@@ -188,7 +178,7 @@ export class SolanaWalletAdapterWallet implements Wallet {
     #disconnected(): void {
         if (this.#account) {
             this.#account = undefined;
-            this.#emit('standard:change', ['accounts']);
+            this.#emit('change', { accounts: this.accounts });
         }
     }
 
@@ -201,6 +191,20 @@ export class SolanaWalletAdapterWallet implements Wallet {
 
         return { accounts: this.accounts };
     };
+
+    #on: EventsOnMethod = (event, listener) => {
+        this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
+        return (): void => this.#off(event, listener);
+    };
+
+    #emit<E extends EventsNames>(event: E, ...args: Parameters<EventsListeners[E]>): void {
+        // eslint-disable-next-line prefer-spread
+        this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
+    }
+
+    #off<E extends EventsNames>(event: E, listener: EventsListeners[E]): void {
+        this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
+    }
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
         const outputs: SolanaSignAndSendTransactionOutput[] = [];

@@ -1,7 +1,14 @@
 import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum-chains';
-import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
+import type {
+    ConnectFeature,
+    ConnectMethod,
+    EventsFeature,
+    EventsListeners,
+    EventsNames,
+    EventsOnMethod,
+} from '@wallet-standard/features';
 import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
-import type { Wallet, WalletAccount, WalletEventNames, WalletEvents } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
 
@@ -64,7 +71,7 @@ export class MultiChainWallet implements Wallet {
 
     #accounts: MultiChainWalletAccount[] = [];
 
-    readonly #listeners: { [E in WalletEventNames]?: WalletEvents[E][] } = {};
+    readonly #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};
 
     #rpc: RPC;
 
@@ -84,17 +91,17 @@ export class MultiChainWallet implements Wallet {
         return [ETHEREUM_MAINNET_CHAIN, SOLANA_MAINNET_CHAIN] as const;
     }
 
-    get features(): ConnectFeature {
+    get features(): ConnectFeature & EventsFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
             },
+            'standard:events': {
+                version: '1.0.0',
+                on: this.#on,
+            },
         };
-    }
-
-    get events() {
-        return ['standard:change'] as const;
     }
 
     get accounts() {
@@ -124,24 +131,24 @@ export class MultiChainWallet implements Wallet {
             }
         });
 
-        this.#emit('standard:change', ['accounts']);
+        this.#emit('change', { accounts: this.accounts });
 
         return {
             accounts: this.accounts,
         };
     };
 
-    on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void {
+    #on: EventsOnMethod = (event, listener) => {
         this.#listeners[event]?.push(listener) || (this.#listeners[event] = [listener]);
         return (): void => this.#off(event, listener);
-    }
+    };
 
-    #emit<E extends WalletEventNames>(event: E, ...args: Parameters<WalletEvents[E]>): void {
+    #emit<E extends EventsNames>(event: E, ...args: Parameters<EventsListeners[E]>): void {
         // eslint-disable-next-line prefer-spread
         this.#listeners[event]?.forEach((listener) => listener.apply(null, args));
     }
 
-    #off<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): void {
+    #off<E extends EventsNames>(event: E, listener: EventsListeners[E]): void {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 }
