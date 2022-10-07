@@ -16,12 +16,7 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import type {
-    ConnectFeature,
-    EventsChangeProperties,
-    EventsFeature,
-    SignMessageFeature,
-} from '@wallet-standard/features';
+import type { ConnectFeature, EventsFeature, EventsListeners, SignMessageFeature } from '@wallet-standard/features';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignTransactionFeature,
@@ -187,7 +182,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.#connected(null, null);
     }
 
-    #changed = (properties: EventsChangeProperties) => {
+    #changed: EventsListeners['change'] = (properties) => {
         // If the adapter isn't connected or the change doesn't include accounts, do nothing.
         if (!this.#account || !this.#publicKey || !('accounts' in properties)) return;
 
