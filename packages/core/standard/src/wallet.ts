@@ -52,6 +52,7 @@ export interface Wallet {
      */
     readonly accounts: ReadonlyArray<WalletAccount>;
 
+    // TODO: think about moving events to features
     /**
      * Add an event listener to subscribe to events.
      *
@@ -61,6 +62,8 @@ export interface Wallet {
      * @return Function to remove the event listener and unsubscribe.
      */
     on<E extends WalletEventNames>(event: E, listener: WalletEvents[E]): () => void;
+
+    // TODO: think about unregister/destructor
 }
 
 /** TODO: docs */

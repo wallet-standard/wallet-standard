@@ -7,8 +7,8 @@ import {
     SignTransactionProvider,
 } from './features/index.js';
 import { WalletAccountProvider } from './WalletAccountProvider.js';
-import { WalletsProvider } from './WalletsProvider.js';
 import { WalletProvider } from './WalletProvider.js';
+import { WalletsProvider } from './WalletsProvider.js';
 
 /** TODO: docs */
 export interface WalletStandardProviderProps {
