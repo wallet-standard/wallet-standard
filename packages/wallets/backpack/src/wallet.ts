@@ -10,19 +10,20 @@ import type {
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
-} from '@wallet-standard/features';
-import type { SolanaChain } from '@wallet-standard/solana-chains';
+    Wallet,
+    WalletAccount,
+} from '@wallet-standard/core';
+import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/core';
 import type {
+    SolanaChain,
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
     SolanaSignTransactionFeature,
     SolanaSignTransactionMethod,
     SolanaSignTransactionOutput,
-} from '@wallet-standard/solana-features';
-import { getChainForEndpoint } from '@wallet-standard/solana-web3.js';
-import type { Wallet, WalletAccount } from '@wallet-standard/standard';
-import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
+} from '@wallet-standard/solana';
+import { getChainForEndpoint } from '@wallet-standard/solana';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
 import type { Backpack, BackpackWindow } from './window.js';

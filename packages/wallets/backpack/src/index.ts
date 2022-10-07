@@ -1,4 +1,4 @@
-import type { WalletsWindow } from '@wallet-standard/standard';
+import type { WalletsWindow } from '@wallet-standard/core';
 import { BackpackSolanaWallet } from './wallet.js';
 
 declare const window: WalletsWindow;
