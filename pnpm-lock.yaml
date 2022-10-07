@@ -86,12 +86,6 @@ importers:
     devDependencies:
       shx: 0.3.4
 
-  packages/core/types:
-    specifiers:
-      shx: ^0.3.4
-    devDependencies:
-      shx: 0.3.4
-
   packages/core/util:
     specifiers:
       '@wallet-standard/standard': workspace:^
