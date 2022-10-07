@@ -31,12 +31,8 @@
         "bs58": "^4.0.1"
     },
     "dependencies": {
-        "@wallet-standard/features": "workspace:^",
-        "@wallet-standard/solana-chains": "workspace:^",
-        "@wallet-standard/solana-features": "workspace:^",
-        "@wallet-standard/solana-web3.js": "workspace:^",
-        "@wallet-standard/standard": "workspace:^",
-        "@wallet-standard/util": "workspace:^",
+        "@wallet-standard/core": "workspace:^",
+        "@wallet-standard/solana": "workspace:^",
         "eventemitter3": "^4.0.7",
         "buffer": "^6.0.3"
     },
