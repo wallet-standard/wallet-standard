@@ -8,6 +8,7 @@ import type {
     EncryptFeature,
     EncryptMethod,
     EncryptOutput,
+    EventsFeature,
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
@@ -62,6 +63,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
         SignMessageFeature &
@@ -71,6 +73,10 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:events': {
+                version: '1.0.0',
+                on: this._on,
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
@@ -97,10 +103,6 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 decrypt: this.#decrypt,
             },
         };
-    }
-
-    get events() {
-        return ['standard:change'] as const;
     }
 
     constructor() {
