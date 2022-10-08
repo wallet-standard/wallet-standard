@@ -7,7 +7,7 @@ export type WalletVersion = '1.0.0';
 /** TODO: docs */
 export interface Wallet {
     /**
-     * Version of the Wallet API.
+     * Version of the Wallet Standard.
      */
     readonly version: WalletVersion;
 

@@ -4,6 +4,7 @@ import type { WalletAccount } from '@wallet-standard/standard';
 export type ConnectFeature = {
     /** Namespace for the feature. */
     'standard:connect': {
+        // TODO: think about removing feature versions
         /** Version of the feature API. */
         version: ConnectVersion;
 
