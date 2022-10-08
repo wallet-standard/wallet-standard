@@ -308,28 +308,18 @@ importers:
       '@solana/web3.js': ^1.51.0
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
-      '@wallet-standard/app': workspace:^
-      '@wallet-standard/ethereum-chains': workspace:^
-      '@wallet-standard/features': workspace:^
-      '@wallet-standard/solana-chains': workspace:^
-      '@wallet-standard/solana-features': workspace:^
-      '@wallet-standard/solana-web3.js': workspace:^
-      '@wallet-standard/standard': workspace:^
-      '@wallet-standard/util': workspace:^
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/ethereum': workspace:^
+      '@wallet-standard/solana': workspace:^
       bs58: ^4.0.1
       ethers: ^5.6.9
       shx: ^0.3.4
       tweetnacl: ^1.0.3
     dependencies:
       '@solana/web3.js': 1.63.0
-      '@wallet-standard/app': link:../../core/app
-      '@wallet-standard/ethereum-chains': link:../../ethereum/chains
-      '@wallet-standard/features': link:../../core/features
-      '@wallet-standard/solana-chains': link:../../solana/chains
-      '@wallet-standard/solana-features': link:../../solana/features
-      '@wallet-standard/solana-web3.js': link:../../solana/web3.js
-      '@wallet-standard/standard': link:../../core/standard
-      '@wallet-standard/util': link:../../core/util
+      '@wallet-standard/core': link:../../core/_
+      '@wallet-standard/ethereum': link:../../ethereum/_
+      '@wallet-standard/solana': link:../../solana/_
       bs58: 4.0.1
       ethers: 5.7.1
       tweetnacl: 1.0.3
@@ -468,21 +458,13 @@ importers:
       '@solana/web3.js': ^1.51.0
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
-      '@wallet-standard/features': workspace:^
-      '@wallet-standard/solana-chains': workspace:^
-      '@wallet-standard/solana-features': workspace:^
-      '@wallet-standard/solana-web3.js': workspace:^
-      '@wallet-standard/standard': workspace:^
-      '@wallet-standard/util': workspace:^
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/solana': workspace:^
       bs58: ^4.0.1
       shx: ^0.3.4
     dependencies:
-      '@wallet-standard/features': link:../../core/features
-      '@wallet-standard/solana-chains': link:../../solana/chains
-      '@wallet-standard/solana-features': link:../../solana/features
-      '@wallet-standard/solana-web3.js': link:../../solana/web3.js
-      '@wallet-standard/standard': link:../../core/standard
-      '@wallet-standard/util': link:../../core/util
+      '@wallet-standard/core': link:../../core/_
+      '@wallet-standard/solana': link:../../solana/_
     devDependencies:
       '@solana/web3.js': 1.63.0
       '@types/bs58': 4.0.1
@@ -494,23 +476,15 @@ importers:
     specifiers:
       '@solana/web3.js': ^1.51.0
       '@types/bs58': ^4.0.1
-      '@wallet-standard/features': workspace:^
-      '@wallet-standard/solana-chains': workspace:^
-      '@wallet-standard/solana-features': workspace:^
-      '@wallet-standard/solana-web3.js': workspace:^
-      '@wallet-standard/standard': workspace:^
-      '@wallet-standard/util': workspace:^
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/solana': workspace:^
       bs58: ^4.0.1
       buffer: ^6.0.3
       eventemitter3: ^4.0.7
       shx: ^0.3.4
     dependencies:
-      '@wallet-standard/features': link:../../core/features
-      '@wallet-standard/solana-chains': link:../../solana/chains
-      '@wallet-standard/solana-features': link:../../solana/features
-      '@wallet-standard/solana-web3.js': link:../../solana/web3.js
-      '@wallet-standard/standard': link:../../core/standard
-      '@wallet-standard/util': link:../../core/util
+      '@wallet-standard/core': link:../../core/_
+      '@wallet-standard/solana': link:../../solana/_
       bs58: 4.0.1
       buffer: 6.0.3
       eventemitter3: 4.0.7

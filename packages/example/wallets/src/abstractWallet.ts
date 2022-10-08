@@ -1,6 +1,5 @@
-import type { EventsListeners, EventsNames, EventsOnMethod } from '@wallet-standard/features';
-import type { Wallet } from '@wallet-standard/standard';
-import { ReadonlyWalletAccount } from '@wallet-standard/util';
+import type { EventsListeners, EventsNames, EventsOnMethod, Wallet } from '@wallet-standard/core';
+import { ReadonlyWalletAccount } from '@wallet-standard/core';
 
 export abstract class AbstractWallet implements Wallet {
     #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};

@@ -14,18 +14,17 @@ import type {
     SignMessageOutput,
     SignTransactionMethod,
     SignTransactionOutput,
-} from '@wallet-standard/features';
-import type { SolanaChain } from '@wallet-standard/solana-chains';
-import { SOLANA_CHAINS } from '@wallet-standard/solana-chains';
+    Wallet,
+} from '@wallet-standard/core';
+import { CIPHER_x25519_xsalsa20_poly1305 } from '@wallet-standard/core';
 import type {
+    SolanaChain,
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
     SolanaSignTransactionFeature,
-} from '@wallet-standard/solana-features';
-import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
-import type { Wallet } from '@wallet-standard/standard';
-import { CIPHER_x25519_xsalsa20_poly1305 } from '@wallet-standard/util';
+} from '@wallet-standard/solana';
+import { getEndpointForChain, sendAndConfirmTransaction, SOLANA_CHAINS } from '@wallet-standard/solana';
 import { decode, encode } from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
 import {
