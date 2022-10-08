@@ -112,6 +112,15 @@ importers:
     devDependencies:
       shx: 0.3.4
 
+  packages/ethereum/_:
+    specifiers:
+      '@wallet-standard/ethereum-chains': workspace:^
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/ethereum-chains': link:../chains
+    devDependencies:
+      shx: 0.3.4
+
   packages/ethereum/chains:
     specifiers:
       shx: ^0.3.4
