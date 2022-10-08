@@ -1,6 +1,5 @@
 import type { FC } from 'react';
 import React from 'react';
-
 import { useAccounts } from '../hooks/useAccounts';
 
 export const Home: FC = () => {

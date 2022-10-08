@@ -1,4 +1,4 @@
-import { useWallet } from '@wallet-standard/react';
+import { useWallet } from '@wallet-standard/core';
 
 export function useIsConnected() {
     const { accounts } = useWallet();

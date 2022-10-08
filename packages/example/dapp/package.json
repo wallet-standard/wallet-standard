@@ -12,8 +12,7 @@
         "build": "parcel build"
     },
     "dependencies": {
-        "@wallet-standard/react": "workspace:^",
-        "@wallet-standard/standard": "workspace:^",
+        "@wallet-standard/core": "workspace:^",
         "process": "^0.11.10",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",

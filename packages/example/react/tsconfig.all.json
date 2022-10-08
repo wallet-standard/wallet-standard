@@ -2,19 +2,10 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
-            "path": "../../core/app/tsconfig.all.json"
+            "path": "../../core/_/tsconfig.all.json"
         },
         {
-            "path": "../../core/standard/tsconfig.all.json"
-        },
-        {
-            "path": "../../core/react/tsconfig.all.json"
-        },
-        {
-            "path": "../../solana/chains/tsconfig.all.json"
-        },
-        {
-            "path": "../../solana/wallet-adapter/tsconfig.all.json"
+            "path": "../../solana/_/tsconfig.all.json"
         },
         {
             "path": "./tsconfig.base.json"

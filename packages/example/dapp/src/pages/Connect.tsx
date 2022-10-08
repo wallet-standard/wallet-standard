@@ -1,8 +1,7 @@
-import { useConnect, useWallet, useWallets } from '@wallet-standard/react';
+import { useConnect, useWallet, useWallets } from '@wallet-standard/core';
 import type { FC } from 'react';
 import React, { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-
 import { useIsConnected } from '../hooks/useIsConnected';
 
 export const Connect: FC = () => {

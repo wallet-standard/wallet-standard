@@ -1,6 +1,5 @@
 import type { FC } from 'react';
 import React, { useState } from 'react';
-
 import { condenseAddress } from '../../utils/address';
 import { useAccounts } from '../hooks/useAccounts';
 import { rpc } from '../rpc';

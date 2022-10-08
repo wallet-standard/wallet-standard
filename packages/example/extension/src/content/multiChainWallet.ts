@@ -1,4 +1,3 @@
-import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum-chains';
 import type {
     ConnectFeature,
     ConnectMethod,
@@ -6,12 +5,13 @@ import type {
     EventsListeners,
     EventsNames,
     EventsOnMethod,
-} from '@wallet-standard/features';
-import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana-chains';
-import type { Wallet, WalletAccount } from '@wallet-standard/standard';
+    Wallet,
+    WalletAccount,
+} from '@wallet-standard/core';
+import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum';
+import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana';
 import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
-
 import type { RPC } from '../messages';
 
 export class EthereumWalletAccount implements WalletAccount {
