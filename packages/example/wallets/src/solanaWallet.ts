@@ -2,12 +2,6 @@ import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
-    DecryptFeature,
-    DecryptMethod,
-    DecryptOutput,
-    EncryptFeature,
-    EncryptMethod,
-    EncryptOutput,
     EventsFeature,
     SignMessageFeature,
     SignMessageMethod,
@@ -16,7 +10,15 @@ import type {
     SignTransactionOutput,
     Wallet,
 } from '@wallet-standard/core';
-import { CIPHER_x25519_xsalsa20_poly1305 } from '@wallet-standard/core';
+import type {
+    DecryptFeature,
+    DecryptMethod,
+    DecryptOutput,
+    EncryptFeature,
+    EncryptMethod,
+    EncryptOutput,
+} from '@wallet-standard/experimental';
+import { CIPHER_x25519_xsalsa20_poly1305 } from '@wallet-standard/experimental';
 import type {
     SolanaChain,
     SolanaSignAndSendTransactionFeature,
@@ -91,12 +93,12 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
             },
-            'standard:encrypt': {
+            'experimental:encrypt': {
                 version: '1.0.0',
                 ciphers: [CIPHER_x25519_xsalsa20_poly1305] as const,
                 encrypt: this.#encrypt,
             },
-            'standard:decrypt': {
+            'experimental:decrypt': {
                 version: '1.0.0',
                 ciphers: [CIPHER_x25519_xsalsa20_poly1305] as const,
                 decrypt: this.#decrypt,
@@ -119,8 +121,8 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                     'solana:signAndSendTransaction',
                     'solana:signTransaction',
                     'standard:signMessage',
-                    'standard:encrypt',
-                    'standard:decrypt',
+                    'experimental:encrypt',
+                    'experimental:decrypt',
                 ],
             }),
             new LedgerWalletAccount({
@@ -231,9 +233,9 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         const outputs: EncryptOutput[] = [];
         for (const { account, cipher, publicKey, cleartext } of inputs) {
             if (!(account instanceof PossiblyLedgerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:encrypt')) throw new Error('invalid feature');
+            if (!account.features.includes('experimental:encrypt')) throw new Error('invalid feature');
 
-            if (!this.features['standard:encrypt'].ciphers.includes(cipher)) throw new Error('invalid cipher');
+            if (!this.features['experimental:encrypt'].ciphers.includes(cipher)) throw new Error('invalid cipher');
 
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');
@@ -250,9 +252,9 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         const outputs: DecryptOutput[] = [];
         for (const { account, cipher, publicKey, ciphertext, nonce } of inputs) {
             if (!(account instanceof PossiblyLedgerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:decrypt')) throw new Error('invalid feature');
+            if (!account.features.includes('experimental:decrypt')) throw new Error('invalid feature');
 
-            if (!this.features['standard:decrypt'].ciphers.includes(cipher)) throw new Error('invalid cipher');
+            if (!this.features['experimental:decrypt'].ciphers.includes(cipher)) throw new Error('invalid cipher');
 
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');

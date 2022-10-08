@@ -279,6 +279,7 @@ importers:
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/core': workspace:^
       '@wallet-standard/ethereum': workspace:^
+      '@wallet-standard/experimental': workspace:^
       '@wallet-standard/solana': workspace:^
       bs58: ^4.0.1
       ethers: ^5.6.9
@@ -288,6 +289,7 @@ importers:
       '@solana/web3.js': 1.63.0
       '@wallet-standard/core': link:../../core/_
       '@wallet-standard/ethereum': link:../../ethereum/_
+      '@wallet-standard/experimental': link:../../experimental/_
       '@wallet-standard/solana': link:../../solana/_
       bs58: 4.0.1
       ethers: 5.7.1
@@ -295,6 +297,24 @@ importers:
     devDependencies:
       '@types/bs58': 4.0.1
       '@types/node-fetch': 2.6.2
+      shx: 0.3.4
+
+  packages/experimental/_:
+    specifiers:
+      '@wallet-standard/experimental-features': workspace:^
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/experimental-features': link:../features
+    devDependencies:
+      shx: 0.3.4
+
+  packages/experimental/features:
+    specifiers:
+      '@wallet-standard/standard': workspace:^
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/standard': link:../../core/standard
+    devDependencies:
       shx: 0.3.4
 
   packages/react/_:

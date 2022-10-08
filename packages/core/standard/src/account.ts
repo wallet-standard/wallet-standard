@@ -19,7 +19,6 @@ export interface WalletAccount {
 
     /**
      * Optional user-friendly icon for the account, to be displayed by apps.
-     * Must be a data URI containing a base64-encoded SVG or PNG image.
      */
     readonly icon?: IconString;
 }

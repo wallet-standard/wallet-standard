@@ -8,6 +8,9 @@
             "path": "../../ethereum/_/tsconfig.all.json"
         },
         {
+            "path": "../../experimental/_/tsconfig.all.json"
+        },
+        {
             "path": "../../solana/_/tsconfig.all.json"
         },
         {
