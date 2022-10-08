@@ -38,6 +38,12 @@
             "path": "./packages/example/wallets/tsconfig.all.json"
         },
         {
+            "path": "./packages/experimental/_/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/experimental/features/tsconfig.all.json"
+        },
+        {
             "path": "./packages/react/_/tsconfig.all.json"
         },
         {

@@ -3,7 +3,7 @@ import type { WalletAccount } from '@wallet-standard/standard';
 /** TODO: docs */
 export type EncryptFeature = {
     /** Namespace for the feature. */
-    'standard:encrypt': {
+    'experimental:encrypt': {
         /** Version of the feature API. */
         version: EncryptVersion;
 
