@@ -5,6 +5,9 @@
             "path": "../../core/_/tsconfig.all.json"
         },
         {
+            "path": "../../react/_/tsconfig.all.json"
+        },
+        {
             "path": "../../solana/_/tsconfig.all.json"
         },
         {

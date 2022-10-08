@@ -1,4 +1,4 @@
-import { useWallet } from '@wallet-standard/core';
+import { useWallet } from '@wallet-standard/react';
 import type { FC } from 'react';
 import React from 'react';
 import { Link } from 'react-router-dom';

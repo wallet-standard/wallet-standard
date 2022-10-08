@@ -4,7 +4,7 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
-import { useStandardWalletAdapters } from '@wallet-standard/solana-wallet-adapter-react';
+import { useStandardWalletAdapters } from '@wallet-standard/solana';
 import type { FC, ReactNode } from 'react';
 import React, { useMemo } from 'react';
 import { RequestAirdrop } from './RequestAirdrop';

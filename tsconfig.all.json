@@ -11,9 +11,6 @@
             "path": "./packages/core/features/tsconfig.all.json"
         },
         {
-            "path": "./packages/core/react/tsconfig.all.json"
-        },
-        {
             "path": "./packages/core/standard/tsconfig.all.json"
         },
         {
@@ -39,6 +36,12 @@
         },
         {
             "path": "./packages/example/wallets/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/react/_/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/react/core/tsconfig.all.json"
         },
         {
             "path": "./packages/solana/_/tsconfig.all.json"

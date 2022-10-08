@@ -45,14 +45,12 @@ importers:
     specifiers:
       '@wallet-standard/app': workspace:^
       '@wallet-standard/features': workspace:^
-      '@wallet-standard/react': workspace:^
       '@wallet-standard/standard': workspace:^
       '@wallet-standard/util': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/app': link:../app
       '@wallet-standard/features': link:../features
-      '@wallet-standard/react': link:../react
       '@wallet-standard/standard': link:../standard
       '@wallet-standard/util': link:../util
     devDependencies:
@@ -74,27 +72,6 @@ importers:
     dependencies:
       '@wallet-standard/standard': link:../standard
     devDependencies:
-      shx: 0.3.4
-
-  packages/core/react:
-    specifiers:
-      '@types/react': ^18.0.0
-      '@types/react-dom': ^18.0.0
-      '@wallet-standard/app': workspace:^
-      '@wallet-standard/features': workspace:^
-      '@wallet-standard/standard': workspace:^
-      react: ^18.0.0
-      react-dom: ^18.0.0
-      shx: ^0.3.4
-    dependencies:
-      '@wallet-standard/app': link:../app
-      '@wallet-standard/features': link:../features
-      '@wallet-standard/standard': link:../standard
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-    devDependencies:
-      '@types/react': 18.0.21
-      '@types/react-dom': 18.0.6
       shx: 0.3.4
 
   packages/core/standard:
@@ -132,6 +109,7 @@ importers:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       '@wallet-standard/core': workspace:^
+      '@wallet-standard/react': workspace:^
       parcel: ^2.3.2
       process: ^0.11.10
       react: ^18.2.0
@@ -140,6 +118,7 @@ importers:
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/core': link:../../core/_
+      '@wallet-standard/react': link:../../react/_
       process: 0.11.10
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -224,6 +203,7 @@ importers:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       '@wallet-standard/core': workspace:^
+      '@wallet-standard/react': workspace:^
       '@wallet-standard/solana': workspace:^
       parcel: ^2.3.2
       process: ^0.11.10
@@ -236,6 +216,7 @@ importers:
       '@solana/wallet-adapter-phantom': 0.9.16_@solana+web3.js@1.63.0
       '@solana/web3.js': 1.63.0
       '@wallet-standard/core': link:../../core/_
+      '@wallet-standard/react': link:../../react/_
       '@wallet-standard/solana': link:../../solana/_
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -314,6 +295,36 @@ importers:
     devDependencies:
       '@types/bs58': 4.0.1
       '@types/node-fetch': 2.6.2
+      shx: 0.3.4
+
+  packages/react/_:
+    specifiers:
+      '@wallet-standard/react-core': workspace:^
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/react-core': link:../core
+    devDependencies:
+      shx: 0.3.4
+
+  packages/react/core:
+    specifiers:
+      '@types/react': ^18.0.0
+      '@types/react-dom': ^18.0.0
+      '@wallet-standard/app': workspace:^
+      '@wallet-standard/features': workspace:^
+      '@wallet-standard/standard': workspace:^
+      react: ^18.0.0
+      react-dom: ^18.0.0
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/app': link:../../core/app
+      '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/standard': link:../../core/standard
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    devDependencies:
+      '@types/react': 18.0.21
+      '@types/react-dom': 18.0.6
       shx: 0.3.4
 
   packages/solana/_:
