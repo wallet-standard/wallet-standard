@@ -1,5 +1,4 @@
-import type { WalletsWindow } from '@wallet-standard/standard';
-
+import type { WalletsWindow } from '@wallet-standard/core';
 import { createRPC, createWindowTransport } from '../messages';
 import { MultiChainWallet } from './multiChainWallet';
 

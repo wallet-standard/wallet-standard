@@ -1,5 +1,3 @@
-import type { EthereumChain } from '@wallet-standard/ethereum-chains';
-import { ETHEREUM_CHAINS } from '@wallet-standard/ethereum-chains';
 import type {
     ConnectFeature,
     ConnectMethod,
@@ -13,8 +11,10 @@ import type {
     SignTransactionFeature,
     SignTransactionMethod,
     SignTransactionOutput,
-} from '@wallet-standard/features';
-import type { Wallet } from '@wallet-standard/standard';
+    Wallet,
+} from '@wallet-standard/core';
+import type { EthereumChain } from '@wallet-standard/ethereum';
+import { ETHEREUM_CHAINS } from '@wallet-standard/ethereum';
 import ethers from 'ethers';
 import { AbstractWallet, SignerWalletAccount } from './abstractWallet.js';
 

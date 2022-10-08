@@ -1,5 +1,4 @@
 import jayson from 'jayson';
-
 import { parse, stringify } from './serialization';
 import type { Transport } from './transport';
 

@@ -1,4 +1,4 @@
-import { WalletStandardProvider } from '@wallet-standard/react';
+import { WalletStandardProvider } from '@wallet-standard/core';
 import type { FC, ReactNode } from 'react';
 import React from 'react';
 

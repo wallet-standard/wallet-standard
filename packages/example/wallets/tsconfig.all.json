@@ -2,28 +2,13 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
-            "path": "../../core/app/tsconfig.all.json"
+            "path": "../../core/_/tsconfig.all.json"
         },
         {
-            "path": "../../core/features/tsconfig.all.json"
+            "path": "../../ethereum/_/tsconfig.all.json"
         },
         {
-            "path": "../../core/standard/tsconfig.all.json"
-        },
-        {
-            "path": "../../core/util/tsconfig.all.json"
-        },
-        {
-            "path": "../../ethereum/chains/tsconfig.all.json"
-        },
-        {
-            "path": "../../solana/chains/tsconfig.all.json"
-        },
-        {
-            "path": "../../solana/features/tsconfig.all.json"
-        },
-        {
-            "path": "../../solana/web3.js/tsconfig.all.json"
+            "path": "../../solana/_/tsconfig.all.json"
         },
         {
             "path": "./tsconfig.cjs.json"

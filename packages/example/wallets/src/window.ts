@@ -1,5 +1,5 @@
-import { initialize } from '@wallet-standard/app';
-import type { WalletsWindow } from '@wallet-standard/standard';
+import type { WalletsWindow } from '@wallet-standard/core';
+import { initialize } from '@wallet-standard/core';
 import { EthereumWallet } from './ethereumWallet.js';
 import { SolanaWallet } from './solanaWallet.js';
 
