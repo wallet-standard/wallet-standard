@@ -6,6 +6,7 @@ import type {
     Signer,
     Transaction,
     TransactionSignature,
+    VersionedTransaction,
 } from '@solana/web3.js';
 
 export interface BackpackWindow extends Window {
@@ -24,22 +25,22 @@ export interface Backpack {
     connection: Connection;
     connect(): Promise<void>;
     disconnect(): Promise<void>;
-    sendAndConfirm(
-        tx: Transaction,
+    sendAndConfirm<T extends Transaction | VersionedTransaction>(
+        tx: T,
         signers?: Signer[],
         options?: ConfirmOptions,
         connection?: Connection,
         publicKey?: PublicKey
     ): Promise<TransactionSignature>;
-    send(
-        tx: Transaction,
+    send<T extends Transaction | VersionedTransaction>(
+        tx: T,
         signers?: Signer[],
         options?: SendOptions,
         connection?: Connection,
         publicKey?: PublicKey
     ): Promise<TransactionSignature>;
-    signTransaction(tx: Transaction, publicKey?: PublicKey): Promise<Transaction>;
-    signAllTransactions(txs: Array<Transaction>, publicKey?: PublicKey): Promise<Array<Transaction>>;
+    signTransaction<T extends Transaction | VersionedTransaction>(tx: T, publicKey?: PublicKey): Promise<T>;
+    signAllTransactions<T extends Transaction | VersionedTransaction>(txs: T[], publicKey?: PublicKey): Promise<T[]>;
     signMessage(msg: Uint8Array, publicKey?: PublicKey): Promise<Uint8Array>;
 
     on<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context?: any): void;

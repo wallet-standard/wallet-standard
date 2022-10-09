@@ -1,4 +1,4 @@
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
@@ -178,8 +178,7 @@ export class BackpackWallet implements Wallet {
             const input = inputs[0]!;
             if (!isSolanaChain(input.chain)) throw new Error('invalid chain');
 
-            // FIXME: add v2 tx support
-            const transaction = Transaction.from(input.transaction);
+            const transaction = VersionedTransaction.deserialize(input.transaction);
             const publicKey = new PublicKey(input.account.publicKey);
             const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = input.options || {};
 
@@ -231,26 +230,21 @@ export class BackpackWallet implements Wallet {
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const input = inputs[0]!;
-            const transaction = Transaction.from(input.transaction);
+            const transaction = VersionedTransaction.deserialize(input.transaction);
             const publicKey = new PublicKey(input.account.publicKey);
             const signedTransaction = await window.backpack.signTransaction(transaction, publicKey);
 
-            outputs.push({
-                signedTransaction: signedTransaction.serialize({
-                    requireAllSignatures: false,
-                    verifySignatures: false,
-                }),
-            });
+            outputs.push({ signedTransaction: signedTransaction.serialize() });
         } else if (inputs.length > 1) {
             // Group the transactions by the account that will be signing, noting the order of the transactions.
-            const groups = new Map<WalletAccount, [number, Transaction][]>();
+            const groups = new Map<WalletAccount, [number, VersionedTransaction][]>();
             for (const [i, input] of inputs.entries()) {
                 let group = groups.get(input.account);
                 if (!group) {
                     group = [];
                     groups.set(input.account, group);
                 }
-                group.push([i, Transaction.from(input.transaction)]);
+                group.push([i, VersionedTransaction.deserialize(input.transaction)]);
             }
 
             // For each account, call `signAllTransactions` with the transactions, preserving their order in the output.
@@ -262,7 +256,7 @@ export class BackpackWallet implements Wallet {
                         transactions.push(transaction);
                         return [indexes, transactions];
                     },
-                    [<number[]>[], <Transaction[]>[]]
+                    [<number[]>[], <VersionedTransaction[]>[]]
                 );
 
                 const signedTransactions = await window.backpack.signAllTransactions(
@@ -270,16 +264,9 @@ export class BackpackWallet implements Wallet {
                     new PublicKey(account.publicKey)
                 );
 
-                const rawTransactions = signedTransactions.map((signedTransaction) =>
-                    signedTransaction.serialize({
-                        requireAllSignatures: false,
-                        verifySignatures: false,
-                    })
-                );
-
                 for (const [i, index] of indexes.entries()) {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    outputs[index] = { signedTransaction: rawTransactions[i]! };
+                    outputs[index] = { signedTransaction: signedTransactions[i]!.serialize() };
                 }
             }
         }
