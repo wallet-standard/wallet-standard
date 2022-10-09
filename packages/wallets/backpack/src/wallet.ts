@@ -1,8 +1,7 @@
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
-    EventsChangeProperties,
     EventsFeature,
     EventsListeners,
     EventsNames,
@@ -15,7 +14,6 @@ import type {
 } from '@wallet-standard/core';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/core';
 import type {
-    SolanaChain,
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
@@ -23,25 +21,29 @@ import type {
     SolanaSignTransactionMethod,
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana';
-import { getChainForEndpoint } from '@wallet-standard/solana';
+import { getChainForEndpoint, getEndpointForChain, isSolanaChain, SOLANA_CHAINS } from '@wallet-standard/solana';
 import { decode } from 'bs58';
 import { icon } from './icon.js';
 import type { Backpack, BackpackWindow } from './window.js';
 
 declare const window: BackpackWindow;
 
-export type BackpackSolanaFeature = {
+export type BackpackFeature = {
     'backpack:': {
         backpack: Backpack;
     };
 };
 
-export class BackpackSolanaWallet implements Wallet {
+// Chains supported by the wallet
+const chains = SOLANA_CHAINS;
+// Features supported by the wallet accounts
+const features = ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage'] as const;
+
+export class BackpackWallet implements Wallet {
     readonly #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};
     readonly #version = '1.0.0' as const;
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
-    #chain: SolanaChain;
     #account: ReadonlyWalletAccount | null;
 
     get version() {
@@ -57,7 +59,7 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     get chains() {
-        return [this.#chain];
+        return chains.slice();
     }
 
     get features(): ConnectFeature &
@@ -65,7 +67,7 @@ export class BackpackSolanaWallet implements Wallet {
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
         SignMessageFeature &
-        BackpackSolanaFeature {
+        BackpackFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
@@ -77,12 +79,12 @@ export class BackpackSolanaWallet implements Wallet {
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                supportedTransactionVersions: ['legacy'],
+                supportedTransactionVersions: ['legacy', 0],
                 signAndSendTransaction: this.#signAndSendTransaction,
             },
             'solana:signTransaction': {
                 version: '1.0.0',
-                supportedTransactionVersions: ['legacy'],
+                supportedTransactionVersions: ['legacy', 0],
                 signTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
@@ -102,7 +104,6 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     constructor() {
-        this.#chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
         if (new.target === BackpackWallet) {
             Object.freeze(this);
         }
@@ -117,38 +118,16 @@ export class BackpackSolanaWallet implements Wallet {
     }
 
     #connected = () => {
-        const properties: EventsChangeProperties = {};
-
-        const chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
-        if (chain !== this.#chain) {
-            this.#chain = chain;
-            properties.chains = this.chains;
-        }
-
         const address = window.backpack.publicKey?.toBase58();
         if (address) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const publicKey = window.backpack.publicKey!.toBytes();
 
             const account = this.#account;
-            if (
-                !account ||
-                account.address !== address ||
-                !bytesEqual(account.publicKey, publicKey) ||
-                !account.chains.includes(chain)
-            ) {
-                this.#account = new ReadonlyWalletAccount({
-                    address,
-                    publicKey,
-                    chains: [chain],
-                    features: ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage'],
-                });
-                properties.accounts = this.accounts;
+            if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
+                this.#account = new ReadonlyWalletAccount({ address, publicKey, chains, features });
+                this.#emit('change', { accounts: this.accounts });
             }
-        }
-
-        if (Object.keys(properties).length) {
-            this.#emit('change', properties);
         }
     };
 
@@ -197,11 +176,17 @@ export class BackpackSolanaWallet implements Wallet {
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const input = inputs[0]!;
+            if (!isSolanaChain(input.chain)) throw new Error('invalid chain');
+
+            // FIXME: add v2 tx support
             const transaction = Transaction.from(input.transaction);
             const publicKey = new PublicKey(input.account.publicKey);
             const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = input.options || {};
 
-            // TODO: input.account.chain could require a different connection than window.backpack.connection
+            const connection =
+                getChainForEndpoint(window.backpack.connection.rpcEndpoint) === input.chain
+                    ? undefined
+                    : new Connection(getEndpointForChain(input.chain), window.backpack.connection.commitment);
 
             const signature = commitment
                 ? await window.backpack.sendAndConfirm(
@@ -214,7 +199,7 @@ export class BackpackSolanaWallet implements Wallet {
                           maxRetries,
                           minContextSlot,
                       },
-                      undefined,
+                      connection,
                       publicKey
                   )
                 : await window.backpack.send(
@@ -226,7 +211,7 @@ export class BackpackSolanaWallet implements Wallet {
                           maxRetries,
                           minContextSlot,
                       },
-                      undefined,
+                      connection,
                       publicKey
                   );
 
