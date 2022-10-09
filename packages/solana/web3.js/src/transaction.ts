@@ -1,7 +1,22 @@
-import type { SendOptions, Transaction, TransactionSignature } from '@solana/web3.js';
-import { Connection } from '@solana/web3.js';
+import type { SendOptions, TransactionSignature } from '@solana/web3.js';
+import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
 import type { SolanaSignAndSendTransactionOptions } from '@wallet-standard/solana-features';
 
+/**
+ * TODO: docs
+ */
+export function deserializeTransaction(serializedTransaction: Uint8Array): Transaction | VersionedTransaction {
+    try {
+        return Transaction.from(serializedTransaction);
+    } catch (e) {
+        return VersionedTransaction.deserialize(serializedTransaction);
+    }
+}
+
+// FIXME: add v2 tx support
+/**
+ * TODO: docs
+ */
 export async function sendAndConfirmTransaction(
     transaction: Transaction,
     endpoint: string,
@@ -43,6 +58,10 @@ export async function sendAndConfirmTransaction(
     return signature;
 }
 
+// FIXME: add v2 tx support
+/**
+ * TODO: docs
+ */
 export async function sendRawTransaction(
     transaction: Transaction,
     connection: Connection,
