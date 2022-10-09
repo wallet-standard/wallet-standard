@@ -55,6 +55,10 @@ export class SolanaWalletAdapterWalletAccount extends ReadonlyWalletAccount {
         }
 
         super({ address, publicKey, chains, features });
+        if (new.target === SolanaWalletAdapterWalletAccount) {
+            Object.freeze(this);
+        }
+
         this.#adapter = adapter;
     }
 }
@@ -137,6 +141,10 @@ export class SolanaWalletAdapterWallet implements Wallet {
     }
 
     constructor(adapter: Adapter, chain: SolanaChain, endpoint?: string) {
+        if (new.target === SolanaWalletAdapterWallet) {
+            Object.freeze(this);
+        }
+
         this.#adapter = adapter;
         this.#chain = chain;
         this.#endpoint = endpoint;

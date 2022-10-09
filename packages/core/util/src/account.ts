@@ -33,6 +33,10 @@ export class ReadonlyWalletAccount implements WalletAccount {
     }
 
     constructor(account: WalletAccount) {
+        if (new.target === ReadonlyWalletAccount) {
+            Object.freeze(this);
+        }
+
         this.#address = account.address;
         this.#publicKey = account.publicKey;
         this.#chains = account.chains;
