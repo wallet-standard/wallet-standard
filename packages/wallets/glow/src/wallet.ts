@@ -110,6 +110,10 @@ export class GlowSolanaWallet implements Wallet {
     }
 
     constructor() {
+        if (new.target === GlowWallet) {
+            Object.freeze(this);
+        }
+
         this.#account = null;
 
         window.glow.on('connect', this.#connected, this);

@@ -133,6 +133,10 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             }),
         ]);
 
+        if (new.target === SolanaWallet) {
+            Object.freeze(this);
+        }
+
         this.#ledger = ledger;
         this.#keys = { [address]: { keypair } };
     }

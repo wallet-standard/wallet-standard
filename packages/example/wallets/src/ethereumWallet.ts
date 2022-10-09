@@ -81,6 +81,10 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
             }),
         ]);
 
+        if (new.target === EthereumWallet) {
+            Object.freeze(this);
+        }
+
         this.#keys = { [address]: { wallet } };
     }
 

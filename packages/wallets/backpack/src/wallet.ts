@@ -103,6 +103,10 @@ export class BackpackSolanaWallet implements Wallet {
 
     constructor() {
         this.#chain = getChainForEndpoint(window.backpack.connection.rpcEndpoint);
+        if (new.target === BackpackWallet) {
+            Object.freeze(this);
+        }
+
         this.#account = null;
 
         window.backpack.on('connect', this.#connected);

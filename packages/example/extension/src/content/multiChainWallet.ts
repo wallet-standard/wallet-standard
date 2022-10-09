@@ -34,6 +34,10 @@ export class EthereumWalletAccount implements WalletAccount {
     }
 
     constructor(publicKey: Uint8Array) {
+        if (new.target === EthereumWalletAccount) {
+            Object.freeze(this);
+        }
+
         this.#publicKey = publicKey;
     }
 }
@@ -58,6 +62,10 @@ export class SolanaWalletAccount implements WalletAccount {
     }
 
     constructor(publicKey: Uint8Array) {
+        if (new.target === SolanaWalletAccount) {
+            Object.freeze(this);
+        }
+
         this.#publicKey = publicKey;
     }
 }
@@ -109,6 +117,10 @@ export class MultiChainWallet implements Wallet {
     }
 
     constructor(rpc: RPC) {
+        if (new.target === MultiChainWallet) {
+            Object.freeze(this);
+        }
+
         this.#rpc = rpc;
     }
 

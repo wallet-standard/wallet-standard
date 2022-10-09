@@ -1,4 +1,4 @@
-import type { EventsListeners, EventsNames, EventsOnMethod, Wallet } from '@wallet-standard/core';
+import type { EventsListeners, EventsNames, EventsOnMethod, Wallet, WalletAccount } from '@wallet-standard/core';
 import { ReadonlyWalletAccount } from '@wallet-standard/core';
 
 export abstract class AbstractWallet implements Wallet {
@@ -46,10 +46,24 @@ export class SignerWalletAccount extends PossiblyLedgerWalletAccount {
     get ledger() {
         return false;
     }
+
+    constructor(account: WalletAccount) {
+        super(account);
+        if (new.target === SignerWalletAccount) {
+            Object.freeze(this);
+        }
+    }
 }
 
 export class LedgerWalletAccount extends PossiblyLedgerWalletAccount {
     get ledger() {
         return true;
+    }
+
+    constructor(account: WalletAccount) {
+        super(account);
+        if (new.target === LedgerWalletAccount) {
+            Object.freeze(this);
+        }
     }
 }
