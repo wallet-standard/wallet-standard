@@ -9,17 +9,18 @@ import type {
     VersionedTransaction,
 } from '@solana/web3.js';
 
-export interface BackpackWindow extends Window {
-    backpack: Backpack;
-}
-
-export interface BackpackEvents {
+export interface BackpackEvent {
     connect(): void;
     disconnect(): void;
     connectionDidChange(): void;
 }
 
-export interface Backpack {
+export interface BackpackEventEmitter {
+    on<E extends keyof BackpackEvent>(event: E, listener: BackpackEvent[E], context?: any): void;
+    off<E extends keyof BackpackEvent>(event: E, listener: BackpackEvent[E], context?: any): void;
+}
+
+export interface WindowBackpack extends BackpackEventEmitter {
     isConnected: boolean;
     publicKey: PublicKey | undefined;
     connection: Connection;
@@ -42,7 +43,8 @@ export interface Backpack {
     signTransaction<T extends Transaction | VersionedTransaction>(tx: T, publicKey?: PublicKey): Promise<T>;
     signAllTransactions<T extends Transaction | VersionedTransaction>(txs: T[], publicKey?: PublicKey): Promise<T[]>;
     signMessage(msg: Uint8Array, publicKey?: PublicKey): Promise<Uint8Array>;
+}
 
-    on<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context?: any): void;
-    off<E extends keyof BackpackEvents>(event: E, listener: BackpackEvents[E], context?: any): void;
+export interface BackpackWindow extends Window {
+    backpack: WindowBackpack;
 }

@@ -9,10 +9,7 @@ import type {
     SignMessageFeature,
     SignMessageMethod,
     SignMessageOutput,
-    Wallet,
-    WalletAccount,
-} from '@wallet-standard/core';
-import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/core';
+} from '@wallet-standard/features';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
@@ -20,31 +17,29 @@ import type {
     SolanaSignTransactionFeature,
     SolanaSignTransactionMethod,
     SolanaSignTransactionOutput,
-} from '@wallet-standard/solana';
-import { getChainForEndpoint, getEndpointForChain, isSolanaChain, SOLANA_CHAINS } from '@wallet-standard/solana';
+} from '@wallet-standard/solana-features';
+import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { getChainForEndpoint, getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
-import type { Backpack, BackpackWindow } from './window.js';
+import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
+import { BackpackWalletAccount, bytesEqual } from './util.js';
+import type { BackpackWindow, WindowBackpack } from './window.js';
 
 declare const window: BackpackWindow;
 
 export type BackpackFeature = {
     'backpack:': {
-        backpack: Backpack;
+        backpack: WindowBackpack;
     };
 };
-
-// Chains supported by the wallet
-const chains = SOLANA_CHAINS;
-// Features supported by the wallet accounts
-const features = ['solana:signAndSendTransaction', 'solana:signTransaction', 'standard:signMessage'] as const;
 
 export class BackpackWallet implements Wallet {
     readonly #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};
     readonly #version = '1.0.0' as const;
     readonly #name = 'Backpack' as const;
     readonly #icon = icon;
-    #account: ReadonlyWalletAccount | null;
+    #account: BackpackWalletAccount | null = null;
 
     get version() {
         return this.#version;
@@ -59,7 +54,7 @@ export class BackpackWallet implements Wallet {
     }
 
     get chains() {
-        return chains.slice();
+        return SOLANA_CHAINS.slice();
     }
 
     get features(): ConnectFeature &
@@ -108,8 +103,6 @@ export class BackpackWallet implements Wallet {
             Object.freeze(this);
         }
 
-        this.#account = null;
-
         window.backpack.on('connect', this.#connected);
         window.backpack.on('disconnect', this.#disconnected);
         window.backpack.on('connectionDidChange', this.#reconnected);
@@ -125,7 +118,7 @@ export class BackpackWallet implements Wallet {
 
             const account = this.#account;
             if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
-                this.#account = new ReadonlyWalletAccount({ address, publicKey, chains, features });
+                this.#account = new BackpackWalletAccount({ address, publicKey });
                 this.#emit('change', { accounts: this.accounts });
             }
         }
