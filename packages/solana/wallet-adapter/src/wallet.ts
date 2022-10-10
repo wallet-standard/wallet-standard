@@ -1,6 +1,6 @@
 import type { Adapter } from '@solana/wallet-adapter-base';
 import { WalletReadyState } from '@solana/wallet-adapter-base';
-import { Transaction } from '@solana/web3.js';
+import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
 import { initialize } from '@wallet-standard/app';
 import type {
     ConnectFeature,
@@ -14,6 +14,7 @@ import type {
     SignMessageOutput,
 } from '@wallet-standard/features';
 import type { SolanaChain } from '@wallet-standard/solana-chains';
+import { isSolanaChain } from '@wallet-standard/solana-chains';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
@@ -25,8 +26,9 @@ import type {
 } from '@wallet-standard/solana-features';
 import { getEndpointForChain } from '@wallet-standard/solana-util';
 import type { IconString, Wallet } from '@wallet-standard/standard';
-import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
+import { arraysEqual, bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
+import { isVersionedTransaction } from './transaction.js';
 
 /** TODO: docs */
 export class SolanaWalletAdapterWalletAccount extends ReadonlyWalletAccount {
@@ -66,12 +68,13 @@ export class SolanaWalletAdapterWalletAccount extends ReadonlyWalletAccount {
 
 /** TODO: docs */
 export class SolanaWalletAdapterWallet implements Wallet {
-    #listeners: {
+    readonly #listeners: {
         [E in EventsNames]?: EventsListeners[E][];
     } = {};
-    #adapter: Adapter;
-    #chain: SolanaChain;
-    #endpoint: string | undefined;
+    readonly #adapter: Adapter;
+    readonly #supportedTransactionVersions: ReadonlyArray<SolanaTransactionVersion>;
+    readonly #chain: SolanaChain;
+    readonly #endpoint: string | undefined;
     #account: SolanaWalletAdapterWalletAccount | undefined;
 
     get version() {
@@ -104,7 +107,7 @@ export class SolanaWalletAdapterWallet implements Wallet {
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                supportedTransactionVersions: ['legacy'],
+                supportedTransactionVersions: this.#supportedTransactionVersions,
                 signAndSendTransaction: this.#signAndSendTransaction,
             },
         };
@@ -114,7 +117,7 @@ export class SolanaWalletAdapterWallet implements Wallet {
             signTransactionFeature = {
                 'solana:signTransaction': {
                     version: '1.0.0',
-                    supportedTransactionVersions: ['legacy'],
+                    supportedTransactionVersions: this.#supportedTransactionVersions,
                     signTransaction: this.#signTransaction,
                 },
             };
@@ -146,7 +149,13 @@ export class SolanaWalletAdapterWallet implements Wallet {
             Object.freeze(this);
         }
 
+        const supportedTransactionVersions = [...(adapter.supportedTransactionVersions || ['legacy'])];
+        if (!supportedTransactionVersions.length) {
+            supportedTransactionVersions.push('legacy');
+        }
+
         this.#adapter = adapter;
+        this.#supportedTransactionVersions = supportedTransactionVersions;
         this.#chain = chain;
         this.#endpoint = endpoint;
 
@@ -215,23 +224,51 @@ export class SolanaWalletAdapterWallet implements Wallet {
         this.#listeners[event] = this.#listeners[event]?.filter((existingListener) => listener !== existingListener);
     }
 
+    #deserializeTransaction(serializedTransaction: Uint8Array): Transaction | VersionedTransaction {
+        const transaction = VersionedTransaction.deserialize(serializedTransaction);
+        if (!this.#supportedTransactionVersions.includes(transaction.version))
+            throw new Error('unsupported transaction version');
+        if (transaction.version === 'legacy' && arraysEqual(this.#supportedTransactionVersions, ['legacy']))
+            return Transaction.from(serializedTransaction);
+        return transaction;
+    }
+
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
         const outputs: SolanaSignAndSendTransactionOutput[] = [];
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const input = inputs[0]!;
-            const transaction = Transaction.from(input.transaction);
-            // FIXME: input.chain may not be a SolanaChain
-            const endpoint = getEndpointForChain(input.chain as SolanaChain, this.#endpoint);
+            if (input.account !== this.#account) throw new Error('invalid account');
+            if (!isSolanaChain(input.chain)) throw new Error('invalid chain');
+            const transaction = this.#deserializeTransaction(input.transaction);
+            const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = input.options || {};
+            const endpoint = getEndpointForChain(input.chain, this.#endpoint);
+            const connection = new Connection(endpoint, commitment || 'confirmed');
 
-            const signature = await sendAndConfirmTransaction(
-                transaction,
-                endpoint,
-                input.options,
-                async (transaction, connection, options) =>
-                    await this.#adapter.sendTransaction(transaction, connection, options)
-            );
+            const latestBlockhash = commitment
+                ? await connection.getLatestBlockhash({
+                      commitment: preflightCommitment || commitment,
+                      minContextSlot,
+                  })
+                : undefined;
+
+            const signature = await this.#adapter.sendTransaction(transaction, connection, {
+                preflightCommitment,
+                skipPreflight,
+                maxRetries,
+                minContextSlot,
+            });
+
+            if (latestBlockhash) {
+                await connection.confirmTransaction(
+                    {
+                        ...latestBlockhash,
+                        signature,
+                    },
+                    commitment || 'confirmed'
+                );
+            }
 
             outputs.push({ signature: decode(signature) });
         } else if (inputs.length > 1) {
@@ -250,26 +287,45 @@ export class SolanaWalletAdapterWallet implements Wallet {
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const transaction = Transaction.from(inputs[0]!.transaction);
+            const input = inputs[0]!;
+            if (input.account !== this.#account) throw new Error('invalid account');
+            if (input.chain && !isSolanaChain(input.chain)) throw new Error('invalid chain');
+            const transaction = this.#deserializeTransaction(input.transaction);
+
             const signedTransaction = await this.#adapter.signTransaction(transaction);
 
-            outputs.push({
-                signedTransaction: signedTransaction.serialize({
-                    requireAllSignatures: false,
-                    verifySignatures: false,
-                }),
-            });
+            const serializedTransaction = isVersionedTransaction(signedTransaction)
+                ? signedTransaction.serialize()
+                : new Uint8Array(
+                      signedTransaction.serialize({
+                          requireAllSignatures: false,
+                          verifySignatures: false,
+                      })
+                  );
+
+            outputs.push({ signedTransaction: serializedTransaction });
         } else if (inputs.length > 1) {
-            const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
+            for (const input of inputs) {
+                if (input.account !== this.#account) throw new Error('invalid account');
+                if (input.chain && !isSolanaChain(input.chain)) throw new Error('invalid chain');
+            }
+            const transactions = inputs.map(({ transaction }) => this.#deserializeTransaction(transaction));
+
             const signedTransactions = await this.#adapter.signAllTransactions(transactions);
 
             outputs.push(
-                ...signedTransactions.map((signedTransaction) => ({
-                    signedTransaction: signedTransaction.serialize({
-                        requireAllSignatures: false,
-                        verifySignatures: false,
-                    }),
-                }))
+                ...signedTransactions.map((signedTransaction) => {
+                    const serializedTransaction = isVersionedTransaction(signedTransaction)
+                        ? signedTransaction.serialize()
+                        : new Uint8Array(
+                              signedTransaction.serialize({
+                                  requireAllSignatures: false,
+                                  verifySignatures: false,
+                              })
+                          );
+
+                    return { signedTransaction: serializedTransaction };
+                })
             );
         }
 
@@ -282,12 +338,17 @@ export class SolanaWalletAdapterWallet implements Wallet {
 
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const signedMessage = inputs[0]!.message;
-            const signature = await this.#adapter.signMessage(signedMessage);
+            const input = inputs[0]!;
+            if (input.account !== this.#account) throw new Error('invalid account');
 
-            outputs.push({ signedMessage, signature });
+            const signature = await this.#adapter.signMessage(input.message);
+
+            outputs.push({ signedMessage: input.message, signature });
         } else if (inputs.length > 1) {
-            throw new Error('signMessage for multiple messages not implemented');
+            // Adapters have no `signAllMessages` method, so just sign each message in serial.
+            for (const input of inputs) {
+                outputs.push(...(await this.#signMessage(input)));
+            }
         }
 
         return outputs;
