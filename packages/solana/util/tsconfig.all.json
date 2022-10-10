@@ -2,12 +2,6 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
-            "path": "../../core/features/tsconfig.all.json"
-        },
-        {
-            "path": "../../core/standard/tsconfig.all.json"
-        },
-        {
             "path": "../chains/tsconfig.all.json"
         },
         {

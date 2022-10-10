@@ -1,17 +1,15 @@
-import type { SendOptions, TransactionSignature } from '@solana/web3.js';
-import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
-import type { SolanaSignAndSendTransactionOptions } from '@wallet-standard/solana-features';
+import type { SendOptions, TransactionSignature, Transaction } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
+import type { SolanaSignAndSendTransactionOptions } from '@wallet-standard/solana';
 
 /**
  * TODO: docs
  */
-export function deserializeTransaction(serializedTransaction: Uint8Array): Transaction | VersionedTransaction {
-    try {
-        return Transaction.from(serializedTransaction);
-    } catch (e) {
-        return VersionedTransaction.deserialize(serializedTransaction);
-    }
-}
+export type SendTransaction = (
+    transaction: Transaction,
+    connection: Connection,
+    options: SendOptions
+) => Promise<TransactionSignature>;
 
 // FIXME: add v2 tx support
 /**
@@ -21,11 +19,7 @@ export async function sendAndConfirmTransaction(
     transaction: Transaction,
     endpoint: string,
     options: SolanaSignAndSendTransactionOptions = {},
-    sendTransaction: (
-        transaction: Transaction,
-        connection: Connection,
-        options: SendOptions
-    ) => Promise<TransactionSignature> = sendRawTransaction
+    sendTransaction: SendTransaction = sendRawTransaction
 ): Promise<TransactionSignature> {
     const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = options;
 

@@ -1,4 +1,9 @@
-import type { SendTransactionOptions, WalletAdapter, WalletName } from '@solana/wallet-adapter-base';
+import type {
+    SendTransactionOptions,
+    SupportedTransactionVersions,
+    WalletAdapter,
+    WalletName,
+} from '@solana/wallet-adapter-base';
 import {
     BaseWalletAdapter,
     WalletAccountError,
@@ -15,15 +20,16 @@ import {
     WalletSignTransactionError,
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js';
 import type { ConnectFeature, EventsFeature, EventsListeners, SignMessageFeature } from '@wallet-standard/features';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignTransactionFeature,
 } from '@wallet-standard/solana-features';
-import { getChainForEndpoint, getCommitment } from '@wallet-standard/solana-web3.js';
+import { getChainForEndpoint, getCommitment } from '@wallet-standard/solana-util';
 import type { Wallet, WalletAccount, WalletWithFeatures } from '@wallet-standard/standard';
 import { encode } from 'bs58';
+import { isVersionedTransaction } from './transaction.js';
 
 /** TODO: docs */
 export type StandardWalletAdapterWallet = WalletWithFeatures<
@@ -55,17 +61,20 @@ export type StandardAdapter = WalletAdapter & {
 
 /** TODO: docs */
 export class StandardWalletAdapter extends BaseWalletAdapter implements StandardAdapter {
-    readonly supportedTransactionVersions = null;
-
     #account: WalletAccount | null;
     #publicKey: PublicKey | null;
     #connecting: boolean;
     #off: (() => void) | undefined;
     readonly #wallet: StandardWalletAdapterWallet;
+    readonly #supportedTransactionVersions: SupportedTransactionVersions;
     readonly #readyState: WalletReadyState =
         typeof window === 'undefined' || typeof document === 'undefined'
             ? WalletReadyState.Unsupported
             : WalletReadyState.Installed;
+
+    get supportedTransactionVersions() {
+        return this.#supportedTransactionVersions;
+    }
 
     get name() {
         return this.#wallet.name as WalletName;
@@ -102,6 +111,9 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     constructor({ wallet }: StandardWalletAdapterConfig) {
         super();
         this.#wallet = wallet;
+        this.#supportedTransactionVersions = new Set(
+            wallet.features['solana:signAndSendTransaction'].supportedTransactionVersions
+        );
         this.#account = null;
         this.#publicKey = null;
         this.#connecting = false;
@@ -125,8 +137,6 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             if (!this.#wallet.accounts.length) throw new WalletAccountError();
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const account = this.#wallet.accounts[0]!;
-
-            // TODO: account selection?
 
             let publicKey: PublicKey;
             try {
@@ -214,8 +224,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.emit('connect', publicKey);
     };
 
-    async sendTransaction(
-        transaction: Transaction,
+    async sendTransaction<T extends Transaction | VersionedTransaction>(
+        transaction: T,
         connection: Connection,
         options: SendTransactionOptions = {}
     ): Promise<TransactionSignature> {
@@ -228,17 +238,25 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             try {
                 const { signers, ...sendOptions } = options;
 
-                transaction = await this.prepareTransaction(transaction, connection, sendOptions);
-
-                signers?.length && transaction.partialSign(...signers);
+                let serializedTransaction: Uint8Array;
+                if (isVersionedTransaction(transaction)) {
+                    signers?.length && transaction.sign(signers);
+                    serializedTransaction = transaction.serialize();
+                } else {
+                    transaction = (await this.prepareTransaction(transaction, connection, sendOptions)) as T;
+                    signers?.length && (transaction as Transaction).partialSign(...signers);
+                    serializedTransaction = new Uint8Array(
+                        (transaction as Transaction).serialize({
+                            requireAllSignatures: false,
+                            verifySignatures: false,
+                        })
+                    );
+                }
 
                 const signatures = await this.#wallet.features['solana:signAndSendTransaction'].signAndSendTransaction({
                     account: this.#account,
                     chain,
-                    transaction: transaction.serialize({
-                        requireAllSignatures: false,
-                        verifySignatures: false,
-                    }),
+                    transaction: serializedTransaction,
                     options: {
                         preflightCommitment: getCommitment(sendOptions.preflightCommitment || connection.commitment),
                         skipPreflight: sendOptions.skipPreflight,
@@ -259,8 +277,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         }
     }
 
-    signTransaction: ((transaction: Transaction) => Promise<Transaction>) | undefined;
-    async #signTransaction(transaction: Transaction): Promise<Transaction> {
+    signTransaction: (<T extends Transaction | VersionedTransaction>(transaction: T) => Promise<T>) | undefined;
+    async #signTransaction<T extends Transaction | VersionedTransaction>(transaction: T): Promise<T> {
         try {
             if (!('solana:signTransaction' in this.#wallet.features)) throw new WalletConfigError();
             const account = this.#account;
@@ -269,14 +287,22 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             try {
                 const signedTransactions = await this.#wallet.features['solana:signTransaction'].signTransaction({
                     account,
-                    transaction: transaction.serialize({
-                        requireAllSignatures: false,
-                        verifySignatures: false,
-                    }),
+                    transaction: new Uint8Array(
+                        transaction.serialize({
+                            requireAllSignatures: false,
+                            verifySignatures: false,
+                        })
+                    ),
                 });
 
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return Transaction.from(signedTransactions[0]!.signedTransaction);
+                const serializedTransaction = signedTransactions[0]!.signedTransaction;
+
+                return (
+                    isVersionedTransaction(transaction)
+                        ? VersionedTransaction.deserialize(serializedTransaction)
+                        : Transaction.from(serializedTransaction)
+                ) as T;
             } catch (error: any) {
                 throw new WalletSignTransactionError(error?.message, error);
             }
@@ -286,8 +312,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         }
     }
 
-    signAllTransactions: ((transaction: Transaction[]) => Promise<Transaction[]>) | undefined;
-    async #signAllTransactions(transactions: Transaction[]): Promise<Transaction[]> {
+    signAllTransactions: (<T extends Transaction | VersionedTransaction>(transaction: T[]) => Promise<T[]>) | undefined;
+    async #signAllTransactions<T extends Transaction | VersionedTransaction>(transactions: T[]): Promise<T[]> {
         try {
             if (!('solana:signTransaction' in this.#wallet.features)) throw new WalletConfigError();
             const account = this.#account;
@@ -297,14 +323,25 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                 const signedTransactions = await this.#wallet.features['solana:signTransaction'].signTransaction(
                     ...transactions.map((transaction) => ({
                         account,
-                        transaction: transaction.serialize({
-                            requireAllSignatures: false,
-                            verifySignatures: false,
-                        }),
+                        transaction: new Uint8Array(
+                            transaction.serialize({
+                                requireAllSignatures: false,
+                                verifySignatures: false,
+                            })
+                        ),
                     }))
                 );
 
-                return signedTransactions.map(({ signedTransaction }) => Transaction.from(signedTransaction));
+                return transactions.map((transaction, index) => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const signedTransaction = signedTransactions[index]!.signedTransaction;
+
+                    return (
+                        isVersionedTransaction(transaction)
+                            ? VersionedTransaction.deserialize(signedTransaction)
+                            : Transaction.from(signedTransaction)
+                    ) as T;
+                });
             } catch (error: any) {
                 throw new WalletSignTransactionError(error?.message, error);
             }

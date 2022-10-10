@@ -26,7 +26,7 @@ import type {
     SolanaSignAndSendTransactionOutput,
     SolanaSignTransactionFeature,
 } from '@wallet-standard/solana';
-import { getEndpointForChain, sendAndConfirmTransaction, SOLANA_CHAINS } from '@wallet-standard/solana';
+import { getEndpointForChain, SOLANA_CHAINS } from '@wallet-standard/solana';
 import { decode, encode } from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
 import {
@@ -35,6 +35,7 @@ import {
     PossiblyLedgerWalletAccount,
     SignerWalletAccount,
 } from './abstractWallet.js';
+import { sendAndConfirmTransaction } from './solana.js';
 
 // A reference to an underlying Ledger device that has already been connected and account initialized
 interface SolanaLedgerApp {
@@ -206,7 +207,9 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 parsedTransaction.partialSign(keypair);
             }
 
-            outputs.push({ signedTransaction: parsedTransaction.serialize({ requireAllSignatures: false }) });
+            outputs.push({
+                signedTransaction: new Uint8Array(parsedTransaction.serialize({ requireAllSignatures: false })),
+            });
         }
 
         return outputs;
