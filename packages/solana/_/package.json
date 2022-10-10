@@ -29,9 +29,9 @@
     "dependencies": {
         "@wallet-standard/solana-chains": "workspace:^",
         "@wallet-standard/solana-features": "workspace:^",
+        "@wallet-standard/solana-util": "workspace:^",
         "@wallet-standard/solana-wallet-adapter": "workspace:^",
-        "@wallet-standard/solana-wallet-adapter-react": "workspace:^",
-        "@wallet-standard/solana-web3.js": "workspace:^"
+        "@wallet-standard/solana-wallet-adapter-react": "workspace:^"
     },
     "devDependencies": {
         "shx": "^0.3.4"

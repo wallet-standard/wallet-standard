@@ -21,8 +21,9 @@ import type {
     SolanaSignTransactionFeature,
     SolanaSignTransactionMethod,
     SolanaSignTransactionOutput,
+    SolanaTransactionVersion,
 } from '@wallet-standard/solana-features';
-import { getEndpointForChain, sendAndConfirmTransaction } from '@wallet-standard/solana-web3.js';
+import { getEndpointForChain } from '@wallet-standard/solana-util';
 import type { IconString, Wallet } from '@wallet-standard/standard';
 import { bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
 import { decode } from 'bs58';
