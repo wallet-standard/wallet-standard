@@ -177,8 +177,8 @@ export class PhantomWallet implements Wallet {
                 preflightCommitment,
                 minContextSlot,
                 maxRetries,
-                // HACK: skipPreflight: undefined | false is broken
-                ...(skipPreflight && { skipPreflight }),
+                // HACK: skipPreflight: undefined is broken
+                ...(skipPreflight === undefined ? undefined : { skipPreflight }),
             });
 
             outputs.push({ signature: decode(signature) });
