@@ -27,7 +27,8 @@
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
-        "@wallet-standard/solana-chains": "workspace:^"
+        "@wallet-standard/solana-chains": "workspace:^",
+        "@wallet-standard/solana-features": "workspace:^"
     },
     "devDependencies": {
         "@types/node-fetch": "^2.6.2",
