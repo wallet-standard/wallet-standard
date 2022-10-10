@@ -1,4 +1,9 @@
-/** TODO: docs */
+/**
+ * The disconnect feature is an optional feature that may be implemented by
+ * wallets to perform any cleanup-related work.
+ * This feature may not be invoked by dapps and should not be depended on.
+ * This feature should not remove any permissions previously granted through ConnectFeature.
+ */
 export type DisconnectFeature = {
     /** Namespace for the feature. */
     'standard:disconnect': {
