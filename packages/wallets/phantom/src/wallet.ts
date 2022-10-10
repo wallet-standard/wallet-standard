@@ -169,13 +169,17 @@ export class PhantomWallet implements Wallet {
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const { transaction, account, chain, options } = inputs[0]!;
+            const { minContextSlot, preflightCommitment, skipPreflight, maxRetries } = options || {};
             if (account !== this.#account) throw new Error('invalid account');
             if (!isSolanaChain(chain)) throw new Error('invalid chain');
 
-            const { signature } = await window.phantom.solana.signAndSendTransaction(
-                Transaction.from(transaction),
-                options
-            );
+            const { signature } = await window.phantom.solana.signAndSendTransaction(Transaction.from(transaction), {
+                preflightCommitment,
+                minContextSlot,
+                maxRetries,
+                // HACK: skipPreflight: undefined | false is broken
+                ...(skipPreflight && { skipPreflight }),
+            });
 
             outputs.push({ signature: decode(signature) });
         } else if (inputs.length > 1) {
