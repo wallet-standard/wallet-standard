@@ -1,7 +1,7 @@
 // This file is copied with modification from @wallet-standard/solana-chains
 
-import type { IdentifierString } from '@wallet-standard/standard';
 import { Network } from '@glow-xyz/glow-client';
+import type { IdentifierString } from '@wallet-standard/standard';
 
 /** Solana Mainnet (beta) cluster, e.g. https://api.mainnet-beta.solana.com */
 export const SOLANA_MAINNET_CHAIN = 'solana:mainnet';
