@@ -219,6 +219,7 @@ export class GlowWallet implements Wallet {
 
             const { signedTransactionBase64 } = await window.glow.signTransaction({
                 transactionBase64: Buffer.from(transaction).toString('base64'),
+                // FIXME: Glow's defaults to mainnet, so simulation fails and we can't sign
                 // HACK: Glow's type definition requires `network` but we might not know it, so pass undefined and pray.
                 network: chain ? getNetworkForChain(chain) : (undefined as any as Network),
             });
