@@ -72,9 +72,7 @@ const registered = new Set<Wallet>();
 const listeners: { [E in InitializedWalletsEventNames]?: InitializedWalletsEvents[E][] } = {};
 
 function push(...callbacks: ReadonlyArray<WalletsCallback>): void {
-    for (const callback of callbacks) {
-        callback({ register });
-    }
+    callbacks.forEach((callback) => guard(() => callback({ register })));
 }
 
 function register(...wallets: ReadonlyArray<Wallet>): () => void {
@@ -87,11 +85,11 @@ function register(...wallets: ReadonlyArray<Wallet>): () => void {
     if (!wallets.length) return () => {};
 
     wallets.forEach((wallet) => registered.add(wallet));
-    listeners['register']?.forEach((listener) => listener(...wallets));
+    listeners['register']?.forEach((listener) => guard(() => listener(...wallets)));
     // Return a function that unregisters the registered wallets.
     return function unregister(): void {
         wallets.forEach((wallet) => registered.delete(wallet));
-        listeners['unregister']?.forEach((listener) => listener(...wallets));
+        listeners['unregister']?.forEach((listener) => guard(() => listener(...wallets)));
     };
 }
 
@@ -105,4 +103,12 @@ function on<E extends InitializedWalletsEventNames>(event: E, listener: Initiali
     return function off(): void {
         listeners[event] = listeners[event]?.filter((existingListener) => listener !== existingListener);
     };
+}
+
+function guard(callback: () => void) {
+    try {
+        callback();
+    } catch (error) {
+        console.log(error);
+    }
 }

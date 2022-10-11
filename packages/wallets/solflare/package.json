@@ -1,5 +1,5 @@
 {
-    "name": "@wallet-standard/wallets-phantom",
+    "name": "@wallet-standard/wallets-solflare",
     "version": "0.1.0-alpha.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",

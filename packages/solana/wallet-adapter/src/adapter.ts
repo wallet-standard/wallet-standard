@@ -28,6 +28,7 @@ import type {
 } from '@wallet-standard/solana-features';
 import { getChainForEndpoint, getCommitment } from '@wallet-standard/solana-util';
 import type { Wallet, WalletAccount, WalletWithFeatures } from '@wallet-standard/standard';
+import { arraysEqual } from '@wallet-standard/util';
 import { encode } from 'bs58';
 import { isVersionedTransaction } from './transaction.js';
 
@@ -111,9 +112,13 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     constructor({ wallet }: StandardWalletAdapterConfig) {
         super();
         this.#wallet = wallet;
-        this.#supportedTransactionVersions = new Set(
-            wallet.features['solana:signAndSendTransaction'].supportedTransactionVersions
-        );
+
+        const supportedTransactionVersions =
+            wallet.features['solana:signAndSendTransaction'].supportedTransactionVersions;
+        this.#supportedTransactionVersions = arraysEqual(supportedTransactionVersions, ['legacy'])
+            ? null
+            : new Set(supportedTransactionVersions);
+
         this.#account = null;
         this.#publicKey = null;
         this.#connecting = false;
@@ -287,12 +292,14 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             try {
                 const signedTransactions = await this.#wallet.features['solana:signTransaction'].signTransaction({
                     account,
-                    transaction: new Uint8Array(
-                        transaction.serialize({
-                            requireAllSignatures: false,
-                            verifySignatures: false,
-                        })
-                    ),
+                    transaction: isVersionedTransaction(transaction)
+                        ? transaction.serialize()
+                        : new Uint8Array(
+                              transaction.serialize({
+                                  requireAllSignatures: false,
+                                  verifySignatures: false,
+                              })
+                          ),
                 });
 
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -323,12 +330,14 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                 const signedTransactions = await this.#wallet.features['solana:signTransaction'].signTransaction(
                     ...transactions.map((transaction) => ({
                         account,
-                        transaction: new Uint8Array(
-                            transaction.serialize({
-                                requireAllSignatures: false,
-                                verifySignatures: false,
-                            })
-                        ),
+                        transaction: isVersionedTransaction(transaction)
+                            ? transaction.serialize()
+                            : new Uint8Array(
+                                  transaction.serialize({
+                                      requireAllSignatures: false,
+                                      verifySignatures: false,
+                                  })
+                              ),
                     }))
                 );
 

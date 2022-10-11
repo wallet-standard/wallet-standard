@@ -1,4 +1,4 @@
-import { Transaction } from '@solana/web3.js';
+import { Connection, VersionedTransaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
@@ -20,26 +20,27 @@ import type {
 } from '@wallet-standard/solana-features';
 import type { Wallet } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
 import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { bytesEqual, PhantomWalletAccount } from './util.js';
-import type { PhantomWindow, WindowPhantom } from './window.js';
+import { bytesEqual, SolflareWalletAccount } from './util.js';
+import type { SolflareWindow, WindowSolflare } from './window.js';
 
-declare const window: PhantomWindow;
+declare const window: SolflareWindow;
 
-export type PhantomFeature = {
-    'phantom:': {
-        phantom: WindowPhantom;
+export type SolflareFeature = {
+    'solflare:': {
+        solflare: WindowSolflare;
     };
 };
 
-export class PhantomWallet implements Wallet {
+export class SolflareWallet implements Wallet {
     readonly #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};
     readonly #version = '1.0.0' as const;
-    readonly #name = 'Phantom' as const;
+    readonly #name = 'Solflare' as const;
     readonly #icon = icon;
-    #account: PhantomWalletAccount | null = null;
+    #account: SolflareWalletAccount | null = null;
 
     get version() {
         return this.#version;
@@ -62,7 +63,7 @@ export class PhantomWallet implements Wallet {
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
         SignMessageFeature &
-        PhantomFeature {
+        SolflareFeature {
         return {
             'standard:connect': {
                 version: '1.0.0',
@@ -74,21 +75,21 @@ export class PhantomWallet implements Wallet {
             },
             'solana:signAndSendTransaction': {
                 version: '1.0.0',
-                supportedTransactionVersions: ['legacy'],
+                supportedTransactionVersions: ['legacy', 0],
                 signAndSendTransaction: this.#signAndSendTransaction,
             },
             'solana:signTransaction': {
                 version: '1.0.0',
-                supportedTransactionVersions: ['legacy'],
+                supportedTransactionVersions: ['legacy', 0],
                 signTransaction: this.#signTransaction,
             },
             'standard:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
             },
-            'phantom:': {
-                get phantom() {
-                    return window.phantom;
+            'solflare:': {
+                get solflare() {
+                    return window.solflare;
                 },
             },
         };
@@ -99,13 +100,12 @@ export class PhantomWallet implements Wallet {
     }
 
     constructor() {
-        if (new.target === PhantomWallet) {
+        if (new.target === SolflareWallet) {
             Object.freeze(this);
         }
 
-        window.phantom.solana.on('connect', this.#connected, this);
-        window.phantom.solana.on('disconnect', this.#disconnected, this);
-        window.phantom.solana.on('accountChanged', this.#reconnected, this);
+        window.solflare.on('connect', this.#connected, this);
+        window.solflare.on('disconnect', this.#disconnected, this);
 
         this.#connected();
     }
@@ -125,14 +125,14 @@ export class PhantomWallet implements Wallet {
     }
 
     #connected = () => {
-        const address = window.phantom.solana.publicKey?.toBase58();
+        const address = window.solflare.publicKey?.toBase58();
         if (address) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const publicKey = window.phantom.solana.publicKey!.toBytes();
+            const publicKey = window.solflare.publicKey!.toBytes();
 
             const account = this.#account;
             if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
-                this.#account = new PhantomWalletAccount({ address, publicKey });
+                this.#account = new SolflareWalletAccount({ address, publicKey });
                 this.#emit('change', { accounts: this.accounts });
             }
         }
@@ -145,16 +145,10 @@ export class PhantomWallet implements Wallet {
         }
     };
 
-    #reconnected = () => {
-        if (window.phantom.solana.publicKey) {
-            this.#connected();
-        } else {
-            this.#disconnected();
-        }
-    };
-
     #connect: ConnectMethod = async ({ silent } = {}) => {
-        await window.phantom.solana.connect(silent ? { onlyIfTrusted: true } : undefined);
+        if (!silent && !window.solflare.publicKey) {
+            await window.solflare.connect();
+        }
 
         this.#connected();
 
@@ -169,16 +163,20 @@ export class PhantomWallet implements Wallet {
         if (inputs.length === 1) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const { transaction, account, chain, options } = inputs[0]!;
-            const { minContextSlot, preflightCommitment, skipPreflight, maxRetries } = options || {};
+            const { commitment, preflightCommitment, skipPreflight, maxRetries, minContextSlot } = options || {};
             if (account !== this.#account) throw new Error('invalid account');
             if (!isSolanaChain(chain)) throw new Error('invalid chain');
 
-            const { signature } = await window.phantom.solana.signAndSendTransaction(Transaction.from(transaction), {
+            const signedTransaction = await window.solflare.signTransaction(
+                VersionedTransaction.deserialize(transaction)
+            );
+
+            const connection = new Connection(getEndpointForChain(chain), commitment || preflightCommitment);
+            const signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
                 preflightCommitment,
-                minContextSlot,
+                skipPreflight,
                 maxRetries,
-                // HACK: skipPreflight: undefined is broken
-                ...(skipPreflight === undefined ? undefined : { skipPreflight }),
+                minContextSlot,
             });
 
             outputs.push({ signature: decode(signature) });
@@ -202,16 +200,11 @@ export class PhantomWallet implements Wallet {
             if (account !== this.#account) throw new Error('invalid account');
             if (chain && !isSolanaChain(chain)) throw new Error('invalid chain');
 
-            const signedTransaction = await window.phantom.solana.signTransaction(Transaction.from(transaction));
+            const signedTransaction = await window.solflare.signTransaction(
+                VersionedTransaction.deserialize(transaction)
+            );
 
-            outputs.push({
-                signedTransaction: new Uint8Array(
-                    signedTransaction.serialize({
-                        requireAllSignatures: false,
-                        verifySignatures: false,
-                    })
-                ),
-            });
+            outputs.push({ signedTransaction: signedTransaction.serialize() });
         } else if (inputs.length > 1) {
             let chain: SolanaChain | undefined = undefined;
             for (const input of inputs) {
@@ -226,19 +219,12 @@ export class PhantomWallet implements Wallet {
                 }
             }
 
-            const transactions = inputs.map(({ transaction }) => Transaction.from(transaction));
+            const transactions = inputs.map(({ transaction }) => VersionedTransaction.deserialize(transaction));
 
-            const signedTransactions = await window.phantom.solana.signAllTransactions(transactions);
+            const signedTransactions = await window.solflare.signAllTransactions(transactions);
 
             outputs.push(
-                ...signedTransactions.map((signedTransaction) => ({
-                    signedTransaction: new Uint8Array(
-                        signedTransaction.serialize({
-                            requireAllSignatures: false,
-                            verifySignatures: false,
-                        })
-                    ),
-                }))
+                ...signedTransactions.map((signedTransaction) => ({ signedTransaction: signedTransaction.serialize() }))
             );
         }
 
@@ -255,7 +241,7 @@ export class PhantomWallet implements Wallet {
             const { message, account } = inputs[0]!;
             if (account !== this.#account) throw new Error('invalid account');
 
-            const { signature } = await window.phantom.solana.signMessage(message);
+            const signature = await window.solflare.signMessage(message);
 
             outputs.push({ signedMessage: message, signature });
         } else if (inputs.length > 1) {
