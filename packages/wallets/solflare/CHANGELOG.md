@@ -1,5 +1,11 @@
 # @wallet-standard/wallets-solflare
 
+## 0.1.0-alpha.3
+
+### Patch Changes
+
+-   474e502: Add Solflare SDK to Solflare standard wallet
+
 ## 0.1.0-alpha.2
 
 ### Patch Changes
