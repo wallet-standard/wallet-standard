@@ -178,7 +178,10 @@ export class BackpackWallet implements Wallet {
             const connection =
                 getChainForEndpoint(window.backpack.connection.rpcEndpoint) === input.chain
                     ? undefined
-                    : new Connection(getEndpointForChain(input.chain), window.backpack.connection.commitment);
+                    : new Connection(
+                          getEndpointForChain(input.chain),
+                          commitment || preflightCommitment || window.backpack.connection.commitment
+                      );
 
             const signature = commitment
                 ? await window.backpack.sendAndConfirm(
