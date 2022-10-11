@@ -26,22 +26,17 @@
         "clean": "shx mkdir -p lib && shx rm -rf lib",
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@solana/web3.js": "^1.58.0",
         "@solflare-wallet/sdk": "^1.1.0",
-        "bs58": "^4.0.1"
-    },
-    "dependencies": {
         "@wallet-standard/features": "workspace:^",
         "@wallet-standard/solana-features": "workspace:^",
-        "@wallet-standard/standard": "workspace:^"
+        "@wallet-standard/standard": "workspace:^",
+        "bs58": "^4.0.1"
     },
     "devDependencies": {
-        "@solana/web3.js": "^1.58.0",
-        "@solflare-wallet/sdk": "^1.1.0",
         "@types/bs58": "^4.0.1",
         "@types/node-fetch": "^2.6.2",
-        "bs58": "^4.0.1",
         "shx": "^0.3.4"
     }
 }
