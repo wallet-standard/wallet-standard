@@ -6,13 +6,13 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { WalletDialogProvider as MaterialUIWalletDialogProvider } from '@solana/wallet-adapter-material-ui';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/wallet-adapter-react-ui';
-// import { PhantomWalletAdapter, GlowWalletAdapter, BackpackWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { register as registerGlow } from '@wallet-standard/wallets-glow';
-import { register as registerBackpack } from '@wallet-standard/wallets-backpack';
-import { register as registerPhantom } from '@wallet-standard/wallets-phantom';
-import { register as registerSolflare } from '@wallet-standard/wallets-solflare';
+// import { BackpackWalletAdapter, GlowWalletAdapter, PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import { useStandardWalletAdapters } from '@wallet-standard/solana';
+import { register as registerBackpack } from '@wallet-standard/wallets-backpack';
+import { register as registerGlow } from '@wallet-standard/wallets-glow';
+import { register as registerPhantom } from '@wallet-standard/wallets-phantom';
+import { register as registerSolflare } from '@wallet-standard/wallets-solflare';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useEffect, useMemo } from 'react';
@@ -62,8 +62,13 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     // You can also provide a custom RPC endpoint
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-    const wallets = useMemo(() => [], []);
-    const adapters = useStandardWalletAdapters([]);
+    const wallets = useMemo(
+        () => [
+            // Add any wallet adapters here
+        ],
+        []
+    );
+    const adapters = useStandardWalletAdapters(wallets);
 
     useEffect(() => {
         registerBackpack();

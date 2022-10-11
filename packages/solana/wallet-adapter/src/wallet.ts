@@ -5,6 +5,8 @@ import { initialize } from '@wallet-standard/app';
 import type {
     ConnectFeature,
     ConnectMethod,
+    DisconnectFeature,
+    DisconnectMethod,
     EventsFeature,
     EventsListeners,
     EventsNames,
@@ -45,11 +47,9 @@ export class SolanaWalletAdapterWalletAccount extends ReadonlyWalletAccount {
         publicKey: Uint8Array;
         chains: ReadonlyArray<SolanaChain>;
     }) {
-        const features: (keyof (ConnectFeature &
-            EventsFeature &
-            SolanaSignAndSendTransactionFeature &
+        const features: (keyof (SolanaSignAndSendTransactionFeature &
             SolanaSignTransactionFeature &
-            SignMessageFeature))[] = ['standard:connect', 'solana:signAndSendTransaction'];
+            SignMessageFeature))[] = ['solana:signAndSendTransaction'];
         if ('signTransaction' in adapter) {
             features.push('solana:signTransaction');
         }
@@ -94,12 +94,17 @@ export class SolanaWalletAdapterWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        DisconnectFeature &
         SolanaSignAndSendTransactionFeature &
         Partial<SolanaSignTransactionFeature & SignMessageFeature> {
-        const features: ConnectFeature & EventsFeature & SolanaSignAndSendTransactionFeature = {
+        const features: ConnectFeature & DisconnectFeature & EventsFeature & SolanaSignAndSendTransactionFeature = {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:disconnect': {
+                version: '1.0.0',
+                disconnect: this.#disconnect,
             },
             'standard:events': {
                 version: '1.0.0',
@@ -208,6 +213,10 @@ export class SolanaWalletAdapterWallet implements Wallet {
         this.#connected();
 
         return { accounts: this.accounts };
+    };
+
+    #disconnect: DisconnectMethod = async () => {
+        await this.#adapter.disconnect();
     };
 
     #on: EventsOnMethod = (event, listener) => {

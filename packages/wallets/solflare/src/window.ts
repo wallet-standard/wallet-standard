@@ -16,7 +16,8 @@ export interface WindowSolflare extends SolflareEventEmitter {
     disconnect(): Promise<void>;
     signTransaction<T extends Transaction | VersionedTransaction>(transaction: T): Promise<T>;
     signAllTransactions<T extends Transaction | VersionedTransaction>(transactions: T[]): Promise<T[]>;
-    signMessage(message: Uint8Array): Promise<Uint8Array>;
+    // HACK: Solflare's SDK has the wrong return type
+    signMessage(message: Uint8Array): Promise<{ publicKey: PublicKey; signature: Uint8Array }>;
 }
 
 export interface SolflareWindow extends Window {

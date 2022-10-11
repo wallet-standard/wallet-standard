@@ -2,6 +2,8 @@ import type { GlowAdapter, Network, PhantomAdapter, SolanaWindow } from '@glow-x
 import type {
     ConnectFeature,
     ConnectMethod,
+    DisconnectFeature,
+    DisconnectMethod,
     EventsFeature,
     EventsListeners,
     EventsNames,
@@ -21,10 +23,11 @@ import type {
 import type { Wallet } from '@wallet-standard/standard';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
+import { GlowWalletAccount } from './account.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
 import { getNetworkForChain, isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { bytesEqual, GlowWalletAccount } from './util.js';
+import { bytesEqual } from './util.js';
 
 declare const window: SolanaWindow;
 
@@ -59,6 +62,7 @@ export class GlowWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        DisconnectFeature &
         EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
@@ -68,6 +72,10 @@ export class GlowWallet implements Wallet {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:disconnect': {
+                version: '1.0.0',
+                disconnect: this.#disconnect,
             },
             'standard:events': {
                 version: '1.0.0',
@@ -107,9 +115,9 @@ export class GlowWallet implements Wallet {
             Object.freeze(this);
         }
 
-        window.glow.on('connect', this.#connected, this);
-        window.glow.on('disconnect', this.#disconnected, this);
-        window.glow.on('accountChanged', this.#reconnected, this);
+        window.glowSolana.on('connect', this.#connected, this);
+        window.glowSolana.on('disconnect', this.#disconnected, this);
+        window.glowSolana.on('accountChanged', this.#reconnected, this);
 
         this.#connected();
     }
@@ -158,11 +166,15 @@ export class GlowWallet implements Wallet {
     };
 
     #connect: ConnectMethod = async ({ silent } = {}) => {
-        await window.glow.connect(silent ? { onlyIfTrusted: true } : undefined);
+        await window.glowSolana.connect(silent ? { onlyIfTrusted: true } : undefined);
 
         this.#connected();
 
         return { accounts: this.accounts };
+    };
+
+    #disconnect: DisconnectMethod = async () => {
+        await window.glowSolana.disconnect();
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
@@ -207,6 +219,7 @@ export class GlowWallet implements Wallet {
 
             const { signedTransactionBase64 } = await window.glow.signTransaction({
                 transactionBase64: Buffer.from(transaction).toString('base64'),
+                // FIXME: Glow's defaults to mainnet, so simulation fails and we can't sign
                 // HACK: Glow's type definition requires `network` but we might not know it, so pass undefined and pray.
                 network: chain ? getNetworkForChain(chain) : (undefined as any as Network),
             });

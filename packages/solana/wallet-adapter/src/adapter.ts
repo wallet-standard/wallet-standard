@@ -10,6 +10,7 @@ import {
     WalletConfigError,
     WalletConnectionError,
     WalletDisconnectedError,
+    WalletDisconnectionError,
     WalletError,
     WalletNotConnectedError,
     WalletNotReadyError,
@@ -21,7 +22,13 @@ import {
 } from '@solana/wallet-adapter-base';
 import type { Connection, TransactionSignature } from '@solana/web3.js';
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js';
-import type { ConnectFeature, EventsFeature, EventsListeners, SignMessageFeature } from '@wallet-standard/features';
+import type {
+    ConnectFeature,
+    DisconnectFeature,
+    EventsFeature,
+    EventsListeners,
+    SignMessageFeature,
+} from '@wallet-standard/features';
 import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignTransactionFeature,
@@ -35,6 +42,7 @@ import { isVersionedTransaction } from './transaction.js';
 /** TODO: docs */
 export type StandardWalletAdapterWallet = WalletWithFeatures<
     ConnectFeature &
+        DisconnectFeature &
         EventsFeature &
         SolanaSignAndSendTransactionFeature &
         (SolanaSignTransactionFeature | SignMessageFeature)
@@ -162,6 +170,14 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     }
 
     async disconnect(): Promise<void> {
+        if ('standard:disconnect' in this.#wallet.features) {
+            try {
+                await this.#wallet.features['standard:disconnect'].disconnect();
+            } catch (error: any) {
+                this.emit('error', new WalletDisconnectionError(error?.message, error));
+            }
+        }
+
         this.#disconnected();
         this.emit('disconnect');
     }
@@ -172,18 +188,18 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.#account = account;
         this.#publicKey = publicKey;
 
-        if (account && 'solana:signTransaction' in account.features) {
+        if (account?.features.includes('solana:signTransaction')) {
             this.signTransaction = this.#signTransaction;
             this.signAllTransactions = this.#signAllTransactions;
         } else {
-            this.signTransaction = undefined;
-            this.signAllTransactions = undefined;
+            delete this.signTransaction;
+            delete this.signAllTransactions;
         }
 
-        if (account && 'standard:signMessage' in account.features) {
+        if (account?.features.includes('standard:signMessage')) {
             this.signMessage = this.#signMessage;
         } else {
-            this.signMessage = undefined;
+            delete this.signMessage;
         }
     }
 

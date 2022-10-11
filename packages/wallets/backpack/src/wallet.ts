@@ -2,6 +2,8 @@ import { Connection, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
+    DisconnectFeature,
+    DisconnectMethod,
     EventsFeature,
     EventsListeners,
     EventsNames,
@@ -20,10 +22,11 @@ import type {
 } from '@wallet-standard/solana-features';
 import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { BackpackWalletAccount } from './account.js';
 import { getChainForEndpoint, getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
 import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { BackpackWalletAccount, bytesEqual } from './util.js';
+import { bytesEqual } from './util.js';
 import type { BackpackWindow, WindowBackpack } from './window.js';
 
 declare const window: BackpackWindow;
@@ -58,6 +61,7 @@ export class BackpackWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        DisconnectFeature &
         EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
@@ -67,6 +71,10 @@ export class BackpackWallet implements Wallet {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:disconnect': {
+                version: '1.0.0',
+                disconnect: this.#disconnect,
             },
             'standard:events': {
                 version: '1.0.0',
@@ -147,6 +155,10 @@ export class BackpackWallet implements Wallet {
         this.#connected();
 
         return { accounts: this.accounts };
+    };
+
+    #disconnect: DisconnectMethod = async () => {
+        await window.backpack.disconnect();
     };
 
     #on: EventsOnMethod = (event, listener) => {

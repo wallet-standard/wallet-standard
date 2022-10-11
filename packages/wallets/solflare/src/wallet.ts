@@ -2,6 +2,8 @@ import { Connection, VersionedTransaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
+    DisconnectFeature,
+    DisconnectMethod,
     EventsFeature,
     EventsListeners,
     EventsNames,
@@ -20,11 +22,12 @@ import type {
 } from '@wallet-standard/solana-features';
 import type { Wallet } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { SolflareWalletAccount } from './account.js';
 import { getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
 import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { bytesEqual, SolflareWalletAccount } from './util.js';
+import { bytesEqual } from './util.js';
 import type { SolflareWindow, WindowSolflare } from './window.js';
 
 declare const window: SolflareWindow;
@@ -59,6 +62,7 @@ export class SolflareWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        DisconnectFeature &
         EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
@@ -68,6 +72,10 @@ export class SolflareWallet implements Wallet {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:disconnect': {
+                version: '1.0.0',
+                disconnect: this.#disconnect,
             },
             'standard:events': {
                 version: '1.0.0',
@@ -153,6 +161,10 @@ export class SolflareWallet implements Wallet {
         this.#connected();
 
         return { accounts: this.accounts };
+    };
+
+    #disconnect: DisconnectMethod = async () => {
+        await window.solflare.disconnect();
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
@@ -241,7 +253,7 @@ export class SolflareWallet implements Wallet {
             const { message, account } = inputs[0]!;
             if (account !== this.#account) throw new Error('invalid account');
 
-            const signature = await window.solflare.signMessage(message);
+            const { signature } = await window.solflare.signMessage(message);
 
             outputs.push({ signedMessage: message, signature });
         } else if (inputs.length > 1) {
