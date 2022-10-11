@@ -22,21 +22,21 @@ import type {
 } from '@wallet-standard/solana-features';
 import type { Wallet } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { default as Solflare } from '@solflare-wallet/sdk';
 import { SolflareWalletAccount } from './account.js';
 import { getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
 import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
 import { bytesEqual } from './util.js';
-import type { SolflareWindow, WindowSolflare } from './window.js';
-
-declare const window: SolflareWindow;
 
 export type SolflareFeature = {
     'solflare:': {
-        solflare: WindowSolflare;
+        solflare: Solflare;
     };
 };
+
+const solflare = new Solflare();
 
 export class SolflareWallet implements Wallet {
     readonly #listeners: { [E in EventsNames]?: EventsListeners[E][] } = {};
@@ -97,7 +97,7 @@ export class SolflareWallet implements Wallet {
             },
             'solflare:': {
                 get solflare() {
-                    return window.solflare;
+                    return solflare;
                 },
             },
         };
@@ -133,10 +133,10 @@ export class SolflareWallet implements Wallet {
     }
 
     #connected = () => {
-        const address = window.solflare.publicKey?.toBase58();
+        const address = solflare.publicKey?.toBase58();
         if (address) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const publicKey = window.solflare.publicKey!.toBytes();
+            const publicKey = solflare.publicKey!.toBytes();
 
             const account = this.#account;
             if (!account || account.address !== address || !bytesEqual(account.publicKey, publicKey)) {
@@ -154,8 +154,8 @@ export class SolflareWallet implements Wallet {
     };
 
     #connect: ConnectMethod = async ({ silent } = {}) => {
-        if (!silent && !window.solflare.publicKey) {
-            await window.solflare.connect();
+        if (!silent && !solflare.publicKey) {
+            await solflare.connect();
         }
 
         this.#connected();
@@ -164,7 +164,7 @@ export class SolflareWallet implements Wallet {
     };
 
     #disconnect: DisconnectMethod = async () => {
-        await window.solflare.disconnect();
+        await solflare.disconnect();
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
@@ -179,9 +179,7 @@ export class SolflareWallet implements Wallet {
             if (account !== this.#account) throw new Error('invalid account');
             if (!isSolanaChain(chain)) throw new Error('invalid chain');
 
-            const signedTransaction = await window.solflare.signTransaction(
-                VersionedTransaction.deserialize(transaction)
-            );
+            const signedTransaction = await solflare.signTransaction(VersionedTransaction.deserialize(transaction));
 
             const connection = new Connection(getEndpointForChain(chain), commitment || preflightCommitment);
             const signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
@@ -212,9 +210,7 @@ export class SolflareWallet implements Wallet {
             if (account !== this.#account) throw new Error('invalid account');
             if (chain && !isSolanaChain(chain)) throw new Error('invalid chain');
 
-            const signedTransaction = await window.solflare.signTransaction(
-                VersionedTransaction.deserialize(transaction)
-            );
+            const signedTransaction = await solflare.signTransaction(VersionedTransaction.deserialize(transaction));
 
             outputs.push({ signedTransaction: signedTransaction.serialize() });
         } else if (inputs.length > 1) {
@@ -233,7 +229,7 @@ export class SolflareWallet implements Wallet {
 
             const transactions = inputs.map(({ transaction }) => VersionedTransaction.deserialize(transaction));
 
-            const signedTransactions = await window.solflare.signAllTransactions(transactions);
+            const signedTransactions = await solflare.signAllTransactions(transactions);
 
             outputs.push(
                 ...signedTransactions.map((signedTransaction) => ({ signedTransaction: signedTransaction.serialize() }))
@@ -253,7 +249,7 @@ export class SolflareWallet implements Wallet {
             const { message, account } = inputs[0]!;
             if (account !== this.#account) throw new Error('invalid account');
 
-            const { signature } = await window.solflare.signMessage(message);
+            const signature = await solflare.signMessage(message);
 
             outputs.push({ signedMessage: message, signature });
         } else if (inputs.length > 1) {
