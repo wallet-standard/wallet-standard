@@ -32,6 +32,7 @@
     "@wallet-standard/wallets-solflare": "0.1.0-alpha.0"
   },
   "changesets": [
+    "chilled-turtles-sparkle",
     "curly-garlics-destroy",
     "purple-birds-jam",
     "red-fishes-doubt"
