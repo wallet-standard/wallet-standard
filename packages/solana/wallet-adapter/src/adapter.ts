@@ -188,18 +188,18 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         this.#account = account;
         this.#publicKey = publicKey;
 
-        if (account && 'solana:signTransaction' in account.features) {
+        if (account?.features.includes('solana:signTransaction')) {
             this.signTransaction = this.#signTransaction;
             this.signAllTransactions = this.#signAllTransactions;
         } else {
-            this.signTransaction = undefined;
-            this.signAllTransactions = undefined;
+            delete this.signTransaction;
+            delete this.signAllTransactions;
         }
 
-        if (account && 'standard:signMessage' in account.features) {
+        if (account?.features.includes('standard:signMessage')) {
             this.signMessage = this.#signMessage;
         } else {
-            this.signMessage = undefined;
+            delete this.signMessage;
         }
     }
 
