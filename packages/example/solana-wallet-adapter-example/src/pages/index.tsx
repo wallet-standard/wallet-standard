@@ -26,6 +26,7 @@ import { SendLegacyTransaction } from '../components/SendLegacyTransaction';
 import { SendTransaction } from '../components/SendTransaction';
 import { SendV0Transaction } from '../components/SendV0Transaction';
 import { SignMessage } from '../components/SignMessage';
+import { SignTransaction } from '../components/SignTransaction';
 
 const Index: NextPage = () => {
     const { autoConnect, setAutoConnect } = useAutoConnect();
@@ -95,7 +96,6 @@ const Index: NextPage = () => {
                     <TableCell></TableCell>
                 </TableRow>
                 <TableRow>
-                    <TableCell></TableCell>
                     <TableCell>
                         <Tooltip title="Only runs if the wallet is ready to connect" placement="left">
                             <FormControlLabel
@@ -116,6 +116,9 @@ const Index: NextPage = () => {
                     </TableCell>
                     <TableCell>
                         <SendTransaction />
+                    </TableCell>
+                    <TableCell>
+                        <SignTransaction />
                     </TableCell>
                     <TableCell>
                         <SignMessage />
