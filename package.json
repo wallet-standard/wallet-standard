@@ -16,7 +16,7 @@
         "build:other": "pnpm --recursive --workspace-concurrency=0 run build",
         "package": "pnpm --recursive --workspace-concurrency=0 run package",
         "build:release": "pnpm run clean && pnpm run build:ts && pnpm run package && pnpm run build:other",
-        "release": "pnpm run build:release && changeset publish && git push --follow-tags && git status",
+        "release": "pnpm run build:release && changeset publish --tag alpha && git push --follow-tags && git status",
         "watch": "pnpm run watch:ts",
         "watch:ts": "tsc --build --verbose --watch tsconfig.all.json",
         "fmt": "prettier --write '{*,**/*}.{ts,tsx,js,jsx,json}'",
@@ -25,8 +25,7 @@
         "test": "pnpm --recursive --workspace-concurrency=0 run test",
         "deploy": "pnpm run deploy:docs",
         "docs": "shx rm -rf docs && NODE_OPTIONS=--max_old_space_size=16000 typedoc && shx cp .nojekyll docs/",
-        "deploy:docs": "pnpm run docs && gh-pages --dist docs --dotfiles",
-        "publish:alpha": "pnpm -r publish --tag alpha"
+        "deploy:docs": "pnpm run docs && gh-pages --dist docs --dotfiles"
     },
     "devDependencies": {
         "@changesets/cli": "^2.25.0",
