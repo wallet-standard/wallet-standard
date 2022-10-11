@@ -1,5 +1,15 @@
 # @solana/wallet-adapter-example
 
+## 0.18.15-alpha.1
+
+### Patch Changes
+
+-   Updated dependencies [87a823d]
+    -   @wallet-standard/wallets-backpack@0.1.0-alpha.10
+    -   @wallet-standard/wallets-glow@0.1.0-alpha.4
+    -   @wallet-standard/wallets-phantom@0.1.0-alpha.2
+    -   @wallet-standard/wallets-solflare@0.1.0-alpha.2
+
 ## 0.18.15-alpha.0
 
 ### Patch Changes

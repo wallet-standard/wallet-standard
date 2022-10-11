@@ -1,6 +1,6 @@
 {
     "name": "@wallet-standard/wallets-backpack",
-    "version": "0.1.0-alpha.9",
+    "version": "0.1.0-alpha.10",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
