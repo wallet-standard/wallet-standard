@@ -31,5 +31,8 @@
     "@wallet-standard/wallets-phantom": "0.1.0-alpha.0",
     "@wallet-standard/wallets-solflare": "0.1.0-alpha.0"
   },
-  "changesets": []
+  "changesets": [
+    "curly-garlics-destroy",
+    "red-fishes-doubt"
+  ]
 }
