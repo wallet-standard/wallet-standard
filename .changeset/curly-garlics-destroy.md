@@ -6,11 +6,6 @@
 '@wallet-standard/util': patch
 '@wallet-standard/ethereum': patch
 '@wallet-standard/ethereum-chains': patch
-'@wallet-standard/example-dapp': patch
-'@wallet-standard/example-extension': patch
-'@wallet-standard/example-react': patch
-'@wallet-standard/example-solana-wallet-adapter': patch
-'@wallet-standard/example-wallets': patch
 '@wallet-standard/experimental': patch
 '@wallet-standard/experimental-features': patch
 '@wallet-standard/react': patch
@@ -25,6 +20,7 @@
 '@wallet-standard/wallets-backpack': patch
 '@wallet-standard/wallets-glow': patch
 '@wallet-standard/wallets-phantom': patch
+'@wallet-standard/wallets-solflare': patch
 ---
 
 Updating all versions via changesets.

@@ -13,6 +13,7 @@
     "@wallet-standard/example-extension": "0.1.0",
     "@wallet-standard/example-react": "0.1.0",
     "@wallet-standard/example-solana-wallet-adapter": "0.1.0",
+    "@solana/wallet-adapter-example": "0.18.14",
     "@wallet-standard/example-wallets": "0.1.0",
     "@wallet-standard/experimental": "0.1.0-alpha.0",
     "@wallet-standard/experimental-features": "0.1.0-alpha.0",
@@ -27,7 +28,8 @@
     "@wallet-standard/parcel-packager-webextension": "0.1.0",
     "@wallet-standard/wallets-backpack": "0.1.0-alpha.8",
     "@wallet-standard/wallets-glow": "0.1.0-alpha.2",
-    "@wallet-standard/wallets-phantom": "0.1.0-alpha.0"
+    "@wallet-standard/wallets-phantom": "0.1.0-alpha.0",
+    "@wallet-standard/wallets-solflare": "0.1.0-alpha.0"
   },
   "changesets": []
 }
