@@ -13,16 +13,15 @@ export interface PhantomEventEmitter {
 
 export interface PhantomSolana extends PhantomEventEmitter {
     publicKey: PublicKey | null;
-    isConnected: boolean | null;
+    connect(options?: { onlyIfTrusted?: boolean }): Promise<{ publicKey: PublicKey }>;
+    disconnect(): Promise<void>;
     signAndSendTransaction(
         transaction: Transaction,
         options?: SendOptions
     ): Promise<{ signature: string; publicKey: PublicKey }>;
     signTransaction(transaction: Transaction): Promise<Transaction>;
     signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
-    signMessage(message: Uint8Array | string): Promise<{ signature: Uint8Array }>;
-    connect(options?: { onlyIfTrusted?: boolean }): Promise<{ publicKey: PublicKey }>;
-    disconnect(): Promise<void>;
+    signMessage(message: Uint8Array): Promise<{ signature: Uint8Array }>;
 }
 
 export interface WindowPhantom {

@@ -140,7 +140,7 @@ export class BackpackWallet implements Wallet {
     };
 
     #connect: ConnectMethod = async ({ silent } = {}) => {
-        if (!silent && !window.backpack.isConnected) {
+        if (!silent && !window.backpack.publicKey) {
             await window.backpack.connect();
         }
 

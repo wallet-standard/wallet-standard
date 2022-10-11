@@ -21,22 +21,21 @@ export interface BackpackEventEmitter {
 }
 
 export interface WindowBackpack extends BackpackEventEmitter {
-    isConnected: boolean;
     publicKey: PublicKey | undefined;
     connection: Connection;
     connect(): Promise<void>;
     disconnect(): Promise<void>;
-    sendAndConfirm<T extends Transaction | VersionedTransaction>(
-        tx: T,
-        signers?: Signer[],
-        options?: ConfirmOptions,
-        connection?: Connection,
-        publicKey?: PublicKey
-    ): Promise<TransactionSignature>;
     send<T extends Transaction | VersionedTransaction>(
         tx: T,
         signers?: Signer[],
         options?: SendOptions,
+        connection?: Connection,
+        publicKey?: PublicKey
+    ): Promise<TransactionSignature>;
+    sendAndConfirm<T extends Transaction | VersionedTransaction>(
+        tx: T,
+        signers?: Signer[],
+        options?: ConfirmOptions,
         connection?: Connection,
         publicKey?: PublicKey
     ): Promise<TransactionSignature>;
