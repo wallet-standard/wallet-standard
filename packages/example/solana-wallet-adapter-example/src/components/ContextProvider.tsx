@@ -62,8 +62,13 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     // You can also provide a custom RPC endpoint
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-    const wallets = useMemo(() => [], []);
-    const adapters = useStandardWalletAdapters([]);
+    const wallets = useMemo(
+        () => [
+            // Add any wallet adapters here
+        ],
+        []
+    );
+    const adapters = useStandardWalletAdapters(wallets);
 
     useEffect(() => {
         registerBackpack();
