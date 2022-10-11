@@ -616,6 +616,7 @@ importers:
   packages/wallets/solflare:
     specifiers:
       '@solana/web3.js': ^1.58.0
+      '@solflare-wallet/sdk': ^1.1.0
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@wallet-standard/features': workspace:^
@@ -624,14 +625,15 @@ importers:
       bs58: ^4.0.1
       shx: ^0.3.4
     dependencies:
+      '@solana/web3.js': 1.63.1
+      '@solflare-wallet/sdk': 1.1.0_@solana+web3.js@1.63.1
       '@wallet-standard/features': link:../../core/features
       '@wallet-standard/solana-features': link:../../solana/features
       '@wallet-standard/standard': link:../../core/standard
+      bs58: 4.0.1
     devDependencies:
-      '@solana/web3.js': 1.63.1
       '@types/bs58': 4.0.1
       '@types/node-fetch': 2.6.2
-      bs58: 4.0.1
       shx: 0.3.4
 
 packages:
@@ -5833,7 +5835,7 @@ packages:
       eslint: 8.22.0
       eslint-import-resolver-node: 0.3.6
       eslint-import-resolver-typescript: 2.7.1_2iahngt3u2tkbdlu6s4gkur3pu
-      eslint-plugin-import: 2.26.0_q4brmuik2q4s5ajvp5b2ufh23e
+      eslint-plugin-import: 2.26.0_eslint@8.22.0
       eslint-plugin-jsx-a11y: 6.6.1_eslint@8.22.0
       eslint-plugin-react: 7.31.9_eslint@8.22.0
       eslint-plugin-react-hooks: 4.6.0_eslint@8.22.0
@@ -5870,7 +5872,7 @@ packages:
     dependencies:
       debug: 4.3.4
       eslint: 8.22.0
-      eslint-plugin-import: 2.26.0_q4brmuik2q4s5ajvp5b2ufh23e
+      eslint-plugin-import: 2.26.0_eslint@8.22.0
       glob: 7.2.3
       is-glob: 4.0.3
       resolve: 1.22.1
@@ -5879,7 +5881,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-module-utils/2.7.4_xh7oyntirfwebomm723akwd3ai:
+  /eslint-module-utils/2.7.4_7gfxlqsjhuntdifxknjgbjwpbu:
     resolution: {integrity: sha512-j4GT+rqzCoRKHwURX7pddtIPGySnX9Si/cgMI5ztrcqOPtk5dDEeZ34CQVPphnqkJytlc97Vuk05Um2mJ3gEQA==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -5900,16 +5902,14 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.39.0_4rv7y5c6xz3vfxwhbrcxxi73bq
       debug: 3.2.7
       eslint: 8.22.0
       eslint-import-resolver-node: 0.3.6
-      eslint-import-resolver-typescript: 2.7.1_2iahngt3u2tkbdlu6s4gkur3pu
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /eslint-plugin-import/2.26.0_q4brmuik2q4s5ajvp5b2ufh23e:
+  /eslint-plugin-import/2.26.0_eslint@8.22.0:
     resolution: {integrity: sha512-hYfi3FXaM8WPLf4S1cikh/r4IxnO6zrhZbEGz2b660EJRbuxgpDS5gkCuYgGWg2xxh2rBuIr4Pvhve/7c31koA==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -5919,14 +5919,13 @@ packages:
       '@typescript-eslint/parser':
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.39.0_4rv7y5c6xz3vfxwhbrcxxi73bq
       array-includes: 3.1.5
       array.prototype.flat: 1.3.0
       debug: 2.6.9
       doctrine: 2.1.0
       eslint: 8.22.0
       eslint-import-resolver-node: 0.3.6
-      eslint-module-utils: 2.7.4_xh7oyntirfwebomm723akwd3ai
+      eslint-module-utils: 2.7.4_7gfxlqsjhuntdifxknjgbjwpbu
       has: 1.0.3
       is-core-module: 2.10.0
       is-glob: 4.0.3
