@@ -4,5 +4,9 @@ import { BackpackWallet } from './wallet.js';
 declare const window: WalletsWindow;
 
 export function register(): void {
-    (window.navigator.wallets ||= []).push(({ register }) => register(new BackpackWallet()));
+    try {
+        (window.navigator.wallets ||= []).push(({ register }) => register(new BackpackWallet()));
+    } catch (error) {
+        console.error(error);
+    }
 }

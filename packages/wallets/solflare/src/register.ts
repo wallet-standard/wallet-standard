@@ -4,5 +4,9 @@ import { SolflareWallet } from './wallet.js';
 declare const window: WalletsWindow;
 
 export function register(): void {
-    (window.navigator.wallets ||= []).push(({ register }) => register(new SolflareWallet()));
+    try {
+        (window.navigator.wallets ||= []).push(({ register }) => register(new SolflareWallet()));
+    } catch (error) {
+        console.error(error);
+    }
 }
