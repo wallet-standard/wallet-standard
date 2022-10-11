@@ -22,10 +22,11 @@ import type {
 } from '@wallet-standard/solana-features';
 import type { Wallet } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { PhantomWalletAccount } from './account.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
 import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { bytesEqual, PhantomWalletAccount } from './util.js';
+import { bytesEqual } from './util.js';
 import type { PhantomWindow, WindowPhantom } from './window.js';
 
 declare const window: PhantomWindow;

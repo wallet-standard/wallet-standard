@@ -22,10 +22,11 @@ import type {
 } from '@wallet-standard/solana-features';
 import type { Wallet, WalletAccount } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { BackpackWalletAccount } from './account.js';
 import { getChainForEndpoint, getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
 import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { BackpackWalletAccount, bytesEqual } from './util.js';
+import { bytesEqual } from './util.js';
 import type { BackpackWindow, WindowBackpack } from './window.js';
 
 declare const window: BackpackWindow;

@@ -23,10 +23,11 @@ import type {
 import type { Wallet } from '@wallet-standard/standard';
 import { decode } from 'bs58';
 import { Buffer } from 'buffer';
+import { GlowWalletAccount } from './account.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
 import { getNetworkForChain, isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { bytesEqual, GlowWalletAccount } from './util.js';
+import { bytesEqual } from './util.js';
 
 declare const window: SolanaWindow;
 

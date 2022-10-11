@@ -22,11 +22,12 @@ import type {
 } from '@wallet-standard/solana-features';
 import type { Wallet } from '@wallet-standard/standard';
 import { decode } from 'bs58';
+import { SolflareWalletAccount } from './account.js';
 import { getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
 import { isSolanaChain, SOLANA_CHAINS } from './solana.js';
-import { bytesEqual, SolflareWalletAccount } from './util.js';
+import { bytesEqual } from './util.js';
 import type { SolflareWindow, WindowSolflare } from './window.js';
 
 declare const window: SolflareWindow;
