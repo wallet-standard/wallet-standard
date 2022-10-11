@@ -28,6 +28,7 @@
     },
     "peerDependencies": {
         "@solana/web3.js": "^1.58.0",
+        "@solflare-wallet/sdk": "^1.1.0",
         "bs58": "^4.0.1"
     },
     "dependencies": {
@@ -37,6 +38,7 @@
     },
     "devDependencies": {
         "@solana/web3.js": "^1.58.0",
+        "@solflare-wallet/sdk": "^1.1.0",
         "@types/bs58": "^4.0.1",
         "@types/node-fetch": "^2.6.2",
         "bs58": "^4.0.1",
