@@ -1,5 +1,11 @@
 # @wallet-standard/wallets-backpack
 
+## 0.1.0-alpha.10
+
+### Patch Changes
+
+-   87a823d: Add guard clauses to register functions
+
 ## 0.1.0-alpha.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @wallet-standard/wallets-glow
 
+## 0.1.0-alpha.4
+
+### Patch Changes
+
+-   87a823d: Add guard clauses to register functions
+
 ## 0.1.0-alpha.3
 
 ### Patch Changes
