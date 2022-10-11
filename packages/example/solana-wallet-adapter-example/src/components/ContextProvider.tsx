@@ -10,6 +10,7 @@ import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/walle
 import { register as registerGlow } from '@wallet-standard/wallets-glow';
 import { register as registerBackpack } from '@wallet-standard/wallets-backpack';
 import { register as registerPhantom } from '@wallet-standard/wallets-phantom';
+import { register as registerSolflare } from '@wallet-standard/wallets-solflare';
 import { clusterApiUrl } from '@solana/web3.js';
 import { useStandardWalletAdapters } from '@wallet-standard/solana';
 import { SnackbarProvider, useSnackbar } from 'notistack';
@@ -68,6 +69,7 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         registerBackpack();
         registerGlow();
         registerPhantom();
+        registerSolflare();
     }, []);
 
     const { enqueueSnackbar } = useSnackbar();

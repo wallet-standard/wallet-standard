@@ -14,6 +14,9 @@
             "path": "../../wallets/phantom/tsconfig.all.json"
         },
         {
+            "path": "../../wallets/solflare/tsconfig.all.json"
+        },
+        {
             "path": "./tsconfig.base.json"
         }
     ]

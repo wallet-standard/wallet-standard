@@ -51,6 +51,7 @@
         "@wallet-standard/wallets-glow": "workspace:^",
         "@wallet-standard/wallets-backpack": "workspace:^",
         "@wallet-standard/wallets-phantom": "workspace:^",
+        "@wallet-standard/wallets-solflare": "workspace:^",
         "antd": "^4.22.6",
         "bs58": "^4.0.1",
         "next": "^12.3.1",
