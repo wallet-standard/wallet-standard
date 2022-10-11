@@ -253,7 +253,7 @@ export class SolflareWallet implements Wallet {
             const { message, account } = inputs[0]!;
             if (account !== this.#account) throw new Error('invalid account');
 
-            const signature = await window.solflare.signMessage(message);
+            const { signature } = await window.solflare.signMessage(message);
 
             outputs.push({ signedMessage: message, signature });
         } else if (inputs.length > 1) {
