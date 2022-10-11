@@ -4,5 +4,9 @@ import { GlowWallet } from './wallet.js';
 declare const window: WalletsWindow;
 
 export function register(): void {
-    (window.navigator.wallets ||= []).push(({ register }) => register(new GlowWallet()));
+    try {
+        (window.navigator.wallets ||= []).push(({ register }) => register(new GlowWallet()));
+    } catch (error) {
+        console.error(error);
+    }
 }
