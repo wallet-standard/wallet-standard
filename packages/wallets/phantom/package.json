@@ -28,7 +28,7 @@
     },
     "peerDependencies": {
         "@solana/web3.js": "^1.58.0",
-        "@types/bs58": "^4.0.1"
+        "bs58": "^4.0.1"
     },
     "dependencies": {
         "@wallet-standard/features": "workspace:^",
