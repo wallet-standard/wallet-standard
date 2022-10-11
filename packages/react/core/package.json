@@ -1,6 +1,6 @@
 {
     "name": "@wallet-standard/react-core",
-    "version": "0.1.0-alpha.1",
+    "version": "0.1.0-alpha.2",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
