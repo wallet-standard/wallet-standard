@@ -6,7 +6,7 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { WalletDialogProvider as MaterialUIWalletDialogProvider } from '@solana/wallet-adapter-material-ui';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/wallet-adapter-react-ui';
-// import { PhantomWalletAdapter, GlowWalletAdapter, BackpackWalletAdapter } from '@solana/wallet-adapter-wallets';
+// import { BackpackWalletAdapter, GlowWalletAdapter, PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { register as registerGlow } from '@wallet-standard/wallets-glow';
 import { register as registerBackpack } from '@wallet-standard/wallets-backpack';
 import { register as registerPhantom } from '@wallet-standard/wallets-phantom';
