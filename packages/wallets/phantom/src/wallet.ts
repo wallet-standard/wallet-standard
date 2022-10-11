@@ -2,6 +2,8 @@ import { Transaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
+    DisconnectFeature,
+    DisconnectMethod,
     EventsFeature,
     EventsListeners,
     EventsNames,
@@ -58,6 +60,7 @@ export class PhantomWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        DisconnectFeature &
         EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
@@ -67,6 +70,10 @@ export class PhantomWallet implements Wallet {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:disconnect': {
+                version: '1.0.0',
+                disconnect: this.#disconnect,
             },
             'standard:events': {
                 version: '1.0.0',
@@ -159,6 +166,10 @@ export class PhantomWallet implements Wallet {
         this.#connected();
 
         return { accounts: this.accounts };
+    };
+
+    #disconnect: DisconnectMethod = async () => {
+        await window.phantom.solana.disconnect();
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {

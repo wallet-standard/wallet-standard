@@ -2,6 +2,8 @@ import { Connection, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import type {
     ConnectFeature,
     ConnectMethod,
+    DisconnectFeature,
+    DisconnectMethod,
     EventsFeature,
     EventsListeners,
     EventsNames,
@@ -58,6 +60,7 @@ export class BackpackWallet implements Wallet {
     }
 
     get features(): ConnectFeature &
+        DisconnectFeature &
         EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
@@ -67,6 +70,10 @@ export class BackpackWallet implements Wallet {
             'standard:connect': {
                 version: '1.0.0',
                 connect: this.#connect,
+            },
+            'standard:disconnect': {
+                version: '1.0.0',
+                disconnect: this.#disconnect,
             },
             'standard:events': {
                 version: '1.0.0',
@@ -147,6 +154,10 @@ export class BackpackWallet implements Wallet {
         this.#connected();
 
         return { accounts: this.accounts };
+    };
+
+    #disconnect: DisconnectMethod = async () => {
+        await window.backpack.disconnect();
     };
 
     #on: EventsOnMethod = (event, listener) => {
