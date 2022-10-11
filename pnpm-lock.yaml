@@ -296,6 +296,7 @@ importers:
       '@wallet-standard/wallets-backpack': workspace:^
       '@wallet-standard/wallets-glow': workspace:^
       '@wallet-standard/wallets-phantom': workspace:^
+      '@wallet-standard/wallets-solflare': workspace:^
       antd: ^4.22.6
       bs58: ^4.0.1
       eslint: 8.22.0
@@ -327,6 +328,7 @@ importers:
       '@wallet-standard/wallets-backpack': link:../../wallets/backpack
       '@wallet-standard/wallets-glow': link:../../wallets/glow
       '@wallet-standard/wallets-phantom': link:../../wallets/phantom
+      '@wallet-standard/wallets-solflare': link:../../wallets/solflare
       antd: 4.23.5_biqbaboplfbrettd7655fr4n2y
       bs58: 4.0.1
       next: 12.3.1_6tziyx3dehkoeijunclpkpolha
@@ -589,6 +591,27 @@ importers:
       shx: 0.3.4
 
   packages/wallets/phantom:
+    specifiers:
+      '@solana/web3.js': ^1.58.0
+      '@types/bs58': ^4.0.1
+      '@types/node-fetch': ^2.6.2
+      '@wallet-standard/features': workspace:^
+      '@wallet-standard/solana-features': workspace:^
+      '@wallet-standard/standard': workspace:^
+      bs58: ^4.0.1
+      shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/features': link:../../core/features
+      '@wallet-standard/solana-features': link:../../solana/features
+      '@wallet-standard/standard': link:../../core/standard
+    devDependencies:
+      '@solana/web3.js': 1.63.1
+      '@types/bs58': 4.0.1
+      '@types/node-fetch': 2.6.2
+      bs58: 4.0.1
+      shx: 0.3.4
+
+  packages/wallets/solflare:
     specifiers:
       '@solana/web3.js': ^1.58.0
       '@types/bs58': ^4.0.1
