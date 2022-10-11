@@ -7,12 +7,12 @@ import { WalletDialogProvider as MaterialUIWalletDialogProvider } from '@solana/
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/wallet-adapter-react-ui';
 // import { BackpackWalletAdapter, GlowWalletAdapter, PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { register as registerGlow } from '@wallet-standard/wallets-glow';
-import { register as registerBackpack } from '@wallet-standard/wallets-backpack';
-import { register as registerPhantom } from '@wallet-standard/wallets-phantom';
-import { register as registerSolflare } from '@wallet-standard/wallets-solflare';
 import { clusterApiUrl } from '@solana/web3.js';
 import { useStandardWalletAdapters } from '@wallet-standard/solana';
+import { register as registerBackpack } from '@wallet-standard/wallets-backpack';
+import { register as registerGlow } from '@wallet-standard/wallets-glow';
+import { register as registerPhantom } from '@wallet-standard/wallets-phantom';
+import { register as registerSolflare } from '@wallet-standard/wallets-solflare';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useEffect, useMemo } from 'react';
