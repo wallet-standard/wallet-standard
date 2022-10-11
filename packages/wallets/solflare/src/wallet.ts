@@ -112,8 +112,9 @@ export class SolflareWallet implements Wallet {
             Object.freeze(this);
         }
 
-        window.solflare.on('connect', this.#connected, this);
-        window.solflare.on('disconnect', this.#disconnected, this);
+        solflare.on('connect', this.#connected, this);
+        solflare.on('disconnect', this.#disconnected, this);
+        solflare.on('accountChanged', this.#reconnected, this);
 
         this.#connected();
     }
@@ -150,6 +151,14 @@ export class SolflareWallet implements Wallet {
         if (this.#account) {
             this.#account = null;
             this.#emit('change', { accounts: this.accounts });
+        }
+    };
+
+    #reconnected = () => {
+        if (solflare.publicKey) {
+            this.#connected();
+        } else {
+            this.#disconnected();
         }
     };
 
