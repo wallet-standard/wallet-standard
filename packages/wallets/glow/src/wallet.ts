@@ -115,9 +115,9 @@ export class GlowWallet implements Wallet {
             Object.freeze(this);
         }
 
-        window.glow.on('connect', this.#connected, this);
-        window.glow.on('disconnect', this.#disconnected, this);
-        window.glow.on('accountChanged', this.#reconnected, this);
+        window.glowSolana.on('connect', this.#connected, this);
+        window.glowSolana.on('disconnect', this.#disconnected, this);
+        window.glowSolana.on('accountChanged', this.#reconnected, this);
 
         this.#connected();
     }
@@ -166,7 +166,7 @@ export class GlowWallet implements Wallet {
     };
 
     #connect: ConnectMethod = async ({ silent } = {}) => {
-        await window.glow.connect(silent ? { onlyIfTrusted: true } : undefined);
+        await window.glowSolana.connect(silent ? { onlyIfTrusted: true } : undefined);
 
         this.#connected();
 
@@ -174,7 +174,7 @@ export class GlowWallet implements Wallet {
     };
 
     #disconnect: DisconnectMethod = async () => {
-        await window.glow.disconnect();
+        await window.glowSolana.disconnect();
     };
 
     #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
