@@ -109,6 +109,6 @@ function guard(callback: () => void) {
     try {
         callback();
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
