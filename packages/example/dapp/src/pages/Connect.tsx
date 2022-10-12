@@ -13,9 +13,13 @@ export const Connect: FC = () => {
     useEffect(() => {
         async function connectOrDeselect() {
             try {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                await connect!();
-            } catch (err) {
+                await connect?.();
+            } catch (err: any) {
+                const didUserReject = err.code === 4001;
+                if (!didUserReject) {
+                    throw err;
+                }
+
                 setWallet(null);
             }
         }

@@ -8,6 +8,7 @@ import type {
     Wallet,
     WalletAccount,
 } from '@wallet-standard/core';
+import { UserRejectedRequestError } from '@wallet-standard/core';
 import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum';
 import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana';
 import bs58 from 'bs58';
@@ -128,7 +129,7 @@ export class MultiChainWallet implements Wallet {
         const accounts = await this.#rpc.callMethod('connect');
 
         if (accounts === null) {
-            throw new Error('The user rejected the request.');
+            throw new UserRejectedRequestError();
         }
 
         this.#accounts = accounts.map((account: { network: string; publicKey: Uint8Array }) => {
