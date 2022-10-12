@@ -1,7 +1,7 @@
 {
-    "name": "@wallet-standard/core",
-    "version": "0.1.0-alpha.3",
-    "author": "Solana Maintainers <maintainers@solana.foundation>",
+    "name": "@wallet-standard/errors",
+    "version": "0.1.0",
+    "author": "Exodus Maintainers <maintainers@exodus.io>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
     "type": "module",
@@ -25,13 +25,6 @@
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
-    },
-    "dependencies": {
-        "@wallet-standard/app": "workspace:^",
-        "@wallet-standard/errors": "workspace:^",
-        "@wallet-standard/features": "workspace:^",
-        "@wallet-standard/standard": "workspace:^",
-        "@wallet-standard/util": "workspace:^"
     },
     "devDependencies": {
         "shx": "^0.3.4"
