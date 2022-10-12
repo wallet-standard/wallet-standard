@@ -20,10 +20,10 @@ export const Connect: FC = () => {
             }
         }
 
-        if (wallet && !isConnected) {
+        if (wallet && connect && !isConnected) {
             connectOrDeselect();
         }
-    }, [wallet, isConnected, connect, setWallet]);
+    }, [wallet, connect, isConnected, setWallet]);
 
     if (isConnected) {
         return <Navigate to="/" replace={true} />;
