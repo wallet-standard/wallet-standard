@@ -224,7 +224,6 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');
 
-            // TODO: prefix according to https://github.com/solana-labs/solana/pull/26915
             if (!confirm('Do you want to sign this message?')) throw new Error('signature declined');
 
             outputs.push({

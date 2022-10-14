@@ -4,7 +4,6 @@ import type { SignTransactionInput, SignTransactionOutput } from '@wallet-standa
 export type SolanaSignTransactionFeature = {
     /** Namespace for the feature. */
     'solana:signTransaction': {
-        // TODO: think about feature versions more
         /** Version of the feature API. */
         version: SolanaSignTransactionVersion;
 
@@ -42,7 +41,6 @@ export interface SolanaSignTransactionInput extends SignTransactionInput {
 /** Output of signing and sending transactions. */
 export interface SolanaSignTransactionOutput extends SignTransactionOutput {}
 
-// TODO: figure out what options are actually needed
 /** Options for signing transactions. */
 export type SolanaSignTransactionOptions = {
     /** Preflight commitment level. */

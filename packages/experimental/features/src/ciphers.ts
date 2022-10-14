@@ -1,4 +1,3 @@
-// TODO: think about moving this out of utils
 /**
  * Default encryption algorithm in NaCl.
  * Curve25519 scalar multiplication, Salsa20 secret-key encryption, and Poly1305 one-time authentication.

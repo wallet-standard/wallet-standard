@@ -17,13 +17,9 @@ export interface Wallet {
      */
     readonly name: string;
 
-    /**
-     * Icon of the wallet, to be displayed by apps.
-     * Must be a data URI containing a base64-encoded SVG or PNG image.
-     */
+    /** Icon of the wallet, to be displayed by apps. */
     readonly icon: IconString;
 
-    // TODO: consider adding chain type
     /** Chains supported by the wallet. */
     readonly chains: IdentifierArray;
 

@@ -9,7 +9,6 @@ import type {
 export type SolanaSignAndSendTransactionFeature = {
     /** Namespace for the feature. */
     'solana:signAndSendTransaction': {
-        // TODO: think about feature versions more
         /** Version of the feature API. */
         version: SolanaSignAndSendTransactionVersion;
 
@@ -44,7 +43,6 @@ export interface SolanaSignAndSendTransactionInput extends SignAndSendTransactio
 /** Output of signing and sending transactions. */
 export interface SolanaSignAndSendTransactionOutput extends SignAndSendTransactionOutput {}
 
-// TODO: figure out what options are actually needed
 /** Options for signing and sending transactions. */
 export type SolanaSignAndSendTransactionOptions = SolanaSignTransactionOptions & {
     /** Desired commitment level. If provided, confirm the transaction after sending. */

@@ -7,7 +7,6 @@
 export type DisconnectFeature = {
     /** Namespace for the feature. */
     'standard:disconnect': {
-        // TODO: think about removing feature versions
         /** Version of the feature API. */
         version: DisconnectVersion;
 
