@@ -1,5 +1,11 @@
 # @wallet-standard/example-wallets
 
+## 0.1.1-alpha.2
+
+### Patch Changes
+
+-   @wallet-standard/solana@0.1.0-alpha.4
+
 ## 0.1.1-alpha.1
 
 ### Patch Changes
