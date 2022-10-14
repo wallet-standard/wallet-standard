@@ -515,25 +515,21 @@ importers:
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
       '@types/react': ^18.0.0
-      '@types/react-dom': ^18.0.0
       '@wallet-standard/app': workspace:^
       '@wallet-standard/solana-wallet-adapter': workspace:^
       '@wallet-standard/standard': workspace:^
       react: ^18.0.0
-      react-dom: ^18.0.0
       shx: ^0.3.4
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.18_@solana+web3.js@1.63.1
       '@wallet-standard/app': link:../../core/app
       '@wallet-standard/solana-wallet-adapter': link:../wallet-adapter
       '@wallet-standard/standard': link:../../core/standard
     devDependencies:
+      '@solana/wallet-adapter-base': 0.9.18_@solana+web3.js@1.63.1
       '@types/bs58': 4.0.1
       '@types/node-fetch': 2.6.2
       '@types/react': 18.0.21
-      '@types/react-dom': 18.0.6
       react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
       shx: 0.3.4
 
   packages/tmp/parcel-packager-webextension:
@@ -3044,7 +3040,6 @@ packages:
     dependencies:
       '@solana/web3.js': 1.63.1
       eventemitter3: 4.0.7
-    dev: false
 
   /@solana/wallet-adapter-bitkeep/0.3.14_@solana+web3.js@1.63.1:
     resolution: {integrity: sha512-qcufDj88fcoiDNtzno5Xzhi4JYQX7DiV4X9EyIcWBAKhdllmp9HKlZSIEfJ5xBV65qsPGvXzPr0mqaVq35eQig==}
