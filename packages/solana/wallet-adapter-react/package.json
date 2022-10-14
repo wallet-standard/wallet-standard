@@ -27,15 +27,16 @@
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "peerDependencies": {
+        "@solana/wallet-adapter-base": "*",
         "react": "*"
     },
     "dependencies": {
-        "@solana/wallet-adapter-base": "^0.9.18",
         "@wallet-standard/app": "workspace:^",
         "@wallet-standard/solana-wallet-adapter": "workspace:^",
         "@wallet-standard/standard": "workspace:^"
     },
     "devDependencies": {
+        "@solana/wallet-adapter-base": "^0.9.18",
         "@types/bs58": "^4.0.1",
         "@types/node-fetch": "^2.6.2",
         "@types/react": "^18.0.0",
