@@ -21,7 +21,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import type { Wallet, WalletAccount } from '@wallet-standard/standard';
-import { decode } from 'bs58';
+import bs58 from 'bs58';
 import { BackpackWalletAccount } from './account.js';
 import { getChainForEndpoint, getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
@@ -222,7 +222,7 @@ export class BackpackWallet implements Wallet {
                       publicKey
                   );
 
-            outputs.push({ signature: decode(signature) });
+            outputs.push({ signature: bs58.decode(signature) });
         } else if (inputs.length > 1) {
             for (const input of inputs) {
                 outputs.push(...(await this.#signAndSendTransaction(input)));

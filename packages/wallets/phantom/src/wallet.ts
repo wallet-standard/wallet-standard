@@ -21,7 +21,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import type { Wallet } from '@wallet-standard/standard';
-import { decode } from 'bs58';
+import bs58 from 'bs58';
 import { PhantomWalletAccount } from './account.js';
 import { icon } from './icon.js';
 import type { SolanaChain } from './solana.js';
@@ -193,7 +193,7 @@ export class PhantomWallet implements Wallet {
                 ...(skipPreflight === undefined ? undefined : { skipPreflight }),
             });
 
-            outputs.push({ signature: decode(signature) });
+            outputs.push({ signature: bs58.decode(signature) });
         } else if (inputs.length > 1) {
             for (const input of inputs) {
                 outputs.push(...(await this.#signAndSendTransaction(input)));

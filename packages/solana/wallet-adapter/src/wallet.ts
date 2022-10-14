@@ -29,7 +29,7 @@ import type {
 import { getEndpointForChain } from '@wallet-standard/solana-util';
 import type { IconString, Wallet } from '@wallet-standard/standard';
 import { arraysEqual, bytesEqual, ReadonlyWalletAccount } from '@wallet-standard/util';
-import { decode } from 'bs58';
+import bs58 from 'bs58';
 import { isVersionedTransaction } from './transaction.js';
 
 /** TODO: docs */
@@ -279,7 +279,7 @@ export class SolanaWalletAdapterWallet implements Wallet {
                 );
             }
 
-            outputs.push({ signature: decode(signature) });
+            outputs.push({ signature: bs58.decode(signature) });
         } else if (inputs.length > 1) {
             // Adapters have no `sendAllTransactions` method, so just sign and send each transaction in serial.
             for (const input of inputs) {

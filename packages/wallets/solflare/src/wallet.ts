@@ -22,7 +22,7 @@ import type {
     SolanaSignTransactionOutput,
 } from '@wallet-standard/solana-features';
 import type { Wallet } from '@wallet-standard/standard';
-import { decode } from 'bs58';
+import bs58 from 'bs58';
 import { SolflareWalletAccount } from './account.js';
 import { getEndpointForChain } from './endpoint.js';
 import { icon } from './icon.js';
@@ -195,7 +195,7 @@ export class SolflareWallet implements Wallet {
                 minContextSlot,
             });
 
-            outputs.push({ signature: decode(signature) });
+            outputs.push({ signature: bs58.decode(signature) });
         } else if (inputs.length > 1) {
             for (const input of inputs) {
                 outputs.push(...(await this.#signAndSendTransaction(input)));
