@@ -1,5 +1,11 @@
 # @wallet-standard/solana-wallet-adapter
 
+## 0.1.0-alpha.7
+
+### Patch Changes
+
+-   8886e83: Fix use of named imports from bs58
+
 ## 0.1.0-alpha.6
 
 ### Patch Changes

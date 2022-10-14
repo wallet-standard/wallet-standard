@@ -1,5 +1,11 @@
 # @wallet-standard/wallets-solflare
 
+## 0.1.0-alpha.4
+
+### Patch Changes
+
+-   8886e83: Fix use of named imports from bs58
+
 ## 0.1.0-alpha.3
 
 ### Patch Changes

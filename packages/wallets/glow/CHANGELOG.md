@@ -1,5 +1,11 @@
 # @wallet-standard/wallets-glow
 
+## 0.1.0-alpha.5
+
+### Patch Changes
+
+-   8886e83: Fix use of named imports from bs58
+
 ## 0.1.0-alpha.4
 
 ### Patch Changes
