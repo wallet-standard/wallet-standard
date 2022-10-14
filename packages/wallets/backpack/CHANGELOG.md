@@ -1,5 +1,11 @@
 # @wallet-standard/wallets-backpack
 
+## 0.1.0-alpha.11
+
+### Patch Changes
+
+-   8886e83: Fix use of named imports from bs58
+
 ## 0.1.0-alpha.10
 
 ### Patch Changes

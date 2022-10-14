@@ -1,5 +1,12 @@
 # @wallet-standard/example-wallets
 
+## 0.1.1-alpha.1
+
+### Patch Changes
+
+-   8886e83: Fix use of named imports from bs58
+    -   @wallet-standard/solana@0.1.0-alpha.3
+
 ## 0.1.1-alpha.0
 
 ### Patch Changes
