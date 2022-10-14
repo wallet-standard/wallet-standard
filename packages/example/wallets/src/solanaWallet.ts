@@ -27,7 +27,7 @@ import type {
     SolanaSignTransactionFeature,
 } from '@wallet-standard/solana';
 import { getEndpointForChain, SOLANA_CHAINS } from '@wallet-standard/solana';
-import { decode, encode } from 'bs58';
+import bs58 from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
 import {
     AbstractWallet,
@@ -127,7 +127,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 ],
             }),
             new LedgerWalletAccount({
-                address: encode(ledger.publicKey),
+                address: bs58.encode(ledger.publicKey),
                 publicKey: ledger.publicKey,
                 chains: SOLANA_CHAINS,
                 features: ['solana:signAndSendTransaction', 'solana:signTransaction'],
@@ -176,7 +176,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
 
             const signature = await sendAndConfirmTransaction(parsedTransaction, endpoint, options);
 
-            outputs.push({ signature: decode(signature) });
+            outputs.push({ signature: bs58.decode(signature) });
         }
 
         return outputs;

@@ -36,7 +36,7 @@ import type {
 import { getChainForEndpoint, getCommitment } from '@wallet-standard/solana-util';
 import type { Wallet, WalletAccount, WalletWithFeatures } from '@wallet-standard/standard';
 import { arraysEqual } from '@wallet-standard/util';
-import { encode } from 'bs58';
+import bs58 from 'bs58';
 import { isVersionedTransaction } from './transaction.js';
 
 /** TODO: docs */
@@ -287,7 +287,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
                 });
 
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return encode(signatures[0]!.signature);
+                return bs58.encode(signatures[0]!.signature);
             } catch (error: any) {
                 if (error instanceof WalletError) throw error;
                 throw new WalletSendTransactionError(error?.message, error);
