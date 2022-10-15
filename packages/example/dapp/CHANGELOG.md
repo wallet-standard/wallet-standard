@@ -1,5 +1,11 @@
 # @wallet-standard/example-dapp
 
+## 0.1.1-alpha.1
+
+### Patch Changes
+
+-   @wallet-standard/react@0.1.0-alpha.7
+
 ## 0.1.1-alpha.0
 
 ### Patch Changes
