@@ -1,8 +1,8 @@
-# [WIP] Wallet Standard
+# Wallet Standard
 
 Coming soon.
 
-See [packages/core/standard](packages/core/base) for a description of the goals of this project and its core API.
+See [packages/core/base](packages/core/base) for a description of the goals of this project and its core API.
 
 # typescript-monorepo
 
