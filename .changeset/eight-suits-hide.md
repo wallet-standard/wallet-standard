@@ -1,5 +1,5 @@
 ---
-'wallet-standard': patch
+'walletstandard': patch
 ---
 
-Add wallet-standard package
+Add walletstandard package
