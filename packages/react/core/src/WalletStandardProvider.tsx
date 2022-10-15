@@ -2,6 +2,7 @@ import type { FC, ReactNode } from 'react';
 import React from 'react';
 import {
     ConnectProvider,
+    DisconnectProvider,
     SignAndSendTransactionProvider,
     SignMessageProvider,
     SignTransactionProvider,
@@ -23,11 +24,13 @@ export const WalletStandardProvider: FC<WalletStandardProviderProps> = ({ childr
             <WalletProvider>
                 <WalletAccountProvider>
                     <ConnectProvider onError={onError}>
-                        <SignAndSendTransactionProvider onError={onError}>
-                            <SignTransactionProvider onError={onError}>
-                                <SignMessageProvider onError={onError}>{children}</SignMessageProvider>
-                            </SignTransactionProvider>
-                        </SignAndSendTransactionProvider>
+                        <DisconnectProvider onError={onError}>
+                            <SignAndSendTransactionProvider onError={onError}>
+                                <SignTransactionProvider onError={onError}>
+                                    <SignMessageProvider onError={onError}>{children}</SignMessageProvider>
+                                </SignTransactionProvider>
+                            </SignAndSendTransactionProvider>
+                        </DisconnectProvider>
                     </ConnectProvider>
                 </WalletAccountProvider>
             </WalletProvider>

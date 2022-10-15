@@ -17,7 +17,7 @@ export function hasEventsFeature(features: Wallet['features']): features is Even
 /** TODO: docs */
 export const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
     const [wallet, setWallet] = useState<Wallet | null>(null);
-    const [{ version, name, icon, chains, features, accounts }, setWalletProperties] = useState(
+    const [{ version, name, icon, chains, features, accounts }, setWalletProperties] = useState(() =>
         getWalletProperties(wallet)
     );
 
