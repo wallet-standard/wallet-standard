@@ -45,7 +45,16 @@ importers:
 
   packages/_/_:
     specifiers:
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/ethereum': workspace:^
+      '@wallet-standard/experimental': workspace:^
+      '@wallet-standard/react': workspace:^
       shx: ^0.3.4
+    dependencies:
+      '@wallet-standard/core': link:../../core/_
+      '@wallet-standard/ethereum': link:../../ethereum/_
+      '@wallet-standard/experimental': link:../../experimental/_
+      '@wallet-standard/react': link:../../react/_
     devDependencies:
       shx: 0.3.4
 
