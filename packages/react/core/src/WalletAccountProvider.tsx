@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/standard';
+import type { WalletAccount } from '@wallet-standard/base';
 import type { FC, ReactNode } from 'react';
 import React, { useState } from 'react';
 import { WalletAccountContext } from './useWalletAccount.js';

@@ -1,7 +1,6 @@
 {
     "private": true,
     "name": "@wallet-standard/example-dapp",
-    "version": "0.1.1-alpha.1",
     "author": "Exodus Maintainers <maintainers@exodus.io>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",

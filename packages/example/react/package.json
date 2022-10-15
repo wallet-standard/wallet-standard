@@ -1,7 +1,6 @@
 {
     "private": true,
     "name": "@wallet-standard/example-react",
-    "version": "0.1.1-alpha.3",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
@@ -14,10 +13,11 @@
         "@solana/wallet-adapter-base": "^0.9.17",
         "@solana/wallet-adapter-glow": "^0.1.12",
         "@solana/wallet-adapter-phantom": "^0.9.16",
+        "@solana/wallet-standard": "^0.1.0-alpha.7",
         "@wallet-standard/core": "workspace:^",
         "@wallet-standard/react": "workspace:^",
-        "@wallet-standard/solana": "workspace:^",
         "@solana/web3.js": "^1.51.0",
+        "bs58": "^4.0.1",
         "react": "^18.0.0",
         "react-dom": "^18.0.0"
     },

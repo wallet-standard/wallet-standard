@@ -1,4 +1,4 @@
-import type { WalletAccount, WalletWithFeatures } from '@wallet-standard/standard';
+import type { WalletAccount, WalletWithFeatures } from '@wallet-standard/base';
 import type { ConnectFeature, EventsFeature, SignMessageFeature, SignTransactionFeature, StandardFeatures } from '..';
 
 type GlowFeature = {

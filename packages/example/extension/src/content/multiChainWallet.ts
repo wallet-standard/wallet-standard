@@ -9,7 +9,7 @@ import type {
     WalletAccount,
 } from '@wallet-standard/core';
 import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum';
-import { SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana';
+import { SOLANA_MAINNET_CHAIN } from '@solana/wallet-standard';
 import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
 import type { RPC } from '../messages';

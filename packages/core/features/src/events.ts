@@ -1,4 +1,4 @@
-import type { Wallet } from '@wallet-standard/standard';
+import type { Wallet } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type EventsFeature = {

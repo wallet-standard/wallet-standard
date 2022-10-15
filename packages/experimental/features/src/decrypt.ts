@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/standard';
+import type { WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type DecryptFeature = {

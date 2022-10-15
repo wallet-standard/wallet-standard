@@ -25,8 +25,8 @@ import type {
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
     SolanaSignTransactionFeature,
-} from '@wallet-standard/solana';
-import { getEndpointForChain, SOLANA_CHAINS } from '@wallet-standard/solana';
+} from '@solana/wallet-standard';
+import { getEndpointForChain, SOLANA_CHAINS } from '@solana/wallet-standard';
 import bs58 from 'bs58';
 import { box, randomBytes, sign } from 'tweetnacl';
 import {

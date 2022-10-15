@@ -1,4 +1,4 @@
-import type { Wallet, WalletsCallback, WalletsWindow } from '@wallet-standard/standard';
+import type { Wallet, WalletsCallback, WalletsWindow } from '@wallet-standard/base';
 
 declare const window: WalletsWindow;
 

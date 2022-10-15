@@ -1,4 +1,4 @@
-import type { WalletWithFeatures } from '@wallet-standard/standard';
+import type { WalletWithFeatures } from '@wallet-standard/base';
 import type { DecryptFeature } from './decrypt.js';
 import type { EncryptFeature } from './encrypt.js';
 
