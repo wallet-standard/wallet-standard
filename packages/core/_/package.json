@@ -1,6 +1,6 @@
 {
     "name": "@wallet-standard/core",
-    "version": "0.1.0-alpha.3",
+    "version": "1.0.0-rc.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
@@ -28,8 +28,8 @@
     },
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/base": "workspace:^",
         "@wallet-standard/features": "workspace:^",
-        "@wallet-standard/standard": "workspace:^",
         "@wallet-standard/util": "workspace:^"
     },
     "devDependencies": {

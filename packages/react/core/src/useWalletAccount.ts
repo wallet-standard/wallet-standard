@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/standard';
+import type { WalletAccount } from '@wallet-standard/base';
 import { createContext, useContext } from 'react';
 import { createDefaultContext } from './context.js';
 

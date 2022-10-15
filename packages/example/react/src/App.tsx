@@ -1,7 +1,7 @@
 import { GlowWalletAdapter } from '@solana/wallet-adapter-glow';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { useWallets, WalletProvider, WalletsProvider } from '@wallet-standard/react';
-import { registerWalletAdapter, SOLANA_MAINNET_CHAIN } from '@wallet-standard/solana';
+import { registerWalletAdapter, SOLANA_MAINNET_CHAIN } from '@solana/wallet-standard';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect } from 'react';
 

@@ -1,4 +1,4 @@
-import type { Wallet, WalletAccount, WalletsWindow } from '@wallet-standard/standard';
+import type { Wallet, WalletAccount, WalletsWindow } from '@wallet-standard/base';
 import { initialize } from '..';
 
 type FooSignTransactionFeature = {

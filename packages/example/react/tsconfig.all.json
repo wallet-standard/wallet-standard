@@ -8,9 +8,6 @@
             "path": "../../react/_/tsconfig.all.json"
         },
         {
-            "path": "../../solana/_/tsconfig.all.json"
-        },
-        {
             "path": "./tsconfig.base.json"
         }
     ]

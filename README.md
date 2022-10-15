@@ -2,7 +2,7 @@
 
 Coming soon.
 
-See [packages/core/standard](packages/core/standard) for a description of the goals of this project and its core API.
+See [packages/core/standard](packages/core/base) for a description of the goals of this project and its core API.
 
 # typescript-monorepo
 

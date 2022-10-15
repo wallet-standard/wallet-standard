@@ -11,10 +11,10 @@
             "path": "./packages/core/app/tsconfig.all.json"
         },
         {
-            "path": "./packages/core/features/tsconfig.all.json"
+            "path": "./packages/core/base/tsconfig.all.json"
         },
         {
-            "path": "./packages/core/standard/tsconfig.all.json"
+            "path": "./packages/core/features/tsconfig.all.json"
         },
         {
             "path": "./packages/core/util/tsconfig.all.json"
@@ -35,12 +35,6 @@
             "path": "./packages/example/react/tsconfig.all.json"
         },
         {
-            "path": "./packages/example/solana-wallet-adapter/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/example/solana-wallet-adapter-example/tsconfig.all.json"
-        },
-        {
             "path": "./packages/example/wallets/tsconfig.all.json"
         },
         {
@@ -54,36 +48,6 @@
         },
         {
             "path": "./packages/react/core/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/solana/_/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/solana/chains/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/solana/features/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/solana/util/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/solana/wallet-adapter/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/solana/wallet-adapter-react/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/wallets/backpack/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/wallets/glow/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/wallets/phantom/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/wallets/solflare/tsconfig.all.json"
         }
     ]
 }

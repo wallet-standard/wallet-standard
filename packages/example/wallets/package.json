@@ -1,7 +1,6 @@
 {
     "private": true,
     "name": "@wallet-standard/example-wallets",
-    "version": "0.1.1-alpha.2",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
@@ -15,24 +14,16 @@
         "import": "./lib/esm/index.js",
         "types": "./lib/types/index.d.ts"
     },
-    "files": [
-        "lib",
-        "src",
-        "LICENSE"
-    ],
-    "publishConfig": {
-        "access": "public"
-    },
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
+        "@solana/wallet-standard": "^0.1.0-alpha.7",
+        "@solana/web3.js": "^1.51.0",
         "@wallet-standard/core": "workspace:^",
         "@wallet-standard/ethereum": "workspace:^",
         "@wallet-standard/experimental": "workspace:^",
-        "@wallet-standard/solana": "workspace:^",
-        "@solana/web3.js": "^1.51.0",
         "bs58": "^4.0.1",
         "ethers": "^5.6.9",
         "tweetnacl": "^1.0.3"

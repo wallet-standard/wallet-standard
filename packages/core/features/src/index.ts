@@ -1,4 +1,4 @@
-import type { WalletWithFeatures } from '@wallet-standard/standard';
+import type { WalletWithFeatures } from '@wallet-standard/base';
 import type { ConnectFeature } from './connect.js';
 import type { DisconnectFeature } from './disconnect.js';
 import type { EventsFeature } from './events.js';

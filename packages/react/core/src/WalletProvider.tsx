@@ -1,5 +1,5 @@
 import type { EventsFeature } from '@wallet-standard/features';
-import type { Wallet } from '@wallet-standard/standard';
+import type { Wallet } from '@wallet-standard/base';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect, useState } from 'react';
 import { getWalletProperties, WalletContext } from './useWallet.js';

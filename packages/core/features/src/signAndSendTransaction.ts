@@ -1,4 +1,4 @@
-import type { IdentifierString } from '@wallet-standard/standard';
+import type { IdentifierString } from '@wallet-standard/base';
 import type { SignTransactionInput } from './signTransaction.js';
 
 /** TODO: docs */
@@ -8,7 +8,6 @@ export type SignAndSendTransactionFeature = {
         /** Version of the feature API. */
         version: SignAndSendTransactionVersion;
 
-        // TODO: decide if signAndSendTransaction makes sense for multiple transactions
         /**
          * Sign transactions using the account's secret key and send them to the chain.
          *

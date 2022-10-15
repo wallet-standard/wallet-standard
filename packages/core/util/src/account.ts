@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/standard';
+import type { WalletAccount } from '@wallet-standard/base';
 
 export class ReadonlyWalletAccount implements WalletAccount {
     readonly #address: WalletAccount['address'];

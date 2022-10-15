@@ -11,9 +11,6 @@
             "path": "../../experimental/_/tsconfig.all.json"
         },
         {
-            "path": "../../solana/_/tsconfig.all.json"
-        },
-        {
             "path": "./tsconfig.cjs.json"
         },
         {
