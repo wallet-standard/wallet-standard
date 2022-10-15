@@ -2,6 +2,7 @@
   "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
+    "wallet-standard": "0.1.0-alpha.0",
     "@wallet-standard/core": "0.1.0-alpha.2",
     "@wallet-standard/app": "0.1.0-alpha.5",
     "@wallet-standard/features": "0.1.0-alpha.3",
