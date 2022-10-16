@@ -19,7 +19,7 @@
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
-        "@solana/wallet-standard": "^0.1.0-alpha.7",
+        "@solana/wallet-standard": "^1.0.0-rc.0",
         "@solana/web3.js": "^1.51.0",
         "@wallet-standard/core": "workspace:^",
         "@wallet-standard/ethereum": "workspace:^",
