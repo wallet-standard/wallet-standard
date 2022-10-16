@@ -1,10 +1,8 @@
 # Wallet Standard
 
-Coming soon.
-
 See [packages/core/base](packages/core/base) for a description of the goals of this project and its core API.
 
-# typescript-monorepo
+# [typescript-monorepo](https://github.com/jordansexton/typescript-monorepo)
 
 This is a simple monorepo template with some specific design goals:
 

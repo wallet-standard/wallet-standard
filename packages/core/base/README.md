@@ -1,4 +1,6 @@
-# [WIP] Wallet Standard
+# Wallet Standard
+
+**NOTE: This document is no longer up to date with respect to the code. It will be updated soon!**
 
 This package outlines the Wallet Standard.
 
@@ -12,9 +14,10 @@ Wallet and dapp devs are encouraged to provide their feedback and have it integr
 
 ## Code
 
-- [Global `window.navigator.wallets` interface](src/window.ts)
-- [Wallet interface](src/wallet.ts)
-- [Example of how Standard Wallets attach to the window](../../example/wallets/src/window.ts)
+- Global [`window.navigator.wallets`](src/window.ts) interface
+- [`Wallet`](src/wallet.ts) and [`WalletAccount`](src/account.ts) interfaces
+- App [`initialize()`](../app/src/initialize.ts) function
+- [Example](../../example/wallets/src/window.ts) of how wallets attach to the window
 
 ## Design Principles and Goals
 
