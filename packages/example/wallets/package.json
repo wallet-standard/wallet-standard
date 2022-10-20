@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@solana/wallet-standard": "^1.0.0-rc.0",
-        "@solana/web3.js": "^1.51.0",
+        "@solana/web3.js": "^1.58.0",
         "@wallet-standard/core": "workspace:^",
         "@wallet-standard/ethereum": "workspace:^",
         "@wallet-standard/experimental": "workspace:^",
