@@ -15,10 +15,10 @@ export interface Wallets {
     /**
      * TODO: docs
      */
-    push(...callbacks: ReadonlyArray<WalletsCallback>): void;
+    push(...callbacks: WalletsCallback[]): void;
 }
 
 /**
  * TODO: docs
  */
-export type WalletsCallback = (wallets: { register(...wallets: ReadonlyArray<Wallet>): () => void }) => void;
+export type WalletsCallback = (wallets: { register(...wallets: Wallet[]): () => void }) => void;

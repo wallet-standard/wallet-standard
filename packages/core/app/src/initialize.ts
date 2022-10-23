@@ -32,7 +32,7 @@ export interface InitializedWallets {
     /**
      * TODO: docs
      */
-    register(...wallets: ReadonlyArray<Wallet>): () => void;
+    register(...wallets: Wallet[]): () => void;
 
     /**
      * TODO: docs
@@ -55,14 +55,14 @@ export interface InitializedWalletsEvents {
      *
      * @param wallets Wallets that were registered.
      */
-    register(...wallets: ReadonlyArray<Wallet>): void;
+    register(...wallets: Wallet[]): void;
 
     /**
      * Emitted when wallets are unregistered.
      *
      * @param wallets Wallets that were unregistered.
      */
-    unregister(...wallets: ReadonlyArray<Wallet>): void;
+    unregister(...wallets: Wallet[]): void;
 }
 
 /** TODO: docs */
@@ -71,11 +71,11 @@ export type InitializedWalletsEventNames = keyof InitializedWalletsEvents;
 const registered = new Set<Wallet>();
 const listeners: { [E in InitializedWalletsEventNames]?: InitializedWalletsEvents[E][] } = {};
 
-function push(...callbacks: ReadonlyArray<WalletsCallback>): void {
+function push(...callbacks: WalletsCallback[]): void {
     callbacks.forEach((callback) => guard(() => callback({ register })));
 }
 
-function register(...wallets: ReadonlyArray<Wallet>): () => void {
+function register(...wallets: Wallet[]): () => void {
     // Filter out wallets that have already been registered.
     // This prevents the same wallet from being registered twice, but it also prevents wallets from being
     // unregistered by reusing a reference to the wallet to obtain the unregister function for it.

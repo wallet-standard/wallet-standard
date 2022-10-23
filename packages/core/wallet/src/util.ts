@@ -23,7 +23,7 @@ export function arraysEqual<T>(a: Indexed<T>, b: Indexed<T>): boolean {
 }
 
 /** TODO: docs */
-export function concatBytes(first: Uint8Array, ...others: ReadonlyArray<Uint8Array>): Uint8Array {
+export function concatBytes(first: Uint8Array, ...others: Uint8Array[]): Uint8Array {
     const length = others.reduce((length, bytes) => length + bytes.length, first.length);
     const bytes = new Uint8Array(length);
 
