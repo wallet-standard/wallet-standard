@@ -1,5 +1,5 @@
 {
-    "name": "@wallet-standard/util",
+    "name": "@wallet-standard/wallet",
     "version": "1.0.0-rc.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",

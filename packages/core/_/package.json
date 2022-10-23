@@ -30,7 +30,7 @@
         "@wallet-standard/app": "workspace:^",
         "@wallet-standard/base": "workspace:^",
         "@wallet-standard/features": "workspace:^",
-        "@wallet-standard/util": "workspace:^"
+        "@wallet-standard/wallet": "workspace:^"
     },
     "devDependencies": {
         "shx": "^0.3.4"
