@@ -1,4 +1,4 @@
-import { initialize } from '@wallet-standard/app';
+import { initializeWindowNavigatorWallets } from '@wallet-standard/app';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { WalletsContext } from './useWallets.js';
@@ -11,7 +11,7 @@ export interface WalletsProviderProps {
 /** TODO: docs */
 export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
     // Initialize `window.navigator.wallets` and obtain a synchronous API.
-    const { get, on } = useMemo(() => initialize(), []);
+    const { get, on } = useMemo(() => initializeWindowNavigatorWallets(), []);
 
     // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
     const [wallets, setWallets] = useState(() => get());

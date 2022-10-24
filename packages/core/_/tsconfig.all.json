@@ -11,7 +11,7 @@
             "path": "../features/tsconfig.all.json"
         },
         {
-            "path": "../util/tsconfig.all.json"
+            "path": "../wallet/tsconfig.all.json"
         },
         {
             "path": "./tsconfig.cjs.json"

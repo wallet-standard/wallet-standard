@@ -1,38 +1,59 @@
-import type { Wallet, WalletsCallback, WalletsWindow } from '@wallet-standard/base';
+import type { NavigatorWalletsWindow, Wallet, WindowNavigatorWalletsPushCallback } from '@wallet-standard/base';
 
-declare const window: WalletsWindow;
+declare const window: NavigatorWalletsWindow;
 
-let initializedWallets: InitializedWallets | undefined = undefined;
+let initialized: InitializedWindowNavigatorWallets | undefined = undefined;
 
 /**
  * TODO: docs
  */
-export function initialize(): InitializedWallets {
-    // If the API is already initialized by us, just return.
-    if (initializedWallets) return initializedWallets;
+export function initializeWindowNavigatorWallets(): InitializedWindowNavigatorWallets {
+    // If we've already initialized, just return.
+    if (initialized) return initialized;
+    // If we're not in a window (e.g. server-side rendering), just return.
+    if (typeof window === 'undefined') return (initialized = Object.freeze({ register, get, on }));
 
-    // If we're not in a window (e.g. server-side rendering), initialize and return.
-    if (typeof window === 'undefined') return (initializedWallets = Object.freeze({ register, get, on }));
-
-    // Since we didn't initialize the API, if it's not array, it was initialized externally, so throw an error.
+    // Initialize the window.navigator.wallets.push API.
     const wallets = (window.navigator.wallets ||= []);
-    if (!Array.isArray(wallets)) throw new Error('window.navigator.wallets was already initialized');
+    if (Array.isArray(wallets)) {
+        try {
+            // Replace it with our push API.
+            Object.defineProperty(window.navigator, 'wallets', {
+                value: Object.freeze({ push }),
+                // These normally default to false, but are required if window.navigator.wallets was already defined.
+                writable: false,
+                configurable: false,
+                enumerable: false,
+            });
+            // Call the callbacks.
+            push(...wallets);
+        } catch (error) {
+            console.error(
+                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.',
+                error
+            );
+        }
+    } else {
+        try {
+            // It's an object, so replace its push API, and the setter must call our push API with the callbacks.
+            window.navigator.wallets.push = push;
+        } catch (error) {
+            console.error(
+                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.',
+                error
+            );
+        }
+    }
 
-    // Initialize the API and overwrite window.navigator.wallets with a non-writable push API.
-    initializedWallets = Object.freeze({ register, get, on });
-    Object.defineProperty(window.navigator, 'wallets', { value: Object.freeze({ push }) });
-
-    // Call all the wallet callbacks and return.
-    push(...wallets);
-    return initializedWallets;
+    return (initialized = Object.freeze({ register, get, on }));
 }
 
 /** TODO: docs */
-export interface InitializedWallets {
+export interface InitializedWindowNavigatorWallets {
     /**
      * TODO: docs
      */
-    register(...wallets: ReadonlyArray<Wallet>): () => void;
+    register(...wallets: Wallet[]): () => void;
 
     /**
      * TODO: docs
@@ -55,14 +76,14 @@ export interface InitializedWalletsEvents {
      *
      * @param wallets Wallets that were registered.
      */
-    register(...wallets: ReadonlyArray<Wallet>): void;
+    register(...wallets: Wallet[]): void;
 
     /**
      * Emitted when wallets are unregistered.
      *
      * @param wallets Wallets that were unregistered.
      */
-    unregister(...wallets: ReadonlyArray<Wallet>): void;
+    unregister(...wallets: Wallet[]): void;
 }
 
 /** TODO: docs */
@@ -71,11 +92,11 @@ export type InitializedWalletsEventNames = keyof InitializedWalletsEvents;
 const registered = new Set<Wallet>();
 const listeners: { [E in InitializedWalletsEventNames]?: InitializedWalletsEvents[E][] } = {};
 
-function push(...callbacks: ReadonlyArray<WalletsCallback>): void {
+function push(...callbacks: WindowNavigatorWalletsPushCallback[]): void {
     callbacks.forEach((callback) => guard(() => callback({ register })));
 }
 
-function register(...wallets: ReadonlyArray<Wallet>): () => void {
+function register(...wallets: Wallet[]): () => void {
     // Filter out wallets that have already been registered.
     // This prevents the same wallet from being registered twice, but it also prevents wallets from being
     // unregistered by reusing a reference to the wallet to obtain the unregister function for it.

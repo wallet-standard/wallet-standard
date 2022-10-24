@@ -1,9 +1,12 @@
 {
-    "name": "walletstandard",
-    "version": "0.1.0-rc.0",
+    "name": "wallet-standard",
+    "version": "1.0.0-rc.1",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
+    "engines": {
+        "node": ">=14"
+    },
     "type": "module",
     "sideEffects": false,
     "main": "./lib/cjs/index.js",
@@ -27,10 +30,7 @@
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
-        "@wallet-standard/core": "workspace:^",
-        "@wallet-standard/ethereum": "workspace:^",
-        "@wallet-standard/experimental": "workspace:^",
-        "@wallet-standard/react": "workspace:^"
+        "@wallet-standard/core": "workspace:*"
     },
     "devDependencies": {
         "shx": "^0.3.4"

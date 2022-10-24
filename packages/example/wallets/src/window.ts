@@ -1,9 +1,9 @@
-import type { WalletsWindow } from '@wallet-standard/core';
-import { initialize } from '@wallet-standard/core';
+import type { NavigatorWalletsWindow } from '@wallet-standard/core';
+import { initializeWindowNavigatorWallets } from '@wallet-standard/core';
 import { EthereumWallet } from './ethereumWallet.js';
 import { SolanaWallet } from './solanaWallet.js';
 
-declare const window: WalletsWindow;
+declare const window: NavigatorWalletsWindow;
 
 (function () {
     // The dapp hasn't loaded yet, so the first wallet to load gets or creates a queue, and registers itself on the window
@@ -12,7 +12,7 @@ declare const window: WalletsWindow;
     // ... time passes, the dapp loads ...
 
     // The dapp replaces the queue with an object API, and runs any queued commands
-    const { get, on } = initialize();
+    const { get, on } = initializeWindowNavigatorWallets();
 
     // The dapp gets all the wallets that have been registered so far, receiving all the registered wallets, which it
     // can add to its own state context

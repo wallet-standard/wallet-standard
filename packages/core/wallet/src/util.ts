@@ -23,7 +23,7 @@ export function arraysEqual<T>(a: Indexed<T>, b: Indexed<T>): boolean {
 }
 
 /** TODO: docs */
-export function concatBytes(first: Uint8Array, ...others: ReadonlyArray<Uint8Array>): Uint8Array {
+export function concatBytes(first: Uint8Array, ...others: Uint8Array[]): Uint8Array {
     const length = others.reduce((length, bytes) => length + bytes.length, first.length);
     const bytes = new Uint8Array(length);
 
@@ -42,4 +42,13 @@ export function pick<T, K extends keyof T>(object: T, ...keys: K[]): Pick<T, K> 
         picked[key] = object[key];
     }
     return picked;
+}
+
+/** TODO: docs */
+export function guard(callback: () => void) {
+    try {
+        callback();
+    } catch (error) {
+        console.error(error);
+    }
 }

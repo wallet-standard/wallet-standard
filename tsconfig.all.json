@@ -17,7 +17,7 @@
             "path": "./packages/core/features/tsconfig.all.json"
         },
         {
-            "path": "./packages/core/util/tsconfig.all.json"
+            "path": "./packages/core/wallet/tsconfig.all.json"
         },
         {
             "path": "./packages/ethereum/_/tsconfig.all.json"
