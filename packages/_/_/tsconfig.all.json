@@ -5,15 +5,6 @@
             "path": "../../core/_/tsconfig.all.json"
         },
         {
-            "path": "../../ethereum/_/tsconfig.all.json"
-        },
-        {
-            "path": "../../experimental/_/tsconfig.all.json"
-        },
-        {
-            "path": "../../react/_/tsconfig.all.json"
-        },
-        {
             "path": "./tsconfig.cjs.json"
         },
         {
