@@ -2,16 +2,16 @@ import type { NavigatorWalletsWindow, Wallet, WindowNavigatorWalletsPushCallback
 
 declare const window: NavigatorWalletsWindow;
 
-let initialized: InitializedWindowNavigatorWallets | undefined = undefined;
+let initializedWallets: InitializedWallets | undefined = undefined;
 
 /**
  * TODO: docs
  */
-export function initializeWindowNavigatorWallets(): InitializedWindowNavigatorWallets {
+export function initializeWindowNavigatorWallets(): InitializedWallets {
     // If we've already initialized, just return.
-    if (initialized) return initialized;
+    if (initializedWallets) return initializedWallets;
     // If we're not in a window (e.g. server-side rendering), just return.
-    if (typeof window === 'undefined') return (initialized = Object.freeze({ register, get, on }));
+    if (typeof window === 'undefined') return (initializedWallets = Object.freeze({ register, get, on }));
 
     // Initialize the window.navigator.wallets.push API.
     const wallets = (window.navigator.wallets ||= []);
@@ -45,11 +45,11 @@ export function initializeWindowNavigatorWallets(): InitializedWindowNavigatorWa
         }
     }
 
-    return (initialized = Object.freeze({ register, get, on }));
+    return (initializedWallets = Object.freeze({ register, get, on }));
 }
 
 /** TODO: docs */
-export interface InitializedWindowNavigatorWallets {
+interface InitializedWallets {
     /**
      * TODO: docs
      */
@@ -70,7 +70,7 @@ export interface InitializedWindowNavigatorWallets {
 }
 
 /** Events emitted by the global `wallets` object. */
-export interface InitializedWalletsEvents {
+interface InitializedWalletsEvents {
     /**
      * Emitted when wallets are registered.
      *
@@ -87,7 +87,7 @@ export interface InitializedWalletsEvents {
 }
 
 /** TODO: docs */
-export type InitializedWalletsEventNames = keyof InitializedWalletsEvents;
+type InitializedWalletsEventNames = keyof InitializedWalletsEvents;
 
 const registered = new Set<Wallet>();
 const listeners: { [E in InitializedWalletsEventNames]?: InitializedWalletsEvents[E][] } = {};
