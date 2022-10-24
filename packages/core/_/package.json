@@ -30,10 +30,10 @@
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
-        "@wallet-standard/app": "workspace:^",
-        "@wallet-standard/base": "workspace:^",
-        "@wallet-standard/features": "workspace:^",
-        "@wallet-standard/wallet": "workspace:^"
+        "@wallet-standard/app": "workspace:*",
+        "@wallet-standard/base": "workspace:*",
+        "@wallet-standard/features": "workspace:*",
+        "@wallet-standard/wallet": "workspace:*"
     },
     "devDependencies": {
         "shx": "^0.3.4"
