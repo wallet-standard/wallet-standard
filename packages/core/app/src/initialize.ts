@@ -29,7 +29,7 @@ export function initializeWindowNavigatorWallets(): InitializedWallets {
             push(...wallets);
         } catch (error) {
             console.error(
-                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.',
+                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.\n',
                 error
             );
         }
@@ -39,7 +39,7 @@ export function initializeWindowNavigatorWallets(): InitializedWallets {
             window.navigator.wallets.push = push;
         } catch (error) {
             console.error(
-                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.',
+                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.\n',
                 error
             );
         }
