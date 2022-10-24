@@ -5,7 +5,7 @@ export type IdentifierString = `${string}:${string}`;
 export type IdentifierArray = ReadonlyArray<IdentifierString>;
 
 /** An object where the keys are namespaced identifiers in the format `${namespace}:${string}`. */
-export type IdentifierRecord<T> = Record<IdentifierString, T>;
+export type IdentifierRecord<T> = Readonly<Record<IdentifierString, T>>;
 
 /** TODO: docs */
 export type WalletVersion = '1.0.0';

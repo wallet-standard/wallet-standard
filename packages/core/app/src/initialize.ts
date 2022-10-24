@@ -1,52 +1,41 @@
-import type { NavigatorWalletsWindow, Wallet, WindowNavigatorWalletsPushCallback } from '@wallet-standard/base';
+import type {
+    AppInitializeEvent as AppInitializeEventInterface,
+    AppInitializeEventAPI,
+    Wallet,
+    WalletEventsWindow,
+} from '@wallet-standard/base';
 
-declare const window: NavigatorWalletsWindow;
-
-let initializedWallets: InitializedWallets | undefined = undefined;
+declare const window: WalletEventsWindow | undefined;
 
 /**
  * TODO: docs
  */
-export function initializeWindowNavigatorWallets(): InitializedWallets {
-    // If we've already initialized, just return.
+export function initializeApp(): InitializedWallets {
+    // If we've already initialized, just return. Otherwise, initialize.
     if (initializedWallets) return initializedWallets;
-    // If we're not in a window (e.g. server-side rendering), just return.
-    if (typeof window === 'undefined') return (initializedWallets = Object.freeze({ register, get, on }));
+    initializedWallets = Object.freeze({ register, get, on });
 
-    // Initialize the window.navigator.wallets.push API.
-    const wallets = (window.navigator.wallets ||= []);
-    if (Array.isArray(wallets)) {
-        try {
-            // Replace it with our push API.
-            Object.defineProperty(window.navigator, 'wallets', {
-                value: Object.freeze({ push }),
-                // These normally default to false, but are required if window.navigator.wallets was already defined.
-                writable: false,
-                configurable: false,
-                enumerable: false,
-            });
-            // Call the callbacks.
-            push(...wallets);
-        } catch (error) {
-            console.error(
-                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.\n',
-                error
-            );
-        }
-    } else {
-        try {
-            // It's an object, so replace its push API, and the setter must call our push API with the callbacks.
-            window.navigator.wallets.push = push;
-        } catch (error) {
-            console.error(
-                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.\n',
-                error
-            );
-        }
+    // If we're not in a window (e.g. server-side rendering), just return.
+    if (typeof window === 'undefined') return initializedWallets;
+
+    const api = Object.freeze({ register });
+
+    try {
+        window.addEventListener('wallet-standard-wallet-initialize', ({ detail }) => detail(api));
+    } catch (error) {
+        console.error('wallet-standard-wallet-initialize event listener could not be added\n', error);
     }
 
-    return (initializedWallets = Object.freeze({ register, get, on }));
+    try {
+        window.dispatchEvent(new AppInitializeEvent(api));
+    } catch (error) {
+        console.error('wallet-standard-app-initialize event could not be dispatched\n', error);
+    }
+
+    return initializedWallets;
 }
+
+let initializedWallets: InitializedWallets | undefined = undefined;
 
 /** TODO: docs */
 interface InitializedWallets {
@@ -92,10 +81,6 @@ type InitializedWalletsEventNames = keyof InitializedWalletsEvents;
 const registered = new Set<Wallet>();
 const listeners: { [E in InitializedWalletsEventNames]?: InitializedWalletsEvents[E][] } = {};
 
-function push(...callbacks: WindowNavigatorWalletsPushCallback[]): void {
-    callbacks.forEach((callback) => guard(() => callback({ register })));
-}
-
 function register(...wallets: Wallet[]): () => void {
     // Filter out wallets that have already been registered.
     // This prevents the same wallet from being registered twice, but it also prevents wallets from being
@@ -132,4 +117,29 @@ function guard(callback: () => void) {
     } catch (error) {
         console.error(error);
     }
+}
+
+/** TODO: docs */
+class AppInitializeEvent extends CustomEvent<AppInitializeEventAPI> implements AppInitializeEventInterface {
+    get type() {
+        return 'wallet-standard-app-initialize' as const;
+    }
+
+    constructor(api: AppInitializeEventAPI) {
+        super('wallet-standard-app-initialize', {
+            detail: api,
+            bubbles: false,
+            cancelable: false,
+            composed: false,
+        });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    preventDefault() {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    stopImmediatePropagation() {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    stopPropagation() {}
 }

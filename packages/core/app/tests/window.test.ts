@@ -1,5 +1,5 @@
-import type { NavigatorWalletsWindow, Wallet, WalletAccount } from '@wallet-standard/base';
-import { initializeWindowNavigatorWallets } from '..';
+import type { WalletEventsWindow, Wallet, WalletAccount } from '@wallet-standard/base';
+import { initializeApp } from '..';
 
 type FooSignTransactionFeature = {
     'foo:signTransaction': {
@@ -41,12 +41,12 @@ class FooWallet implements Wallet {
     accounts = [new FooWalletAccount()];
 }
 
-declare const window: NavigatorWalletsWindow;
+declare const window: WalletEventsWindow;
 
 (async function () {
-    (window.navigator.wallets ||= []).push(({ register }) => register(new FooWallet()));
+    window.addEventListener('wallet-standard-app-initialize', ({ detail: { register } }) => register(new FooWallet()));
 
-    const wallets = initializeWindowNavigatorWallets();
+    const wallets = initializeApp();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const wallet = wallets.get()[0]!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
