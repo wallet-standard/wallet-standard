@@ -5,7 +5,7 @@
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
     "engines": {
-        "node": ">=14"
+        "node": ">=16"
     },
     "type": "module",
     "sideEffects": false,
