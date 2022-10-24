@@ -1,10 +1,10 @@
-import type { WalletsCallback, WalletsWindow } from '@wallet-standard/base';
+import type { NavigatorWalletsWindow, WindowNavigatorWalletsPushCallback } from '@wallet-standard/base';
 
-declare const window: WalletsWindow;
+declare const window: NavigatorWalletsWindow;
 
-export function initialize(...initialCallbacks: WalletsCallback[]): void {
-    let callbacks: WalletsCallback[] | null = initialCallbacks;
-    let push = (...newCallbacks: WalletsCallback[]) => {
+export function setupWindowNavigatorWallets(...initialCallbacks: WindowNavigatorWalletsPushCallback[]): void {
+    let callbacks: WindowNavigatorWalletsPushCallback[] | null = initialCallbacks;
+    let push = (...newCallbacks: WindowNavigatorWalletsPushCallback[]) => {
         callbacks?.push(...newCallbacks);
     };
 

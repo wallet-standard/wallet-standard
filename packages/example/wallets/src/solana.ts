@@ -1,6 +1,6 @@
+import type { SolanaSignAndSendTransactionOptions } from '@solana/wallet-standard';
 import type { SendOptions, Transaction, TransactionSignature } from '@solana/web3.js';
 import { Connection } from '@solana/web3.js';
-import type { SolanaSignAndSendTransactionOptions } from '@solana/wallet-standard';
 
 /**
  * TODO: docs

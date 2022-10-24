@@ -1,8 +1,8 @@
-import type { WalletsWindow } from '@wallet-standard/core';
+import type { NavigatorWalletsWindow } from '@wallet-standard/core';
 import { createRPC, createWindowTransport } from '../messages';
 import { MultiChainWallet } from './multiChainWallet';
 
-declare const window: WalletsWindow;
+declare const window: NavigatorWalletsWindow;
 
 function register(): void {
     const transport = createWindowTransport(window);

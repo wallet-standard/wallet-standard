@@ -1,14 +1,14 @@
-import type { Wallet, WalletProperties } from '@wallet-standard/base';
+import type { Wallet } from '@wallet-standard/base';
 import { createContext, useContext } from 'react';
 import { createDefaultContext, EMPTY_ARRAY, EMPTY_OBJECT, EMPTY_STRING } from './context.js';
 
 /** TODO: docs */
-export interface WalletContextState extends WalletProperties {
+export interface WalletContextState extends Wallet {
     wallet: Wallet | null;
     setWallet(wallet: Wallet | null): void;
 }
 
-const DEFAULT_WALLET_PROPERTIES: Readonly<WalletProperties> = {
+const DEFAULT_WALLET_PROPERTIES: Readonly<Wallet> = {
     version: '1.0.0',
     name: EMPTY_STRING,
     icon: `data:image/png;base64,`,
@@ -35,7 +35,7 @@ export function useWallet(): WalletContextState {
 }
 
 /** @internal */
-export function getWalletProperties(wallet: Wallet | null): Readonly<WalletProperties> {
+export function getWalletProperties(wallet: Wallet | null): Readonly<Wallet> {
     return wallet
         ? {
               version: wallet.version,

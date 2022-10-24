@@ -1,21 +1,19 @@
-import type { Wallet, WalletsCallback, WalletsWindow } from '@wallet-standard/base';
+import type { NavigatorWalletsWindow, Wallet, WindowNavigatorWalletsPushCallback } from '@wallet-standard/base';
 
-declare const window: WalletsWindow;
+declare const window: NavigatorWalletsWindow;
 
-let initializedWallets: InitializedWallets | undefined = undefined;
+let initialized: InitializedWindowNavigatorWallets | undefined = undefined;
 
 /**
  * TODO: docs
  */
-export function initialize(): InitializedWallets {
-    // If we've already initialized, just return. Otherwise, initialize.
-    if (initializedWallets) return initializedWallets;
-    initializedWallets = Object.freeze({ register, get, on });
-
+export function initializeWindowNavigatorWallets(): InitializedWindowNavigatorWallets {
+    // If we've already initialized, just return.
+    if (initialized) return initialized;
     // If we're not in a window (e.g. server-side rendering), just return.
-    if (typeof window === 'undefined') return initializedWallets;
+    if (typeof window === 'undefined') return (initialized = Object.freeze({ register, get, on }));
 
-    // Set up the window.navigator.wallets.push API.
+    // Initialize the window.navigator.wallets.push API.
     const wallets = (window.navigator.wallets ||= []);
     if (Array.isArray(wallets)) {
         try {
@@ -47,11 +45,11 @@ export function initialize(): InitializedWallets {
         }
     }
 
-    return initializedWallets;
+    return (initialized = Object.freeze({ register, get, on }));
 }
 
 /** TODO: docs */
-export interface InitializedWallets {
+export interface InitializedWindowNavigatorWallets {
     /**
      * TODO: docs
      */
@@ -94,7 +92,7 @@ export type InitializedWalletsEventNames = keyof InitializedWalletsEvents;
 const registered = new Set<Wallet>();
 const listeners: { [E in InitializedWalletsEventNames]?: InitializedWalletsEvents[E][] } = {};
 
-function push(...callbacks: WalletsCallback[]): void {
+function push(...callbacks: WindowNavigatorWalletsPushCallback[]): void {
     callbacks.forEach((callback) => guard(() => callback({ register })));
 }
 

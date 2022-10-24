@@ -1,24 +1,26 @@
 import type { Wallet } from './wallet.js';
 
-/** Global `window` containing a `navigator.wallets` interface. */
-export interface WalletsWindow extends Window {
-    navigator: WalletsNavigator;
-}
-
-/** Global `window.navigator` containing a `wallets` interface. */
-export interface WalletsNavigator extends Navigator {
-    wallets?: Wallets;
-}
-
 /** Global `window.navigator.wallets` interface. */
-export interface Wallets {
+export interface WindowNavigatorWallets {
     /**
      * TODO: docs
      */
-    push(...callbacks: WalletsCallback[]): void;
+    push(...callbacks: WindowNavigatorWalletsPushCallback[]): void;
 }
 
 /**
  * TODO: docs
  */
-export type WalletsCallback = (wallets: { register(...wallets: Wallet[]): () => void }) => void;
+export type WindowNavigatorWalletsPushCallback = ({ register }: { register(...wallets: Wallet[]): () => void }) => void;
+
+/** Global `navigator` containing a `wallets` interface. */
+export interface WalletsNavigator extends Navigator {
+    /** TODO: docs */
+    wallets?: WindowNavigatorWallets;
+}
+
+/** Global `window` containing a `navigator.wallets` interface. */
+export interface NavigatorWalletsWindow extends Window {
+    /** TODO: docs */
+    navigator: WalletsNavigator;
+}

@@ -1,5 +1,5 @@
-import type { DisconnectFeature, DisconnectMethod } from '@wallet-standard/features';
 import type { Wallet } from '@wallet-standard/base';
+import type { DisconnectFeature, DisconnectMethod } from '@wallet-standard/features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
