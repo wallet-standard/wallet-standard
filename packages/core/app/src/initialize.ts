@@ -8,22 +8,45 @@ let initializedWallets: InitializedWallets | undefined = undefined;
  * TODO: docs
  */
 export function initialize(): InitializedWallets {
-    // If the API is already initialized by us, just return.
+    // If we've already initialized, just return. Otherwise, initialize.
     if (initializedWallets) return initializedWallets;
-
-    // If we're not in a window (e.g. server-side rendering), initialize and return.
-    if (typeof window === 'undefined') return (initializedWallets = Object.freeze({ register, get, on }));
-
-    // Since we didn't initialize the API, if it's not array, it was initialized externally, so throw an error.
-    const wallets = (window.navigator.wallets ||= []);
-    if (!Array.isArray(wallets)) throw new Error('window.navigator.wallets was already initialized');
-
-    // Initialize the API and overwrite window.navigator.wallets with a non-writable push API.
     initializedWallets = Object.freeze({ register, get, on });
-    Object.defineProperty(window.navigator, 'wallets', { value: Object.freeze({ push }) });
 
-    // Call all the wallet callbacks and return.
-    push(...wallets);
+    // If we're not in a window (e.g. server-side rendering), just return.
+    if (typeof window === 'undefined') return initializedWallets;
+
+    // Set up the window.navigator.wallets.push API.
+    const wallets = (window.navigator.wallets ||= []);
+    if (Array.isArray(wallets)) {
+        try {
+            // Replace it with our push API.
+            Object.defineProperty(window.navigator, 'wallets', {
+                value: Object.freeze({ push }),
+                // These normally default to false, but are required if window.navigator.wallets was already defined.
+                writable: false,
+                configurable: false,
+                enumerable: false,
+            });
+            // Call the callbacks.
+            push(...wallets);
+        } catch (error) {
+            console.error(
+                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.',
+                error
+            );
+        }
+    } else {
+        try {
+            // It's an object, so replace its push API, and the setter must call our push API with the callbacks.
+            window.navigator.wallets.push = push;
+        } catch (error) {
+            console.error(
+                'window.navigator.wallets could not be initialized.\nA wallet may have incorrectly initialized it before the page loaded.',
+                error
+            );
+        }
+    }
+
     return initializedWallets;
 }
 

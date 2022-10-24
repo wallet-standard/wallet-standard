@@ -43,3 +43,12 @@ export function pick<T, K extends keyof T>(object: T, ...keys: K[]): Pick<T, K> 
     }
     return picked;
 }
+
+/** TODO: docs */
+export function guard(callback: () => void) {
+    try {
+        callback();
+    } catch (error) {
+        console.error(error);
+    }
+}
