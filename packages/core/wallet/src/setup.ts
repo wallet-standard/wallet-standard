@@ -2,10 +2,10 @@ import type { NavigatorWalletsWindow, WindowNavigatorWalletsPushCallback } from 
 
 declare const window: NavigatorWalletsWindow;
 
-export function setupWindowNavigatorWallets(...initialCallbacks: WindowNavigatorWalletsPushCallback[]): void {
-    let callbacks: WindowNavigatorWalletsPushCallback[] | null = initialCallbacks;
-    let push = (...newCallbacks: WindowNavigatorWalletsPushCallback[]) => {
-        callbacks?.push(...newCallbacks);
+export function setupWindowNavigatorWallets(...callbacks: WindowNavigatorWalletsPushCallback[]): void {
+    let callbacksOrNull: WindowNavigatorWalletsPushCallback[] | null = callbacks;
+    let push = (...callbacks: WindowNavigatorWalletsPushCallback[]) => {
+        callbacksOrNull?.push(...callbacks);
     };
 
     let wallets = window.navigator.wallets;
@@ -15,14 +15,14 @@ export function setupWindowNavigatorWallets(...initialCallbacks: WindowNavigator
                 return push;
             },
             set push(newPush) {
-                if (!callbacks)
+                if (!callbacksOrNull)
                     throw new Error(
                         'window.navigator.wallets was already initialized.\nA wallet may have incorrectly initialized it before the page loaded.'
                     );
-                const currentCallbacks = callbacks;
-                callbacks = null;
+                const callbacks = callbacksOrNull;
+                callbacksOrNull = null;
                 push = newPush;
-                push(...currentCallbacks);
+                push(...callbacks);
             },
         });
 
@@ -35,5 +35,5 @@ export function setupWindowNavigatorWallets(...initialCallbacks: WindowNavigator
         });
     }
 
-    wallets.push(...callbacks);
+    wallets.push(...callbacksOrNull);
 }
