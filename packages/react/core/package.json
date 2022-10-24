@@ -34,9 +34,9 @@
         "react-dom": "*"
     },
     "dependencies": {
-        "@wallet-standard/app": "workspace:*",
-        "@wallet-standard/base": "workspace:*",
-        "@wallet-standard/features": "workspace:*"
+        "@wallet-standard/app": "workspace:^",
+        "@wallet-standard/base": "workspace:^",
+        "@wallet-standard/features": "workspace:^"
     },
     "devDependencies": {
         "@types/react": "^18.0.21",

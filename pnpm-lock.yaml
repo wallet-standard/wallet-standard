@@ -45,7 +45,7 @@ importers:
 
   packages/_/_:
     specifiers:
-      '@wallet-standard/core': workspace:*
+      '@wallet-standard/core': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/core': link:../../core/_
@@ -54,10 +54,10 @@ importers:
 
   packages/core/_:
     specifiers:
-      '@wallet-standard/app': workspace:*
-      '@wallet-standard/base': workspace:*
-      '@wallet-standard/features': workspace:*
-      '@wallet-standard/wallet': workspace:*
+      '@wallet-standard/app': workspace:^
+      '@wallet-standard/base': workspace:^
+      '@wallet-standard/features': workspace:^
+      '@wallet-standard/wallet': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/app': link:../app
@@ -69,7 +69,7 @@ importers:
 
   packages/core/app:
     specifiers:
-      '@wallet-standard/base': workspace:*
+      '@wallet-standard/base': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/base': link:../base
@@ -84,7 +84,7 @@ importers:
 
   packages/core/features:
     specifiers:
-      '@wallet-standard/base': workspace:*
+      '@wallet-standard/base': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/base': link:../base
@@ -93,7 +93,7 @@ importers:
 
   packages/core/wallet:
     specifiers:
-      '@wallet-standard/base': workspace:*
+      '@wallet-standard/base': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/base': link:../base
@@ -102,7 +102,7 @@ importers:
 
   packages/ethereum/_:
     specifiers:
-      '@wallet-standard/ethereum-chains': workspace:*
+      '@wallet-standard/ethereum-chains': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/ethereum-chains': link:../chains
@@ -119,8 +119,8 @@ importers:
     specifiers:
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
-      '@wallet-standard/core': workspace:*
-      '@wallet-standard/react': workspace:*
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/react': workspace:^
       parcel: ^2.7.0
       process: ^0.11.10
       react: ^18.2.0
@@ -151,9 +151,9 @@ importers:
       '@types/bs58': ^4.0.1
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
-      '@wallet-standard/core': workspace:*
-      '@wallet-standard/ethereum': workspace:*
-      '@wallet-standard/parcel-packager-webextension': workspace:*
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/ethereum': workspace:^
+      '@wallet-standard/parcel-packager-webextension': workspace:^
       bip39: ^3.0.4
       bs58: ^4.0.1
       buffer: ^6.0.3
@@ -214,8 +214,8 @@ importers:
       '@solana/web3.js': ^1.66.2
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
-      '@wallet-standard/core': workspace:*
-      '@wallet-standard/react': workspace:*
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/react': workspace:^
       bs58: ^4.0.1
       parcel: ^2.7.0
       process: ^0.11.10
@@ -246,9 +246,9 @@ importers:
       '@solana/web3.js': ^1.66.2
       '@types/bs58': ^4.0.1
       '@types/node-fetch': ^2.6.2
-      '@wallet-standard/core': workspace:*
-      '@wallet-standard/ethereum': workspace:*
-      '@wallet-standard/experimental': workspace:*
+      '@wallet-standard/core': workspace:^
+      '@wallet-standard/ethereum': workspace:^
+      '@wallet-standard/experimental': workspace:^
       bs58: ^4.0.1
       ethers: ^5.7.2
       shx: ^0.3.4
@@ -269,7 +269,7 @@ importers:
 
   packages/experimental/_:
     specifiers:
-      '@wallet-standard/experimental-features': workspace:*
+      '@wallet-standard/experimental-features': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/experimental-features': link:../features
@@ -278,7 +278,7 @@ importers:
 
   packages/experimental/features:
     specifiers:
-      '@wallet-standard/base': workspace:*
+      '@wallet-standard/base': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/base': link:../../core/base
@@ -287,7 +287,7 @@ importers:
 
   packages/react/_:
     specifiers:
-      '@wallet-standard/react-core': workspace:*
+      '@wallet-standard/react-core': workspace:^
       shx: ^0.3.4
     dependencies:
       '@wallet-standard/react-core': link:../core
@@ -298,9 +298,9 @@ importers:
     specifiers:
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
-      '@wallet-standard/app': workspace:*
-      '@wallet-standard/base': workspace:*
-      '@wallet-standard/features': workspace:*
+      '@wallet-standard/app': workspace:^
+      '@wallet-standard/base': workspace:^
+      '@wallet-standard/features': workspace:^
       react: ^18.2.0
       react-dom: ^18.2.0
       shx: ^0.3.4

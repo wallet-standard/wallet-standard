@@ -30,7 +30,7 @@
         "package": "shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
-        "@wallet-standard/react-core": "workspace:*"
+        "@wallet-standard/react-core": "workspace:^"
     },
     "devDependencies": {
         "shx": "^0.3.4"

@@ -15,8 +15,8 @@
         "@solana/wallet-adapter-phantom": "^0.9.17",
         "@solana/wallet-standard": "rc",
         "@solana/web3.js": "^1.66.2",
-        "@wallet-standard/core": "workspace:*",
-        "@wallet-standard/react": "workspace:*",
+        "@wallet-standard/core": "workspace:^",
+        "@wallet-standard/react": "workspace:^",
         "bs58": "^4.0.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"

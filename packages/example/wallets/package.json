@@ -21,9 +21,9 @@
     "dependencies": {
         "@solana/wallet-standard": "rc",
         "@solana/web3.js": "^1.66.2",
-        "@wallet-standard/core": "workspace:*",
-        "@wallet-standard/ethereum": "workspace:*",
-        "@wallet-standard/experimental": "workspace:*",
+        "@wallet-standard/core": "workspace:^",
+        "@wallet-standard/ethereum": "workspace:^",
+        "@wallet-standard/experimental": "workspace:^",
         "bs58": "^4.0.1",
         "ethers": "^5.7.2",
         "tweetnacl": "^1.0.3"
