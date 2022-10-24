@@ -4,6 +4,14 @@
     "author": "Exodus Maintainers <maintainers@exodus.io>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
     "engines": {
         "node": ">=16"
     },
@@ -16,14 +24,6 @@
         "require": "./lib/cjs/index.js",
         "import": "./lib/esm/index.js",
         "types": "./lib/types/index.d.ts"
-    },
-    "files": [
-        "lib",
-        "src",
-        "LICENSE"
-    ],
-    "publishConfig": {
-        "access": "public"
     },
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
