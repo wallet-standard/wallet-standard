@@ -1,4 +1,5 @@
 import type {
+    DEPRECATED_WalletsWindow,
     Wallet,
     WalletEventsWindow,
     WindowRegisterWalletEvent as WindowRegisterWalletEventInterface,
@@ -55,4 +56,10 @@ class WindowRegisterWalletEvent extends Event implements WindowRegisterWalletEve
     stopPropagation(): never {
         throw new Error('stopPropagation cannot be called');
     }
+}
+
+/** @deprecated */
+export function DEPRECATED_registerWallet(wallet: Wallet): void {
+    registerWallet(wallet);
+    ((window as DEPRECATED_WalletsWindow).navigator.wallets ||= []).push(({ register }) => register(wallet));
 }
