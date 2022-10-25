@@ -9,8 +9,18 @@ declare const window: WalletEventsWindow;
 
 export function initializeWallet(wallet: Wallet): void {
     const callback: WalletInitializeEventCallback = ({ register }) => register(wallet);
-    window.dispatchEvent(new WalletInitializeEvent(callback));
-    window.addEventListener('wallet-standard-app-initialize', ({ detail: api }) => callback(api));
+
+    try {
+        window.dispatchEvent(new WalletInitializeEvent(callback));
+    } catch (error) {
+        console.error('wallet-standard-wallet-initialize event could not be dispatched\n', error);
+    }
+
+    try {
+        window.addEventListener('wallet-standard-app-initialize', ({ detail: api }) => callback(api));
+    } catch (error) {
+        console.error('wallet-standard-app-initialize event listener could not be added\n', error);
+    }
 }
 
 class WalletInitializeEvent
