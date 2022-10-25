@@ -16,7 +16,7 @@ Wallet and dapp devs are encouraged to provide their feedback and have it integr
 
 - [`Wallet` and `WalletAccount`](src/wallet.ts) interfaces
 - Global [`window`](src/window.ts) events
-- Wallet [`registerWallet`](../wallet/src/initialize.ts) function
+- Wallet [`registerWallet`](../wallet/src/register.ts) function
 - App [`getWallets`](../app/src/wallets.ts) function
 - [Example](../../example/wallets/src/window.ts) of how wallets attach to the window
 

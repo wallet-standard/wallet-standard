@@ -53,12 +53,10 @@ const listeners: { [E in WalletsEventNames]?: WalletsEvents[E][] } = {};
  * TODO: docs
  */
 export function getWallets(): Wallets {
-    // If we've already initialized, just return. Otherwise, initialize.
     if (wallets) return wallets;
     wallets = Object.freeze({ register, get, on });
-    // If we're not in a window (e.g. server-side rendering), just return.
-    if (typeof window === 'undefined') return wallets;
 
+    if (typeof window === 'undefined') return wallets;
     const w = window as WalletEventsWindow;
     const api = Object.freeze({ register });
 
