@@ -9,13 +9,11 @@ declare const window: WalletEventsWindow;
 
 export function registerWallet(wallet: Wallet): void {
     const callback: WindowRegisterWalletEventCallback = ({ register }) => register(wallet);
-
     try {
         window.dispatchEvent(new WindowRegisterWalletEvent(callback));
     } catch (error) {
         console.error('wallet-standard:register-wallet event could not be dispatched\n', error);
     }
-
     try {
         window.addEventListener('wallet-standard:app-ready', ({ detail: api }) => callback(api));
     } catch (error) {

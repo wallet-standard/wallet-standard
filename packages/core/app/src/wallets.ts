@@ -55,19 +55,18 @@ const listeners: { [E in WalletsEventNames]?: WalletsEvents[E][] } = {};
 export function getWallets(): Wallets {
     if (wallets) return wallets;
     wallets = Object.freeze({ register, get, on });
-
     if (typeof window === 'undefined') return wallets;
-    const w = window as WalletEventsWindow;
-    const api = Object.freeze({ register });
 
+    const api = Object.freeze({ register });
     try {
-        w.addEventListener('wallet-standard:register-wallet', ({ detail: callback }) => callback(api));
+        (window as WalletEventsWindow).addEventListener('wallet-standard:register-wallet', ({ detail: callback }) =>
+            callback(api)
+        );
     } catch (error) {
         console.error('wallet-standard:register-wallet event listener could not be added\n', error);
     }
-
     try {
-        w.dispatchEvent(new WindowAppReadyEvent(api));
+        (window as WalletEventsWindow).dispatchEvent(new WindowAppReadyEvent(api));
     } catch (error) {
         console.error('wallet-standard:app-ready event could not be dispatched\n', error);
     }
@@ -149,8 +148,7 @@ export function DEPRECATED_getWallets(): Wallets {
     wallets = getWallets();
     if (typeof window === 'undefined') return wallets;
 
-    const w = window as DEPRECATED_WalletsWindow;
-    const callbacks = w.navigator.wallets || [];
+    const callbacks = (window as DEPRECATED_WalletsWindow).navigator.wallets || [];
     if (!Array.isArray(callbacks)) {
         console.error('window.navigator.wallets is not an array');
         return wallets;
@@ -159,9 +157,10 @@ export function DEPRECATED_getWallets(): Wallets {
     const { register } = wallets;
     const push = (...callbacks: DEPRECATED_WalletsCallback[]): void =>
         callbacks.forEach((callback) => guard(() => callback({ register })));
-
     try {
-        Object.defineProperty(w.navigator, 'wallets', { value: Object.freeze({ push }) });
+        Object.defineProperty((window as DEPRECATED_WalletsWindow).navigator, 'wallets', {
+            value: Object.freeze({ push }),
+        });
     } catch (error) {
         console.error('window.navigator.wallets could not be set');
         return wallets;
