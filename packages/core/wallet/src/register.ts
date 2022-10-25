@@ -61,5 +61,9 @@ class WindowRegisterWalletEvent extends Event implements WindowRegisterWalletEve
 /** @deprecated */
 export function DEPRECATED_registerWallet(wallet: Wallet): void {
     registerWallet(wallet);
-    ((window as DEPRECATED_WalletsWindow).navigator.wallets ||= []).push(({ register }) => register(wallet));
+    try {
+        ((window as DEPRECATED_WalletsWindow).navigator.wallets ||= []).push(({ register }) => register(wallet));
+    } catch (error) {
+        console.error('window.navigator.wallets could not be pushed\n', error);
+    }
 }
