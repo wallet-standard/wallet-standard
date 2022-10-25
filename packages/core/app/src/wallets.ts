@@ -1,10 +1,10 @@
 import type {
-    WindowAppReadyEvent as WindowAppReadyEventInterface,
-    WindowAppReadyEventAPI,
     DEPRECATED_WalletsCallback,
     DEPRECATED_WalletsWindow,
     Wallet,
     WalletEventsWindow,
+    WindowAppReadyEvent as WindowAppReadyEventInterface,
+    WindowAppReadyEventAPI,
 } from '@wallet-standard/base';
 
 /** TODO: docs */
