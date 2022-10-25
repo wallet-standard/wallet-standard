@@ -6,17 +6,17 @@ import type {
     WindowRegisterWalletEventCallback,
 } from '@wallet-standard/base';
 
-declare const window: WalletEventsWindow;
-
 export function registerWallet(wallet: Wallet): void {
     const callback: WindowRegisterWalletEventCallback = ({ register }) => register(wallet);
     try {
-        window.dispatchEvent(new WindowRegisterWalletEvent(callback));
+        (window as WalletEventsWindow).dispatchEvent(new WindowRegisterWalletEvent(callback));
     } catch (error) {
         console.error('wallet-standard:register-wallet event could not be dispatched\n', error);
     }
     try {
-        window.addEventListener('wallet-standard:app-ready', ({ detail: api }) => callback(api));
+        (window as WalletEventsWindow).addEventListener('wallet-standard:app-ready', ({ detail: api }) =>
+            callback(api)
+        );
     } catch (error) {
         console.error('wallet-standard:app-ready event listener could not be added\n', error);
     }
