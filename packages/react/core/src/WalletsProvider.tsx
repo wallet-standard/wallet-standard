@@ -1,4 +1,4 @@
-import { initializeWindowNavigatorWallets } from '@wallet-standard/app';
+import { getWallets } from '@wallet-standard/app';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { WalletsContext } from './useWallets.js';
@@ -11,7 +11,7 @@ export interface WalletsProviderProps {
 /** TODO: docs */
 export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
     // Initialize `window.navigator.wallets` and obtain a synchronous API.
-    const { get, on } = useMemo(() => initializeWindowNavigatorWallets(), []);
+    const { get, on } = useMemo(() => getWallets(), []);
 
     // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
     const [wallets, setWallets] = useState(() => get());
@@ -20,6 +20,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
         const destructors: (() => void)[] = [];
 
         // TODO: figure out if this can ever actually happen
+        // FIXME: this can definitely happen, refactor similar to @solana/wallet-standard-wallet-adapter-react
         // Get and set the wallets that have been registered already, in case they changed since the state initializer.
         setWallets(get());
 

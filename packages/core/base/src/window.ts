@@ -1,30 +1,68 @@
 import type { Wallet } from './wallet.js';
 
-// TODO: consider renaming
-/** Global `window.navigator.wallets` interface. */
-export interface WindowNavigatorWallets {
-    /**
-     * TODO: docs
-     */
-    push(...callbacks: WindowNavigatorWalletsPushCallback[]): void;
-}
-
-// TODO: consider renaming
-/**
- * TODO: docs
- */
-export type WindowNavigatorWalletsPushCallback = ({ register }: { register(...wallets: Wallet[]): () => void }) => void;
-
-// TODO: consider renaming
-/** Global `navigator` containing a `wallets` interface. */
-export interface WalletsNavigator extends Navigator {
+interface UnstoppableCustomEvent<T extends string, D> extends Event {
     /** TODO: docs */
-    wallets?: WindowNavigatorWallets;
+    readonly type: T;
+    /** TODO: docs */
+    readonly detail: D;
+    /** @deprecated */
+    preventDefault(): never;
+    /** @deprecated */
+    stopImmediatePropagation(): never;
+    /** @deprecated */
+    stopPropagation(): never;
 }
 
-// TODO: consider renaming
-/** Global `window` containing a `navigator.wallets` interface. */
-export interface NavigatorWalletsWindow extends Window {
+/** TODO: docs */
+export type WindowAppReadyEventType = 'wallet-standard:app-ready';
+
+/** TODO: docs */
+export interface WindowAppReadyEventAPI {
     /** TODO: docs */
-    navigator: WalletsNavigator;
+    register(wallet: Wallet): () => void;
 }
+
+/** TODO: docs */
+export type WindowAppReadyEvent = UnstoppableCustomEvent<WindowAppReadyEventType, WindowAppReadyEventAPI>;
+
+/** TODO: docs */
+export type WindowRegisterWalletEventType = 'wallet-standard:register-wallet';
+
+/** TODO: docs */
+export type WindowRegisterWalletEventCallback = (api: WindowAppReadyEventAPI) => void;
+
+/** TODO: docs */
+export type WindowRegisterWalletEvent = UnstoppableCustomEvent<
+    WindowRegisterWalletEventType,
+    WindowRegisterWalletEventCallback
+>;
+
+/** TODO: docs */
+export interface WalletEventsWindow extends Omit<Window, 'addEventListener' | 'dispatchEvent'> {
+    /** TODO: docs */
+    addEventListener(type: WindowAppReadyEventType, listener: (event: WindowAppReadyEvent) => void): void;
+    /** TODO: docs */
+    addEventListener(type: WindowRegisterWalletEventType, listener: (event: WindowRegisterWalletEvent) => void): void;
+    /** TODO: docs */
+    dispatchEvent(event: WindowAppReadyEvent): void;
+    /** TODO: docs */
+    dispatchEvent(event: WindowRegisterWalletEvent): void;
+}
+
+/** @deprecated */
+export interface DEPRECATED_WalletsWindow extends Window {
+    navigator: DEPRECATED_WalletsNavigator;
+}
+
+/** @deprecated */
+export interface DEPRECATED_WalletsNavigator extends Navigator {
+    wallets?: DEPRECATED_Wallets;
+}
+
+/** @deprecated */
+export interface DEPRECATED_Wallets {
+    push(...callbacks: DEPRECATED_WalletsCallback[]): void;
+}
+
+/** @deprecated */
+export type DEPRECATED_WalletsCallback = (wallets: { register(...wallets: Wallet[]): () => void }) => void;

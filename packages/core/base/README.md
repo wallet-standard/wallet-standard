@@ -14,10 +14,10 @@ Wallet and dapp devs are encouraged to provide their feedback and have it integr
 
 ## Code
 
-- Global [`window.navigator.wallets`](src/window.ts) interface
-- [`Wallet`](src/wallet.ts) and [`WalletAccount`](src/account.ts) interfaces
-- Wallet [`setupWindowNavigatorWallets`](../wallet/src/setup.ts) function
-- App [`initializeWindowNavigatorWallets`](../app/src/initialize.ts) function
+- [`Wallet` and `WalletAccount`](src/wallet.ts) interfaces
+- Global [`window`](src/window.ts) events
+- Wallet [`registerWallet`](../wallet/src/register.ts) function
+- App [`getWallets`](../app/src/wallets.ts) function
 - [Example](../../example/wallets/src/window.ts) of how wallets attach to the window
 
 ## Design Principles and Goals

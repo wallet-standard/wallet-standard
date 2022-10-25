@@ -1,1 +1,1 @@
-export * from './initialize.js';
+export * from './wallets.js';
