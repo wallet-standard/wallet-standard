@@ -1,44 +1,14 @@
 import type {
-    AppInitializeEvent as AppInitializeEventInterface,
-    AppInitializeEventAPI,
+    WindowAppReadyEvent as WindowAppReadyEventInterface,
+    WindowAppReadyEventAPI,
+    DEPRECATED_WalletsCallback,
+    DEPRECATED_WalletsWindow,
     Wallet,
     WalletEventsWindow,
 } from '@wallet-standard/base';
 
-declare const window: WalletEventsWindow | undefined;
-
-/**
- * TODO: docs
- */
-export function initializeApp(): InitializedWallets {
-    // If we've already initialized, just return. Otherwise, initialize.
-    if (initializedWallets) return initializedWallets;
-    initializedWallets = Object.freeze({ register, get, on });
-
-    // If we're not in a window (e.g. server-side rendering), just return.
-    if (typeof window === 'undefined') return initializedWallets;
-
-    const api = Object.freeze({ register });
-
-    try {
-        window.addEventListener('wallet-standard-wallet-initialize', ({ detail }) => detail(api));
-    } catch (error) {
-        console.error('wallet-standard-wallet-initialize event listener could not be added\n', error);
-    }
-
-    try {
-        window.dispatchEvent(new AppInitializeEvent(api));
-    } catch (error) {
-        console.error('wallet-standard-app-initialize event could not be dispatched\n', error);
-    }
-
-    return initializedWallets;
-}
-
-let initializedWallets: InitializedWallets | undefined = undefined;
-
 /** TODO: docs */
-interface InitializedWallets {
+export interface Wallets {
     /**
      * TODO: docs
      */
@@ -52,14 +22,11 @@ interface InitializedWallets {
     /**
      * TODO: docs
      */
-    on<E extends InitializedWalletsEventNames = InitializedWalletsEventNames>(
-        event: E,
-        listener: InitializedWalletsEvents[E]
-    ): () => void;
+    on<E extends WalletsEventNames = WalletsEventNames>(event: E, listener: WalletsEvents[E]): () => void;
 }
 
-/** Events emitted by the global `wallets` object. */
-interface InitializedWalletsEvents {
+/** TODO: docs */
+export interface WalletsEvents {
     /**
      * Emitted when wallets are registered.
      *
@@ -76,10 +43,39 @@ interface InitializedWalletsEvents {
 }
 
 /** TODO: docs */
-type InitializedWalletsEventNames = keyof InitializedWalletsEvents;
+export type WalletsEventNames = keyof WalletsEvents;
 
+let wallets: Wallets | undefined = undefined;
 const registered = new Set<Wallet>();
-const listeners: { [E in InitializedWalletsEventNames]?: InitializedWalletsEvents[E][] } = {};
+const listeners: { [E in WalletsEventNames]?: WalletsEvents[E][] } = {};
+
+/**
+ * TODO: docs
+ */
+export function getWallets(): Wallets {
+    // If we've already initialized, just return. Otherwise, initialize.
+    if (wallets) return wallets;
+    wallets = Object.freeze({ register, get, on });
+    // If we're not in a window (e.g. server-side rendering), just return.
+    if (typeof window === 'undefined') return wallets;
+
+    const w = window as WalletEventsWindow;
+    const api = Object.freeze({ register });
+
+    try {
+        w.addEventListener('wallet-standard:register-wallet', ({ detail: callback }) => callback(api));
+    } catch (error) {
+        console.error('wallet-standard:register-wallet event listener could not be added\n', error);
+    }
+
+    try {
+        w.dispatchEvent(new WindowAppReadyEvent(api));
+    } catch (error) {
+        console.error('wallet-standard:app-ready event could not be dispatched\n', error);
+    }
+
+    return wallets;
+}
 
 function register(...wallets: Wallet[]): () => void {
     // Filter out wallets that have already been registered.
@@ -103,7 +99,7 @@ function get(): ReadonlyArray<Wallet> {
     return [...registered];
 }
 
-function on<E extends InitializedWalletsEventNames>(event: E, listener: InitializedWalletsEvents[E]): () => void {
+function on<E extends WalletsEventNames>(event: E, listener: WalletsEvents[E]): () => void {
     listeners[event]?.push(listener) || (listeners[event] = [listener]);
     // Return a function that removes the event listener.
     return function off(): void {
@@ -119,20 +115,19 @@ function guard(callback: () => void) {
     }
 }
 
-/** TODO: docs */
-class AppInitializeEvent extends Event implements AppInitializeEventInterface {
-    readonly #detail: AppInitializeEventAPI;
+class WindowAppReadyEvent extends Event implements WindowAppReadyEventInterface {
+    readonly #detail: WindowAppReadyEventAPI;
 
     get detail() {
         return this.#detail;
     }
 
     get type() {
-        return 'wallet-standard-app-initialize' as const;
+        return 'wallet-standard:app-ready' as const;
     }
 
-    constructor(api: AppInitializeEventAPI) {
-        super('wallet-standard-app-initialize', {
+    constructor(api: WindowAppReadyEventAPI) {
+        super('wallet-standard:app-ready', {
             bubbles: false,
             cancelable: false,
             composed: false,
@@ -148,4 +143,32 @@ class AppInitializeEvent extends Event implements AppInitializeEventInterface {
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     stopPropagation() {}
+}
+
+/** @deprecated */
+export function DEPRECATED_getWallets(): Wallets {
+    if (wallets) return wallets;
+    wallets = getWallets();
+    if (typeof window === 'undefined') return wallets;
+
+    const w = window as DEPRECATED_WalletsWindow;
+    const callbacks = (w.navigator.wallets ||= []);
+    if (!Array.isArray(callbacks)) {
+        console.error('window.navigator.wallets is not an array');
+        return wallets;
+    }
+
+    const { register } = wallets;
+    const push = (...callbacks: DEPRECATED_WalletsCallback[]): void =>
+        callbacks.forEach((callback) => guard(() => callback({ register })));
+
+    try {
+        Object.defineProperty(w.navigator, 'wallets', { value: Object.freeze({ push }) });
+    } catch (error) {
+        console.error('window.navigator.wallets could not be set');
+        return wallets;
+    }
+
+    push(...callbacks);
+    return wallets;
 }
