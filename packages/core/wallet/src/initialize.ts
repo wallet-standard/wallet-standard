@@ -23,21 +23,24 @@ export function initializeWallet(wallet: Wallet): void {
     }
 }
 
-class WalletInitializeEvent
-    extends CustomEvent<WalletInitializeEventCallback>
-    implements WalletInitializeEventInterface
-{
+class WalletInitializeEvent extends Event implements WalletInitializeEventInterface {
+    readonly #detail: WalletInitializeEventCallback;
+
+    get detail() {
+        return this.#detail;
+    }
+
     get type() {
         return 'wallet-standard-wallet-initialize' as const;
     }
 
     constructor(callback: WalletInitializeEventCallback) {
         super('wallet-standard-wallet-initialize', {
-            detail: callback,
             bubbles: false,
             cancelable: false,
             composed: false,
         });
+        this.#detail = callback;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

@@ -1,30 +1,34 @@
 import type { Wallet } from './wallet.js';
 
 /** TODO: docs */
+export type AppInitializeEventType = 'wallet-standard-app-initialize';
+
+/** TODO: docs */
 export interface AppInitializeEventAPI {
     /** TODO: docs */
     register(wallet: Wallet): () => void;
 }
 
 /** TODO: docs */
-export type AppInitializeEventType = 'wallet-standard-app-initialize';
-
-/** TODO: docs */
-export interface AppInitializeEvent extends CustomEvent<AppInitializeEventAPI> {
+export interface AppInitializeEvent extends Event {
     /** TODO: docs */
     readonly type: AppInitializeEventType;
+    /** TODO: docs */
+    readonly detail: AppInitializeEventAPI;
 }
-
-/** TODO: docs */
-export type WalletInitializeEventCallback = (api: AppInitializeEventAPI) => void;
 
 /** TODO: docs */
 export type WalletInitializeEventType = 'wallet-standard-wallet-initialize';
 
 /** TODO: docs */
-export interface WalletInitializeEvent extends CustomEvent<WalletInitializeEventCallback> {
+export type WalletInitializeEventCallback = (api: AppInitializeEventAPI) => void;
+
+/** TODO: docs */
+export interface WalletInitializeEvent extends Event {
     /** TODO: docs */
     readonly type: WalletInitializeEventType;
+    /** TODO: docs */
+    readonly detail: WalletInitializeEventCallback;
 }
 
 /** TODO: docs */

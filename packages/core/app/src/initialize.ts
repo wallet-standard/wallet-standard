@@ -120,18 +120,24 @@ function guard(callback: () => void) {
 }
 
 /** TODO: docs */
-class AppInitializeEvent extends CustomEvent<AppInitializeEventAPI> implements AppInitializeEventInterface {
+class AppInitializeEvent extends Event implements AppInitializeEventInterface {
+    readonly #detail: AppInitializeEventAPI;
+
+    get detail() {
+        return this.#detail;
+    }
+
     get type() {
         return 'wallet-standard-app-initialize' as const;
     }
 
     constructor(api: AppInitializeEventAPI) {
         super('wallet-standard-app-initialize', {
-            detail: api,
             bubbles: false,
             cancelable: false,
             composed: false,
         });
+        this.#detail = api;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
