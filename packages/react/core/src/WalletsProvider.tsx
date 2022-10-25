@@ -20,6 +20,7 @@ export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
         const destructors: (() => void)[] = [];
 
         // TODO: figure out if this can ever actually happen
+        // FIXME: this can definitely happen, refactor similar to @solana/wallet-standard-wallet-adapter-react
         // Get and set the wallets that have been registered already, in case they changed since the state initializer.
         setWallets(get());
 
