@@ -1,5 +1,18 @@
 import type { Wallet } from './wallet.js';
 
+interface UnstoppableCustomEvent<T extends string, D> extends Event {
+    /** TODO: docs */
+    readonly type: T;
+    /** TODO: docs */
+    readonly detail: D;
+    /** @deprecated */
+    preventDefault(): never;
+    /** @deprecated */
+    stopImmediatePropagation(): never;
+    /** @deprecated */
+    stopPropagation(): never;
+}
+
 /** TODO: docs */
 export type WindowAppReadyEventType = 'wallet-standard:app-ready';
 
@@ -10,12 +23,7 @@ export interface WindowAppReadyEventAPI {
 }
 
 /** TODO: docs */
-export interface WindowAppReadyEvent extends Event {
-    /** TODO: docs */
-    readonly type: WindowAppReadyEventType;
-    /** TODO: docs */
-    readonly detail: WindowAppReadyEventAPI;
-}
+export type WindowAppReadyEvent = UnstoppableCustomEvent<WindowAppReadyEventType, WindowAppReadyEventAPI>;
 
 /** TODO: docs */
 export type WindowRegisterWalletEventType = 'wallet-standard:register-wallet';
@@ -24,12 +32,10 @@ export type WindowRegisterWalletEventType = 'wallet-standard:register-wallet';
 export type WindowRegisterWalletEventCallback = (api: WindowAppReadyEventAPI) => void;
 
 /** TODO: docs */
-export interface WindowRegisterWalletEvent extends Event {
-    /** TODO: docs */
-    readonly type: WindowRegisterWalletEventType;
-    /** TODO: docs */
-    readonly detail: WindowRegisterWalletEventCallback;
-}
+export type WindowRegisterWalletEvent = UnstoppableCustomEvent<
+    WindowRegisterWalletEventType,
+    WindowRegisterWalletEventCallback
+>;
 
 /** TODO: docs */
 export interface WalletEventsWindow extends Omit<Window, 'addEventListener' | 'dispatchEvent'> {

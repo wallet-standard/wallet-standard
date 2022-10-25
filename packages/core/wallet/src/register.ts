@@ -41,12 +41,18 @@ class WindowRegisterWalletEvent extends Event implements WindowRegisterWalletEve
         this.#detail = callback;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    preventDefault() {}
+    /** @deprecated */
+    preventDefault(): never {
+        throw new Error('preventDefault cannot be called');
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    stopImmediatePropagation() {}
+    /** @deprecated */
+    stopImmediatePropagation(): never {
+        throw new Error('stopImmediatePropagation cannot be called');
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    stopPropagation() {}
+    /** @deprecated */
+    stopPropagation(): never {
+        throw new Error('stopPropagation cannot be called');
+    }
 }
