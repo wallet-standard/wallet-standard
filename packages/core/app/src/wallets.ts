@@ -150,7 +150,7 @@ export function DEPRECATED_getWallets(): Wallets {
     if (typeof window === 'undefined') return wallets;
 
     const w = window as DEPRECATED_WalletsWindow;
-    const callbacks = (w.navigator.wallets ||= []);
+    const callbacks = w.navigator.wallets || [];
     if (!Array.isArray(callbacks)) {
         console.error('window.navigator.wallets is not an array');
         return wallets;
