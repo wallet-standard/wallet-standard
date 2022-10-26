@@ -3,7 +3,7 @@ import type {
     DEPRECATED_WalletsWindow,
     Wallet,
     WalletEventsWindow,
-    WindowAppReadyEvent as WindowAppReadyEventInterface,
+    WindowAppReadyEvent,
     WindowAppReadyEventAPI,
 } from '@wallet-standard/base';
 
@@ -66,7 +66,7 @@ export function getWallets(): Wallets {
         console.error('wallet-standard:register-wallet event listener could not be added\n', error);
     }
     try {
-        (window as WalletEventsWindow).dispatchEvent(new WindowAppReadyEvent(api));
+        (window as WalletEventsWindow).dispatchEvent(new AppReadyEvent(api));
     } catch (error) {
         console.error('wallet-standard:app-ready event could not be dispatched\n', error);
     }
@@ -112,7 +112,7 @@ function guard(callback: () => void) {
     }
 }
 
-class WindowAppReadyEvent extends Event implements WindowAppReadyEventInterface {
+class AppReadyEvent extends Event implements WindowAppReadyEvent {
     readonly #detail: WindowAppReadyEventAPI;
 
     get detail() {
