@@ -1,18 +1,18 @@
 import type { WalletAccount, WalletWithFeatures } from '@wallet-standard/base';
 import type { ConnectFeature, EventsFeature, StandardFeatures } from '..';
 
-type GlowFeature = {
-    'glow:': {
-        signIn(): void;
+type FooWalletFeature = {
+    'foo:': {
+        doSomethingCool(): void;
     };
 };
 
-class GlowWallet implements WalletWithFeatures<StandardFeatures & GlowFeature> {
+class FooWallet implements WalletWithFeatures<StandardFeatures & FooWalletFeature> {
     version = '1.0.0' as const;
-    name = 'Glow';
+    name = 'Foo';
     icon = `data:image/png;base64,` as const;
-    chains = ['solana:mainnet', 'solana:devnet'] as const;
-    features: ConnectFeature & EventsFeature & GlowFeature = {
+    chains = ['foochain:mainnet', 'foochain:devnet'] as const;
+    features: ConnectFeature & EventsFeature & FooWalletFeature = {
         'standard:connect': {
             version: '1.0.0',
             connect: async () => ({ accounts: this.accounts }),
@@ -22,22 +22,22 @@ class GlowWallet implements WalletWithFeatures<StandardFeatures & GlowFeature> {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             on: (event, listener) => () => {},
         },
-        'glow:': {
+        'foo:': {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            signIn() {},
+            doSomethingCool() {},
         },
     };
-    accounts = [new GlowSolanaWalletAccount()];
+    accounts = [new FooWalletAccount()];
 }
 
-class GlowSolanaWalletAccount implements WalletAccount {
+class FooWalletAccount implements WalletAccount {
     address = '';
     publicKey = new Uint8Array();
-    chains = ['solana:mainnet', 'solana:devnet', 'solana:testnet', 'solana:localnet'] as const;
+    chains = ['foochain:mainnet', 'foochain:devnet', 'foochain:testnet', 'foochain:localnet'] as const;
     features = [] as const;
 }
 
-const wallet: WalletWithFeatures<StandardFeatures & GlowFeature> = new GlowWallet();
+const wallet: WalletWithFeatures<StandardFeatures & FooWalletFeature> = new FooWallet();
 
 if ('standard:events' in wallet.features) {
     wallet.features['standard:events'].on('change', (properties) => console.log(properties));
@@ -47,6 +47,6 @@ if ('standard:connect' in wallet.features) {
     await wallet.features['standard:connect'].connect();
 }
 
-if ('glow:' in wallet.features) {
-    wallet.features['glow:'].signIn();
+if ('foo:' in wallet.features) {
+    wallet.features['foo:'].doSomethingCool();
 }
