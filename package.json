@@ -16,7 +16,7 @@
         "build:other": "pnpm --recursive --workspace-concurrency=0 run build",
         "build:package": "pnpm --recursive --workspace-concurrency=0 run package",
         "build:clean": "pnpm run clean && pnpm build",
-        "release": "pnpm run clean && pnpm run build:ts && pnpm run build:package && changeset publish && git push --follow-tags && git status",
+        "release": "pnpm build:clean && changeset publish && git push --follow-tags && git status",
         "watch": "pnpm run watch:ts",
         "watch:ts": "tsc --build --verbose --watch tsconfig.all.json",
         "fmt": "prettier --write '{*,**/*}.{ts,tsx,js,jsx,json}'",
