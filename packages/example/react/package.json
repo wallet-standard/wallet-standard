@@ -27,5 +27,6 @@
         "parcel": "^2.7.0",
         "process": "^0.11.10",
         "shx": "^0.3.4"
-    }
+    },
+    "version": null
 }

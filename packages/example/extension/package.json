@@ -43,5 +43,6 @@
         "@wallet-standard/parcel-packager-webextension": "workspace:^",
         "parcel": "^2.7.0",
         "shx": "^0.3.4"
-    }
+    },
+    "version": null
 }
