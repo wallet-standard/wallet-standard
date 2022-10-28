@@ -1,4 +1,4 @@
-import type { SignMessageMethod } from '@wallet-standard/features';
+import type { SignMessageMethod } from '@wallet-standard/experimental-features';
 import { createContext, useContext } from 'react';
 import { createDefaultContext } from '../../context.js';
 

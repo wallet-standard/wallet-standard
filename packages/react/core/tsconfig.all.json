@@ -11,6 +11,9 @@
             "path": "../../core/features/tsconfig.all.json"
         },
         {
+            "path": "../../experimental/features/tsconfig.all.json"
+        },
+        {
             "path": "./tsconfig.cjs.json"
         },
         {

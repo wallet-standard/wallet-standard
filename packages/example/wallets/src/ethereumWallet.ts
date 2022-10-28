@@ -52,15 +52,15 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
                 version: '1.0.0',
                 on: this._on,
             },
-            'standard:signAndSendTransaction': {
+            'experimental:signAndSendTransaction': {
                 version: '1.0.0',
                 signAndSendTransaction: this.#signAndSendTransaction,
             },
-            'standard:signTransaction': {
+            'experimental:signTransaction': {
                 version: '1.0.0',
                 signTransaction: this.#signTransaction,
             },
-            'standard:signMessage': {
+            'experimental:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
             },
@@ -77,7 +77,11 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
                 address,
                 publicKey,
                 chains: ETHEREUM_CHAINS,
-                features: ['standard:signAndSendTransaction', 'standard:signTransaction', 'standard:signMessage'],
+                features: [
+                    'experimental:signAndSendTransaction',
+                    'experimental:signTransaction',
+                    'experimental:signMessage',
+                ],
             }),
         ]);
 
@@ -98,7 +102,7 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
         const outputs: SignAndSendTransactionOutput[] = [];
         for (const { transaction, account, chain } of inputs) {
             if (!(account instanceof SignerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:signAndSendTransaction')) throw new Error('invalid feature');
+            if (!account.features.includes('experimental:signAndSendTransaction')) throw new Error('invalid feature');
 
             if (!this.chains.includes(chain as EthereumChain)) throw new Error('invalid chain');
 
@@ -125,7 +129,7 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
         const outputs: SignTransactionOutput[] = [];
         for (const { transaction, account, chain } of inputs) {
             if (!(account instanceof SignerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:signTransaction')) throw new Error('invalid feature');
+            if (!account.features.includes('experimental:signTransaction')) throw new Error('invalid feature');
 
             if (chain && !this.chains.includes(chain as EthereumChain)) throw new Error('invalid chain');
 
@@ -152,7 +156,7 @@ export class EthereumWallet extends AbstractWallet implements Wallet {
         const outputs: SignMessageOutput[] = [];
         for (const { account, message } of inputs) {
             if (!(account instanceof SignerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:signMessage')) throw new Error('invalid feature');
+            if (!account.features.includes('experimental:signMessage')) throw new Error('invalid feature');
 
             const wallet = this.#keys[account.address]?.wallet;
             if (!wallet) throw new Error('invalid account');

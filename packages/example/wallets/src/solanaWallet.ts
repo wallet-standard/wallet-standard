@@ -90,7 +90,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 supportedTransactionVersions: ['legacy'],
                 signTransaction: this.#signTransaction,
             },
-            'standard:signMessage': {
+            'experimental:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
             },
@@ -121,7 +121,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 features: [
                     'solana:signAndSendTransaction',
                     'solana:signTransaction',
-                    'standard:signMessage',
+                    'experimental:signMessage',
                     'experimental:encrypt',
                     'experimental:decrypt',
                 ],
@@ -219,7 +219,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         const outputs: SignMessageOutput[] = [];
         for (const { account, message } of inputs) {
             if (!(account instanceof PossiblyLedgerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('standard:signMessage')) throw new Error('invalid feature');
+            if (!account.features.includes('experimental:signMessage')) throw new Error('invalid feature');
 
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');

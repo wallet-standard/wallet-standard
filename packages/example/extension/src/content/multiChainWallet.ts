@@ -30,7 +30,7 @@ export class EthereumWalletAccount implements WalletAccount {
     }
 
     get features() {
-        return ['standard:signTransaction'] as const;
+        return ['experimental:signTransaction'] as const;
     }
 
     constructor(publicKey: Uint8Array) {
@@ -58,7 +58,7 @@ export class SolanaWalletAccount implements WalletAccount {
     }
 
     get features() {
-        return ['standard:signTransaction'] as const;
+        return ['experimental:signTransaction'] as const;
     }
 
     constructor(publicKey: Uint8Array) {

@@ -1,5 +1,8 @@
 import type { Wallet } from '@wallet-standard/base';
-import type { SignAndSendTransactionFeature, SignAndSendTransactionMethod } from '@wallet-standard/features';
+import type {
+    SignAndSendTransactionFeature,
+    SignAndSendTransactionMethod,
+} from '@wallet-standard/experimental-features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -15,7 +18,7 @@ export interface SignAndSendTransactionProviderProps {
 export function hasSignAndSendTransactionFeature(
     features: Wallet['features']
 ): features is SignAndSendTransactionFeature {
-    return 'standard:signAndSendTransaction' in features;
+    return 'experimental:signAndSendTransaction' in features;
 }
 
 /** TODO: docs */
@@ -49,7 +52,7 @@ export const SignAndSendTransactionProvider: FC<SignAndSendTransactionProviderPr
 
                       setWaiting(true);
                       try {
-                          promise.current = features['standard:signAndSendTransaction'].signAndSendTransaction(
+                          promise.current = features['experimental:signAndSendTransaction'].signAndSendTransaction(
                               ...inputs
                           );
                           return await promise.current;

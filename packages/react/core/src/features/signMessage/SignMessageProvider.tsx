@@ -1,5 +1,5 @@
 import type { Wallet } from '@wallet-standard/base';
-import type { SignMessageFeature, SignMessageMethod } from '@wallet-standard/features';
+import type { SignMessageFeature, SignMessageMethod } from '@wallet-standard/experimental-features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -13,7 +13,7 @@ export interface SignMessageProviderProps {
 
 /** TODO: docs */
 export function hasSignMessageFeature(features: Wallet['features']): features is SignMessageFeature {
-    return 'standard:signMessage' in features;
+    return 'experimental:signMessage' in features;
 }
 
 /** TODO: docs */
@@ -47,7 +47,7 @@ export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, on
 
                       setWaiting(true);
                       try {
-                          promise.current = features['standard:signMessage'].signMessage(...inputs);
+                          promise.current = features['experimental:signMessage'].signMessage(...inputs);
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);

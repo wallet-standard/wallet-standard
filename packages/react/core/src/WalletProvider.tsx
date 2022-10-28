@@ -26,11 +26,10 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 
     // When the features change, listen for property changes if the wallet supports it.
     useEffect(() => {
-        if (hasEventsFeature(features)) {
-            features['standard:events'].on('change', (properties) =>
+        if (hasEventsFeature(features))
+            return features['standard:events'].on('change', (properties) =>
                 setWalletProperties((currentProperties) => ({ ...currentProperties, ...properties }))
             );
-        }
     }, [features]);
 
     return (

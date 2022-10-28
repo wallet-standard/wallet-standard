@@ -3,7 +3,7 @@ import type { IdentifierString, WalletAccount } from '@wallet-standard/base';
 /** TODO: docs */
 export type SignTransactionFeature = {
     /** Namespace for the feature. */
-    'standard:signTransaction': {
+    'experimental:signTransaction': {
         /** Version of the feature API. */
         version: SignTransactionVersion;
 

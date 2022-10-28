@@ -4,7 +4,7 @@ import type { SignTransactionInput } from './signTransaction.js';
 /** TODO: docs */
 export type SignAndSendTransactionFeature = {
     /** Namespace for the feature. */
-    'standard:signAndSendTransaction': {
+    'experimental:signAndSendTransaction': {
         /** Version of the feature API. */
         version: SignAndSendTransactionVersion;
 

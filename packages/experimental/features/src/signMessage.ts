@@ -3,7 +3,7 @@ import type { WalletAccount } from '@wallet-standard/base';
 /** TODO: docs */
 export type SignMessageFeature = {
     /** Namespace for the feature. */
-    'standard:signMessage': {
+    'experimental:signMessage': {
         /** Version of the feature API. */
         version: SignMessageVersion;
 

@@ -1,5 +1,5 @@
 import type { Wallet } from '@wallet-standard/base';
-import type { SignTransactionFeature, SignTransactionMethod } from '@wallet-standard/features';
+import type { SignTransactionFeature, SignTransactionMethod } from '@wallet-standard/experimental-features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -13,7 +13,7 @@ export interface SignTransactionProviderProps {
 
 /** TODO: docs */
 export function hasSignTransactionFeature(features: Wallet['features']): features is SignTransactionFeature {
-    return 'standard:signTransaction' in features;
+    return 'experimental:signTransaction' in features;
 }
 
 /** TODO: docs */
@@ -47,7 +47,7 @@ export const SignTransactionProvider: FC<SignTransactionProviderProps> = ({ chil
 
                       setWaiting(true);
                       try {
-                          promise.current = features['standard:signTransaction'].signTransaction(...inputs);
+                          promise.current = features['experimental:signTransaction'].signTransaction(...inputs);
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
