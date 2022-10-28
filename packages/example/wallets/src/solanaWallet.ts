@@ -3,21 +3,16 @@ import type {
     SolanaSignAndSendTransactionFeature,
     SolanaSignAndSendTransactionMethod,
     SolanaSignAndSendTransactionOutput,
+    SolanaSignMessageFeature,
+    SolanaSignMessageMethod,
+    SolanaSignMessageOutput,
     SolanaSignTransactionFeature,
+    SolanaSignTransactionMethod,
+    SolanaSignTransactionOutput,
 } from '@solana/wallet-standard';
 import { getEndpointForChain, SOLANA_CHAINS } from '@solana/wallet-standard';
 import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
-import type {
-    ConnectFeature,
-    ConnectMethod,
-    EventsFeature,
-    SignMessageFeature,
-    SignMessageMethod,
-    SignMessageOutput,
-    SignTransactionMethod,
-    SignTransactionOutput,
-    Wallet,
-} from '@wallet-standard/core';
+import type { ConnectFeature, ConnectMethod, EventsFeature, Wallet } from '@wallet-standard/core';
 import type {
     DecryptFeature,
     DecryptMethod,
@@ -40,6 +35,7 @@ import { sendAndConfirmTransaction } from './solana.js';
 // A reference to an underlying Ledger device that has already been connected and account initialized
 interface SolanaLedgerApp {
     publicKey: Uint8Array;
+
     signTransaction(transaction: Uint8Array): Promise<Uint8Array>;
 }
 
@@ -68,7 +64,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         EventsFeature &
         SolanaSignAndSendTransactionFeature &
         SolanaSignTransactionFeature &
-        SignMessageFeature &
+        SolanaSignMessageFeature &
         EncryptFeature &
         DecryptFeature {
         return {
@@ -90,7 +86,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 supportedTransactionVersions: ['legacy'],
                 signTransaction: this.#signTransaction,
             },
-            'experimental:signMessage': {
+            'solana:signMessage': {
                 version: '1.0.0',
                 signMessage: this.#signMessage,
             },
@@ -121,7 +117,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 features: [
                     'solana:signAndSendTransaction',
                     'solana:signTransaction',
-                    'experimental:signMessage',
+                    'solana:signMessage',
                     'experimental:encrypt',
                     'experimental:decrypt',
                 ],
@@ -182,8 +178,8 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         return outputs;
     };
 
-    #signTransaction: SignTransactionMethod = async (...inputs) => {
-        const outputs: SignTransactionOutput[] = [];
+    #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
+        const outputs: SolanaSignTransactionOutput[] = [];
         for (const { transaction, account, chain } of inputs) {
             if (!(account instanceof PossiblyLedgerWalletAccount)) throw new Error('invalid account');
             if (!account.features.includes('solana:signTransaction')) throw new Error('invalid feature');
@@ -215,11 +211,11 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
         return outputs;
     };
 
-    #signMessage: SignMessageMethod = async (...inputs) => {
-        const outputs: SignMessageOutput[] = [];
+    #signMessage: SolanaSignMessageMethod = async (...inputs) => {
+        const outputs: SolanaSignMessageOutput[] = [];
         for (const { account, message } of inputs) {
             if (!(account instanceof PossiblyLedgerWalletAccount)) throw new Error('invalid account');
-            if (!account.features.includes('experimental:signMessage')) throw new Error('invalid feature');
+            if (!account.features.includes('solana:signMessage')) throw new Error('invalid feature');
 
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');
