@@ -1,6 +1,6 @@
 {
     "name": "@wallet-standard/ethereum-chains",
-    "version": "0.0.0",
+    "version": "0.1.0-rc.6",
     "author": "Exodus Maintainers <maintainers@exodus.io>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
