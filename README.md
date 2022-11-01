@@ -1,72 +1,23 @@
 # Wallet Standard
 
-See [packages/core/base](packages/core/base) for a description of the goals of this project and its core API.
+The Wallet Standard is a set of interfaces and conventions designed to improve the user experience and developer experience of wallets and dapps for any blockchain.
 
-# [typescript-monorepo](https://github.com/jordansexton/typescript-monorepo)
+## Code
 
-This is a simple monorepo template with some specific design goals:
+- [`Wallet` and `WalletAccount`](packages/core/base/src/wallet.ts) interfaces
+- Global [`window`](packages/core/base/src/window.ts) events
+- Wallet [`registerWallet`](packages/core/wallet/src/register.ts) function
+- App [`getWallets`](packages/core/app/src/wallets.ts) function
+- [Example](packages/example/wallets/src/window.ts) of how wallets attach to the window
 
-* Latest TypeScript version
-* Fast, incremental dependency updates and builds
-* No package bundler
-* Watch mode works
-* ESM and CJS work (with distinct build outputs)
-* Vanilla TS and React packages work
-* ~~Create React App~~ Parcel works (with hot module reloading of the entire workspace)
+## Extensions
 
-## Prerequisites
+See [EXTENSIONS](EXTENSIONS.md) for chain-specific extensions to the Wallet Standard.
 
-* Node 16+
-* PNPM
+## Design
 
-If you have Node 16+, you can [activate PNPM with Corepack](https://pnpm.io/installation#using-corepack):
-
-```shell
-corepack enable
-corepack prepare pnpm@`npm info pnpm --json | jq -r .version` --activate
-```
-
-Corepack requires a version to enable, so if you don't have [jq](https://stedolan.github.io/jq/) installed, you can [install it](https://formulae.brew.sh/formula/jq), or just manually get the current version of pnpm with `npm info pnpm` and use it like this:
-
-```shell
-corepack prepare pnpm@7.13.4 --activate
-```
-
-## Setup
-
-```shell
-git clone https://github.com/wallet-standard/wallet-standard.git
-cd wallet-standard
-pnpm install
-```
+See [DESIGN](DESIGN.md) for the original design principles of the Wallet Standard. It's somewhat outdated with respect to the code, but generally captures its purpose.
 
 ## Build
 
-Run this to build all your workspace packages.
-
-```shell
-pnpm build
-```
-
-This will build workspace packages that use `tsc` for compilation first, then everything else.
-
-## Watch
-
-Run this to build and watch workspace packages that use `tsc` for compilation.
-
-```shell
-pnpm watch
-```
-
-Other packages can build and run with their own tools (like CRA's react-scripts commands).
-
-## Run (with HMR)
-
-Run this in a separate terminal from the `watch` command.
-
-```shell
-cd packages/example/react
-pnpm start
-```
-
-A basic example app will now be running with Hot Module Reloading of the entire workspace.
+See [BUILD](BUILD.md) for instructions to build the repo from source.
