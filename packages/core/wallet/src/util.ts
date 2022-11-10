@@ -6,7 +6,7 @@ import type { WalletAccount } from '@wallet-standard/base';
  *
  * `WalletAccount` properties must be read-only. This class enforces this by making all properties
  * [truly private](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields) and
- * read-only, using getters for access, and calling
+ * read-only, using getters for access, returning copies instead of references, and calling
  * [Object.freeze](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
  * on the instance.
  *
@@ -20,39 +20,50 @@ export class ReadonlyWalletAccount implements WalletAccount {
     readonly #label: WalletAccount['label'];
     readonly #icon: WalletAccount['icon'];
 
+    /** Implementation of {@link "@wallet-standard/base".WalletAccount.address | WalletAccount::address} */
     get address() {
         return this.#address;
     }
 
+    /** Implementation of {@link "@wallet-standard/base".WalletAccount.publicKey | WalletAccount::publicKey} */
     get publicKey() {
         return this.#publicKey.slice();
     }
 
+    /** Implementation of {@link "@wallet-standard/base".WalletAccount.chains | WalletAccount::chains} */
     get chains() {
         return this.#chains.slice();
     }
 
+    /** Implementation of {@link "@wallet-standard/base".WalletAccount.features | WalletAccount::features} */
     get features() {
         return this.#features.slice();
     }
 
+    /** Implementation of {@link "@wallet-standard/base".WalletAccount.label | WalletAccount::label} */
     get label() {
         return this.#label;
     }
 
+    /** Implementation of {@link "@wallet-standard/base".WalletAccount.icon | WalletAccount::icon} */
     get icon() {
         return this.#icon;
     }
 
+    /**
+     * Create and freeze a read-only account.
+     *
+     * @param account Account to copy properties from.
+     */
     constructor(account: WalletAccount) {
         if (new.target === ReadonlyWalletAccount) {
             Object.freeze(this);
         }
 
         this.#address = account.address;
-        this.#publicKey = account.publicKey;
-        this.#chains = account.chains;
-        this.#features = account.features;
+        this.#publicKey = account.publicKey.slice();
+        this.#chains = account.chains.slice();
+        this.#features = account.features.slice();
         this.#label = account.label;
         this.#icon = account.icon;
     }
