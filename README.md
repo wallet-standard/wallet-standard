@@ -1,6 +1,6 @@
 # Wallet Standard
 
-The Wallet Standard is a set of interfaces and conventions designed to improve the user experience and developer experience of wallets and dapps for any blockchain.
+The Wallet Standard is a set of interfaces and conventions designed to improve the user experience and developer experience of wallets and applications for any blockchain.
 
 ## Code
 
