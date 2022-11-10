@@ -42,7 +42,7 @@ export interface WindowAppReadyEventAPI {
     /**
      * Register a {@link Wallet} with the app.
      *
-     * @returns
+     * @return
      * `unregister` function to programmatically unregister the Wallet.
      *
      * Wallets generally do not need to, and should not, call this.
