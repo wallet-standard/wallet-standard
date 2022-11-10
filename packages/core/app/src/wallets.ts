@@ -123,7 +123,7 @@ export type WalletsEventNames = keyof WalletsEventsListeners;
 /**
  * @deprecated Use {@link WalletsEventsListeners} instead.
  *
- * @group App
+ * @group Deprecated
  */
 export type WalletsEvents = WalletsEventsListeners;
 

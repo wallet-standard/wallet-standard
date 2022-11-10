@@ -1,9 +1,11 @@
 import type { Wallet } from './wallet.js';
 
 /**
- * Global `window` type for {@link WindowAppReadyEvent} and {@link WindowRegisterWalletEvent}.
+ * Global `window` type for dispatching and listening for {@link WindowAppReadyEvent} and {@link WindowRegisterWalletEvent}.
  *
  * ```ts
+ * import { WalletEventsWindow } from '@wallet-standard/base';
+ *
  * declare const window: WalletEventsWindow;
  * // OR
  * (window as WalletEventsWindow)
@@ -25,7 +27,7 @@ export interface WalletEventsWindow extends Omit<Window, 'addEventListener' | 'd
 /**
  * Type of {@link WindowAppReadyEvent}.
  *
- * @group App Ready
+ * @group App Ready Event
  */
 export type WindowAppReadyEventType = 'wallet-standard:app-ready';
 
@@ -34,7 +36,7 @@ export type WindowAppReadyEventType = 'wallet-standard:app-ready';
  *
  * Wallets must call the {@link WindowAppReadyEventAPI.register | register} method to register themselves.
  *
- * @group App Ready
+ * @group App Ready Event
  */
 export interface WindowAppReadyEventAPI {
     /**
@@ -54,14 +56,14 @@ export interface WindowAppReadyEventAPI {
  * Wallets must listen for this event, and {@link WindowAppReadyEventAPI.register register} themselves when the event is
  * dispatched.
  *
- * @group App Ready
+ * @group App Ready Event
  */
 export type WindowAppReadyEvent = UnstoppableCustomEvent<WindowAppReadyEventType, WindowAppReadyEventAPI>;
 
 /**
  * Type of {@link WindowRegisterWalletEvent}.
  *
- * @group Register Wallet
+ * @group Register Wallet Event
  */
 export type WindowRegisterWalletEventType = 'wallet-standard:register-wallet';
 
@@ -69,7 +71,7 @@ export type WindowRegisterWalletEventType = 'wallet-standard:register-wallet';
  * Callback function provided by {@link Wallet | Wallets} to be called by the app when the app is ready to register
  * Wallets.
  *
- * @group Register Wallet
+ * @group Register Wallet Event
  */
 export type WindowRegisterWalletEventCallback = (api: WindowAppReadyEventAPI) => void;
 
@@ -79,7 +81,7 @@ export type WindowRegisterWalletEventCallback = (api: WindowAppReadyEventAPI) =>
  *
  * The app must listen for this event, and register Wallets when the event is dispatched.
  *
- * @group Register Wallet
+ * @group Register Wallet Event
  */
 export type WindowRegisterWalletEvent = UnstoppableCustomEvent<
     WindowRegisterWalletEventType,
