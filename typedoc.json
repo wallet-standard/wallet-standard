@@ -1,6 +1,7 @@
 {
-    "entryPoints": ["packages/core/*", "packages/solana/*"],
+    "entryPoints": ["packages/core/base", "packages/core/features", "packages/core/wallet", "packages/core/app"],
     "entryPointStrategy": "packages",
     "out": "docs",
-    "readme": "README.md"
+    "readme": "README.md",
+    "sort": ["source-order"]
 }
