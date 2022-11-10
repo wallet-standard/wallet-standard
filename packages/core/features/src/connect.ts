@@ -1,40 +1,59 @@
 import type { WalletAccount } from '@wallet-standard/base';
 
-/** TODO: docs */
+/**
+ * `standard:connect` is a {@link "@wallet-standard/base".Wallet.features | feature} that may be implemented by a
+ * {@link "@wallet-standard/base".Wallet} to allow the app to obtain authorization to use
+ * {@link "@wallet-standard/base".Wallet.accounts}.
+ *
+ * @group Connect
+ */
 export type ConnectFeature = {
-    /** Namespace for the feature. */
-    'standard:connect': {
-        /** Version of the feature API. */
-        version: ConnectVersion;
-
-        /**
-         * Connect to accounts in the wallet.
-         *
-         * @param input Input for connecting.
-         *
-         * @return Output of connecting.
-         */
-        connect: ConnectMethod;
+    /** Name of the feature. */
+    readonly 'standard:connect': {
+        /** Version of the feature implemented by the Wallet. */
+        readonly version: ConnectVersion;
+        /** Method to call to use the feature. */
+        readonly connect: ConnectMethod;
     };
 };
 
-/** TODO: docs */
+/**
+ * Version of the {@link ConnectFeature} implemented by a {@link "@wallet-standard/base".Wallet}.
+ *
+ * @group Connect
+ */
 export type ConnectVersion = '1.0.0';
 
-/** TODO: docs */
+/**
+ * Method to call to use the {@link ConnectFeature}.
+ *
+ * @group Connect
+ */
 export type ConnectMethod = (input?: ConnectInput) => Promise<ConnectOutput>;
 
-/** Input for connecting. */
+/**
+ * Input for the {@link ConnectMethod}.
+ *
+ * @group Connect
+ */
 export interface ConnectInput {
     /**
-     * Set to true to request the authorized accounts without prompting the user.
-     * The wallet should return only the accounts that the app is already authorized to connect to.
+     * By default, using the {@link ConnectFeature} should prompt the user to request authorization to accounts.
+     * Set the `silent` flag to `true` to request accounts that have already been authorized without prompting.
+     *
+     * This flag may or may not be used by the Wallet and the app should not depend on it being used.
+     * If this flag is used by the Wallet, the Wallet should not prompt the user, and should return only the accounts
+     * that the app is authorized to use.
      */
-    silent?: boolean;
+    readonly silent?: boolean;
 }
 
-/** Output of connecting. */
+/**
+ * Output of the {@link ConnectMethod}.
+ *
+ * @group Connect
+ */
 export interface ConnectOutput {
-    /** List of accounts in the wallet that the app has been authorized to use. */
-    accounts: ReadonlyArray<WalletAccount>;
+    /** List of accounts in the {@link "@wallet-standard/base".Wallet} that the app has been authorized to use. */
+    readonly accounts: readonly WalletAccount[];
 }

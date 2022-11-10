@@ -1,24 +1,33 @@
 /**
- * The disconnect feature is an optional feature that may be implemented by
- * wallets to perform any cleanup-related work.
- * This feature may not be invoked by dapps and should not be depended on.
- * This feature should not remove any permissions previously granted through ConnectFeature.
+ * `standard:disconnect` is a {@link "@wallet-standard/base".Wallet.features | feature} that may be implemented by a
+ * {@link "@wallet-standard/base".Wallet} to allow the app to perform any cleanup work.
+ *
+ * This feature may or may not be used by the app and the Wallet should not depend on it being used.
+ * If this feature is used by the app, the Wallet should perform any cleanup work, but should not revoke authorization
+ * to use accounts previously granted through the {@link ConnectFeature}.
+ *
+ * @group Disconnect
  */
 export type DisconnectFeature = {
-    /** Namespace for the feature. */
-    'standard:disconnect': {
-        /** Version of the feature API. */
-        version: DisconnectVersion;
-
-        /**
-         * Disconnect from the wallet.
-         */
-        disconnect: DisconnectMethod;
+    /** Name of the feature. */
+    readonly 'standard:disconnect': {
+        /** Version of the feature implemented by the Wallet. */
+        readonly version: DisconnectVersion;
+        /** Method to call to use the feature. */
+        readonly disconnect: DisconnectMethod;
     };
 };
 
-/** TODO: docs */
+/**
+ * Version of the {@link DisconnectFeature} implemented by a Wallet.
+ *
+ * @group Disconnect
+ */
 export type DisconnectVersion = '1.0.0';
 
-/** TODO: docs */
+/**
+ * Method to call to use the {@link DisconnectFeature}.
+ *
+ * @group Disconnect
+ */
 export type DisconnectMethod = () => Promise<void>;

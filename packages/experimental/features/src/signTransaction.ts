@@ -2,9 +2,9 @@ import type { IdentifierString, WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type SignTransactionFeature = {
-    /** Namespace for the feature. */
+    /** Name of the feature. */
     'experimental:signTransaction': {
-        /** Version of the feature API. */
+        /** Version of the feature implemented by the {@link "@wallet-standard/base".Wallet}. */
         version: SignTransactionVersion;
 
         /** Sign transactions using the account's secret key. */
