@@ -59,7 +59,7 @@ export interface Wallet {
      * [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md) chain IDs are compatible with this,
      * but are not required to be used.
      *
-     * Each chain should define its own chains by extension of the Wallet Standard.
+     * Each blockchain should define its own **chains** by extension of the Wallet Standard, using its own namespace.
      * The `standard` and `experimental` namespaces are reserved by the Wallet Standard.
      *
      * The {@link "@wallet-standard/features".EventsFeature | `standard:events` feature} should be used to notify the
