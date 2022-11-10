@@ -88,6 +88,11 @@ export interface Wallets {
      * Apps generally do not need to, and should not, call this.
      *
      * @param wallets Wallets to register.
+     *
+     * @return
+     * `unregister` function which may be called to programmatically unregister the registered Wallets.
+     *
+     * Apps generally do not need to, and should not, call this.
      */
     register(...wallets: Wallet[]): () => void;
 }
