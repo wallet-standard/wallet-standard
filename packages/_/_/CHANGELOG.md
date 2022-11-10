@@ -1,5 +1,11 @@
 # wallet-standard
 
+## 1.0.1
+
+### Patch Changes
+
+-   @wallet-standard/core@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
