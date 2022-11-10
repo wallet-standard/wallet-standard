@@ -73,7 +73,7 @@ export interface Wallet {
      * A **feature name** is an {@link IdentifierString} which identifies a **feature** in a canonical, human-readable
      * format.
      *
-     * Each chain should define its own features by extension of the Wallet Standard.
+     * Each blockchain should define its own features by extension of the Wallet Standard.
      *
      * The `standard` and `experimental` namespaces are reserved by the Wallet Standard.
      *

@@ -166,7 +166,7 @@ export function guard(callback: () => void) {
  *
  * Type with a numeric `length` and numerically indexed elements of a generic type `T`.
  *
- * For example, `Array<T>` and `Uint8Array<T>`.
+ * For example, `Array<T>` and `Uint8Array`.
  *
  * @group Internal
  */
