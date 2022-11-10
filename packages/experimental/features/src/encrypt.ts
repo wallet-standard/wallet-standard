@@ -2,9 +2,9 @@ import type { WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type EncryptFeature = {
-    /** Namespace for the feature. */
+    /** Name of the feature. */
     'experimental:encrypt': {
-        /** Version of the feature API. */
+        /** Version of the feature implemented by the {@link "@wallet-standard/base".Wallet}. */
         version: EncryptVersion;
 
         // TODO: consider declaring cipher string types

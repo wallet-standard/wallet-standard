@@ -3,9 +3,9 @@ import type { SignTransactionInput } from './signTransaction.js';
 
 /** TODO: docs */
 export type SignAndSendTransactionFeature = {
-    /** Namespace for the feature. */
+    /** Name of the feature. */
     'experimental:signAndSendTransaction': {
-        /** Version of the feature API. */
+        /** Version of the feature implemented by the {@link "@wallet-standard/base".Wallet}. */
         version: SignAndSendTransactionVersion;
 
         /**

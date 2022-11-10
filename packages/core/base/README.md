@@ -1,15 +1,9 @@
-# Wallet Standard
+# `@wallet-standard/base`
 
-This package outlines the Wallet Standard.
+This package defines the foundational TypeScript types of the Wallet Standard, and so provides a practical specification
+of the Wallet Standard until a formal specification may be completed.
 
-The purpose of this standard is to improve the user experience of wallets.
+A wallet that implements the Wallet Standard is referred to as a **Standard Wallet**, or simply a **Wallet**. An account
+within a Wallet is referred to as a **WalletAccount** or simply an **Account**.
 
-We intend for this standard to become broadly adopted by wallets and dapps.
-
-## Code
-
-- [`Wallet` and `WalletAccount`](src/wallet.ts) interfaces
-- Global [`window`](src/window.ts) events
-- Wallet [`registerWallet`](../wallet/src/register.ts) function
-- App [`getWallets`](../app/src/wallets.ts) function
-- [Example](../../example/wallets/src/window.ts) of how wallets attach to the window
+This package contains only TypeScript types. There is no executable JavaScript code.

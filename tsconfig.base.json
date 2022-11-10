@@ -9,7 +9,7 @@
         "noEmitOnError": true,
         "resolveJsonModule": true,
         "strict": true,
-        "stripInternal": true,
+        "stripInternal": false,
         "noUncheckedIndexedAccess": true
     }
 }

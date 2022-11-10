@@ -2,9 +2,9 @@ import type { WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type DecryptFeature = {
-    /** Namespace for the feature. */
+    /** Name of the feature. */
     'experimental:decrypt': {
-        /** Version of the feature API. */
+        /** Version of the feature implemented by the {@link "@wallet-standard/base".Wallet}. */
         version: DecryptVersion;
 
         /** List of ciphers supported for decryption. */
