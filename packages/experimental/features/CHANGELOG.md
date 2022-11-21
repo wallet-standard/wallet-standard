@@ -1,5 +1,12 @@
 # @wallet-standard/experimental-features
 
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [1eefb9f]
+    -   @wallet-standard/base@1.0.1
+
 ## 0.1.0
 
 ### Minor Changes
