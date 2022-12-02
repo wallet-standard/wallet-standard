@@ -12,12 +12,12 @@ The Wallet Standard is a set of interfaces and conventions designed to improve t
 
 ## Extensions
 
-See [EXTENSIONS](EXTENSIONS.md) for chain-specific extensions to the Wallet Standard.
+See [EXTENSIONS](https://github.com/wallet-standard/wallet-standard/tree/master/EXTENSIONS.md) for chain-specific extensions to the Wallet Standard.
 
 ## Design
 
-See [DESIGN](DESIGN.md) for the original design principles of the Wallet Standard. It's somewhat outdated with respect to the code, but generally captures its purpose.
+See [DESIGN](https://github.com/wallet-standard/wallet-standard/tree/master/DESIGN.md) for the original design principles of the Wallet Standard. It's somewhat outdated with respect to the code, but generally captures its purpose.
 
 ## Build
 
-See [BUILD](BUILD.md) for instructions to build the repo from source.
+See [BUILD](https://github.com/wallet-standard/wallet-standard/tree/master/BUILD.md) for instructions to build the repo from source.
