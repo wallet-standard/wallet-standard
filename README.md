@@ -4,11 +4,11 @@ The Wallet Standard is a set of interfaces and conventions designed to improve t
 
 ## Code
 
-- [`Wallet` and `WalletAccount`](packages/core/base/src/wallet.ts) interfaces
-- Global [`window`](packages/core/base/src/window.ts) events
-- Wallet [`registerWallet`](packages/core/wallet/src/register.ts) function
-- App [`getWallets`](packages/core/app/src/wallets.ts) function
-- [Example](packages/example/wallets/src/window.ts) of how wallets attach to the window
+- [`Wallet` and `WalletAccount`](https://github.com/wallet-standard/wallet-standard/tree/master/packages/core/base/src/wallet.ts) interfaces
+- Global [`window`](https://github.com/wallet-standard/wallet-standard/tree/master/packages/core/base/src/window.ts) events
+- Wallet [`registerWallet`](https://github.com/wallet-standard/wallet-standard/tree/master/packages/core/wallet/src/register.ts) function
+- App [`getWallets`](https://github.com/wallet-standard/wallet-standard/tree/master/packages/core/app/src/wallets.ts) function
+- [Example](https://github.com/wallet-standard/wallet-standard/tree/master/packages/example/wallets/src/window.ts) of how wallets attach to the window
 
 ## Extensions
 
