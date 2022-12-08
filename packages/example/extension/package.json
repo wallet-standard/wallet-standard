@@ -24,11 +24,11 @@
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
-        "@parcel/config-webextension": "2.8.0",
+        "@parcel/config-webextension": "2.8.1",
         "@types/bs58": "^4.0.1",
         "@types/react": "^18.0.21",
         "@types/react-dom": "^18.0.6",
-        "parcel": "^2.8.0",
+        "parcel": "^2.8.1",
         "shx": "^0.3.4"
     },
     "version": null
