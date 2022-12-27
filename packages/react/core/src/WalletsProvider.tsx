@@ -33,5 +33,9 @@ export const WalletsProvider: FC<WalletsProviderProps> = ({ children }) => {
         return () => destructors.forEach((destroy) => destroy());
     }, [get, on]);
 
-    return <WalletsContext.Provider value={{ wallets }}>{children}</WalletsContext.Provider>;
+    const contextValue = useMemo(() => ({
+        wallets,
+    }), [wallets]);
+
+    return <WalletsContext.Provider value={contextValue}>{children}</WalletsContext.Provider>;
 };
