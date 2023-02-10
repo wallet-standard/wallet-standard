@@ -1,5 +1,11 @@
 # @wallet-standard/react-core
 
+## 0.1.2
+
+### Patch Changes
+
+-   6e11316: Prevent `WalletsContext.Provider` from rerendering when `wallets` does not change. Fewer spurious rerenders means better performance.
+
 ## 0.1.1
 
 ### Patch Changes
