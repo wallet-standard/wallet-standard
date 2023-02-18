@@ -1,5 +1,8 @@
 import type { Wallet } from '@wallet-standard/base';
 
+/** Name of the feature. */
+export const Events = 'standard:events';
+
 /**
  * `standard:events` is a {@link "@wallet-standard/base".Wallet.features | feature} that may be implemented by a
  * {@link "@wallet-standard/base".Wallet} to allow the app to add an event listener and subscribe to events emitted by
@@ -9,7 +12,7 @@ import type { Wallet } from '@wallet-standard/base';
  */
 export type EventsFeature = {
     /** Name of the feature. */
-    readonly 'standard:events': {
+    readonly [Events]: {
         /** Version of the feature implemented by the {@link "@wallet-standard/base".Wallet}. */
         readonly version: EventsVersion;
         /** Method to call to use the feature. */
