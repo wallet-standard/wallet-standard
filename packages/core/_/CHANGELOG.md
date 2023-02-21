@@ -1,5 +1,12 @@
 # @wallet-standard/core
 
+## 1.0.3
+
+### Patch Changes
+
+-   Updated dependencies [6cac3ca]
+    -   @wallet-standard/features@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

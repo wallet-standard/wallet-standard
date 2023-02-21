@@ -1,5 +1,11 @@
 # @wallet-standard/features
 
+## 1.0.3
+
+### Patch Changes
+
+-   6cac3ca: Add Standard*Feature names, alias and deprecate *Feature names
+
 ## 1.0.2
 
 ### Patch Changes
