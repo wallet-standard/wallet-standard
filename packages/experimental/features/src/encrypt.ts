@@ -9,7 +9,7 @@ export type EncryptFeature = {
 
         // TODO: consider declaring cipher string types
         /** List of ciphers supported for encryption. */
-        ciphers: ReadonlyArray<string>;
+        ciphers: readonly string[];
 
         /**
          * Encrypt cleartexts using the account's secret key.

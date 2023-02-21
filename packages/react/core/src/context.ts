@@ -2,7 +2,7 @@
 export const EMPTY_STRING = '' as const;
 
 /** @internal */
-export const EMPTY_ARRAY: ReadonlyArray<never> = [] as const;
+export const EMPTY_ARRAY: readonly never[] = [] as const;
 
 /** @internal */
 export const EMPTY_OBJECT: Readonly<Record<string, never>> = {} as const;

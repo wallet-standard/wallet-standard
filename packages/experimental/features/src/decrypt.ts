@@ -8,7 +8,7 @@ export type DecryptFeature = {
         version: DecryptVersion;
 
         /** List of ciphers supported for decryption. */
-        ciphers: ReadonlyArray<string>;
+        ciphers: readonly string[];
 
         /**
          * Decrypt ciphertexts using the account's secret key.

@@ -4,7 +4,7 @@ import { createDefaultContext, EMPTY_ARRAY } from './context.js';
 
 /** TODO: docs */
 export interface WalletsContextState {
-    wallets: ReadonlyArray<Wallet>;
+    wallets: readonly Wallet[];
 }
 
 const DEFAULT_WALLETS_STATE: Readonly<WalletsContextState> = { wallets: EMPTY_ARRAY } as const;
