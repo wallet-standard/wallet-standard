@@ -1,5 +1,8 @@
 import type { WalletAccount } from '@wallet-standard/base';
 
+/** Name of the feature. */
+export const Connect = 'standard:connect';
+
 /**
  * `standard:connect` is a {@link "@wallet-standard/base".Wallet.features | feature} that may be implemented by a
  * {@link "@wallet-standard/base".Wallet} to allow the app to obtain authorization to use
@@ -9,7 +12,7 @@ import type { WalletAccount } from '@wallet-standard/base';
  */
 export type ConnectFeature = {
     /** Name of the feature. */
-    readonly 'standard:connect': {
+    readonly [Connect]: {
         /** Version of the feature implemented by the Wallet. */
         readonly version: ConnectVersion;
         /** Method to call to use the feature. */

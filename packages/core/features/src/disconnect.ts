@@ -1,3 +1,6 @@
+/** Name of the feature. */
+export const Disconnect = 'standard:disconnect';
+
 /**
  * `standard:disconnect` is a {@link "@wallet-standard/base".Wallet.features | feature} that may be implemented by a
  * {@link "@wallet-standard/base".Wallet} to allow the app to perform any cleanup work.
@@ -10,7 +13,7 @@
  */
 export type DisconnectFeature = {
     /** Name of the feature. */
-    readonly 'standard:disconnect': {
+    readonly [Disconnect]: {
         /** Version of the feature implemented by the Wallet. */
         readonly version: DisconnectVersion;
         /** Method to call to use the feature. */
