@@ -1,5 +1,11 @@
 # @wallet-standard/features
 
+## 1.0.2
+
+### Patch Changes
+
+-   41add01: Export reusable feature name constants
+
 ## 1.0.1
 
 ### Patch Changes
