@@ -1,36 +1,54 @@
 import type { Wallet } from '@wallet-standard/base';
 
 /** Name of the feature. */
-export const Events = 'standard:events';
+export const StandardEvents = 'standard:events';
+/**
+ * @deprecated Use {@link StandardEvents} instead.
+ *
+ * @group Deprecated
+ */
+export const Events = StandardEvents;
 
 /**
  * `standard:events` is a {@link "@wallet-standard/base".Wallet.features | feature} that may be implemented by a
  * {@link "@wallet-standard/base".Wallet} to allow the app to add an event listener and subscribe to events emitted by
- * the Wallet when properties of the Wallet {@link EventsListeners.change}.
+ * the Wallet when properties of the Wallet {@link StandardEventsListeners.change}.
  *
  * @group Events
  */
-export type EventsFeature = {
+export type StandardEventsFeature = {
     /** Name of the feature. */
-    readonly [Events]: {
+    readonly [StandardEvents]: {
         /** Version of the feature implemented by the {@link "@wallet-standard/base".Wallet}. */
-        readonly version: EventsVersion;
+        readonly version: StandardEventsVersion;
         /** Method to call to use the feature. */
-        readonly on: EventsOnMethod;
+        readonly on: StandardEventsOnMethod;
     };
 };
+/**
+ * @deprecated Use {@link StandardEventsFeature} instead.
+ *
+ * @group Deprecated
+ */
+export type EventsFeature = StandardEventsFeature;
 
 /**
- * Version of the {@link EventsFeature} implemented by a {@link "@wallet-standard/base".Wallet}.
+ * Version of the {@link StandardEventsFeature} implemented by a {@link "@wallet-standard/base".Wallet}.
  *
  * @group Events
  */
-export type EventsVersion = '1.0.0';
+export type StandardEventsVersion = '1.0.0';
+/**
+ * @deprecated Use {@link StandardEventsVersion} instead.
+ *
+ * @group Deprecated
+ */
+export type EventsVersion = StandardEventsVersion;
 
 /**
- * Method to call to use the {@link EventsFeature}.
+ * Method to call to use the {@link StandardEventsFeature}.
  *
- * @param event    Event type to listen for. {@link EventsListeners.change | `change`} is the only event type.
+ * @param event    Event type to listen for. {@link StandardEventsListeners.change | `change`} is the only event type.
  * @param listener Function that will be called when an event of the type is emitted.
  *
  * @return
@@ -40,37 +58,58 @@ export type EventsVersion = '1.0.0';
  *
  * @group Events
  */
-export type EventsOnMethod = <E extends EventsNames>(event: E, listener: EventsListeners[E]) => () => void;
+export type StandardEventsOnMethod = <E extends StandardEventsNames>(
+    event: E,
+    listener: StandardEventsListeners[E]
+) => () => void;
+/**
+ * @deprecated Use {@link StandardEventsOnMethod} instead.
+ *
+ * @group Deprecated
+ */
+export type EventsOnMethod = StandardEventsOnMethod;
 
 /**
- * Types of event listeners of the {@link EventsFeature}.
+ * Types of event listeners of the {@link StandardEventsFeature}.
  *
  * @group Events
  */
-export interface EventsListeners {
+export interface StandardEventsListeners {
     /**
-     * Listener that will be called when {@link EventsChangeProperties | properties} of the
+     * Listener that will be called when {@link StandardEventsChangeProperties | properties} of the
      * {@link "@wallet-standard/base".Wallet} have changed.
      *
      * @param properties Properties that changed with their **new** values.
      */
-    change(properties: EventsChangeProperties): void;
+    change(properties: StandardEventsChangeProperties): void;
 }
+/**
+ * @deprecated Use {@link StandardEventsListeners} instead.
+ *
+ * @group Deprecated
+ */
+export type EventsListeners = StandardEventsListeners;
 
 /**
- * Names of {@link EventsListeners} that can be listened for.
+ * Names of {@link StandardEventsListeners} that can be listened for.
  *
  * @group Events
  */
-export type EventsNames = keyof EventsListeners;
+export type StandardEventsNames = keyof StandardEventsListeners;
+/**
+ * @deprecated Use {@link StandardEventsNames} instead.
+ *
+ * @group Deprecated
+ */
+export type EventsNames = StandardEventsNames;
 
 /**
- * Properties of a {@link "@wallet-standard/base".Wallet} that {@link EventsListeners.change | changed} with their
+ * Properties of a {@link "@wallet-standard/base".Wallet} that {@link StandardEventsListeners.change | changed} with their
  * **new** values.
  *
  * @group Events
  */
-export interface EventsChangeProperties {
+export interface StandardEventsChangeProperties {
     /**
      * {@link "@wallet-standard/base".Wallet.chains | Chains} supported by the Wallet.
      *
@@ -96,3 +135,9 @@ export interface EventsChangeProperties {
      */
     readonly accounts?: Wallet['accounts'];
 }
+/**
+ * @deprecated Use {@link StandardEventsChangeProperties} instead.
+ *
+ * @group Deprecated
+ */
+export type EventsChangeProperties = StandardEventsChangeProperties;
