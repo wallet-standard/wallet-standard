@@ -1,7 +1,13 @@
 import type { WalletAccount } from '@wallet-standard/base';
 
 /** Name of the feature. */
-export const Connect = 'standard:connect';
+export const StandardConnect = 'standard:connect';
+/**
+ * @deprecated Use {@link StandardConnect} instead.
+ *
+ * @group Deprecated
+ */
+export const Connect = StandardConnect;
 
 /**
  * `standard:connect` is a {@link "@wallet-standard/base".Wallet.features | feature} that may be implemented by a
@@ -10,38 +16,56 @@ export const Connect = 'standard:connect';
  *
  * @group Connect
  */
-export type ConnectFeature = {
+export type StandardConnectFeature = {
     /** Name of the feature. */
-    readonly [Connect]: {
+    readonly [StandardConnect]: {
         /** Version of the feature implemented by the Wallet. */
-        readonly version: ConnectVersion;
+        readonly version: StandardConnectVersion;
         /** Method to call to use the feature. */
-        readonly connect: ConnectMethod;
+        readonly connect: StandardConnectMethod;
     };
 };
+/**
+ * @deprecated Use {@link StandardConnectFeature} instead.
+ *
+ * @group Deprecated
+ */
+export type ConnectFeature = StandardConnectFeature;
 
 /**
- * Version of the {@link ConnectFeature} implemented by a {@link "@wallet-standard/base".Wallet}.
+ * Version of the {@link StandardConnectFeature} implemented by a {@link "@wallet-standard/base".Wallet}.
  *
  * @group Connect
  */
-export type ConnectVersion = '1.0.0';
+export type StandardConnectVersion = '1.0.0';
+/**
+ * @deprecated Use {@link StandardConnectVersion} instead.
+ *
+ * @group Deprecated
+ */
+export type ConnectVersion = StandardConnectVersion;
 
 /**
- * Method to call to use the {@link ConnectFeature}.
+ * Method to call to use the {@link StandardConnectFeature}.
  *
  * @group Connect
  */
-export type ConnectMethod = (input?: ConnectInput) => Promise<ConnectOutput>;
+export type StandardConnectMethod = (input?: StandardConnectInput) => Promise<StandardConnectOutput>;
+/**
+ * @deprecated Use {@link StandardConnectMethod} instead.
+ *
+ * @group Deprecated
+ */
+export type ConnectMethod = StandardConnectMethod;
 
 /**
- * Input for the {@link ConnectMethod}.
+ * Input for the {@link StandardConnectMethod}.
  *
  * @group Connect
  */
-export interface ConnectInput {
+export interface StandardConnectInput {
     /**
-     * By default, using the {@link ConnectFeature} should prompt the user to request authorization to accounts.
+     * By default, using the {@link StandardConnectFeature} should prompt the user to request authorization to accounts.
      * Set the `silent` flag to `true` to request accounts that have already been authorized without prompting.
      *
      * This flag may or may not be used by the Wallet and the app should not depend on it being used.
@@ -50,13 +74,25 @@ export interface ConnectInput {
      */
     readonly silent?: boolean;
 }
+/**
+ * @deprecated Use {@link StandardConnectInput} instead.
+ *
+ * @group Deprecated
+ */
+export type ConnectInput = StandardConnectInput;
 
 /**
- * Output of the {@link ConnectMethod}.
+ * Output of the {@link StandardConnectMethod}.
  *
  * @group Connect
  */
-export interface ConnectOutput {
+export interface StandardConnectOutput {
     /** List of accounts in the {@link "@wallet-standard/base".Wallet} that the app has been authorized to use. */
     readonly accounts: readonly WalletAccount[];
 }
+/**
+ * @deprecated Use {@link StandardConnectOutput} instead.
+ *
+ * @group Deprecated
+ */
+export type ConnectOutput = StandardConnectOutput;

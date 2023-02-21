@@ -1,5 +1,13 @@
 import type { WalletAccount, WalletWithFeatures } from '@wallet-standard/base';
-import type { ConnectFeature, EventsFeature, StandardFeatures } from '..';
+import {
+    StandardConnect,
+    StandardDisconnect,
+    StandardEvents,
+    type StandardConnectFeature,
+    type StandardDisconnectFeature,
+    type StandardEventsFeature,
+    type StandardFeatures,
+} from '..';
 
 type FooWalletFeature = {
     'foo:': {
@@ -12,12 +20,17 @@ class FooWallet implements WalletWithFeatures<StandardFeatures & FooWalletFeatur
     name = 'Foo';
     icon = `data:image/png;base64,` as const;
     chains = ['foochain:mainnet', 'foochain:devnet'] as const;
-    features: ConnectFeature & EventsFeature & FooWalletFeature = {
-        'standard:connect': {
+    features: StandardFeatures & FooWalletFeature = {
+        [StandardConnect]: {
             version: '1.0.0',
             connect: async () => ({ accounts: this.accounts }),
         },
-        'standard:events': {
+        [StandardDisconnect]: {
+            version: '1.0.0',
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            disconnect: async () => {},
+        },
+        [StandardEvents]: {
             version: '1.0.0',
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             on: (event, listener) => () => {},
@@ -39,12 +52,16 @@ class FooWalletAccount implements WalletAccount {
 
 const wallet: WalletWithFeatures<StandardFeatures & FooWalletFeature> = new FooWallet();
 
-if ('standard:events' in wallet.features) {
-    wallet.features['standard:events'].on('change', (properties) => console.log(properties));
+if (StandardEvents in wallet.features) {
+    wallet.features[StandardEvents].on('change', (properties) => console.log(properties));
 }
 
-if ('standard:connect' in wallet.features) {
-    await wallet.features['standard:connect'].connect();
+if (StandardConnect in wallet.features) {
+    await wallet.features[StandardConnect].connect();
+}
+
+if (StandardDisconnect in wallet.features) {
+    await wallet.features[StandardDisconnect].disconnect();
 }
 
 if ('foo:' in wallet.features) {
