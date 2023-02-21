@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+-   @wallet-standard/core@1.0.3
+-   @wallet-standard/react@0.1.4
+
+## null
+
+### Patch Changes
+
 -   @wallet-standard/core@1.0.2
 -   @wallet-standard/react@0.1.3
 
