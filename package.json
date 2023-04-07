@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "Wallet Standard",
+    "name": "walletstandard",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",

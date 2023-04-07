@@ -31,6 +31,7 @@ import {
     SignerWalletAccount,
 } from './abstractWallet.js';
 import { sendAndConfirmTransaction } from './solana.js';
+import * as ed2curve from 'ed2curve';
 
 // A reference to an underlying Ledger device that has already been connected and account initialized
 interface SolanaLedgerApp {
@@ -242,8 +243,11 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');
 
+            const curveSecretKey: Uint8Array = ed2curve.convertSecretKey(keypair.secretKey);
+            const curvePublicKey: Uint8Array = ed2curve.convertPublicKey(publicKey);
+
             const nonce = randomBytes(box.nonceLength);
-            const ciphertext = box(cleartext, nonce, publicKey, keypair.secretKey);
+            const ciphertext = box(cleartext, nonce, curvePublicKey, curveSecretKey);
             outputs.push({ ciphertext, nonce });
         }
 
@@ -261,7 +265,10 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');
 
-            const cleartext = box.open(ciphertext, nonce, publicKey, keypair.secretKey);
+            const curveSecretKey: Uint8Array = ed2curve.convertSecretKey(keypair.secretKey);
+            const curvePublicKey: Uint8Array = ed2curve.convertPublicKey(publicKey);
+            
+            const cleartext = box.open(ciphertext, nonce, curvePublicKey, curveSecretKey);
             if (!cleartext) throw new Error('message authentication failed');
             outputs.push({ cleartext });
         }
