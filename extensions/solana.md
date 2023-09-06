@@ -19,5 +19,6 @@ Wallet Standard Extensions for Solana are defined by
 ### Features
 
 - `solana:signAndSendTransaction`
+- `solana:signIn`
 - `solana:signTransaction`
 - `solana:signMessage`
