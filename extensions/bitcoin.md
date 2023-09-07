@@ -17,5 +17,6 @@ Wallet Standard Extensions for Bitcoin are defined by
 ### Features
 
 - `bitcoin:connect`
-- `bitcoin:signTransaction` (WIP)
-- `bitcoin:signAndSendTransaction` (WIP)
+- `bitcoin:signTransaction`
+- `bitcoin:signAndSendTransaction`
+- `bitcoin:signMessage`
