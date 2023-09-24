@@ -2,7 +2,7 @@
 
 Wallet Standard Extensions for Sui are defined by
 
-- https://github.com/MystenLabs/sui/tree/main/sdk/wallet-adapter/packages/wallet-standard
+- https://github.com/MystenLabs/sui/tree/main/sdk/wallet-standard
 - https://www.npmjs.com/package/@mysten/wallet-standard
 
 ### Namespaces
@@ -14,7 +14,10 @@ Wallet Standard Extensions for Sui are defined by
 - `sui:devnet`
 - `sui:testnet`
 - `sui:localnet`
+- `sui:mainnet`
 
 ### Features
 
-- `sui:signAndExecuteTransaction`
+- `sui:signAndExecuteTransactionBlock`
+- `sui:signPersonalMessage`
+- `sui:signTransactionBlock`
