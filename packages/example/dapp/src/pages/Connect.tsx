@@ -5,7 +5,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { useIsConnected } from '../hooks/useIsConnected';
 
 export const Connect: FC = () => {
-    const { wallets } = useWallets();
+    const wallets = useWallets();
     const { setWallet, wallet } = useWallet();
     const isConnected = useIsConnected();
     const { connect } = useConnect();

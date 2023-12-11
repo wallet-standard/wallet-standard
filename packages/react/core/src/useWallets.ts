@@ -1,20 +1,31 @@
+import { getWallets } from '@wallet-standard/app';
 import type { Wallet } from '@wallet-standard/base';
-import { createContext, useContext } from 'react';
-import { createDefaultContext, EMPTY_ARRAY } from './context.js';
+import { useMemo, useState, useEffect } from 'react';
 
 /** TODO: docs */
-export interface WalletsContextState {
-    wallets: readonly Wallet[];
-}
+export function useWallets(): readonly Wallet[] {
+    // Initialize `window.navigator.wallets` and obtain a synchronous API.
+    const { get, on } = useMemo(() => getWallets(), []);
 
-const DEFAULT_WALLETS_STATE: Readonly<WalletsContextState> = { wallets: EMPTY_ARRAY } as const;
+    // Synchronously get the wallets that have registered already so that they can be accessed on the first render.
+    const [wallets, setWallets] = useState(() => get());
 
-const DEFAULT_WALLETS_CONTEXT = createDefaultContext('Wallets', DEFAULT_WALLETS_STATE);
+    useEffect(() => {
+        const destructors: (() => void)[] = [];
 
-/** TODO: docs */
-export const WalletsContext = createContext(DEFAULT_WALLETS_CONTEXT);
+        // TODO: figure out if this can ever actually happen
+        // FIXME: this can definitely happen, refactor similar to @solana/wallet-standard-wallet-adapter-react
+        // Get and set the wallets that have been registered already, in case they changed since the state initializer.
+        setWallets(get());
 
-/** TODO: docs */
-export function useWallets(): WalletsContextState {
-    return useContext(WalletsContext);
+        // Add an event listener to add any wallets that are registered after this point.
+        destructors.push(on('register', () => setWallets(get())));
+
+        // Add an event listener to remove any wallets that are unregistered after this point.
+        destructors.push(on('unregister', () => setWallets(get())));
+
+        return () => destructors.forEach((destroy) => destroy());
+    }, [get, on]);
+
+    return wallets;
 }
