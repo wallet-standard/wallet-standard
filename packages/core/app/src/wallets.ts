@@ -10,11 +10,11 @@ import type {
 let wallets: Wallets | undefined = undefined;
 const registeredWalletsSet = new Set<Wallet>();
 function addRegisteredWallet(wallet: Wallet) {
-    _cachedWalletsArray = undefined;
+    cachedWalletsArray = undefined;
     registeredWalletsSet.add(wallet);
 }
 function removeRegisteredWallet(wallet: Wallet) {
-    _cachedWalletsArray = undefined;
+    cachedWalletsArray = undefined;
     registeredWalletsSet.delete(wallet);
 }
 const listeners: { [E in WalletsEventNames]?: WalletsEventsListeners[E][] } = {};
@@ -158,12 +158,12 @@ function register(...wallets: Wallet[]): () => void {
     };
 }
 
-let _cachedWalletsArray: readonly Wallet[] | undefined;
+let cachedWalletsArray: readonly Wallet[] | undefined;
 function get(): readonly Wallet[] {
-    if (!_cachedWalletsArray) {
-        _cachedWalletsArray = [...registeredWalletsSet];
+    if (!cachedWalletsArray) {
+        cachedWalletsArray = [...registeredWalletsSet];
     }
-    return _cachedWalletsArray;
+    return cachedWalletsArray;
 }
 
 function on<E extends WalletsEventNames>(event: E, listener: WalletsEventsListeners[E]): () => void {
