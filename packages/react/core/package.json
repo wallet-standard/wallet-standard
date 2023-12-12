@@ -30,8 +30,8 @@
         "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "peerDependencies": {
-        "react": "*",
-        "react-dom": "*"
+        "react": ">=18",
+        "react-dom": ">=18"
     },
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
