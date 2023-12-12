@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+-   @wallet-standard/core@1.0.4
+
+## null
+
+### Patch Changes
+
 -   @wallet-standard/core@1.0.3
 
 ## null
