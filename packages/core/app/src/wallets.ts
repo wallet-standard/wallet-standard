@@ -8,7 +8,15 @@ import type {
 } from '@wallet-standard/base';
 
 let wallets: Wallets | undefined = undefined;
-const registered = new Set<Wallet>();
+const registeredWalletsSet = new Set<Wallet>();
+function addRegisteredWallet(wallet: Wallet) {
+    cachedWalletsArray = undefined;
+    registeredWalletsSet.add(wallet);
+}
+function removeRegisteredWallet(wallet: Wallet) {
+    cachedWalletsArray = undefined;
+    registeredWalletsSet.delete(wallet);
+}
 const listeners: { [E in WalletsEventNames]?: WalletsEventsListeners[E][] } = {};
 
 /**
@@ -136,22 +144,26 @@ function register(...wallets: Wallet[]): () => void {
     // Filter out wallets that have already been registered.
     // This prevents the same wallet from being registered twice, but it also prevents wallets from being
     // unregistered by reusing a reference to the wallet to obtain the unregister function for it.
-    wallets = wallets.filter((wallet) => !registered.has(wallet));
+    wallets = wallets.filter((wallet) => !registeredWalletsSet.has(wallet));
     // If there are no new wallets to register, just return a no-op unregister function.
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     if (!wallets.length) return () => {};
 
-    wallets.forEach((wallet) => registered.add(wallet));
+    wallets.forEach((wallet) => addRegisteredWallet(wallet));
     listeners['register']?.forEach((listener) => guard(() => listener(...wallets)));
     // Return a function that unregisters the registered wallets.
     return function unregister(): void {
-        wallets.forEach((wallet) => registered.delete(wallet));
+        wallets.forEach((wallet) => removeRegisteredWallet(wallet));
         listeners['unregister']?.forEach((listener) => guard(() => listener(...wallets)));
     };
 }
 
+let cachedWalletsArray: readonly Wallet[] | undefined;
 function get(): readonly Wallet[] {
-    return [...registered];
+    if (!cachedWalletsArray) {
+        cachedWalletsArray = [...registeredWalletsSet];
+    }
+    return cachedWalletsArray;
 }
 
 function on<E extends WalletsEventNames>(event: E, listener: WalletsEventsListeners[E]): () => void {
