@@ -9,7 +9,6 @@ import {
 } from './features/index.js';
 import { WalletAccountProvider } from './WalletAccountProvider.js';
 import { WalletProvider } from './WalletProvider.js';
-import { WalletsProvider } from './WalletsProvider.js';
 
 /** TODO: docs */
 export interface WalletStandardProviderProps {
@@ -20,20 +19,18 @@ export interface WalletStandardProviderProps {
 /** TODO: docs */
 export const WalletStandardProvider: FC<WalletStandardProviderProps> = ({ children, onError }) => {
     return (
-        <WalletsProvider>
-            <WalletProvider>
-                <WalletAccountProvider>
-                    <ConnectProvider onError={onError}>
-                        <DisconnectProvider onError={onError}>
-                            <SignAndSendTransactionProvider onError={onError}>
-                                <SignTransactionProvider onError={onError}>
-                                    <SignMessageProvider onError={onError}>{children}</SignMessageProvider>
-                                </SignTransactionProvider>
-                            </SignAndSendTransactionProvider>
-                        </DisconnectProvider>
-                    </ConnectProvider>
-                </WalletAccountProvider>
-            </WalletProvider>
-        </WalletsProvider>
+        <WalletProvider>
+            <WalletAccountProvider>
+                <ConnectProvider onError={onError}>
+                    <DisconnectProvider onError={onError}>
+                        <SignAndSendTransactionProvider onError={onError}>
+                            <SignTransactionProvider onError={onError}>
+                                <SignMessageProvider onError={onError}>{children}</SignMessageProvider>
+                            </SignTransactionProvider>
+                        </SignAndSendTransactionProvider>
+                    </DisconnectProvider>
+                </ConnectProvider>
+            </WalletAccountProvider>
+        </WalletProvider>
     );
 };
