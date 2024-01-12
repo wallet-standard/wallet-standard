@@ -17,7 +17,7 @@ class FooWalletAccount implements WalletAccount {
     address = '';
     publicKey = new Uint8Array();
     chains = ['foo:mainnet'] as const;
-    features: readonly (keyof FooSignTransactionFeature | keyof FooSignMessageFeature)[] = [
+    features: readonly (keyof (FooSignTransactionFeature & FooSignMessageFeature))[] = [
         'foo:signTransaction',
         'foo:signMessage',
     ] as const;
