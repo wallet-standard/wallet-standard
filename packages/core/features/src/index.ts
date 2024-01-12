@@ -9,7 +9,7 @@ import type { StandardEventsFeature } from './events.js';
  *
  * @group Features
  */
-export type StandardFeatures = StandardConnectFeature | StandardDisconnectFeature | StandardEventsFeature;
+export type StandardFeatures = StandardConnectFeature & StandardDisconnectFeature & StandardEventsFeature;
 
 /**
  * Type alias for a {@link "@wallet-standard/base".Wallet} that implements some or all {@link StandardFeatures}.

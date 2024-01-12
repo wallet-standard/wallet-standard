@@ -6,12 +6,11 @@ import type { SignMessageFeature } from './signMessage.js';
 import type { SignTransactionFeature } from './signTransaction.js';
 
 /** TODO: docs */
-export type ExperimentalFeatures =
-    | DecryptFeature
-    | EncryptFeature
-    | SignAndSendTransactionFeature
-    | SignMessageFeature
-    | SignTransactionFeature;
+export type ExperimentalFeatures = DecryptFeature &
+    EncryptFeature &
+    SignAndSendTransactionFeature &
+    SignMessageFeature &
+    SignTransactionFeature;
 
 /** TODO: docs */
 export type WalletWithExperimentalFeatures = WalletWithFeatures<ExperimentalFeatures>;
