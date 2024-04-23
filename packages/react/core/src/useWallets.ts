@@ -3,8 +3,10 @@ import type { Wallet } from '@wallet-standard/base';
 import { useCallback, useSyncExternalStore } from 'react';
 import { useStable } from './useStable.js';
 
+const NO_WALLETS: readonly Wallet[] = [];
+
 function getServerSnapshot(): readonly Wallet[] {
-    return [];
+    return NO_WALLETS;
 }
 
 /** TODO: docs */
