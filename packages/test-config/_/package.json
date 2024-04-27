@@ -1,0 +1,11 @@
+{
+    "name": "@wallet-standard/test-config",
+    "version": "0.0.0",
+    "private": true,
+    "peerDependencies": {
+        "jest-dev-server": "^10.0.0"
+    },
+    "devDependencies": {
+        "@jest/types": "^29.6.3"
+    }
+}
