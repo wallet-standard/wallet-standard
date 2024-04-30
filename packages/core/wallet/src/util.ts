@@ -185,7 +185,13 @@ export interface Indexed<T> {
  *
  * @group Util
  */
-export function walletAccountsEqual(a: WalletAccount, b: WalletAccount): boolean {
+export function walletAccountsEqual(a?: WalletAccount, b?: WalletAccount): boolean {
+    if (!a && !b) {
+        return true;
+    }
+    if (!a || !b) {
+        return false;
+    }
     return (
         a.address === b.address &&
         bytesEqual(a.publicKey, b.publicKey) &&
