@@ -67,6 +67,17 @@ export class ReadonlyWalletAccount implements WalletAccount {
         this.#label = account.label;
         this.#icon = account.icon;
     }
+
+    public equals(other: ReadonlyWalletAccount): boolean {
+        return (
+            this.address === other.address &&
+            arraysEqual(this.publicKey, other.publicKey) &&
+            arraysEqual(this.chains, other.chains) &&
+            arraysEqual(this.features, other.features) &&
+            this.label === other.label &&
+            this.icon === other.icon
+        );
+    }
 }
 
 /**
