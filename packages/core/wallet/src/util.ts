@@ -67,17 +67,6 @@ export class ReadonlyWalletAccount implements WalletAccount {
         this.#label = account.label;
         this.#icon = account.icon;
     }
-
-    public equals(other: ReadonlyWalletAccount): boolean {
-        return (
-            this.address === other.address &&
-            arraysEqual(this.publicKey, other.publicKey) &&
-            arraysEqual(this.chains, other.chains) &&
-            arraysEqual(this.features, other.features) &&
-            this.label === other.label &&
-            this.icon === other.icon
-        );
-    }
 }
 
 /**
@@ -184,4 +173,25 @@ export function guard(callback: () => void) {
 export interface Indexed<T> {
     length: number;
     [index: number]: T;
+}
+
+/**
+ * Compare WalletAccounts, using {@link arraysEqual} on the array fields
+ *
+ * @param a A WalletAccount.
+ * @param b Another WalletAccount.
+ *
+ * @return `true` if WalletAccount has exactly the same fields via a deep equality check
+ *
+ * @group Util
+ */
+export function walletAccountsEqual(a: WalletAccount, b: WalletAccount): boolean {
+    return (
+        a.address === b.address &&
+        bytesEqual(a.publicKey, b.publicKey) &&
+        arraysEqual(a.chains, b.chains) &&
+        arraysEqual(a.features, b.features) &&
+        a.label === b.label &&
+        a.icon === b.icon
+    );
 }
