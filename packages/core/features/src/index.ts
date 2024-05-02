@@ -18,6 +18,7 @@ export type StandardFeatures = StandardConnectFeature | StandardDisconnectFeatur
  */
 export type WalletWithStandardFeatures = WalletWithFeatures<StandardFeatures>;
 
+export * from './assertions.js';
 export * from './connect.js';
 export * from './disconnect.js';
 export * from './events.js';
