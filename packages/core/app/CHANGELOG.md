@@ -1,5 +1,11 @@
 # @wallet-standard/app
 
+## 1.0.2
+
+### Patch Changes
+
+-   43b2f82: `Wallets::get()` now returns the same array object unless the wallets have changed, to make downstream optimizations based on `===` possible.
+
 ## 1.0.1
 
 ### Patch Changes

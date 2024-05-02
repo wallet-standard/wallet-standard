@@ -1,5 +1,15 @@
 # @wallet-standard/react-core
 
+## 0.1.5
+
+### Patch Changes
+
+-   5e4f381: The `useWallets()` hook will now cause a re-render any time a wallet's `'change'` event fires
+-   6a969b5: Reimplement the `useWallets()` hook with `useSyncExternalStore`
+-   34f789e: Eliminated `WalletsProvider` in favor of `useWallets()`. There is no need to encapsulate the corpus of wallets to a subtree context because the wallet list is always global to the `Window` object.
+-   Updated dependencies [43b2f82]
+    -   @wallet-standard/app@1.0.2
+
 ## 0.1.4
 
 ### Patch Changes
