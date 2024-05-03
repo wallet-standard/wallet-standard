@@ -1,5 +1,5 @@
-import type { Wallet } from '@wallet-standard/base';
 import type { SignMessageFeature, SignMessageMethod } from '@wallet-standard/experimental-features';
+import { getFeatureGuardFunction } from '@wallet-standard/features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -12,13 +12,13 @@ export interface SignMessageProviderProps {
 }
 
 /** TODO: docs */
-export function hasSignMessageFeature(features: Wallet['features']): features is SignMessageFeature {
-    return 'experimental:signMessage' in features;
-}
+const SignMessage = 'experimental:signMessage' as const;
+export const hasSignMessageFeature: ReturnType<typeof getFeatureGuardFunction<SignMessageFeature, typeof SignMessage>> =
+    /*#__PURE__*/ getFeatureGuardFunction(SignMessage);
 
 /** TODO: docs */
 export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, onError }) => {
-    const { features } = useWallet();
+    const wallet = useWallet();
 
     // Handle errors, logging them by default.
     const handleError = useCallback(
@@ -34,7 +34,7 @@ export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, on
     const promise = useRef<ReturnType<SignMessageMethod>>();
     const signMessage = useMemo<SignMessageMethod | undefined>(
         () =>
-            hasSignMessageFeature(features)
+            hasSignMessageFeature(wallet)
                 ? async (...inputs) => {
                       // If already waiting, wait for that promise to resolve.
                       if (promise.current) {
@@ -47,7 +47,7 @@ export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, on
 
                       setWaiting(true);
                       try {
-                          promise.current = features['experimental:signMessage'].signMessage(...inputs);
+                          promise.current = wallet.features[SignMessage].signMessage(...inputs);
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
@@ -57,7 +57,7 @@ export const SignMessageProvider: FC<SignMessageProviderProps> = ({ children, on
                       }
                   }
                 : undefined,
-        [features, promise, handleError]
+        [handleError, wallet]
     );
 
     return (

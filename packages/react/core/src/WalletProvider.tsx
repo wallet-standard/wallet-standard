@@ -1,5 +1,6 @@
 import type { Wallet } from '@wallet-standard/base';
-import type { EventsFeature } from '@wallet-standard/features';
+import type { StandardEventsFeature } from '@wallet-standard/features';
+import { getFeatureGuardFunction, StandardEvents } from '@wallet-standard/features';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect, useState } from 'react';
 import { getWalletProperties, WalletContext } from './useWallet.js';
@@ -10,9 +11,9 @@ export interface WalletProviderProps {
 }
 
 /** TODO: docs */
-export function hasEventsFeature(features: Wallet['features']): features is EventsFeature {
-    return 'standard:events' in features;
-}
+export const hasEventsFeature: ReturnType<
+    typeof getFeatureGuardFunction<StandardEventsFeature, typeof StandardEvents>
+> = /*#__PURE__*/ getFeatureGuardFunction(StandardEvents);
 
 /** TODO: docs */
 export const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
@@ -26,11 +27,11 @@ export const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 
     // When the features change, listen for property changes if the wallet supports it.
     useEffect(() => {
-        if (hasEventsFeature(features))
-            return features['standard:events'].on('change', (properties) =>
+        if (wallet && hasEventsFeature(wallet))
+            return wallet.features[StandardEvents].on('change', (properties) =>
                 setWalletProperties((currentProperties) => ({ ...currentProperties, ...properties }))
             );
-    }, [features]);
+    }, [wallet]);
 
     return (
         <WalletContext.Provider

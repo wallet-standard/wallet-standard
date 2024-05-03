@@ -1,8 +1,8 @@
-import type { Wallet } from '@wallet-standard/base';
 import type {
     SignAndSendTransactionFeature,
     SignAndSendTransactionMethod,
 } from '@wallet-standard/experimental-features';
+import { getFeatureGuardFunction } from '@wallet-standard/features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -15,15 +15,14 @@ export interface SignAndSendTransactionProviderProps {
 }
 
 /** TODO: docs */
-export function hasSignAndSendTransactionFeature(
-    features: Wallet['features']
-): features is SignAndSendTransactionFeature {
-    return 'experimental:signAndSendTransaction' in features;
-}
+const SignAndSendTransaction = 'experimental:signAndSendTransaction' as const;
+export const hasSignAndSendTransactionFeature: ReturnType<
+    typeof getFeatureGuardFunction<SignAndSendTransactionFeature, typeof SignAndSendTransaction>
+> = /*#__PURE__*/ getFeatureGuardFunction(SignAndSendTransaction);
 
 /** TODO: docs */
 export const SignAndSendTransactionProvider: FC<SignAndSendTransactionProviderProps> = ({ children, onError }) => {
-    const { features } = useWallet();
+    const wallet = useWallet();
 
     // Handle errors, logging them by default.
     const handleError = useCallback(
@@ -39,7 +38,7 @@ export const SignAndSendTransactionProvider: FC<SignAndSendTransactionProviderPr
     const promise = useRef<ReturnType<SignAndSendTransactionMethod>>();
     const signAndSendTransaction = useMemo<SignAndSendTransactionMethod | undefined>(
         () =>
-            hasSignAndSendTransactionFeature(features)
+            hasSignAndSendTransactionFeature(wallet)
                 ? async (...inputs) => {
                       // If already waiting, wait for that promise to resolve.
                       if (promise.current) {
@@ -52,9 +51,7 @@ export const SignAndSendTransactionProvider: FC<SignAndSendTransactionProviderPr
 
                       setWaiting(true);
                       try {
-                          promise.current = features['experimental:signAndSendTransaction'].signAndSendTransaction(
-                              ...inputs
-                          );
+                          promise.current = wallet.features[SignAndSendTransaction].signAndSendTransaction(...inputs);
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
@@ -64,7 +61,7 @@ export const SignAndSendTransactionProvider: FC<SignAndSendTransactionProviderPr
                       }
                   }
                 : undefined,
-        [features, promise, handleError]
+        [handleError, wallet]
     );
 
     return (
