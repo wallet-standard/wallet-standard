@@ -1,5 +1,5 @@
-import type { Wallet } from '@wallet-standard/base';
-import type { DisconnectFeature, DisconnectMethod } from '@wallet-standard/features';
+import type { StandardDisconnectFeature, StandardDisconnectMethod } from '@wallet-standard/features';
+import { getFeatureGuardFunction, StandardDisconnect } from '@wallet-standard/features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -12,13 +12,13 @@ export interface DisconnectProviderProps {
 }
 
 /** TODO: docs */
-export function hasDisconnectFeature(features: Wallet['features']): features is DisconnectFeature {
-    return 'standard:disconnect' in features;
-}
+export const hasDisconnectFeature: ReturnType<
+    typeof getFeatureGuardFunction<StandardDisconnectFeature, typeof StandardDisconnect>
+> = /*#__PURE__*/ getFeatureGuardFunction(StandardDisconnect);
 
 /** TODO: docs */
 export const DisconnectProvider: FC<DisconnectProviderProps> = ({ children, onError }) => {
-    const { features } = useWallet();
+    const wallet = useWallet();
 
     // Handle errors, logging them by default.
     const handleError = useCallback(
@@ -31,10 +31,10 @@ export const DisconnectProvider: FC<DisconnectProviderProps> = ({ children, onEr
 
     // Disconnect from the wallet.
     const [waiting, setWaiting] = useState(false);
-    const promise = useRef<ReturnType<DisconnectMethod>>();
-    const disconnect = useMemo<DisconnectMethod | undefined>(
+    const promise = useRef<ReturnType<StandardDisconnectMethod>>();
+    const disconnect = useMemo<StandardDisconnectMethod | undefined>(
         () =>
-            hasDisconnectFeature(features)
+            hasDisconnectFeature(wallet)
                 ? async () => {
                       // If already waiting, wait for that promise to resolve.
                       if (promise.current) {
@@ -47,7 +47,7 @@ export const DisconnectProvider: FC<DisconnectProviderProps> = ({ children, onEr
 
                       setWaiting(true);
                       try {
-                          promise.current = features['standard:disconnect'].disconnect();
+                          promise.current = wallet.features[StandardDisconnect].disconnect();
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
@@ -57,7 +57,7 @@ export const DisconnectProvider: FC<DisconnectProviderProps> = ({ children, onEr
                       }
                   }
                 : undefined,
-        [features, promise, handleError]
+        [handleError, wallet]
     );
 
     return (

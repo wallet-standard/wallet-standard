@@ -1,5 +1,5 @@
-import type { Wallet } from '@wallet-standard/base';
-import type { ConnectFeature, ConnectMethod } from '@wallet-standard/features';
+import { getFeatureGuardFunction, StandardConnect } from '@wallet-standard/features';
+import type { StandardConnectFeature, StandardConnectMethod } from '@wallet-standard/features';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../useWallet.js';
@@ -12,13 +12,13 @@ export interface ConnectProviderProps {
 }
 
 /** TODO: docs */
-export function hasConnectFeature(features: Wallet['features']): features is ConnectFeature {
-    return 'standard:connect' in features;
-}
+export const hasConnectFeature: ReturnType<
+    typeof getFeatureGuardFunction<StandardConnectFeature, typeof StandardConnect>
+> = /*#__PURE__*/ getFeatureGuardFunction(StandardConnect);
 
 /** TODO: docs */
 export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError }) => {
-    const { features } = useWallet();
+    const wallet = useWallet();
 
     // Handle errors, logging them by default.
     const handleError = useCallback(
@@ -31,10 +31,10 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
 
     // Connect to the wallet.
     const [waiting, setWaiting] = useState(false);
-    const promise = useRef<ReturnType<ConnectMethod>>();
-    const connect = useMemo<ConnectMethod | undefined>(
+    const promise = useRef<ReturnType<StandardConnectMethod>>();
+    const connect = useMemo<StandardConnectMethod | undefined>(
         () =>
-            hasConnectFeature(features)
+            hasConnectFeature(wallet)
                 ? async (input) => {
                       // FIXME: if called first with silent=true, promise.current will be set but waiting will be false
 
@@ -52,7 +52,7 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
                           setWaiting(true);
                       }
                       try {
-                          promise.current = features['standard:connect'].connect(input);
+                          promise.current = wallet.features[StandardConnect].connect(input);
                           return await promise.current;
                       } catch (error: any) {
                           throw handleError(error);
@@ -64,7 +64,7 @@ export const ConnectProvider: FC<ConnectProviderProps> = ({ children, onError })
                       }
                   }
                 : undefined,
-        [features, promise, handleError]
+        [handleError, wallet]
     );
 
     return (

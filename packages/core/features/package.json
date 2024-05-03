@@ -27,7 +27,8 @@
     },
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
-        "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
+        "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "test": "jest -c ../../../node_modules/@wallet-standard/test-config/jest.config.ts --rootDir . --silent"
     },
     "dependencies": {
         "@wallet-standard/base": "workspace:^"
