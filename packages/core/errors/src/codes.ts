@@ -24,7 +24,10 @@
  *     - `_UNIMPLEMENTED`: Some required component is not available in the environment. E.g. `SUBTLE_CRYPTO_VERIFY_FUNCTION_UNIMPLEMENTED`.
  */
 
-export const WALLET_STANDARD_ERROR__PLACEHOLDER = 0 as const;
+// Registry-related errors.
+// Reserve error codes in the range [3834000-3834999].
+export const WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND = 3834000 as const;
+export const WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND = 3834001 as const;
 
 /**
  * A union of every Wallet Standard error code
@@ -42,4 +45,6 @@ export const WALLET_STANDARD_ERROR__PLACEHOLDER = 0 as const;
  * `@wallet-standard/errors` is not safe, for a variety of reasons covered here:
  * https://stackoverflow.com/a/28818850
  */
-export type WalletStandardErrorCode = typeof WALLET_STANDARD_ERROR__PLACEHOLDER;
+export type WalletStandardErrorCode =
+    | typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND
+    | typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND;

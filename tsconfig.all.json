@@ -48,6 +48,18 @@
         },
         {
             "path": "./packages/react/core/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/ui/_/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/ui/core/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/ui/compare/tsconfig.all.json"
+        },
+        {
+            "path": "./packages/ui/registry/tsconfig.all.json"
         }
     ]
 }
