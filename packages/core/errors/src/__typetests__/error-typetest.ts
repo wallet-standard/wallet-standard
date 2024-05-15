@@ -3,46 +3,48 @@ import type { WalletStandardErrorCode } from '../codes.js';
 import type { WalletStandardErrorContext } from '../context.js';
 import { isWalletStandardError, WalletStandardError } from '../error.js';
 
-const { WALLET_STANDARD_ERROR__PLACEHOLDER } = WalletStandardErrorCodeModule;
+const { WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND, WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND } =
+    WalletStandardErrorCodeModule;
 
 // If this line raises a type error, you might have forgotten to add a new error to the
 // `WalletStandardErrorCode` union in `src/codes.ts`.
 Object.values(WalletStandardErrorCodeModule) satisfies WalletStandardErrorCode[];
 
-const walletStandardPlaceholderError = new WalletStandardError(WALLET_STANDARD_ERROR__PLACEHOLDER, {
-    just: '!',
-    here: '!',
-    until: '!',
-    the: '!',
-    first: '!',
-    error: '!',
-    gets: '!',
-    created: '!',
+const walletAccountNotFoundError = new WalletStandardError(WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND, {
+    address: 'abc',
+    walletName: 'Mock Wallet',
 });
 
 {
-    const code = walletStandardPlaceholderError.context.__code;
-    code satisfies typeof WALLET_STANDARD_ERROR__PLACEHOLDER;
+    const code = walletAccountNotFoundError.context.__code;
+    code satisfies typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND;
+    // @ts-expect-error Wrong error code.
+    code satisfies typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND;
 }
 
-walletStandardPlaceholderError.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__PLACEHOLDER];
+walletAccountNotFoundError.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND];
 // @ts-expect-error Non existent context property.
-walletStandardPlaceholderError.context.chains;
+walletAccountNotFoundError.context.chains;
 
-// @ts-expect-error Missing context
-new WalletStandardError(WALLET_STANDARD_ERROR__PLACEHOLDER);
+new WalletStandardError(WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND);
+// @ts-expect-error Missing context property (`address` and `walletName`)
+new WalletStandardError(WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND);
 
 const unknownError = null as unknown as WalletStandardError;
-if (unknownError.context.__code === WALLET_STANDARD_ERROR__PLACEHOLDER) {
-    unknownError.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__PLACEHOLDER];
+if (unknownError.context.__code === WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND) {
+    unknownError.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND];
+    // @ts-expect-error Context belongs to another error code
+    unknownError.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND];
 }
 
 const e = null as unknown;
 if (isWalletStandardError(e)) {
     e.context satisfies Readonly<{ __code: WalletStandardErrorCode }>;
 }
-if (isWalletStandardError(e, WALLET_STANDARD_ERROR__PLACEHOLDER)) {
-    e.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__PLACEHOLDER];
+if (isWalletStandardError(e, WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND)) {
+    e.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND];
+    // @ts-expect-error Context belongs to another error code
+    e.context satisfies WalletStandardErrorContext[typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND];
 }
 
 // `WalletStandardErrorContext` must not contain any keys reserved by `ErrorOptions` (eg. `cause`)

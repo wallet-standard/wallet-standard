@@ -1,0 +1,42 @@
+{
+    "name": "@wallet-standard/ui-registry",
+    "version": "0.0.0",
+    "author": "Solana Maintainers <maintainers@solana.foundation>",
+    "repository": "https://github.com/wallet-standard/wallet-standard",
+    "license": "Apache-2.0",
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "engines": {
+        "node": ">=16"
+    },
+    "type": "module",
+    "sideEffects": false,
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
+    },
+    "scripts": {
+        "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+        "test": "jest -c ../../../node_modules/@wallet-standard/test-config/jest.config.ts --rootDir ."
+    },
+    "dependencies": {
+        "@wallet-standard/base": "workspace:*",
+        "@wallet-standard/errors": "workspace:*",
+        "@wallet-standard/ui-core": "workspace:*"
+    },
+    "devDependencies": {
+        "@wallet-standard/test-matchers": "workspace:^",
+        "shx": "^0.3.4"
+    }
+}

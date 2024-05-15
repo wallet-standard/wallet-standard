@@ -474,6 +474,64 @@ importers:
         specifier: ^2.7.0
         version: 2.7.0(terser@5.15.1)
 
+  packages/ui/_:
+    dependencies:
+      '@wallet-standard/ui-compare':
+        specifier: workspace:^
+        version: link:../compare
+      '@wallet-standard/ui-core':
+        specifier: workspace:^
+        version: link:../core
+    devDependencies:
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
+
+  packages/ui/compare:
+    dependencies:
+      '@wallet-standard/base':
+        specifier: workspace:*
+        version: link:../../core/base
+      '@wallet-standard/ui-core':
+        specifier: workspace:*
+        version: link:../core
+      '@wallet-standard/ui-registry':
+        specifier: workspace:*
+        version: link:../registry
+    devDependencies:
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
+
+  packages/ui/core:
+    dependencies:
+      '@wallet-standard/base':
+        specifier: workspace:*
+        version: link:../../core/base
+    devDependencies:
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
+
+  packages/ui/registry:
+    dependencies:
+      '@wallet-standard/base':
+        specifier: workspace:*
+        version: link:../../core/base
+      '@wallet-standard/errors':
+        specifier: workspace:*
+        version: link:../../core/errors
+      '@wallet-standard/ui-core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@wallet-standard/test-matchers':
+        specifier: workspace:^
+        version: link:../../test-matchers/_
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
+
 packages:
 
   '@ampproject/remapping@2.3.0':
@@ -4124,9 +4182,6 @@ packages:
   saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
     engines: {node: '>=v12.22.7'}
-
-  scheduler@0.23.0:
-    resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
@@ -9475,7 +9530,7 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
       react: 18.2.0
-      scheduler: 0.23.0
+      scheduler: 0.23.2
 
   react-error-boundary@4.0.13(react@18.2.0):
     dependencies:
@@ -9678,10 +9733,6 @@ snapshots:
   saxes@6.0.0:
     dependencies:
       xmlchars: 2.2.0
-
-  scheduler@0.23.0:
-    dependencies:
-      loose-envify: 1.4.0
 
   scheduler@0.23.2:
     dependencies:
