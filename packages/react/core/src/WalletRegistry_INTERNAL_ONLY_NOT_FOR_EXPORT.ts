@@ -1,17 +1,10 @@
 import type { IdentifierArray, Wallet } from '@wallet-standard/base';
 
 import { identifierArraysAreDifferent } from './compare.js';
-import type { ReactWalletAccount } from './WalletAccountRegistry_INTERNAL_ONLY_NOT_FOR_EXPORT.js';
+import type { ReactWallet } from './ReactWallet.js';
+import type { ReactWalletAccount } from './ReactWalletAccount.js';
 import { getOrCreateReactWalletAccountForStandardWalletAccount_INTERNAL_ONLY_NOT_FOR_EXPORT } from './WalletAccountRegistry_INTERNAL_ONLY_NOT_FOR_EXPORT.js';
-import type { WalletHandle } from './WalletHandleRegistry_INTERNAL_ONLY_NOT_FOR_EXPORT.js';
 import { registerWalletHandle_INTERNAL_ONLY_NOT_FOR_EXPORT } from './WalletHandleRegistry_INTERNAL_ONLY_NOT_FOR_EXPORT.js';
-
-type ReactWallet = WalletHandle &
-    Readonly<
-        Pick<Wallet, 'chains' | 'icon' | 'name' | 'version'> & {
-            accounts: readonly ReactWalletAccount[];
-        }
-    >;
 
 const walletsToReactWallets = new WeakMap<Wallet, ReactWallet>();
 

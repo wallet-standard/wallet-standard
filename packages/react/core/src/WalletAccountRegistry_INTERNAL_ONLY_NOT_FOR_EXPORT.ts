@@ -1,19 +1,11 @@
-import type { WalletAccount, Wallet } from '@wallet-standard/base';
+import type { Wallet, WalletAccount } from '@wallet-standard/base';
 
-import type { ReadonlyUint8Array } from './bytes.js';
 import { identifierArraysAreDifferent } from './compare.js';
-import { reactWalletAccountBelongsToReactWallet } from './ReactWalletAccount.js';
+import type { ReactWalletAccount } from './ReactWalletAccount.js';
 import {
     getWalletForHandle_INTERNAL_ONLY_NOT_FOR_EXPORT,
-    WalletHandle,
+    registerWalletHandle_INTERNAL_ONLY_NOT_FOR_EXPORT,
 } from './WalletHandleRegistry_INTERNAL_ONLY_NOT_FOR_EXPORT.js';
-import { registerWalletHandle_INTERNAL_ONLY_NOT_FOR_EXPORT } from './WalletHandleRegistry_INTERNAL_ONLY_NOT_FOR_EXPORT.js';
-
-export type ReactWalletAccount = WalletHandle &
-    Pick<WalletAccount, 'address' | 'chains' | 'icon' | 'label'> &
-    Readonly<{
-        publicKey: ReadonlyUint8Array;
-    }>;
 
 const walletAccountsToReactWalletAccounts = new WeakMap<WalletAccount, ReactWalletAccount>();
 
