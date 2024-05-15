@@ -452,6 +452,9 @@ importers:
       '@types/react-test-renderer':
         specifier: ^18
         version: 18.3.0
+      '@wallet-standard/test-matchers':
+        specifier: workspace:^
+        version: link:../../test-matchers/_
       react:
         specifier: ^18.2.0
         version: 18.2.0

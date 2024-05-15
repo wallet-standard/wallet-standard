@@ -1,5 +1,6 @@
 export * from './features/index.js';
-
+export * from './ReactWallet.js';
+export * from './ReactWalletAccount.js';
 export * from './useWallet.js';
 export * from './useWalletAccount.js';
 export * from './useWallets.js';

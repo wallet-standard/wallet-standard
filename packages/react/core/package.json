@@ -28,7 +28,7 @@
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
         "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
-        "test": "jest -c ../../../node_modules/@wallet-standard/test-config/jest.config.ts --rootDir . --silent"
+        "test": "jest -c ../../../node_modules/@wallet-standard/test-config/jest.config.ts --rootDir ."
     },
     "peerDependencies": {
         "react": ">=18",
@@ -44,6 +44,7 @@
         "@types/react": "^18.0.21",
         "@types/react-dom": "^18.0.6",
         "@types/react-test-renderer": "^18",
+        "@wallet-standard/test-matchers": "workspace:^",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-error-boundary": "^4.0.13",
