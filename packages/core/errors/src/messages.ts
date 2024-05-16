@@ -1,5 +1,7 @@
 import type { WalletStandardErrorCode } from './codes.js';
 import {
+    WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_CHAIN_UNSUPPORTED,
+    WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_FEATURE_UNIMPLEMENTED,
     WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED,
     WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND,
     WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND,
@@ -17,6 +19,10 @@ export const WalletStandardErrorMessages: Readonly<{
     // TypeScript will fail to build this project if add an error code without a message.
     [P in WalletStandardErrorCode]: string;
 }> = {
+    [WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_CHAIN_UNSUPPORTED]:
+        'The wallet account $address does not support the chain `$chain`',
+    [WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_FEATURE_UNIMPLEMENTED]:
+        'The wallet account $address does not support the `$featureName` feature',
     [WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED]:
         "The wallet '$walletName' does not support the `$featureName` feature",
     [WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND]:

@@ -1,4 +1,6 @@
 import type {
+    WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_CHAIN_UNSUPPORTED,
+    WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_FEATURE_UNIMPLEMENTED,
     WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND,
     WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED,
     WalletStandardErrorCode,
@@ -16,6 +18,19 @@ type DefaultUnspecifiedErrorContextToUndefined<T> = {
  *   - Don't change or remove members of an error's context.
  */
 export type WalletStandardErrorContext = DefaultUnspecifiedErrorContextToUndefined<{
+    [WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_CHAIN_UNSUPPORTED]: {
+        address: string;
+        chain: string;
+        featureName: string;
+        supportedChains: string[];
+        supportedFeatures: string[];
+    };
+    [WALLET_STANDARD_ERROR__FEATURES__WALLET_ACCOUNT_FEATURE_UNIMPLEMENTED]: {
+        address: string;
+        featureName: string;
+        supportedChains: string[];
+        supportedFeatures: string[];
+    };
     [WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED]: {
         featureName: string;
         supportedFeatures: string[];

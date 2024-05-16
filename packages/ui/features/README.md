@@ -33,3 +33,7 @@ function App() {
     );
 }
 ```
+
+### `getWalletAccountFeature(uiWalletAccount, featureName)`
+
+Given a `UiWalletAccount` and the name of a feature, this function returns the feature object from the underlying Wallet Standard `Wallet`. This is a specialization of `getWalletFeature()` that takes into consideration that the features supported by a wallet might not be supported by every account in that wallet. In the event that the wallet or account does not support the feature, a `WalletStandardError` will be thrown.
