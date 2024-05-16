@@ -29,6 +29,10 @@
 export const WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND = 3834000 as const;
 export const WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND = 3834001 as const;
 
+// Feature-related errors.
+// Reserve error codes in the range [6160000-6160999].
+export const WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED = 6160002 as const;
+
 /**
  * A union of every Wallet Standard error code
  *
@@ -46,5 +50,6 @@ export const WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND = 3834001
  * https://stackoverflow.com/a/28818850
  */
 export type WalletStandardErrorCode =
+    | typeof WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED
     | typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND
     | typeof WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND;

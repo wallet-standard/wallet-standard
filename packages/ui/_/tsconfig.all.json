@@ -8,6 +8,9 @@
             "path": "../compare/tsconfig.all.json"
         },
         {
+            "path": "../features/tsconfig.all.json"
+        },
+        {
             "path": "./tsconfig.cjs.json"
         },
         {

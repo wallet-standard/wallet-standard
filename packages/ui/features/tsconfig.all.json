@@ -2,25 +2,16 @@
     "extends": "../../../tsconfig.root.json",
     "references": [
         {
-            "path": "../../core/app/tsconfig.all.json"
-        },
-        {
             "path": "../../core/base/tsconfig.all.json"
         },
         {
             "path": "../../core/errors/tsconfig.all.json"
         },
         {
-            "path": "../../core/features/tsconfig.all.json"
+            "path": "../core/tsconfig.all.json"
         },
         {
-            "path": "../../experimental/features/tsconfig.all.json"
-        },
-        {
-            "path": "../../ui/_/tsconfig.all.json"
-        },
-        {
-            "path": "../../ui/registry/tsconfig.all.json"
+            "path": "../registry/tsconfig.all.json"
         },
         {
             "path": "./tsconfig.cjs.json"

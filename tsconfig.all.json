@@ -59,6 +59,9 @@
             "path": "./packages/ui/compare/tsconfig.all.json"
         },
         {
+            "path": "./packages/ui/features/tsconfig.all.json"
+        },
+        {
             "path": "./packages/ui/registry/tsconfig.all.json"
         }
     ]

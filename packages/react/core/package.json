@@ -37,6 +37,7 @@
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
         "@wallet-standard/base": "workspace:^",
+        "@wallet-standard/errors": "workspace:^",
         "@wallet-standard/experimental-features": "workspace:^",
         "@wallet-standard/features": "workspace:^",
         "@wallet-standard/ui": "workspace:^",
