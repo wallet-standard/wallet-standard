@@ -1,4 +1,8 @@
-import type { WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND, WalletStandardErrorCode } from './codes.js';
+import type {
+    WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND,
+    WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED,
+    WalletStandardErrorCode,
+} from './codes.js';
 
 type DefaultUnspecifiedErrorContextToUndefined<T> = {
     [P in WalletStandardErrorCode]: P extends keyof T ? T[P] : undefined;
@@ -12,6 +16,12 @@ type DefaultUnspecifiedErrorContextToUndefined<T> = {
  *   - Don't change or remove members of an error's context.
  */
 export type WalletStandardErrorContext = DefaultUnspecifiedErrorContextToUndefined<{
+    [WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED]: {
+        featureName: string;
+        supportedFeatures: string[];
+        supportedChains: string[];
+        walletName: string;
+    };
     [WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND]: {
         address: string;
         walletName: string;

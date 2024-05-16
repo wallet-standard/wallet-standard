@@ -415,6 +415,9 @@ importers:
       '@wallet-standard/base':
         specifier: workspace:^
         version: link:../../core/base
+      '@wallet-standard/errors':
+        specifier: workspace:^
+        version: link:../../core/errors
       '@wallet-standard/experimental-features':
         specifier: workspace:^
         version: link:../../experimental/features
@@ -488,6 +491,9 @@ importers:
       '@wallet-standard/ui-core':
         specifier: workspace:^
         version: link:../core
+      '@wallet-standard/ui-features':
+        specifier: workspace:^
+        version: link:../features
     devDependencies:
       shx:
         specifier: ^0.3.4
@@ -514,6 +520,25 @@ importers:
       '@wallet-standard/base':
         specifier: workspace:*
         version: link:../../core/base
+    devDependencies:
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
+
+  packages/ui/features:
+    dependencies:
+      '@wallet-standard/base':
+        specifier: workspace:*
+        version: link:../../core/base
+      '@wallet-standard/errors':
+        specifier: workspace:*
+        version: link:../../core/errors
+      '@wallet-standard/ui-core':
+        specifier: workspace:*
+        version: link:../core
+      '@wallet-standard/ui-registry':
+        specifier: workspace:*
+        version: link:../registry
     devDependencies:
       shx:
         specifier: ^0.3.4
@@ -3650,9 +3675,6 @@ packages:
   minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
-
-  minimist@1.2.7:
-    resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -9148,8 +9170,6 @@ snapshots:
       is-plain-obj: 1.1.0
       kind-of: 6.0.3
 
-  minimist@1.2.7: {}
-
   minimist@1.2.8: {}
 
   minipass@7.0.4: {}
@@ -9748,7 +9768,7 @@ snapshots:
 
   shx@0.3.4:
     dependencies:
-      minimist: 1.2.7
+      minimist: 1.2.8
       shelljs: 0.8.5
 
   side-channel@1.0.4:
