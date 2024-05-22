@@ -27,7 +27,7 @@ importers:
         specifier: ^18.11.4
         version: 18.11.7
       '@types/react-test-renderer':
-        specifier: ^18.3.0
+        specifier: ^18.3
         version: 18.3.0
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.10.0
@@ -72,7 +72,7 @@ importers:
         specifier: ^3.2.5
         version: 3.2.5
       react-test-renderer:
-        specifier: ^18.3.1
+        specifier: ^18.3
         version: 18.3.1(react@18.3.1)
       shx:
         specifier: ^0.3.4
@@ -201,7 +201,7 @@ importers:
     dependencies:
       '@solana/wallet-standard':
         specifier: ^1.0.2
-        version: 1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.2.0)
+        version: 1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.3.1)
       '@solana/web3.js':
         specifier: ^1.66.2
         version: 1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)
@@ -242,11 +242,11 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1
       react:
-        specifier: ^18.2.0
-        version: 18.2.0
+        specifier: ^18.3
+        version: 18.3.1
       react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
+        specifier: ^18.3
+        version: 18.3.1(react@18.3.1)
       stream-browserify:
         specifier: ^3.0.0
         version: 3.0.0
@@ -276,11 +276,11 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       '@types/react':
-        specifier: ^18.0.21
-        version: 18.0.24
+        specifier: ^18.3
+        version: 18.3.3
       '@types/react-dom':
-        specifier: ^18.0.6
-        version: 18.0.8
+        specifier: ^18.3
+        version: 18.3.0
       '@wallet-standard/parcel-packager-webextension':
         specifier: workspace:^
         version: link:../../tmp/parcel-packager-webextension
@@ -304,7 +304,7 @@ importers:
         version: 0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))
       '@solana/wallet-standard':
         specifier: ^1.0.2
-        version: 1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.2.0)
+        version: 1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.3.1)
       '@solana/web3.js':
         specifier: ^1.66.2
         version: 1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)
@@ -318,18 +318,18 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       react:
-        specifier: ^18.2.0
-        version: 18.2.0
+        specifier: ^18.3
+        version: 18.3.1
       react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
+        specifier: ^18.3
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@types/react':
-        specifier: ^18.0.21
-        version: 18.0.24
+        specifier: ^18.3
+        version: 18.3.3
       '@types/react-dom':
-        specifier: ^18.0.6
-        version: 18.0.8
+        specifier: ^18.3
+        version: 18.3.0
       parcel:
         specifier: ^2.7.0
         version: 2.7.0(terser@5.15.1)
@@ -423,26 +423,26 @@ importers:
         version: link:../../core/features
     devDependencies:
       '@types/react':
-        specifier: ^18.0.21
-        version: 18.0.24
+        specifier: ^18.3
+        version: 18.3.3
       '@types/react-dom':
-        specifier: ^18.0.6
-        version: 18.0.8
+        specifier: ^18.3
+        version: 18.3.0
       '@types/react-test-renderer':
-        specifier: ^18
+        specifier: ^18.3
         version: 18.3.0
       react:
-        specifier: ^18.2.0
-        version: 18.2.0
+        specifier: ^18.3
+        version: 18.3.1
       react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
+        specifier: ^18.3
+        version: 18.3.1(react@18.3.1)
       react-error-boundary:
         specifier: ^4.0.13
-        version: 4.0.13(react@18.2.0)
+        version: 4.0.13(react@18.3.1)
       react-test-renderer:
-        specifier: ^18
-        version: 18.3.1(react@18.2.0)
+        specifier: ^18.3
+        version: 18.3.1(react@18.3.1)
       shx:
         specifier: ^0.3.4
         version: 0.3.4
@@ -1655,17 +1655,14 @@ packages:
   '@types/prop-types@15.7.5':
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
 
-  '@types/react-dom@18.0.8':
-    resolution: {integrity: sha512-C3GYO0HLaOkk9dDAz3Dl4sbe4AKUGTCfFIZsz3n/82dPNN8Du533HzKatDxeUYWu24wJgMP1xICqkWk1YOLOIw==}
+  '@types/react-dom@18.3.0':
+    resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
 
   '@types/react-test-renderer@18.3.0':
     resolution: {integrity: sha512-HW4MuEYxfDbOHQsVlY/XtOvNHftCVEPhJF2pQXXwcUiUF+Oyb0usgp48HSgpK5rt8m9KZb22yqOeZm+rrVG8gw==}
 
-  '@types/react@18.0.24':
-    resolution: {integrity: sha512-wRJWT6ouziGUy+9uX0aW4YOJxAY0bG6/AOk5AW5QSvZqI7dk6VBIbXvcVgIw/W5Jrl24f77df98GEKTJGOLx7Q==}
-
-  '@types/scheduler@0.16.2':
-    resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+  '@types/react@18.3.3':
+    resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -4014,10 +4011,10 @@ packages:
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
-  react-dom@18.2.0:
-    resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
+  react-dom@18.3.1:
+    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
-      react: ^18.2.0
+      react: ^18.3.1
 
   react-error-boundary@4.0.13:
     resolution: {integrity: sha512-b6PwbdSv8XeOSYvjt8LpgpKrZ0yGdtZokYwkwV2wlcZbxgopHX/hgPl5VgpnoVOWd868n1hktM8Qm4b+02MiLQ==}
@@ -4046,10 +4043,6 @@ packages:
     resolution: {integrity: sha512-KkAgygexHUkQqtvvx/otwxtuFu5cVjfzTCtjXLH9boS19/Nbtg84zS7wIQn39G8IlrhThBpQsMKkq5ZHZIYFXA==}
     peerDependencies:
       react: ^18.3.1
-
-  react@18.2.0:
-    resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
-    engines: {node: '>=0.10.0'}
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -6487,17 +6480,6 @@ snapshots:
       '@wallet-standard/wallet': 1.0.1
       bs58: 4.0.1
 
-  '@solana/wallet-standard-wallet-adapter-react@1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.2.0)':
-    dependencies:
-      '@solana/wallet-adapter-base': 0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))
-      '@solana/wallet-standard-wallet-adapter-base': 1.0.2(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)
-      '@wallet-standard/app': 1.0.1
-      '@wallet-standard/base': 1.0.1
-      react: 18.2.0
-    transitivePeerDependencies:
-      - '@solana/web3.js'
-      - bs58
-
   '@solana/wallet-standard-wallet-adapter-react@1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.3.1)':
     dependencies:
       '@solana/wallet-adapter-base': 0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))
@@ -6509,30 +6491,10 @@ snapshots:
       - '@solana/web3.js'
       - bs58
 
-  '@solana/wallet-standard-wallet-adapter@1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.2.0)':
-    dependencies:
-      '@solana/wallet-standard-wallet-adapter-base': 1.0.2(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)
-      '@solana/wallet-standard-wallet-adapter-react': 1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.2.0)
-    transitivePeerDependencies:
-      - '@solana/wallet-adapter-base'
-      - '@solana/web3.js'
-      - bs58
-      - react
-
   '@solana/wallet-standard-wallet-adapter@1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.3.1)':
     dependencies:
       '@solana/wallet-standard-wallet-adapter-base': 1.0.2(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)
       '@solana/wallet-standard-wallet-adapter-react': 1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.3.1)
-    transitivePeerDependencies:
-      - '@solana/wallet-adapter-base'
-      - '@solana/web3.js'
-      - bs58
-      - react
-
-  '@solana/wallet-standard@1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.2.0)':
-    dependencies:
-      '@solana/wallet-standard-core': 1.0.0
-      '@solana/wallet-standard-wallet-adapter': 1.0.2(@solana/wallet-adapter-base@0.9.22(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10)))(@solana/web3.js@1.66.2(bufferutil@4.0.7)(utf-8-validate@5.0.10))(bs58@4.0.1)(react@18.2.0)
     transitivePeerDependencies:
       - '@solana/wallet-adapter-base'
       - '@solana/web3.js'
@@ -6728,21 +6690,18 @@ snapshots:
 
   '@types/prop-types@15.7.5': {}
 
-  '@types/react-dom@18.0.8':
+  '@types/react-dom@18.3.0':
     dependencies:
-      '@types/react': 18.0.24
+      '@types/react': 18.3.3
 
   '@types/react-test-renderer@18.3.0':
     dependencies:
-      '@types/react': 18.0.24
+      '@types/react': 18.3.3
 
-  '@types/react@18.0.24':
+  '@types/react@18.3.3':
     dependencies:
       '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.2
       csstype: 3.1.1
-
-  '@types/scheduler@0.16.2': {}
 
   '@types/semver@7.5.8': {}
 
@@ -9526,16 +9485,16 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  react-dom@18.2.0(react@18.2.0):
+  react-dom@18.3.1(react@18.3.1):
     dependencies:
       loose-envify: 1.4.0
-      react: 18.2.0
+      react: 18.3.1
       scheduler: 0.23.2
 
-  react-error-boundary@4.0.13(react@18.2.0):
+  react-error-boundary@4.0.13(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.20.0
-      react: 18.2.0
+      react: 18.3.1
 
   react-error-overlay@6.0.9: {}
 
@@ -9545,24 +9504,11 @@ snapshots:
 
   react-refresh@0.9.0: {}
 
-  react-shallow-renderer@16.15.0(react@18.2.0):
-    dependencies:
-      object-assign: 4.1.1
-      react: 18.2.0
-      react-is: 18.3.1
-
   react-shallow-renderer@16.15.0(react@18.3.1):
     dependencies:
       object-assign: 4.1.1
       react: 18.3.1
       react-is: 18.3.1
-
-  react-test-renderer@18.3.1(react@18.2.0):
-    dependencies:
-      react: 18.2.0
-      react-is: 18.3.1
-      react-shallow-renderer: 16.15.0(react@18.2.0)
-      scheduler: 0.23.2
 
   react-test-renderer@18.3.1(react@18.3.1):
     dependencies:
@@ -9570,10 +9516,6 @@ snapshots:
       react-is: 18.3.1
       react-shallow-renderer: 16.15.0(react@18.3.1)
       scheduler: 0.23.2
-
-  react@18.2.0:
-    dependencies:
-      loose-envify: 1.4.0
 
   react@18.3.1:
     dependencies:
