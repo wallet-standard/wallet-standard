@@ -21,8 +21,6 @@ describe('useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT', () => {
             on: mockOn,
             register: mockRegister,
         });
-        // Suppresses console output when an `ErrorBoundary` is hit.
-        // See https://stackoverflow.com/a/72632884/802047
     });
     it('returns a list of registered wallets', () => {
         const expectedWallets = [] as readonly Wallet[];

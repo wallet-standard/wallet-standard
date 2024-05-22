@@ -1,12 +1,5 @@
 import type { FC, ReactNode } from 'react';
 import React from 'react';
-import {
-    ConnectProvider,
-    DisconnectProvider,
-    SignAndSendTransactionProvider,
-    SignMessageProvider,
-    SignTransactionProvider,
-} from './features/index.js';
 import { WalletAccountProvider } from './WalletAccountProvider.js';
 import { WalletProvider } from './WalletProvider.js';
 
@@ -17,20 +10,10 @@ export interface WalletStandardProviderProps {
 }
 
 /** TODO: docs */
-export const WalletStandardProvider: FC<WalletStandardProviderProps> = ({ children, onError }) => {
+export const WalletStandardProvider: FC<WalletStandardProviderProps> = ({ children }) => {
     return (
         <WalletProvider>
-            <WalletAccountProvider>
-                <ConnectProvider onError={onError}>
-                    <DisconnectProvider onError={onError}>
-                        <SignAndSendTransactionProvider onError={onError}>
-                            <SignTransactionProvider onError={onError}>
-                                <SignMessageProvider onError={onError}>{children}</SignMessageProvider>
-                            </SignTransactionProvider>
-                        </SignAndSendTransactionProvider>
-                    </DisconnectProvider>
-                </ConnectProvider>
-            </WalletAccountProvider>
+            <WalletAccountProvider>{children}</WalletAccountProvider>
         </WalletProvider>
     );
 };
