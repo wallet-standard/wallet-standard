@@ -1,19 +1,15 @@
 import { getWallets } from '@wallet-standard/app';
-import type { Wallet, WalletWithFeatures } from '@wallet-standard/base';
-import { StandardEvents, type StandardEventsFeature } from '@wallet-standard/features';
+import type { Wallet } from '@wallet-standard/base';
+import { StandardEvents } from '@wallet-standard/features';
 import { useCallback, useRef, useSyncExternalStore } from 'react';
 
-import { hasEventsFeature } from './WalletProvider.js';
+import { walletHasStandardEventsFeature } from './features/events.js';
 import { useStable } from './useStable.js';
 
 const NO_WALLETS: readonly Wallet[] = [];
 
 function getServerSnapshot(): readonly Wallet[] {
     return NO_WALLETS;
-}
-
-function walletHasStandardEventsFeature(wallet: Wallet): wallet is WalletWithFeatures<StandardEventsFeature> {
-    return hasEventsFeature(wallet.features);
 }
 
 /** TODO: docs */

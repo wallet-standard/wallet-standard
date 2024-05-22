@@ -1,5 +1,8 @@
 import type { Wallet, WalletVersion } from '@wallet-standard/base';
-import { WalletStandardError } from '@wallet-standard/errors';
+import {
+    WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED,
+    WalletStandardError,
+} from '@wallet-standard/errors';
 import type { UiWalletHandle } from '@wallet-standard/ui-core';
 import { getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
 
@@ -36,7 +39,14 @@ describe('getWalletFeature', () => {
     it('throws if the handle provided does not support the feature requested', () => {
         expect(() => {
             getWalletFeature(mockWalletHandle, 'feature:b');
-        }).toThrow(WalletStandardError);
+        }).toThrow(
+            new WalletStandardError(WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED, {
+                featureName: 'feature:b',
+                supportedChains: ['solana:mainnet'],
+                supportedFeatures: ['feature:a'],
+                walletName: 'Mock Wallet',
+            })
+        );
     });
     it('returns the feature of the underlying wallet', () => {
         jest.mocked(getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).mockReturnValue(mockWallet);
