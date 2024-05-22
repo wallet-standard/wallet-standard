@@ -13,14 +13,13 @@
     "dependencies": {
         "@wallet-standard/core": "workspace:^",
         "@wallet-standard/react": "workspace:^",
-        "process": "^0.11.10",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
+        "react": "^18.3",
+        "react-dom": "^18.3",
         "react-router-dom": "^6.4.2"
     },
     "devDependencies": {
-        "@types/react": "^18.0.21",
-        "@types/react-dom": "^18.0.6",
+        "@types/react": "^18.3",
+        "@types/react-dom": "^18.3",
         "parcel": "^2.7.0",
         "shx": "^0.3.4"
     },

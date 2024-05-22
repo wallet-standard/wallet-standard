@@ -31,8 +31,8 @@
         "test": "jest -c ../../../node_modules/@wallet-standard/test-config/jest.config.ts --rootDir ."
     },
     "peerDependencies": {
-        "react": ">=18",
-        "react-dom": ">=18"
+        "react": ">=18.3",
+        "react-dom": ">=18.3"
     },
     "dependencies": {
         "@wallet-standard/app": "workspace:^",
@@ -41,14 +41,14 @@
         "@wallet-standard/features": "workspace:^"
     },
     "devDependencies": {
-        "@types/react": "^18.0.21",
-        "@types/react-dom": "^18.0.6",
-        "@types/react-test-renderer": "^18",
+        "@types/react": "^18.3",
+        "@types/react-dom": "^18.3",
+        "@types/react-test-renderer": "^18.3",
         "@wallet-standard/test-matchers": "workspace:^",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
+        "react": "^18.3",
+        "react-dom": "^18.3",
         "react-error-boundary": "^4.0.13",
-        "react-test-renderer": "^18",
+        "react-test-renderer": "^18.3",
         "shx": "^0.3.4"
     }
 }
