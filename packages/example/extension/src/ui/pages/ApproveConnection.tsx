@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { useState } from 'react';
 import { condenseAddress } from '../../utils/address';
 import { useAccounts } from '../hooks/useAccounts';
-import { rpc } from '../rpc';
+import { rpc } from '../rpc/index';
 
 export type Network = 'ethereum' | 'solana';
 

@@ -2,7 +2,7 @@ import { PublicKey as SolPublicKey } from '@solana/web3.js';
 import { utils as ethUtils } from 'ethers';
 import type { FC, ReactNode } from 'react';
 import React, { useEffect, useState } from 'react';
-import { rpc } from '../rpc';
+import { rpc } from '../rpc/index';
 
 export type Network = 'ethereum' | 'solana';
 

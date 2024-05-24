@@ -8,4 +8,4 @@ export const ETHEREUM_GOERLI_CHAIN = 'ethereum:5';
 export const ETHEREUM_CHAINS = [ETHEREUM_MAINNET_CHAIN, ETHEREUM_GOERLI_CHAIN] as const;
 
 /** TODO: docs */
-export type EthereumChain = typeof ETHEREUM_CHAINS[number];
+export type EthereumChain = (typeof ETHEREUM_CHAINS)[number];

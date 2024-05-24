@@ -29,37 +29,31 @@
         "deploy:docs": "pnpm run docs && gh-pages --dist docs --dotfiles"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.25.0",
+        "@changesets/cli": "^2.27.5",
         "@jest/types": "^30.0.0-alpha.3",
         "@swc/jest": "^0.2.36",
         "@types/chrome": "^0.0.195",
         "@types/jest": "^29.5.12",
         "@types/node": "^18.11.4",
         "@types/react-test-renderer": "^18.3.0",
-        "@typescript-eslint/eslint-plugin": "^5.40.1",
-        "@typescript-eslint/parser": "^5.40.1",
+        "@typescript-eslint/eslint-plugin": "^7.10.0",
+        "@typescript-eslint/parser": "^7.10.0",
         "@wallet-standard/test-config": "workspace:*",
-        "eslint": "8.22.0",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-plugin-prettier": "^4.2.1",
-        "eslint-plugin-react": "^7.31.10",
-        "eslint-plugin-react-hooks": "^4.6.0",
-        "eslint-plugin-require-extensions": "^0.1.1",
+        "eslint": "^8.56.0",
+        "eslint-config-prettier": "^8.10.0",
+        "eslint-plugin-prettier": "^5.1.3",
+        "eslint-plugin-react": "^7.34.1",
+        "eslint-plugin-react-hooks": "^4.6.2",
+        "eslint-plugin-require-extensions": "^0.1.3",
         "gh-pages": "^4.0.0",
         "jest": "^30.0.0-alpha.3",
         "jest-environment-jsdom": "^30.0.0-alpha.3",
         "pnpm": "^7.14.0",
-        "prettier": "^2.7.1",
+        "prettier": "^3.2.5",
         "react-test-renderer": "^18.3.1",
         "shx": "^0.3.4",
         "ts-node": "^10.9.2",
-        "typedoc": "^0.23.18",
-        "typescript": "~4.7.4"
-    },
-    "resolutions": {
-        "eslint": "8.22.0"
-    },
-    "overrides": {
-        "eslint": "8.22.0"
+        "typedoc": "^0.25.13",
+        "typescript": "^5"
     }
 }

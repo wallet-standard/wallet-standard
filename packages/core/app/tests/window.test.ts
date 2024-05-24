@@ -1,5 +1,6 @@
 import type { Wallet, WalletAccount, WalletEventsWindow } from '@wallet-standard/base';
-import { getWallets } from '..';
+
+import { getWallets } from '../src/index';
 
 type FooSignTransactionFeature = {
     'foo:signTransaction': {

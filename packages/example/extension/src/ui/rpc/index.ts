@@ -1,4 +1,4 @@
-import { createPortTransport, createRPC, POPUP_PORT_NAME } from '../../messages';
+import { createPortTransport, createRPC, POPUP_PORT_NAME } from '../../messages/index';
 
 const port = chrome.runtime.connect({ name: POPUP_PORT_NAME });
 
