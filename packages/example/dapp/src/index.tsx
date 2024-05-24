@@ -1,23 +1,26 @@
-import type { FC } from 'react';
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { App } from './App';
-import { AppContext } from './context';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { Root } from './routes/root';
 
-const Root: FC = () => {
-    return (
-        <StrictMode>
-            <BrowserRouter>
-                <AppContext>
-                    <App />
-                </AppContext>
-            </BrowserRouter>
-        </StrictMode>
-    );
-};
+const router = createBrowserRouter([
+    {
+        Component: Layout,
+        children: [
+            {
+                Component: Root,
+                index: true,
+            },
+        ],
+    },
+]);
 
-const rootNode = document.getElementById('root');
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const root = createRoot(rootNode!);
-root.render(<Root />);
+const rootNode = document.getElementById('root')!;
+const root = createRoot(rootNode);
+root.render(
+    <StrictMode>
+        <RouterProvider router={router} />
+    </StrictMode>
+);
