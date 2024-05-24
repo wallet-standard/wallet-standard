@@ -12,7 +12,7 @@ import type {
 import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum';
 import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
-import type { RPC } from '../messages';
+import type { RPC } from '../messages/index';
 
 export class EthereumWalletAccount implements WalletAccount {
     readonly #publicKey: Uint8Array;

@@ -1,5 +1,5 @@
 import { registerWallet } from '@wallet-standard/core';
-import { createRPC, createWindowTransport } from '../messages';
+import { createRPC, createWindowTransport } from '../messages/index';
 import { MultiChainWallet } from './multiChainWallet';
 
 function register(): void {

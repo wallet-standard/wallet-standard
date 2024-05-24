@@ -1,13 +1,5 @@
 import type { WalletAccount, WalletWithFeatures } from '@wallet-standard/base';
-import {
-    StandardConnect,
-    StandardDisconnect,
-    StandardEvents,
-    type StandardConnectFeature,
-    type StandardDisconnectFeature,
-    type StandardEventsFeature,
-    type StandardFeatures,
-} from '..';
+import { StandardConnect, StandardDisconnect, StandardEvents, type StandardFeatures } from '../src/index';
 
 type FooWalletFeature = {
     'foo:': {

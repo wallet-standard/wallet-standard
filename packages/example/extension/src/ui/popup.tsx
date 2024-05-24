@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { AppContext } from './context';
+import { AppContext } from './context/index';
 import { ApproveConnection } from './pages/ApproveConnection';
 import { Home } from './pages/Home';
 

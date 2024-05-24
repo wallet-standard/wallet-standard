@@ -1,4 +1,4 @@
-import type { Wallet, WalletAccount } from '..';
+import type { Wallet, WalletAccount } from '../src/wallet.js';
 
 class GlowWallet implements Wallet {
     version = '1.0.0' as const;
