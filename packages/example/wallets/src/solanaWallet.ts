@@ -12,7 +12,7 @@ import type {
 } from '@solana/wallet-standard';
 import { getEndpointForChain, SOLANA_CHAINS } from '@solana/wallet-standard';
 import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
-import type { ConnectFeature, ConnectMethod, EventsFeature, Wallet } from '@wallet-standard/core';
+import type { ConnectFeature, ConnectMethod, EventsFeature, ReadonlyUint8Array, Wallet } from '@wallet-standard/core';
 import type {
     DecryptFeature,
     DecryptMethod,
@@ -34,9 +34,9 @@ import { sendAndConfirmTransaction } from './solana.js';
 
 // A reference to an underlying Ledger device that has already been connected and account initialized
 interface SolanaLedgerApp {
-    publicKey: Uint8Array;
+    publicKey: ReadonlyUint8Array;
 
-    signTransaction(transaction: Uint8Array): Promise<Uint8Array>;
+    signTransaction(transaction: ReadonlyUint8Array): Promise<Uint8Array>;
 }
 
 export class SolanaWallet extends AbstractWallet implements Wallet {
@@ -123,7 +123,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
                 ],
             }),
             new LedgerWalletAccount({
-                address: bs58.encode(ledger.publicKey),
+                address: bs58.encode(ledger.publicKey as Uint8Array),
                 publicKey: ledger.publicKey,
                 chains: SOLANA_CHAINS,
                 features: ['solana:signAndSendTransaction', 'solana:signTransaction'],
@@ -243,7 +243,7 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             if (!keypair) throw new Error('invalid account');
 
             const nonce = randomBytes(box.nonceLength);
-            const ciphertext = box(cleartext, nonce, publicKey, keypair.secretKey);
+            const ciphertext = box(cleartext as Uint8Array, nonce, publicKey as Uint8Array, keypair.secretKey);
             outputs.push({ ciphertext, nonce });
         }
 
@@ -261,7 +261,12 @@ export class SolanaWallet extends AbstractWallet implements Wallet {
             const keypair = this.#keys[account.address]?.keypair;
             if (!keypair) throw new Error('invalid account');
 
-            const cleartext = box.open(ciphertext, nonce, publicKey, keypair.secretKey);
+            const cleartext = box.open(
+                ciphertext as Uint8Array,
+                nonce as Uint8Array,
+                publicKey as Uint8Array,
+                keypair.secretKey
+            );
             if (!cleartext) throw new Error('message authentication failed');
             outputs.push({ cleartext });
         }

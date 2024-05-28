@@ -1,4 +1,4 @@
-import type { IdentifierString, WalletAccount } from '@wallet-standard/base';
+import type { IdentifierString, ReadonlyUint8Array, WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type SignTransactionFeature = {
@@ -24,7 +24,7 @@ export interface SignTransactionInput {
     account: WalletAccount;
 
     /** Serialized transactions, as raw bytes. */
-    transaction: Uint8Array;
+    transaction: ReadonlyUint8Array;
 
     /** Chain to use. */
     chain?: IdentifierString;

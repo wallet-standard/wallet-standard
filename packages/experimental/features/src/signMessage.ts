@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/base';
+import type { ReadonlyUint8Array, WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type SignMessageFeature = {
@@ -24,7 +24,7 @@ export interface SignMessageInput {
     account: WalletAccount;
 
     /** Message to sign, as raw bytes. */
-    message: Uint8Array;
+    message: ReadonlyUint8Array;
 }
 
 /** Output of signing a message. */
