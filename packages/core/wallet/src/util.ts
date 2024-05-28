@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/base';
+import type { ReadonlyUint8Array, WalletAccount } from '@wallet-standard/base';
 
 /**
  * Base implementation of a {@link "@wallet-standard/base".WalletAccount} to be used or extended by a
@@ -102,7 +102,7 @@ export function arraysEqual<T>(a: Indexed<T>, b: Indexed<T>): boolean {
  *
  * @group Util
  */
-export function bytesEqual(a: Uint8Array, b: Uint8Array): boolean {
+export function bytesEqual(a: ReadonlyUint8Array, b: ReadonlyUint8Array): boolean {
     return arraysEqual(a, b);
 }
 
@@ -116,7 +116,7 @@ export function bytesEqual(a: Uint8Array, b: Uint8Array): boolean {
  *
  * @group Util
  */
-export function concatBytes(first: Uint8Array, ...others: Uint8Array[]): Uint8Array {
+export function concatBytes(first: ReadonlyUint8Array, ...others: ReadonlyUint8Array[]): Uint8Array {
     const length = others.reduce((length, bytes) => length + bytes.length, first.length);
     const bytes = new Uint8Array(length);
 

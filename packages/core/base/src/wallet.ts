@@ -1,3 +1,4 @@
+import type { ReadonlyUint8Array } from './bytes.js';
 import type { IdentifierArray, IdentifierRecord, IdentifierString } from './identifier.js';
 
 /**
@@ -132,7 +133,7 @@ export interface WalletAccount {
     readonly address: string;
 
     /** Public key of the account, corresponding with a secret key to use. */
-    readonly publicKey: Uint8Array;
+    readonly publicKey: ReadonlyUint8Array;
 
     /**
      * Chains supported by the account.

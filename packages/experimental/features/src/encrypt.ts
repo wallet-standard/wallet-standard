@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/base';
+import type { ReadonlyUint8Array, WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type EncryptFeature = {
@@ -37,10 +37,10 @@ export interface EncryptInput {
     cipher: string;
 
     /** Public key to derive a shared key to encrypt the data using. */
-    publicKey: Uint8Array;
+    publicKey: ReadonlyUint8Array;
 
     /** Cleartext to decrypt. */
-    cleartext: Uint8Array;
+    cleartext: ReadonlyUint8Array;
 
     /** Multiple of padding bytes to use for encryption, defaulting to 0. */
     padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;

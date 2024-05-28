@@ -1,4 +1,5 @@
 import { Keypair as SolKeypair } from '@solana/web3.js';
+import type { ReadonlyUint8Array } from '@wallet-standard/core';
 import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 import { utils as ethUtils, Wallet as EthWallet } from 'ethers';
@@ -11,15 +12,15 @@ const BIP44_COIN_TYPE_SOL = 501;
 export type Mnemonic = string;
 
 export interface Keypair {
-    publicKey: Uint8Array;
-    privateKey: Uint8Array;
+    publicKey: ReadonlyUint8Array;
+    privateKey: ReadonlyUint8Array;
 }
 
 export type Network = 'ethereum' | 'solana';
 
 export interface Account {
     network: Network;
-    publicKey: Uint8Array;
+    publicKey: ReadonlyUint8Array;
 }
 
 /**

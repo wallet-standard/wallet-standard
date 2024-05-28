@@ -1,4 +1,4 @@
-import type { WalletAccount } from '@wallet-standard/base';
+import type { ReadonlyUint8Array, WalletAccount } from '@wallet-standard/base';
 
 /** TODO: docs */
 export type DecryptFeature = {
@@ -36,13 +36,13 @@ export interface DecryptInput {
     cipher: string;
 
     /** Public key to derive a shared key to decrypt the data using. */
-    publicKey: Uint8Array;
+    publicKey: ReadonlyUint8Array;
 
     /** Ciphertext to decrypt. */
-    ciphertext: Uint8Array;
+    ciphertext: ReadonlyUint8Array;
 
     /** Nonce to use for decryption. */
-    nonce: Uint8Array;
+    nonce: ReadonlyUint8Array;
 
     /** Multiple of padding bytes to use for decryption, defaulting to 0. */
     padding?: 0 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
