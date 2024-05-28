@@ -26,16 +26,10 @@
             "path": "./packages/ethereum/chains/tsconfig.all.json"
         },
         {
-            "path": "./packages/example/dapp/tsconfig.all.json"
-        },
-        {
             "path": "./packages/example/eip1193/tsconfig.all.json"
         },
         {
             "path": "./packages/example/extension/tsconfig.all.json"
-        },
-        {
-            "path": "./packages/example/react/tsconfig.all.json"
         },
         {
             "path": "./packages/example/wallets/tsconfig.all.json"
