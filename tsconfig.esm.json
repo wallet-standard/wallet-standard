@@ -1,6 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022", "ES2022.Error"],
         "target": "ES2020",
         "module": "ES2020",
         "sourceMap": true,
