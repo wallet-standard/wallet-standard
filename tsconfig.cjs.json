@@ -2,6 +2,7 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "target": "ES2016",
+        "lib": ["DOM", "ES2022", "DOM.Iterable", "ScriptHost", "ES2022.Error"],
         "module": "CommonJS",
         "sourceMap": true
     }

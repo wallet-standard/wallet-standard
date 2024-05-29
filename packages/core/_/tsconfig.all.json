@@ -8,6 +8,9 @@
             "path": "../base/tsconfig.all.json"
         },
         {
+            "path": "../errors/tsconfig.all.json"
+        },
+        {
             "path": "../features/tsconfig.all.json"
         },
         {

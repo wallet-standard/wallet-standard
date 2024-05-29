@@ -14,6 +14,9 @@
             "path": "./packages/core/base/tsconfig.all.json"
         },
         {
+            "path": "./packages/core/errors/tsconfig.all.json"
+        },
+        {
             "path": "./packages/core/features/tsconfig.all.json"
         },
         {

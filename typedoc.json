@@ -1,5 +1,11 @@
 {
-    "entryPoints": ["packages/core/base", "packages/core/features", "packages/core/wallet", "packages/core/app"],
+    "entryPoints": [
+        "packages/core/base",
+        "packages/core/features",
+        "packages/core/wallet",
+        "packages/core/app",
+        "packages/core/errors"
+    ],
     "entryPointStrategy": "packages",
     "out": "docs",
     "readme": "README.md",
