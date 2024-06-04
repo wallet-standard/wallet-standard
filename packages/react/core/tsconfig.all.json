@@ -14,6 +14,12 @@
             "path": "../../experimental/features/tsconfig.all.json"
         },
         {
+            "path": "../../ui/_/tsconfig.all.json"
+        },
+        {
+            "path": "../../ui/registry/tsconfig.all.json"
+        },
+        {
             "path": "./tsconfig.cjs.json"
         },
         {
