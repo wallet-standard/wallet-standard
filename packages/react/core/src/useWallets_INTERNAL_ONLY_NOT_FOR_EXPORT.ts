@@ -17,7 +17,7 @@ function walletHasStandardEventsFeature(wallet: Wallet): wallet is WalletWithFea
 }
 
 /** TODO: docs */
-export function useWallets(): readonly Wallet[] {
+export function useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT(): readonly Wallet[] {
     const { get, on } = useStable(getWallets);
     const prevWallets = useRef(get());
     const outputWallets = useRef(prevWallets.current);

@@ -4,11 +4,11 @@ import type { StandardEventsFeature, StandardEventsListeners } from '@wallet-sta
 import { act } from 'react-test-renderer';
 
 import { renderHook } from '../test-renderer.js';
-import { useWallets } from '../useWallets.js';
+import { useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT } from '../useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT.js';
 
 jest.mock('@wallet-standard/app');
 
-describe('useWallets', () => {
+describe('useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT', () => {
     let mockGet: jest.MockedFn<ReturnType<typeof getWallets>['get']>;
     let mockOn: jest.MockedFn<ReturnType<typeof getWallets>['on']>;
     let mockRegister: jest.MockedFn<ReturnType<typeof getWallets>['register']>;
@@ -27,7 +27,7 @@ describe('useWallets', () => {
     it('returns a list of registered wallets', () => {
         const expectedWallets = [] as readonly Wallet[];
         mockGet.mockReturnValue(expectedWallets);
-        const { result } = renderHook(() => useWallets());
+        const { result } = renderHook(() => useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT());
         expect(result.current).toBe(expectedWallets);
     });
     describe.each(['register', 'unregister'])('when the %s event fires', (expectedEvent) => {
@@ -48,7 +48,7 @@ describe('useWallets', () => {
             mockGet.mockReturnValue(initialWallets);
         });
         it('updates if the wallet array has changed', () => {
-            const { result } = renderHook(() => useWallets());
+            const { result } = renderHook(() => useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT());
             const expectedWalletsAfterUpdate = ['new' as unknown as Wallet] as readonly Wallet[];
             mockGet.mockReturnValue(expectedWalletsAfterUpdate);
             act(() => {
@@ -59,7 +59,7 @@ describe('useWallets', () => {
             expect(result.current).toBe(expectedWalletsAfterUpdate);
         });
         it('does not update if the wallet array has not changed', () => {
-            const { result } = renderHook(() => useWallets());
+            const { result } = renderHook(() => useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT());
             act(() => {
                 listeners.forEach((l) => {
                     l(/* doesn't really matter what the listener receives */);
@@ -93,7 +93,7 @@ describe('useWallets', () => {
             } as const,
         ];
         mockGet.mockReturnValue(mockWallets);
-        const { result } = renderHook(() => useWallets());
+        const { result } = renderHook(() => useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT());
         act(() => {
             listeners.forEach((l) => {
                 l({
