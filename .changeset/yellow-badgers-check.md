@@ -1,6 +1,4 @@
 ---
-"@wallet-standard/example-dapp": patch
-"@wallet-standard/example-react": patch
 "@wallet-standard/react-core": patch
 ---
 
