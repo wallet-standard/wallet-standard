@@ -18,6 +18,7 @@
     },
     "type": "module",
     "sideEffects": false,
+    "bin": "./bin/cli.mjs",
     "main": "./lib/cjs/index.js",
     "module": "./lib/esm/index.js",
     "types": "./lib/types/index.d.ts",
