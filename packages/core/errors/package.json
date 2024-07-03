@@ -27,8 +27,18 @@
         "import": "./lib/esm/index.js",
         "types": "./lib/types/index.d.ts"
     },
+    "targets": {
+        "bin": {
+            "context": "node",
+            "distDir": "lib/",
+            "isLibrary": true,
+            "optimize": false,
+            "sourceMap": false
+        }
+    },
     "scripts": {
         "clean": "shx mkdir -p lib && shx rm -rf lib",
+        "build": "parcel build --target bin src/cli.ts",
         "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
         "test": "jest -c ../../../node_modules/@wallet-standard/test-config/jest.config.ts --rootDir ."
     },
@@ -37,6 +47,7 @@
         "chalk": "^5.3.0"
     },
     "devDependencies": {
+        "parcel": "^2.12.0",
         "shx": "^0.3.4"
     }
 }

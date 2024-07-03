@@ -1,7 +1,7 @@
 {
     "extends": "../../../tsconfig.esm.json",
     "include": ["src"],
-    "exclude": ["src/__tests__", "src/__typetests__"],
+    "exclude": ["src/__tests__", "src/__typetests__", "src/cli.ts"],
     "compilerOptions": {
         "outDir": "lib/esm",
         "rootDir": "src",
