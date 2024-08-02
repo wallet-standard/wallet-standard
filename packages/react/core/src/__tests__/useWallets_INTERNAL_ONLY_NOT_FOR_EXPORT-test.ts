@@ -1,6 +1,6 @@
 import { getWallets } from '@wallet-standard/app';
-import type { Wallet, WalletVersion } from '@wallet-standard/base';
-import type { StandardEventsFeature, StandardEventsListeners } from '@wallet-standard/features';
+import type { Wallet, WalletVersion, WalletWithFeatures } from '@wallet-standard/base';
+import { StandardEvents, type StandardEventsFeature, type StandardEventsListeners } from '@wallet-standard/features';
 import { act } from 'react-test-renderer';
 
 import { renderHook } from '../test-renderer.js';
@@ -65,6 +65,83 @@ describe('useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT', () => {
             });
             expect(result.current).toBe(initialWallets);
         });
+    });
+    it('attaches a change handler to wallets added by firing a `register` event', () => {
+        const registerListeners: ((...wallets: Wallet[]) => void)[] = [];
+        mockOn.mockImplementation((event, listener) => {
+            if (event === 'register') {
+                registerListeners.push(listener);
+            }
+            return () => {
+                /* unsubscribe */
+            };
+        });
+        renderHook(() => useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT());
+        const mockStandardEventsOn = jest.fn();
+        const mockWalletWithStandardEventsFeature = {
+            features: {
+                [StandardEvents]: {
+                    on: mockStandardEventsOn,
+                },
+            },
+        } as unknown as WalletWithFeatures<StandardEventsFeature>;
+        act(() => {
+            registerListeners.forEach((l) => {
+                l(mockWalletWithStandardEventsFeature);
+            });
+        });
+        expect(mockStandardEventsOn).toHaveBeenCalledWith('change', expect.any(Function));
+    });
+    it("fires a change handler's dispose function when an existing wallet unregisters if it supports `standard:events`", () => {
+        const unregisterListeners: ((...wallets: Wallet[]) => void)[] = [];
+        mockOn.mockImplementation((event, listener) => {
+            if (event === 'unregister') {
+                unregisterListeners.push(listener);
+            }
+            return () => {
+                /* unsubscribe */
+            };
+        });
+        const mockStandardEventsDispose = jest.fn();
+        const mockInitialWallet = {
+            features: {
+                [StandardEvents]: {
+                    on: () => mockStandardEventsDispose,
+                    version: '1.0.0' as WalletVersion,
+                } as StandardEventsFeature['standard:events'],
+            },
+        } as unknown as Wallet;
+        mockGet.mockReturnValue([mockInitialWallet]);
+        renderHook(() => useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT());
+        act(() => {
+            unregisterListeners.forEach((l) => {
+                l(mockInitialWallet);
+            });
+        });
+        expect(mockStandardEventsDispose).toHaveBeenCalledWith();
+    });
+    it('does not fatal when a wallet that does not support `standard:events` unregisters', () => {
+        const unregisterListeners: ((...wallets: Wallet[]) => void)[] = [];
+        mockOn.mockImplementation((event, listener) => {
+            if (event === 'unregister') {
+                unregisterListeners.push(listener);
+            }
+            return () => {
+                /* unsubscribe */
+            };
+        });
+        const mockInitialWallet = {
+            features: {},
+        } as unknown as Wallet;
+        mockGet.mockReturnValue([mockInitialWallet]);
+        renderHook(() => useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT());
+        expect(() => {
+            act(() => {
+                unregisterListeners.forEach((l) => {
+                    l(mockInitialWallet);
+                });
+            });
+        }).not.toThrow();
     });
     it('recycles the wallets array when the `change` event fires on a wallet', () => {
         const listeners: StandardEventsListeners['change'][] = [];
