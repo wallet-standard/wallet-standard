@@ -37,7 +37,7 @@ export type ConnectFeature = StandardConnectFeature;
  *
  * @group Connect
  */
-export type StandardConnectVersion = '1.0.0';
+export type StandardConnectVersion = '1.1.0';
 /**
  * @deprecated Use {@link StandardConnectVersion} instead.
  *
@@ -65,12 +65,24 @@ export type ConnectMethod = StandardConnectMethod;
  */
 export interface StandardConnectInput {
     /**
-     * By default, using the {@link StandardConnectFeature} should prompt the user to request authorization to accounts.
-     * Set the `silent` flag to `true` to request accounts that have already been authorized without prompting.
+     * List of account {@link "@wallet-standard/base".WalletAccount.address addresses} that the app is requesting authorization to use.
+     * If provided, the Wallet must return *only* accounts with *any* of the provided addresses.
+     */
+    readonly addresses?: WalletAccount['address'][];
+    /**
+     * List of account {@link "@wallet-standard/base".WalletAccount.chains chains} that the app is requesting authorization to use.
+     * If provided, the Wallet must return *only* accounts with *any* of the provided chains.
+     */
+    readonly chains?: WalletAccount['chains'];
+    /**
+     * List of account {@link "@wallet-standard/base".WalletAccount.features features} that the app is requesting authorization to use.
+     * If provided, the Wallet must return *only* accounts with *any* of the provided features.
+     */
+    readonly features?: WalletAccount['features'];
+    /**
+     * @deprecated
      *
-     * This flag may or may not be used by the Wallet and the app should not depend on it being used.
-     * If this flag is used by the Wallet, the Wallet should not prompt the user, and should return only the accounts
-     * that the app is authorized to use.
+     * This flag should not be used by the app, and it must have no effect on the Wallet's behavior.
      */
     readonly silent?: boolean;
 }
