@@ -1,5 +1,18 @@
 # @wallet-standard/react
 
+## 0.1.5
+
+### Patch Changes
+
+-   d6b051e: Updated to TypeScript 5, latest ESLint plugins, Prettier 3
+-   Updated dependencies [5e4f381]
+-   Updated dependencies [5d00618]
+-   Updated dependencies [6a969b5]
+-   Updated dependencies [d6b051e]
+-   Updated dependencies [a743b1a]
+-   Updated dependencies [34f789e]
+    -   @wallet-standard/react-core@1.0.0
+
 ## 0.1.4
 
 ### Patch Changes

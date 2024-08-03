@@ -1,5 +1,13 @@
 # @wallet-standard/ethereum
 
+## 0.1.1
+
+### Patch Changes
+
+-   d6b051e: Updated to TypeScript 5, latest ESLint plugins, Prettier 3
+-   Updated dependencies [d6b051e]
+    -   @wallet-standard/ethereum-chains@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,5 +1,14 @@
 # @wallet-standard/features
 
+## 1.0.4
+
+### Patch Changes
+
+-   d6b051e: Updated to TypeScript 5, latest ESLint plugins, Prettier 3
+-   Updated dependencies [83062f5]
+-   Updated dependencies [d6b051e]
+    -   @wallet-standard/base@1.0.2
+
 ## 1.0.3
 
 ### Patch Changes
