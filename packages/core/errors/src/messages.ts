@@ -5,6 +5,7 @@ import {
     WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED,
     WALLET_STANDARD_ERROR__REGISTRY__WALLET_ACCOUNT_NOT_FOUND,
     WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND,
+    WALLET_STANDARD_ERROR__USER__REQUEST_REJECTED,
 } from './codes.js';
 
 /**
@@ -30,4 +31,5 @@ export const WalletStandardErrorMessages: Readonly<{
     [WALLET_STANDARD_ERROR__REGISTRY__WALLET_NOT_FOUND]:
         'No underlying Wallet Standard wallet could be found for this handle. This can happen if ' +
         'the wallet associated with the handle has been unregistered.',
+    [WALLET_STANDARD_ERROR__USER__REQUEST_REJECTED]: 'The user rejected the request',
 };
