@@ -9,7 +9,7 @@ import type {
     Wallet,
     WalletAccount,
 } from '@wallet-standard/core';
-import { UserRejectedRequestError } from '@wallet-standard/core';
+import { WALLET_STANDARD_ERROR__USER__REQUEST_REJECTED, WalletStandardError } from '@wallet-standard/errors';
 import { ETHEREUM_MAINNET_CHAIN } from '@wallet-standard/ethereum';
 import bs58 from 'bs58';
 import { utils as ethUtils } from 'ethers';
@@ -129,7 +129,7 @@ export class MultiChainWallet implements Wallet {
         const accounts = await this.#rpc.callMethod('connect');
 
         if (accounts === null) {
-            throw new UserRejectedRequestError();
+            throw new WalletStandardError(WALLET_STANDARD_ERROR__USER__REQUEST_REJECTED);
         }
 
         this.#accounts = accounts.map((account: { network: string; publicKey: Uint8Array }) => {
