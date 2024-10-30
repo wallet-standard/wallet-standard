@@ -1,21 +1,5 @@
 # wallet-standard
 
-## 1.1.0
-
-### Minor Changes
-
--   cd45f09: Minor version bump to previously released packages
-
-### Patch Changes
-
--   d6b051e: Updated to TypeScript 5, latest ESLint plugins, Prettier 3
--   Updated dependencies [83062f5]
--   Updated dependencies [cd45f09]
--   Updated dependencies [2655a7f]
--   Updated dependencies [402698a]
--   Updated dependencies [d6b051e]
-    -   @wallet-standard/core@1.1.0
-
 ## 1.0.3
 
 ### Patch Changes
