@@ -1,5 +1,20 @@
 # @wallet-standard/app
 
+## 1.1.0
+
+### Minor Changes
+
+-   cd45f09: Minor version bump to previously released packages
+
+### Patch Changes
+
+-   43b2f82: `Wallets::get()` now returns the same array object unless the wallets have changed, to make downstream optimizations based on `===` possible.
+-   d6b051e: Updated to TypeScript 5, latest ESLint plugins, Prettier 3
+-   Updated dependencies [83062f5]
+-   Updated dependencies [cd45f09]
+-   Updated dependencies [d6b051e]
+    -   @wallet-standard/base@1.1.0
+
 ## 1.0.1
 
 ### Patch Changes

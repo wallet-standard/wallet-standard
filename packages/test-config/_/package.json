@@ -1,6 +1,6 @@
 {
     "name": "@wallet-standard/test-config",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "private": true,
     "peerDependencies": {
         "jest-dev-server": "^10.0.0"
