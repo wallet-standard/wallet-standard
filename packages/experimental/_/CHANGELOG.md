@@ -1,5 +1,19 @@
 # @wallet-standard/experimental
 
+## 0.2.0
+
+### Minor Changes
+
+-   650dd95: Minor version bump to previously released packages
+
+### Patch Changes
+
+-   650dd95: Updated to TypeScript 5, latest ESLint plugins, Prettier 3
+-   Updated dependencies [650dd95]
+-   Updated dependencies [650dd95]
+-   Updated dependencies [650dd95]
+    -   @wallet-standard/experimental-features@0.2.0
+
 ## 0.1.1
 
 ### Patch Changes
