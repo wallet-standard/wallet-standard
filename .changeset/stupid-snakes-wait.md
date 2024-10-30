@@ -11,7 +11,6 @@
 '@wallet-standard/experimental-features': patch
 '@wallet-standard/react': patch
 '@wallet-standard/react-core': patch
-'@wallet-standard/test-config': patch
 ---
 
 Updated to TypeScript 5, latest ESLint plugins, Prettier 3

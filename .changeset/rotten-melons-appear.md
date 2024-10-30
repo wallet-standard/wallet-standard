@@ -10,8 +10,6 @@
 '@wallet-standard/ethereum-chains': minor
 '@wallet-standard/experimental': minor
 '@wallet-standard/experimental-features': minor
-'@wallet-standard/test-config': minor
-'@wallet-standard/test-matchers': minor
 ---
 
 Minor version bump to previously released packages
