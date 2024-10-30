@@ -66,8 +66,8 @@ importers:
         specifier: ^30.0.0-alpha.3
         version: 30.0.0-alpha.3(bufferutil@4.0.7)(utf-8-validate@5.0.10)
       pnpm:
-        specifier: ^7.14.0
-        version: 7.14.0
+        specifier: ^9.12.3
+        version: 9.12.3
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
@@ -478,7 +478,7 @@ importers:
     dependencies:
       '@parcel/plugin':
         specifier: 2.7.0
-        version: 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
+        version: 2.7.0(@parcel/core@2.7.0)
       '@parcel/utils':
         specifier: 2.7.0
         version: 2.7.0
@@ -4384,9 +4384,9 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
-  pnpm@7.14.0:
-    resolution: {integrity: sha512-yUKSckJLBIw8ByqMKJF9497kzwrevuQhdL6o2eYbky7woAictxoGX9veBdQYCdBemuC239X2FJq/LGTpCjQ55w==}
-    engines: {node: '>=14.6'}
+  pnpm@9.12.3:
+    resolution: {integrity: sha512-zOD53pxafJW++UQWnMXf6HQav7FFB4wNUIuGgFaEiofIHmJiRstglny9f9KabAYu9z/4QNlrPIbECsks9KgT7g==}
+    engines: {node: '>=18.12'}
     hasBin: true
 
   possible-typed-array-names@1.0.0:
@@ -6438,21 +6438,15 @@ snapshots:
     transitivePeerDependencies:
       - '@parcel/core'
 
-  '@parcel/cache@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
+  '@parcel/cache@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)':
     dependencies:
       '@parcel/core': 2.12.0(@swc/helpers@0.5.11)
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
       '@parcel/logger': 2.12.0
       '@parcel/utils': 2.12.0
       lmdb: 2.8.5
-
-  '@parcel/cache@2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
-    dependencies:
-      '@parcel/core': 2.12.0(@swc/helpers@0.5.11)
-      '@parcel/fs': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/logger': 2.7.0
-      '@parcel/utils': 2.7.0
-      lmdb: 2.5.2
+    transitivePeerDependencies:
+      - '@swc/helpers'
 
   '@parcel/cache@2.7.0(@parcel/core@2.7.0)':
     dependencies:
@@ -6571,7 +6565,7 @@ snapshots:
   '@parcel/core@2.12.0(@swc/helpers@0.5.11)':
     dependencies:
       '@mischnic/json-sourcemap': 0.1.0
-      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
+      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
       '@parcel/diagnostic': 2.12.0
       '@parcel/events': 2.12.0
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
@@ -6657,15 +6651,6 @@ snapshots:
       '@parcel/workers': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
     transitivePeerDependencies:
       - '@swc/helpers'
-
-  '@parcel/fs@2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
-    dependencies:
-      '@parcel/core': 2.12.0(@swc/helpers@0.5.11)
-      '@parcel/fs-search': 2.7.0
-      '@parcel/types': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/utils': 2.7.0
-      '@parcel/watcher': 2.0.5
-      '@parcel/workers': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
 
   '@parcel/fs@2.7.0(@parcel/core@2.7.0)':
     dependencies:
@@ -6876,17 +6861,6 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@parcel/package-manager@2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
-    dependencies:
-      '@parcel/core': 2.12.0(@swc/helpers@0.5.11)
-      '@parcel/diagnostic': 2.7.0
-      '@parcel/fs': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/logger': 2.7.0
-      '@parcel/types': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/utils': 2.7.0
-      '@parcel/workers': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      semver: 5.7.1
-
   '@parcel/package-manager@2.7.0(@parcel/core@2.7.0)':
     dependencies:
       '@parcel/core': 2.7.0
@@ -7002,12 +6976,6 @@ snapshots:
   '@parcel/plugin@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
     dependencies:
       '@parcel/types': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
-    transitivePeerDependencies:
-      - '@parcel/core'
-
-  '@parcel/plugin@2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
-    dependencies:
-      '@parcel/types': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
     transitivePeerDependencies:
       - '@parcel/core'
 
@@ -7412,7 +7380,7 @@ snapshots:
 
   '@parcel/types@2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)':
     dependencies:
-      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
+      '@parcel/cache': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
       '@parcel/diagnostic': 2.12.0
       '@parcel/fs': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
       '@parcel/package-manager': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
@@ -7422,18 +7390,6 @@ snapshots:
     transitivePeerDependencies:
       - '@parcel/core'
       - '@swc/helpers'
-
-  '@parcel/types@2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
-    dependencies:
-      '@parcel/cache': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/diagnostic': 2.7.0
-      '@parcel/fs': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/package-manager': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/source-map': 2.1.1
-      '@parcel/workers': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      utility-types: 3.10.0
-    transitivePeerDependencies:
-      - '@parcel/core'
 
   '@parcel/types@2.7.0(@parcel/core@2.7.0)':
     dependencies:
@@ -7537,16 +7493,6 @@ snapshots:
       '@parcel/profiler': 2.12.0
       '@parcel/types': 2.12.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))(@swc/helpers@0.5.11)
       '@parcel/utils': 2.12.0
-      nullthrows: 1.1.1
-
-  '@parcel/workers@2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))':
-    dependencies:
-      '@parcel/core': 2.12.0(@swc/helpers@0.5.11)
-      '@parcel/diagnostic': 2.7.0
-      '@parcel/logger': 2.7.0
-      '@parcel/types': 2.7.0(@parcel/core@2.12.0(@swc/helpers@0.5.11))
-      '@parcel/utils': 2.7.0
-      chrome-trace-event: 1.0.3
       nullthrows: 1.1.1
 
   '@parcel/workers@2.7.0(@parcel/core@2.7.0)':
@@ -10672,7 +10618,7 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
-  pnpm@7.14.0: {}
+  pnpm@9.12.3: {}
 
   possible-typed-array-names@1.0.0: {}
 

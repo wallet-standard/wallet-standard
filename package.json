@@ -6,7 +6,7 @@
     "license": "Apache-2.0",
     "engines": {
         "node": ">=16",
-        "pnpm": ">=7"
+        "pnpm": ">=9"
     },
     "scripts": {
         "nuke": "shx rm -rf packages/*/*/node_modules node_modules pnpm-lock.yaml || true",
@@ -48,7 +48,7 @@
         "gh-pages": "^4.0.0",
         "jest": "^30.0.0-alpha.3",
         "jest-environment-jsdom": "^30.0.0-alpha.3",
-        "pnpm": "^7.14.0",
+        "pnpm": "^9.12.3",
         "prettier": "^3.2.5",
         "react-test-renderer": "^18.3",
         "shx": "^0.3.4",
