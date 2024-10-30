@@ -1,5 +1,23 @@
 # @wallet-standard/react
 
+## 1.0.0
+
+### Major Changes
+
+-   a8223e8: Release 1.0.0 of previously unreleased packages
+
+### Patch Changes
+
+-   a8223e8: Updated to TypeScript 5, latest ESLint plugins, Prettier 3
+-   Updated dependencies [a8223e8]
+-   Updated dependencies [a8223e8]
+-   Updated dependencies [a8223e8]
+-   Updated dependencies [a8223e8]
+-   Updated dependencies [a8223e8]
+-   Updated dependencies [a8223e8]
+-   Updated dependencies [a8223e8]
+    -   @wallet-standard/react-core@1.0.0
+
 ## 0.1.4
 
 ### Patch Changes
