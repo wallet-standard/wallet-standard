@@ -65,7 +65,7 @@ export function useWeakRef<TValue>(keyObj: WeakKey): React.MutableRefObject<TVal
         },
         [keyObj]
     );
-    const ref = useRef<React.MutableRefObject<TValue | undefined>>();
+    const ref = useRef<React.MutableRefObject<TValue | undefined>>(undefined);
     const getSnapshot = useCallback(() => (ref.current ||= createMutableRef<TValue>(keyObj)), [keyObj]);
     return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

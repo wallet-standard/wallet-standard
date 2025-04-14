@@ -30,6 +30,6 @@
         "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "devDependencies": {
-        "shx": "^0.3.4"
+        "shx": "^0.4.0"
     }
 }
