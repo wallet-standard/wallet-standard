@@ -8,16 +8,16 @@
     "main": "lib/WebExtensionPackager.js",
     "engines": {
         "node": ">=12.0.0",
-        "parcel": "^2.7.0"
+        "parcel": "^2.14.4"
     },
     "scripts": {
         "clean": "shx mkdir -p .parcel-cache dist lib && shx rm -rf .parcel-cache dist lib",
         "build": "parcel build"
     },
     "dependencies": {
-        "@parcel/plugin": "2.7.0",
-        "@parcel/utils": "2.7.0",
+        "@parcel/plugin": "^2.14.4",
+        "@parcel/utils": "^2.14.4",
         "nullthrows": "^1.1.1",
-        "parcel": "^2.7.0"
+        "parcel": "^2.14.4"
     }
 }

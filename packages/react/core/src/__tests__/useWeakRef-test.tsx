@@ -15,7 +15,7 @@ function TestComponent({
     if (thiefRef) {
         thiefRef.current = weakRef;
     }
-    return <>{weakRef.current}</>;
+    return <>{(weakRef as any).current}</>;
 }
 
 describe('useWeakRef', () => {

@@ -1,7 +1,7 @@
+import { Packager } from '@parcel/plugin';
+import utils from '@parcel/utils';
 import assert from 'assert';
 import nullthrows from 'nullthrows';
-import { Packager } from '@parcel/plugin';
-import { relativeBundlePath, replaceURLReferences } from '@parcel/utils';
 
 export default new Packager({
     async package({ bundle, bundleGraph, options }) {
@@ -17,7 +17,7 @@ export default new Packager({
         );
         const asset = manifestAssets[0];
 
-        const relPath = (b) => relativeBundlePath(bundle, b, { leadingDotSlash: false });
+        const relPath = (b) => utils.relativeBundlePath(bundle, b, { leadingDotSlash: false });
 
         const manifest = JSON.parse(await asset.getCode());
 
@@ -83,7 +83,7 @@ export default new Packager({
 
         if (warResult.length > 0) manifest.web_accessible_resources = warResult;
 
-        let { contents } = replaceURLReferences({
+        let { contents } = utils.replaceURLReferences({
             bundle,
             bundleGraph,
             contents: JSON.stringify(manifest),

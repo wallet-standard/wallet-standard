@@ -1,2 +1,11 @@
 packages:
-  - 'packages/*/*'
+  - packages/*/*
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - bigint-buffer
+  - bufferutil
+  - lmdb
+  - msgpackr-extract
+  - utf-8-validate
