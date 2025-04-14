@@ -9,8 +9,8 @@ import { renderHook } from '../test-renderer.js';
 jest.mock('@wallet-standard/ui-registry');
 
 describe('useConnect', () => {
-    let mockConnect: jest.Mock;
-    let mockUiWallet: UiWallet;
+    let mockConnect: jest.Mock = undefined as unknown as jest.Mock;
+    let mockUiWallet: UiWallet = undefined as unknown as UiWallet;
     beforeEach(() => {
         mockConnect = jest.fn().mockResolvedValue({ accounts: [] });
         const mockWallet: Wallet = {
