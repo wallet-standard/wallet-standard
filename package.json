@@ -5,9 +5,10 @@
     "repository": "https://github.com/wallet-standard/wallet-standard",
     "license": "Apache-2.0",
     "engines": {
-        "node": ">=16",
-        "pnpm": ">=9"
+        "node": ">=22",
+        "pnpm": "10.8.1"
     },
+    "packageManager": "pnpm@10.8.1",
     "scripts": {
         "nuke": "shx rm -rf packages/*/*/node_modules node_modules pnpm-lock.yaml || true",
         "reinstall": "pnpm run nuke && pnpm install",
@@ -48,7 +49,7 @@
         "gh-pages": "^4.0.0",
         "jest": "^30.0.0-alpha.3",
         "jest-environment-jsdom": "^30.0.0-alpha.3",
-        "pnpm": "^9.12.3",
+        "pnpm": "10.8.1",
         "prettier": "^3.2.5",
         "react-test-renderer": "^18.3",
         "shx": "^0.3.4",

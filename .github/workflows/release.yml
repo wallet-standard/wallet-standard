@@ -12,27 +12,48 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v4
+      - name: Install pnpm
+        id: install-pnpm
+        uses: pnpm/action-setup@v4
         with:
-          version: 9
+            version: 10.8.1
+            run_install: false
 
-      - name: Setup Node.js
+      - name: Install Node.js
+        id: install-node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
-          cache: 'pnpm'
+            node-version: 22
+            cache: 'pnpm'
 
-      - name: Install Dependencies
+      - name: Get pnpm store directory
+        id: pnpm-store
+        shell: bash
+        run: |
+            echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        id: pnpm-cache
+        uses: actions/cache@v3
+        with:
+            path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
+            key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+            restore-keys: |
+                ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        id: install-deps
         run: pnpm install --frozen-lockfile
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Create release pull request OR build, test, and publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm release
+          publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
