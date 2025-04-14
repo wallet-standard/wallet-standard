@@ -35,6 +35,6 @@
         "@wallet-standard/ui-features": "workspace:^"
     },
     "devDependencies": {
-        "shx": "^0.3.4"
+        "shx": "^0.4.0"
     }
 }

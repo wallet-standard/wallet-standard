@@ -37,6 +37,6 @@
     },
     "devDependencies": {
         "@wallet-standard/test-matchers": "workspace:^",
-        "shx": "^0.3.4"
+        "shx": "^0.4.0"
     }
 }

@@ -10,23 +10,23 @@
         "build": "parcel build src/index.html"
     },
     "dependencies": {
-        "@solana/wallet-adapter-base": "^0.9.22",
-        "@solana/wallet-adapter-glow": "^0.1.17",
-        "@solana/wallet-adapter-phantom": "^0.9.22",
-        "@solana/wallet-standard": "^1.0.2",
-        "@solana/web3.js": "^1.66.2",
+        "@solana/wallet-adapter-base": "^0.9.24",
+        "@solana/wallet-adapter-glow": "^0.1.18",
+        "@solana/wallet-adapter-phantom": "^0.9.25",
+        "@solana/wallet-standard": "^1.1.4",
+        "@solana/web3.js": "^1.98.0",
         "@wallet-standard/core": "workspace:^",
         "@wallet-standard/react": "workspace:^",
-        "bs58": "^4.0.1",
+        "bs58": "^6.0.0",
         "react": "^18.3",
         "react-dom": "^18.3"
     },
     "devDependencies": {
         "@types/react": "^18.3",
         "@types/react-dom": "^18.3",
-        "parcel": "^2.7.0",
+        "parcel": "^2.14.4",
         "process": "^0.11.10",
-        "shx": "^0.3.4"
+        "shx": "^0.4.0"
     },
     "version": null
 }

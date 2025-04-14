@@ -27,6 +27,6 @@
         "eip1193-provider": "^1.0.1"
     },
     "devDependencies": {
-        "shx": "^0.3.4"
+        "shx": "^0.4.0"
     }
 }

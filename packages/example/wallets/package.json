@@ -19,19 +19,19 @@
         "package": "shx mkdir -p lib/cjs && shx echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json"
     },
     "dependencies": {
-        "@solana/wallet-standard": "^1.0.2",
-        "@solana/web3.js": "^1.66.2",
+        "@solana/wallet-standard": "^1.1.4",
+        "@solana/web3.js": "^1.98.0",
         "@wallet-standard/core": "workspace:^",
         "@wallet-standard/ethereum": "workspace:^",
         "@wallet-standard/experimental": "workspace:^",
-        "bs58": "^4.0.1",
-        "ethers": "^5.7.2",
+        "bs58": "^6.0.0",
+        "ethers": "^5.8.0",
         "tweetnacl": "^1.0.3"
     },
     "devDependencies": {
-        "@types/bs58": "^4.0.1",
-        "@types/node-fetch": "^2.6.2",
-        "shx": "^0.3.4"
+        "@types/bs58": "^5.0.0",
+        "@types/node-fetch": "^2.6.12",
+        "shx": "^0.4.0"
     },
     "version": null
 }
