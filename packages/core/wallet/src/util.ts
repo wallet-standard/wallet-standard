@@ -174,3 +174,30 @@ export interface Indexed<T> {
     length: number;
     [index: number]: T;
 }
+
+/**
+ * Compare WalletAccounts, using {@link arraysEqual} on the array fields
+ *
+ * @param a A WalletAccount.
+ * @param b Another WalletAccount.
+ *
+ * @return `true` if WalletAccount has exactly the same fields via a deep equality check
+ *
+ * @group Util
+ */
+export function walletAccountsEqual(a?: WalletAccount, b?: WalletAccount): boolean {
+    if (!a && !b) {
+        return true;
+    }
+    if (!a || !b) {
+        return false;
+    }
+    return (
+        a.address === b.address &&
+        bytesEqual(a.publicKey, b.publicKey) &&
+        arraysEqual(a.chains, b.chains) &&
+        arraysEqual(a.features, b.features) &&
+        a.label === b.label &&
+        a.icon === b.icon
+    );
+}
