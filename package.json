@@ -30,7 +30,7 @@
         "deploy:docs": "pnpm run docs && gh-pages --dist docs --dotfiles"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.27.5",
+        "@changesets/cli": "^2.29.0",
         "@jest/types": "^29.6.3",
         "@swc/jest": "^0.2.36",
         "@types/chrome": "^0.0.315",
