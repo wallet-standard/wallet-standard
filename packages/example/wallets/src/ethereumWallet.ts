@@ -16,7 +16,7 @@ import ethers from 'ethers';
 import { AbstractWallet, SignerWalletAccount } from './abstractWallet.js';
 
 export class EthereumWallet extends AbstractWallet implements Wallet {
-    protected declare _accounts: SignerWalletAccount[];
+    declare protected _accounts: SignerWalletAccount[];
 
     #name = 'Ethereum Wallet' as const;
     #icon =

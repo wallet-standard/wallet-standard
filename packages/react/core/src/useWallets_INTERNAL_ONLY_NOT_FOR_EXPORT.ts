@@ -1,6 +1,6 @@
 import { getWallets } from '@wallet-standard/app';
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base';
-import { StandardEvents, StandardEventsFeature } from '@wallet-standard/features';
+import { StandardEvents, type StandardEventsFeature } from '@wallet-standard/features';
 import { useCallback, useRef, useSyncExternalStore } from 'react';
 
 import { walletHasStandardEventsFeature } from './features/events.js';

@@ -40,7 +40,7 @@ interface SolanaLedgerApp {
 }
 
 export class SolanaWallet extends AbstractWallet implements Wallet {
-    protected declare _accounts: PossiblyLedgerWalletAccount[];
+    declare protected _accounts: PossiblyLedgerWalletAccount[];
 
     #name = 'Solana Wallet' as const;
     #icon =
