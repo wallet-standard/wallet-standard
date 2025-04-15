@@ -38,7 +38,6 @@
         "@parcel/runtime-webextension": "^2.14.4",
         "@parcel/transformer-raw": "^2.14.4",
         "@parcel/transformer-webextension": "^2.14.4",
-        "@types/bs58": "^5.0.0",
         "@types/react": "^18.3",
         "@types/react-dom": "^18.3",
         "@wallet-standard/parcel-packager-webextension": "workspace:^",

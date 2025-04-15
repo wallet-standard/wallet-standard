@@ -281,9 +281,6 @@ importers:
       '@parcel/transformer-webextension':
         specifier: ^2.14.4
         version: 2.14.4(@parcel/core@2.14.4(@swc/helpers@0.5.17))
-      '@types/bs58':
-        specifier: ^5.0.0
-        version: 5.0.0
       '@types/react':
         specifier: ^18.3
         version: 18.3.20
@@ -376,9 +373,6 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3
     devDependencies:
-      '@types/bs58':
-        specifier: ^5.0.0
-        version: 5.0.0
       '@types/node-fetch':
         specifier: ^2.6.12
         version: 2.6.12
@@ -1686,10 +1680,6 @@ packages:
 
   '@types/babel__traverse@7.20.7':
     resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
-
-  '@types/bs58@5.0.0':
-    resolution: {integrity: sha512-cAw/jKBzo98m6Xz1X5ETqymWfIMbXbu6nK15W4LQYjeHJkVqSmM5PO8Bd9KVHQJ/F4rHcSso9LcjtgCW6TGu2w==}
-    deprecated: This is a stub types definition. bs58 provides its own type definitions, so you do not need this installed.
 
   '@types/chrome@0.0.315':
     resolution: {integrity: sha512-Oy1dYWkr6BCmgwBtOngLByCHstQ3whltZg7/7lubgIZEYvKobDneqplgc6LKERNRBwckFviV4UU5AZZNUFrJ4A==}
@@ -6415,10 +6405,6 @@ snapshots:
   '@types/babel__traverse@7.20.7':
     dependencies:
       '@babel/types': 7.27.0
-
-  '@types/bs58@5.0.0':
-    dependencies:
-      bs58: 6.0.0
 
   '@types/chrome@0.0.315':
     dependencies:
