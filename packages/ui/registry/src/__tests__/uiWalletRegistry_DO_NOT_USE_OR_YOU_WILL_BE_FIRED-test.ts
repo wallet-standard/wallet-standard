@@ -1,6 +1,6 @@
 import '@wallet-standard/test-matchers/toBeFrozenObject';
 
-import type { Wallet, WalletAccount, WalletVersion } from '@wallet-standard/base';
+import type { Wallet, WalletAccount, WalletVersion1_0_0 } from '@wallet-standard/base';
 import type { UiWalletAccount } from '@wallet-standard/ui-core';
 
 import { getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '../UiWalletAccountRegistry_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.js';
@@ -182,7 +182,7 @@ describe('getOrCreateUiWalletForWalletHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED', (
     });
     it('returns a new UI wallet given the same underlying Standard wallet whose version has been mutated', () => {
         const uiWalletA = getOrCreateUiWalletForStandardWallet_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(mockWallet);
-        mockWallet.version = '2.0.0' as WalletVersion;
+        mockWallet.version = '1000.0.0' as WalletVersion1_0_0;
         const uiWalletB = getOrCreateUiWalletForStandardWallet_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(mockWallet);
         expect(uiWalletB).not.toBe(uiWalletA);
         expect(registerWalletHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).toHaveBeenCalledWith(uiWalletB, mockWallet);
