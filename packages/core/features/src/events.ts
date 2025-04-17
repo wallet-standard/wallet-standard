@@ -1,4 +1,4 @@
-import type { Wallet } from '@wallet-standard/base';
+import type { Wallet, WalletVersion1_0_0, WalletVersion1_1_0 } from '@wallet-standard/base';
 
 /** Name of the feature. */
 export const StandardEvents = 'standard:events';
@@ -16,13 +16,13 @@ export const Events = StandardEvents;
  *
  * @group Events
  */
-export type StandardEventsFeature = {
+export type StandardEventsFeature<V extends StandardEventsVersion = StandardEventsVersion1_0_0> = {
     /** Name of the feature. */
     readonly [StandardEvents]: {
         /** Version of the feature implemented by the {@link "@wallet-standard/base".Wallet}. */
-        readonly version: StandardEventsVersion;
+        readonly version: V;
         /** Method to call to use the feature. */
-        readonly on: StandardEventsOnMethod;
+        readonly on: StandardEventsOnMethod<V>;
     };
 };
 /**
@@ -37,7 +37,22 @@ export type EventsFeature = StandardEventsFeature;
  *
  * @group Events
  */
-export type StandardEventsVersion = '1.0.0';
+export type StandardEventsVersion = StandardEventsVersion1_0_0 | StandardEventsVersion1_1_0;
+
+/**
+ * Initial version of the {@link StandardEventsFeature}.
+ *
+ * @group Events
+ */
+export type StandardEventsVersion1_0_0 = '1.0.0';
+
+/**
+ * Version of the {@link StandardEventsFeature} that supports HTTP/S URLs for account icons.
+ *
+ * @group Events
+ */
+export type StandardEventsVersion1_1_0 = '1.1.0';
+
 /**
  * @deprecated Use {@link StandardEventsVersion} instead.
  *
@@ -58,37 +73,39 @@ export type EventsVersion = StandardEventsVersion;
  *
  * @group Events
  */
-export type StandardEventsOnMethod = <E extends StandardEventsNames>(
+export type StandardEventsOnMethod<V extends StandardEventsVersion = StandardEventsVersion1_0_0> = <
+    E extends StandardEventsNames,
+>(
     event: E,
-    listener: StandardEventsListeners[E]
+    listener: StandardEventsListeners<V>[E]
 ) => () => void;
 /**
  * @deprecated Use {@link StandardEventsOnMethod} instead.
  *
  * @group Deprecated
  */
-export type EventsOnMethod = StandardEventsOnMethod;
+export type EventsOnMethod<V extends StandardEventsVersion = StandardEventsVersion1_0_0> = StandardEventsOnMethod<V>;
 
 /**
  * Types of event listeners of the {@link StandardEventsFeature}.
  *
  * @group Events
  */
-export interface StandardEventsListeners {
+export interface StandardEventsListeners<V extends StandardEventsVersion = StandardEventsVersion1_0_0> {
     /**
      * Listener that will be called when {@link StandardEventsChangeProperties | properties} of the
      * {@link "@wallet-standard/base".Wallet} have changed.
      *
      * @param properties Properties that changed with their **new** values.
      */
-    change(properties: StandardEventsChangeProperties): void;
+    change(properties: StandardEventsChangeProperties<V>): void;
 }
 /**
  * @deprecated Use {@link StandardEventsListeners} instead.
  *
  * @group Deprecated
  */
-export type EventsListeners = StandardEventsListeners;
+export type EventsListeners<V extends StandardEventsVersion = StandardEventsVersion1_0_0> = StandardEventsListeners<V>;
 
 /**
  * Names of {@link StandardEventsListeners} that can be listened for.
@@ -109,7 +126,7 @@ export type EventsNames = StandardEventsNames;
  *
  * @group Events
  */
-export interface StandardEventsChangeProperties {
+export interface StandardEventsChangeProperties<V extends StandardEventsVersion = StandardEventsVersion1_0_0> {
     /**
      * {@link "@wallet-standard/base".Wallet.chains | Chains} supported by the Wallet.
      *
@@ -133,11 +150,14 @@ export interface StandardEventsChangeProperties {
      *
      * The value must be the **new** value of the property.
      */
-    readonly accounts?: Wallet['accounts'];
+    readonly accounts?: Wallet<
+        V extends StandardEventsVersion1_1_0 ? WalletVersion1_1_0 : WalletVersion1_0_0
+    >['accounts'];
 }
 /**
  * @deprecated Use {@link StandardEventsChangeProperties} instead.
  *
  * @group Deprecated
  */
-export type EventsChangeProperties = StandardEventsChangeProperties;
+export type EventsChangeProperties<V extends StandardEventsVersion = StandardEventsVersion1_0_0> =
+    StandardEventsChangeProperties<V>;

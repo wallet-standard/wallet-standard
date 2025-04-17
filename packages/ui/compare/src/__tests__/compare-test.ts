@@ -1,5 +1,5 @@
-import type { Wallet, WalletAccount, WalletVersion } from '@wallet-standard/base';
-import type { UiWalletAccount, UiWallet } from '@wallet-standard/ui-core';
+import type { Wallet, WalletAccount } from '@wallet-standard/base';
+import type { UiWallet, UiWalletAccount } from '@wallet-standard/ui-core';
 import {
     getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
     getOrCreateUiWalletForStandardWallet_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
@@ -24,7 +24,7 @@ describe('uiWalletAccountsAreSame()', () => {
             features: {},
             icon: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIBAAA=',
             name: 'Mock:Wallet',
-            version: '1.0.0' as WalletVersion,
+            version: '1.0.0',
         };
         mockUiWalletAccount = getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
             mockWallet,
@@ -78,7 +78,7 @@ describe('uiWalletAccountBelongsToUiWallet()', () => {
             features: {},
             icon: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIBAAA=',
             name: 'Mock:Wallet',
-            version: '1.0.0' as WalletVersion,
+            version: '1.0.0',
         };
         mockUiWalletAccount = getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
             mockWallet,
