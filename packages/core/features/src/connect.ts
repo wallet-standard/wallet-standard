@@ -125,7 +125,7 @@ export type ConnectInput<V extends StandardConnectVersion = StandardConnectVersi
  *
  * @group Connect
  */
-export interface StandardConnectOutput<V extends StandardConnectVersion = StandardConnectVersion1_1_0> {
+export interface StandardConnectOutput<V extends StandardConnectVersion = StandardConnectVersion1_0_0> {
     /** List of accounts in the {@link "@wallet-standard/base".Wallet} that the app has been authorized to use. */
     readonly accounts: readonly WalletAccount<
         V extends StandardConnectVersion1_1_0 ? WalletVersion1_1_0 : WalletVersion1_0_0
