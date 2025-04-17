@@ -16,13 +16,16 @@ import type { IdentifierArray, IdentifierRecord, IdentifierString } from './iden
 export type WalletVersion = '1.0.0';
 
 /**
- * A data URI containing a base64-encoded SVG, WebP, PNG, or GIF image.
+ * An HTTP/S URL, or data URI containing a base64-encoded SVG, WebP, PNG, or GIF image.
  *
  * Used by {@link Wallet.icon | Wallet::icon} and {@link WalletAccount.icon | WalletAccount::icon}.
  *
  * @group Wallet
  */
-export type WalletIcon = `data:image/${'svg+xml' | 'webp' | 'png' | 'gif'};base64,${string}`;
+export type WalletIcon =
+    | `https://${string}`
+    | `http://${string}`
+    | `data:image/${'svg+xml' | 'webp' | 'png' | 'gif'};base64,${string}`;
 
 /**
  * Interface of a **Wallet**, also referred to as a **Standard Wallet**.
