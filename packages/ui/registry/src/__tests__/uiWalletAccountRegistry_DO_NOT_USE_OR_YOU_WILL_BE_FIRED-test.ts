@@ -256,7 +256,7 @@ describe('getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_W
         );
         expect(uiWalletAccount).toHaveProperty('publicKey', mockWalletAccount.publicKey);
     });
-    it('returns a new UI wallet account given the same underlying Standard wallet account whose label has been mutated', () => {
+    it('returns a new UI wallet account given the same underlying Standard wallet account whose public key has been mutated', () => {
         const uiWalletAccountA = getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
             mockWallet,
             mockWalletAccount
@@ -268,5 +268,19 @@ describe('getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_W
         );
         expect(uiWalletAccountB).not.toBe(uiWalletAccountA);
         expect(registerWalletHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).toHaveBeenCalledWith(uiWalletAccountB, mockWallet);
+    });
+    it('returns the same UI wallet account given the same underlying Standard wallet account whose public key is referentially different', () => {
+        jest.mocked(getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).mockReturnValue(mockWallet);
+
+        const uiWalletAccountA = getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
+            mockWallet,
+            mockWalletAccount
+        );
+        mockWalletAccount.publicKey = mockWalletAccount.publicKey.slice();
+        const uiWalletAccountB = getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
+            mockWallet,
+            mockWalletAccount
+        );
+        expect(uiWalletAccountB).toBe(uiWalletAccountA);
     });
 });

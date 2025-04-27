@@ -5,7 +5,7 @@ import {
     getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
     registerWalletHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
 } from './UiWalletHandleRegistry_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.js';
-import { identifierArraysAreDifferent } from './compare.js';
+import { byteArraysAreDifferent, identifierArraysAreDifferent } from './compare.js';
 
 const walletAccountsToUiWalletAccounts = new WeakMap<WalletAccount, UiWalletAccount>();
 
@@ -55,7 +55,7 @@ export function getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR
         uiWalletAccount.address !== account.address ||
         uiWalletAccount.icon !== account.icon ||
         uiWalletAccount.label !== account.label ||
-        uiWalletAccount.publicKey !== account.publicKey
+        byteArraysAreDifferent(uiWalletAccount.publicKey, account.publicKey)
     ) {
         dirtyUiWallet();
         uiWalletAccount.address = account.address;
