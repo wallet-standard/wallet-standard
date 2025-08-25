@@ -1,0 +1,18 @@
+import { SUI_DEVNET_CHAIN, Wallet } from '@mysten/wallet-standard';
+
+class YourWallet implements Wallet {
+	get version() {
+		// Return the version of the Wallet Standard this implements (in this case, 1.0.0).
+		return '1.0.0';
+	}
+	get name() {
+		return 'Wallet Name';
+	}
+	get icon() {
+		return 'some-icon-data-url';
+	}
+	// Return the Sui chains that your wallet supports.
+	get chains() {
+		return [SUI_DEVNET_CHAIN];
+	}
+}
