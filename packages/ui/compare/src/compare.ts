@@ -1,5 +1,5 @@
 import type { UiWallet, UiWalletAccount } from '@wallet-standard/ui-core';
-import { getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
+import { getWalletForHandle } from '@wallet-standard/ui-registry';
 
 /**
  * Given two `UiWalletAccount` objects, this method will tell you if they represent the same
@@ -19,8 +19,8 @@ export function uiWalletAccountsAreSame(a: UiWalletAccount, b: UiWalletAccount):
     if (a.address !== b.address) {
         return false;
     }
-    const underlyingWalletA = getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(a);
-    const underlyingWalletB = getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(b);
+    const underlyingWalletA = getWalletForHandle(a);
+    const underlyingWalletB = getWalletForHandle(b);
     return underlyingWalletA === underlyingWalletB;
 }
 
@@ -34,7 +34,7 @@ export function uiWalletAccountsAreSame(a: UiWalletAccount, b: UiWalletAccount):
  * `UiWallet`.
  */
 export function uiWalletAccountBelongsToUiWallet(account: UiWalletAccount, wallet: UiWallet): boolean {
-    const underlyingWalletForUiWallet = getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(wallet);
-    const underlyingWalletForUiWalletAccount = getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(account);
+    const underlyingWalletForUiWallet = getWalletForHandle(wallet);
+    const underlyingWalletForUiWalletAccount = getWalletForHandle(account);
     return underlyingWalletForUiWallet === underlyingWalletForUiWalletAccount;
 }

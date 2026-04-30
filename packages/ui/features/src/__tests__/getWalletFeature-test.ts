@@ -4,7 +4,7 @@ import {
     WalletStandardError,
 } from '@wallet-standard/errors';
 import type { UiWalletHandle } from '@wallet-standard/ui-core';
-import { getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
+import { getWalletForHandle } from '@wallet-standard/ui-registry';
 
 import { getWalletFeature } from '../getWalletFeature.js';
 
@@ -30,7 +30,7 @@ describe('getWalletFeature', () => {
             '~uiWalletHandle': Symbol(),
             features: ['feature:a'],
         } as UiWalletHandle;
-        jest.mocked(getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).mockReturnValue(mockWallet);
+        jest.mocked(getWalletForHandle).mockReturnValue(mockWallet);
         // Suppresses console output when an `ErrorBoundary` is hit.
         // See https://stackoverflow.com/a/72632884/802047
         jest.spyOn(console, 'error').mockImplementation();
@@ -49,7 +49,7 @@ describe('getWalletFeature', () => {
         );
     });
     it('returns the feature of the underlying wallet', () => {
-        jest.mocked(getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).mockReturnValue(mockWallet);
+        jest.mocked(getWalletForHandle).mockReturnValue(mockWallet);
         expect(getWalletFeature(mockWalletHandle, 'feature:a')).toBe(mockFeatureA);
     });
 });

@@ -2,7 +2,7 @@ import type { StandardDisconnectFeature, StandardDisconnectMethod } from '@walle
 import { StandardDisconnect } from '@wallet-standard/features';
 import type { UiWallet } from '@wallet-standard/ui';
 import { getWalletFeature } from '@wallet-standard/ui';
-import { getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
+import { getWalletForHandle } from '@wallet-standard/ui-registry';
 import { useCallback } from 'react';
 
 import { useWeakRef } from '../useWeakRef.js';
@@ -19,7 +19,7 @@ export function useDisconnect<TWallet extends UiWallet>(
         uiWallet,
         StandardDisconnect
     ) as StandardDisconnectFeature[typeof StandardDisconnect];
-    const wallet = getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(uiWallet);
+    const wallet = getWalletForHandle(uiWallet);
     const disconnectionPromise = useWeakRef<Promise<void> | undefined>(wallet);
     const disconnect = useCallback(
         async function disconnect(...inputs: Parameters<StandardDisconnectMethod>) {

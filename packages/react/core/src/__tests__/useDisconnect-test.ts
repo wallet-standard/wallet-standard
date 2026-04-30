@@ -1,7 +1,7 @@
 import type { Wallet, WalletVersion } from '@wallet-standard/base';
 import { StandardDisconnect } from '@wallet-standard/features';
 import type { UiWallet } from '@wallet-standard/ui';
-import { getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
+import { getWalletForHandle } from '@wallet-standard/ui-registry';
 
 import { useDisconnect } from '../features/useDisconnect.js';
 import { renderHook } from '../test-renderer.js';
@@ -25,7 +25,7 @@ describe('useDisconnect', () => {
             name: 'Mock Wallet',
             version: '1.0.0' as WalletVersion,
         };
-        jest.mocked(getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).mockReturnValue(mockWallet);
+        jest.mocked(getWalletForHandle).mockReturnValue(mockWallet);
         // Suppresses console output when an `ErrorBoundary` is hit.
         // See https://stackoverflow.com/a/72632884/802047
         jest.spyOn(console, 'error').mockImplementation();

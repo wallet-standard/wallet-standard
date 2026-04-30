@@ -1,10 +1,7 @@
 import type { Wallet, WalletAccount } from '@wallet-standard/base';
 import type { UiWalletAccount } from '@wallet-standard/ui-core';
 
-import {
-    getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
-    registerWalletHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
-} from './UiWalletHandleRegistry_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.js';
+import { getWalletForHandle, registerWalletHandle } from './UiWalletHandleRegistry.js';
 import { byteArraysAreDifferent, identifierArraysAreDifferent } from './compare.js';
 
 const walletAccountsToUiWalletAccounts = new WeakMap<WalletAccount, UiWalletAccount>();
@@ -12,21 +9,20 @@ const walletAccountsToUiWalletAccounts = new WeakMap<WalletAccount, UiWalletAcco
 type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 
 /**
- * DO NOT USE THIS OR YOU WILL BE FIRED
- *
- * This method is for exclusive use by Wallet Standard UI library authors. Use this if you need to
- * create or obtain the existing `UiWalletAccount` object associated with a Wallet Standard
+ * Create or obtain the existing `UiWalletAccount` object associated with a Wallet Standard
  * `WalletAccount`.
  *
- * @internal
+ * This method is intended for Wallet Standard UI library authors, or app authors building directly
+ * on the UI primitives without a framework-specific adapter.
  */
-export function getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED<
-    TWallet extends Wallet,
->(wallet: TWallet, account: WalletAccount): UiWalletAccount {
+export function getOrCreateUiWalletAccountForStandardWalletAccount<TWallet extends Wallet>(
+    wallet: TWallet,
+    account: WalletAccount
+): UiWalletAccount {
     let existingUiWalletAccount = walletAccountsToUiWalletAccounts.get(account);
     if (existingUiWalletAccount) {
         try {
-            if (getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(existingUiWalletAccount) !== wallet) {
+            if (getWalletForHandle(existingUiWalletAccount) !== wallet) {
                 existingUiWalletAccount = undefined;
             }
         } catch {
@@ -65,7 +61,11 @@ export function getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR
     }
     if (isDirty) {
         walletAccountsToUiWalletAccounts.set(account, uiWalletAccount);
-        registerWalletHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(uiWalletAccount, wallet);
+        registerWalletHandle(uiWalletAccount, wallet);
     }
     return Object.freeze(uiWalletAccount);
 }
+
+/** @deprecated Use {@link getOrCreateUiWalletAccountForStandardWalletAccount} instead. */
+export const getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED =
+    getOrCreateUiWalletAccountForStandardWalletAccount;

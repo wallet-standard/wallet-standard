@@ -2,10 +2,7 @@ import type { StandardConnectFeature, StandardConnectInput, StandardConnectMetho
 import { StandardConnect } from '@wallet-standard/features';
 import type { UiWallet, UiWalletAccount } from '@wallet-standard/ui';
 import { getWalletFeature } from '@wallet-standard/ui';
-import {
-    getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
-    getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
-} from '@wallet-standard/ui-registry';
+import { getOrCreateUiWalletAccountForStandardWalletAccount, getWalletForHandle } from '@wallet-standard/ui-registry';
 import { useCallback } from 'react';
 
 import { useWeakRef } from '../useWeakRef.js';
@@ -33,7 +30,7 @@ export function useConnect<TWallet extends UiWallet>(
         uiWallet,
         StandardConnect
     ) as StandardConnectFeature[typeof StandardConnect];
-    const wallet = getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(uiWallet);
+    const wallet = getWalletForHandle(uiWallet);
     const connectionPromise = useWeakRef<Promise<readonly UiWalletAccount[]>>(wallet);
     const connect = useCallback(
         async function connect(
@@ -47,10 +44,7 @@ export function useConnect<TWallet extends UiWallet>(
                 .connect(input, ...rest)
                 .then(({ accounts }) => {
                     return accounts.map(
-                        getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.bind(
-                            null,
-                            wallet
-                        )
+                        getOrCreateUiWalletAccountForStandardWalletAccount.bind(null, wallet)
                     ) as readonly UiWalletAccount[];
                 })
                 .finally(() => {

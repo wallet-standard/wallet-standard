@@ -1,6 +1,6 @@
 import type { Wallet, WalletVersion } from '@wallet-standard/base';
 import type { UiWalletAccount } from '@wallet-standard/ui-core';
-import { getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
+import { getOrCreateUiWalletAccountForStandardWalletAccount } from '@wallet-standard/ui-registry';
 
 import { getUiWalletAccountStorageKey } from '../storage-key.js';
 
@@ -21,10 +21,7 @@ describe('getUiWalletAccountStorageKey()', () => {
             name: 'Mock:Wallet',
             version: '1.0.0' as WalletVersion,
         };
-        mockUiWalletAccount = getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
-            mockWallet,
-            mockWalletAccount
-        );
+        mockUiWalletAccount = getOrCreateUiWalletAccountForStandardWalletAccount(mockWallet, mockWalletAccount);
     });
     it('vends a colon separated key for a wallet account', () => {
         expect(getUiWalletAccountStorageKey(mockUiWalletAccount)).toBe('Mock_Wallet:abc');
