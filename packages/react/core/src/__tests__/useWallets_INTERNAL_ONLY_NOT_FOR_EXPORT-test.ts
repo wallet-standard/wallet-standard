@@ -1,5 +1,5 @@
 import { getWallets } from '@wallet-standard/app';
-import type { Wallet, WalletVersion, WalletWithFeatures } from '@wallet-standard/base';
+import type { Wallet, WalletWithFeatures } from '@wallet-standard/base';
 import { StandardEvents, type StandardEventsFeature, type StandardEventsListeners } from '@wallet-standard/features';
 import { act } from 'react-test-renderer';
 
@@ -107,7 +107,7 @@ describe('useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT', () => {
             features: {
                 [StandardEvents]: {
                     on: () => mockStandardEventsDispose,
-                    version: '1.0.0' as WalletVersion,
+                    version: '1.0.0',
                 } as StandardEventsFeature['standard:events'],
             },
         } as unknown as Wallet;
@@ -164,7 +164,7 @@ describe('useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT', () => {
                 } as StandardEventsFeature,
                 icon: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIBAAA=',
                 name: 'Mock Wallet',
-                version: '1.0.0' as WalletVersion,
+                version: '1.0.0',
             } as const,
         ];
         mockGet.mockReturnValue(mockWallets);

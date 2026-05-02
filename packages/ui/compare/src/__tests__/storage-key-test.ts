@@ -1,4 +1,4 @@
-import type { Wallet, WalletVersion } from '@wallet-standard/base';
+import type { Wallet } from '@wallet-standard/base';
 import type { UiWalletAccount } from '@wallet-standard/ui-core';
 import { getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
 
@@ -19,7 +19,7 @@ describe('getUiWalletAccountStorageKey()', () => {
             features: {},
             icon: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIBAAA=',
             name: 'Mock:Wallet',
-            version: '1.0.0' as WalletVersion,
+            version: '1.0.0',
         };
         mockUiWalletAccount = getOrCreateUiWalletAccountForStandardWalletAccount_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
             mockWallet,

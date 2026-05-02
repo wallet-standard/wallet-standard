@@ -13,7 +13,30 @@ import type { IdentifierArray, IdentifierRecord, IdentifierString } from './iden
  *
  * @group Wallet
  */
-export type WalletVersion = '1.0.0';
+export type WalletVersion = WalletVersion1_0_0 | WalletVersion1_1_0;
+
+/**
+ * Initial version of the Wallet Standard.
+ *
+ * @group Wallet
+ */
+export type WalletVersion1_0_0 = '1.0.0';
+
+/**
+ * Version of the Wallet Standard that supports HTTP/S URLs for icons.
+ *
+ * @group Wallet
+ */
+export type WalletVersion1_1_0 = '1.1.0';
+
+/**
+ * Icon of a {@link Wallet} or {@link WalletAccount}.
+ *
+ * @group Wallet
+ */
+export type WalletIcon<V extends WalletVersion = WalletVersion1_0_0> = V extends WalletVersion1_1_0
+    ? WalletIcon1_1_0
+    : WalletIcon1_0_0;
 
 /**
  * A data URI containing a base64-encoded SVG, WebP, PNG, or GIF image.
@@ -22,7 +45,16 @@ export type WalletVersion = '1.0.0';
  *
  * @group Wallet
  */
-export type WalletIcon = `data:image/${'svg+xml' | 'webp' | 'png' | 'gif'};base64,${string}`;
+export type WalletIcon1_0_0 = `data:image/${'svg+xml' | 'webp' | 'png' | 'gif'};base64,${string}`;
+
+/**
+ * An HTTP/S URL, or data URI containing a base64-encoded SVG, WebP, PNG, or GIF image.
+ *
+ * Used by {@link Wallet.icon | Wallet::icon} and {@link WalletAccount.icon | WalletAccount::icon}.
+ *
+ * @group Wallet
+ */
+export type WalletIcon1_1_0 = `https://${string}` | `http://${string}` | WalletIcon1_0_0;
 
 /**
  * Interface of a **Wallet**, also referred to as a **Standard Wallet**.
@@ -31,13 +63,13 @@ export type WalletIcon = `data:image/${'svg+xml' | 'webp' | 'png' | 'gif'};base6
  *
  * @group Wallet
  */
-export interface Wallet {
+export interface Wallet<V extends WalletVersion = WalletVersion1_0_0> {
     /**
      * {@link WalletVersion | Version} of the Wallet Standard implemented by the Wallet.
      *
      * Must be read-only, static, and canonically defined by the Wallet Standard.
      */
-    readonly version: WalletVersion;
+    readonly version: V;
 
     /**
      * Name of the Wallet. This may be displayed by the app.
@@ -51,7 +83,7 @@ export interface Wallet {
      *
      * Must be read-only, static, and canonically defined by the wallet extension or application.
      */
-    readonly icon: WalletIcon;
+    readonly icon: WalletIcon<V>;
 
     /**
      * Chains supported by the Wallet.
@@ -112,7 +144,7 @@ export interface Wallet {
      * The {@link "@wallet-standard/features".EventsFeature | `standard:events` feature} should be used to notify the
      * app if the value changes.
      */
-    readonly accounts: readonly WalletAccount[];
+    readonly accounts: readonly WalletAccount<V>[];
 }
 
 /**
@@ -128,7 +160,7 @@ export interface Wallet {
  *
  * @group Wallet
  */
-export interface WalletAccount {
+export interface WalletAccount<V extends WalletVersion = WalletVersion1_0_0> {
     /** Address of the account, corresponding with a public key. */
     readonly address: string;
 
@@ -153,7 +185,7 @@ export interface WalletAccount {
     readonly label?: string;
 
     /** Optional user-friendly icon for the account. This may be displayed by the app. */
-    readonly icon?: WalletIcon;
+    readonly icon?: WalletIcon<V>;
 }
 
 /**

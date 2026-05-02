@@ -1,4 +1,4 @@
-import type { Wallet, WalletVersion } from '@wallet-standard/base';
+import type { Wallet } from '@wallet-standard/base';
 import { StandardConnect } from '@wallet-standard/features';
 import type { UiWallet } from '@wallet-standard/ui';
 import { getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from '@wallet-standard/ui-registry';
@@ -23,7 +23,7 @@ describe('useConnect', () => {
             },
             icon: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIBAAA=',
             name: 'Mock Wallet',
-            version: '1.0.0' as WalletVersion,
+            version: '1.0.0',
         };
         jest.mocked(getWalletForHandle_DO_NOT_USE_OR_YOU_WILL_BE_FIRED).mockReturnValue(mockWallet);
         // Suppresses console output when an `ErrorBoundary` is hit.

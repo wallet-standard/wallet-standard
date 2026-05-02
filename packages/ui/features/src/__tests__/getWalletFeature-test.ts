@@ -1,4 +1,4 @@
-import type { Wallet, WalletVersion } from '@wallet-standard/base';
+import type { Wallet } from '@wallet-standard/base';
 import {
     WALLET_STANDARD_ERROR__FEATURES__WALLET_FEATURE_UNIMPLEMENTED,
     WalletStandardError,
@@ -24,7 +24,7 @@ describe('getWalletFeature', () => {
             },
             icon: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIBAAA=',
             name: 'Mock Wallet',
-            version: '1.0.0' as WalletVersion,
+            version: '1.0.0',
         };
         mockWalletHandle = {
             '~uiWalletHandle': Symbol(),
