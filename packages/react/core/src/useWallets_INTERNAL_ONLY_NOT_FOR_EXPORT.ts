@@ -41,8 +41,15 @@ export function useWallets_INTERNAL_ONLY_NOT_FOR_EXPORT(): readonly Wallet[] {
                     outputWallets.current = [...get()];
                     onStoreChange();
                 });
-                walletsToChangeListenerDisposeFn.set(wallet, dispose);
-                return dispose;
+
+                // Some wallet has StandardEvents but the event registering doesn't return
+                // a disposal function
+                if (typeof dispose === 'function') {
+                    walletsToChangeListenerDisposeFn.set(wallet, dispose);
+                    return dispose;
+                }
+
+                return () => {};
             }
             const disposeRegisterListener = on('register', (...wallets) => {
                 wallets.filter(walletHasStandardEventsFeature).map(subscribeToWalletEvents);
